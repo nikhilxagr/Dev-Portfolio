@@ -1,0 +1,45 @@
+{
+  "home": {
+    "statsTitle": "Learning in public and building with consistency.",
+    "projectsTitle": "Projects that reflect both product thinking and implementation skills.",
+    "practicalsTitle": "Hands-on cyber security practice through labs, tools, and writeups.",
+    "servicesTitle": "Student-friendly services focused on delivery, clarity, and practical value.",
+    "testimonialsTitle": "Feedback and trust built through real work.",
+    "contactTitle": "Ready to collaborate, learn, or build something useful."
+  },
+  "about": {
+    "title": "About Me",
+    "intro": "A developer who enjoys building clean digital products while exploring the practical side of cyber security."
+  },
+  "skills": {
+    "title": "Skills and Tools",
+    "intro": "A mix of development skills, deployment experience, and security tools that support both building and learning."
+  },
+  "projects": {
+    "title": "Projects",
+    "intro": "A selection of projects that show how I approach frontend experience, backend logic, and real-world implementation."
+  },
+  "practicals": {
+    "title": "Practicals and Labs",
+    "intro": "A growing archive of cyber security practice, lab environments, and tool-based learning.",
+    "ethicsNote": "All security practice should be limited to labs, owned systems, or explicitly authorized targets."
+  },
+  "services": {
+    "title": "Services",
+    "intro": "Practical services for students, founders, and small teams who want support with building, improving, or reviewing digital work.",
+    "process": [
+      "Choose a service or send a custom requirement.",
+      "Confirm scope, timeline, and expectations.",
+      "Complete payment through Razorpay.",
+      "Receive updates, delivery, and payment acknowledgement."
+    ]
+  },
+  "blog": {
+    "title": "Blog",
+    "intro": "Thoughts, writeups, and learning notes across cybersecurity, web development, AI, and technology."
+  },
+  "contact": {
+    "title": "Contact Me",
+    "intro": "The fastest way to reach me is through email, LinkedIn, or WhatsApp. You can also use the contact form for project or service inquiries."
+  }
+}

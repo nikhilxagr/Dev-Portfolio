@@ -1,0 +1,89 @@
+{
+  "siteName": "Nikhil Agrahari",
+  "siteTitle": "Nikhil Agrahari | Full Stack Developer | Cyber Security Analyst",
+  "siteDescription": "Portfolio of Nikhil Agrahari, a BCA student, full stack developer, and cyber security analyst focused on building modern web applications and documenting practical security learning.",
+  "headline": "BCA Student | Full Stack Developer | Cyber Security Analyst",
+  "role": "Web Developer",
+  "education": "BCA, BBD University, Lucknow",
+  "location": {
+    "city": "Lucknow",
+    "country": "India",
+    "showPublicly": true
+  },
+  "availability": "Open to freelance projects, portfolio guidance, mentorship, and collaboration.",
+  "profileImage": {
+    "path": "assets/images/profile/nikhil-upload-hero.jpg",
+    "publicPath": "/images/profile/nikhil-upload-hero.jpg",
+    "alt": "Portrait of Nikhil Agrahari"
+  },
+  "sections": {
+    "testimonialsEnabled": false
+  },
+  "hero": {
+    "eyebrow": "Full Stack Developer | Cyber Security Learner",
+    "title": "Building modern web products and learning how to secure them.",
+    "description": "I work across frontend and backend development, build clean user-focused experiences, and document my cyber security journey through labs, writeups, and hands-on practice.",
+    "primaryCta": {
+      "label": "View Projects",
+      "href": "/projects"
+    },
+    "secondaryCta": {
+      "label": "Download Resume",
+      "href": "https://drive.google.com/file/d/1-BUv73624cDLAwxRkLhZGQBkQqyJUVWG/view?usp=drive_link"
+    }
+  },
+  "shortIntro": "Passionate about creating modern, user-friendly web applications and exploring the world of cybersecurity. Transforming ideas into interactive digital experiences.",
+  "about": [
+    "Hi, I'm Nikhil Agrahari.",
+    "I'm a second-year BCA student at BBD University, Lucknow, with a growing passion for web development, cybersecurity, and ethical hacking. Currently working as a web developer, I enjoy turning ideas into interactive, user-friendly digital solutions.",
+    "I believe in writing clean, efficient code and building projects that not only work well but also create real value. Alongside development, I am deeply interested in cyber defense and ethical hacking, and I keep exploring how systems can be made safer, faster, and more reliable.",
+    "My learning path stays broad on purpose. I enjoy frontend development, backend logic, and practical security work, because understanding how things are built also helps me understand how they should be protected.",
+    "Beyond coding, I am focused on consistent growth, collaboration, and building work that reflects both curiosity and discipline."
+  ],
+  "focusAreas": [
+    "Responsive frontend development",
+    "Backend API development",
+    "Portfolio and product building",
+    "Cyber security labs and practical learning",
+    "Clean UI with strong usability"
+  ],
+  "contact": {
+    "email": "nikhilagrahari530@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/nikhilxagr/",
+    "github": "https://github.com/nikhilxagr",
+    "whatsapp": "https://wa.me/7897972883",
+    "resume": "https://drive.google.com/file/d/1-BUv73624cDLAwxRkLhZGQBkQqyJUVWG/view?usp=drive_link",
+    "medium": "https://medium.com/@nikhilxagr"
+  },
+  "contactForm": {
+    "title": "Let's build something useful together.",
+    "description": "If you want a portfolio, frontend project, backend help, or student-friendly guidance, send me a message and I will get back to you.",
+    "fields": [
+      "name",
+      "email",
+      "phone",
+      "service",
+      "message"
+    ]
+  },
+  "receipt": {
+    "enabled": true,
+    "downloadLabel": "Download Payment Acknowledgement",
+    "fields": [
+      "customer_name",
+      "customer_email",
+      "customer_phone",
+      "service_name",
+      "amount_paid",
+      "currency",
+      "payment_id",
+      "order_id",
+      "payment_date",
+      "portfolio_owner"
+    ]
+  },
+  "legal": {
+    "securityTestingNotice": "Security testing is offered only for owned websites or targets where the client has clear written permission.",
+    "disclaimer": "This portfolio presents real learning, real projects, and ethical security practice only."
+  }
+}

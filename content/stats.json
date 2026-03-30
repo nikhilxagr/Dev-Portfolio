@@ -1,0 +1,34 @@
+[
+  {
+    "id": "leetcode",
+    "label": "LeetCode Problems Solved",
+    "value": "102",
+    "detail": "Problems solved",
+    "link": "https://leetcode.com/u/nikhilxagr/",
+    "status": "ready"
+  },
+  {
+    "id": "gfg",
+    "label": "GFG Score",
+    "value": "96",
+    "detail": "Problems solved",
+    "link": "https://www.geeksforgeeks.org/profile/nikhilxagr?tab=activity",
+    "status": "ready"
+  },
+  {
+    "id": "tryhackme",
+    "label": "TryHackMe Rank or Streak",
+    "value": "Top 1%",
+    "detail": "Rank 16773 | 275 completed rooms",
+    "link": "https://tryhackme.com/p/nikhilxagr",
+    "status": "ready"
+  },
+  {
+    "id": "github",
+    "label": "GitHub Repositories or Contributions",
+    "value": "26",
+    "detail": "Public repositories",
+    "link": "https://github.com/nikhilxagr",
+    "status": "ready"
+  }
+]
