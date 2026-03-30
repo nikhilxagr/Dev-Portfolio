@@ -53,6 +53,7 @@ export const QUICK_CONTACT = {
   whatsapp: 'https://wa.me/7897972883',
   linkedin: 'https://www.linkedin.com/in/nikhilxagr/',
   github: 'https://github.com/nikhilxagr',
+  leetcode: 'https://leetcode.com/u/nikhilxagr/',
   medium: 'https://medium.com/@nikhilxagr',
   resume: 'https://drive.google.com/file/d/1-BUv73624cDLAwxRkLhZGQBkQqyJUVWG/view?usp=drive_link',
 }

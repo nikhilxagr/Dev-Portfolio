@@ -8,6 +8,7 @@ import EmptyState from '@/components/ui/EmptyState'
 import ProjectCard from '@/components/ui/ProjectCard'
 import SkillMatrix from '@/components/ui/SkillMatrix'
 import FadeInUp from '@/components/animations/FadeInUp'
+import { useTheme } from '@/context/ThemeContext'
 import { getProjects } from '@/services/projects.service'
 import { getErrorMessage } from '@/services/api'
 import {
@@ -42,6 +43,17 @@ const HomePage = () => {
   const [featuredProjects, setFeaturedProjects] = useState([])
   const [loadingProjects, setLoadingProjects] = useState(true)
   const [projectError, setProjectError] = useState('')
+  const { isDark } = useTheme()
+
+  const githubUsername = QUICK_CONTACT.github.split('/').filter(Boolean).pop() || 'nikhilxagr'
+  const leetcodeUsername = QUICK_CONTACT.leetcode.split('/').filter(Boolean).pop() || 'nikhilxagr'
+
+  const githubStreakCardUrl = `https://streak-stats.demolab.com/?user=${githubUsername}&theme=${
+    isDark ? 'algolia' : 'default'
+  }&hide_border=true`
+  const leetcodeCardUrl = `https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=${
+    isDark ? 'dark' : 'light'
+  }&ext=heatmap`
 
   useEffect(() => {
     const loadFeatured = async () => {
@@ -163,6 +175,63 @@ const HomePage = () => {
             </a>
           ))}
         </div>
+
+        <FadeInUp className="mt-12 card-surface rounded-3xl p-6 sm:p-8">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-bold text-cyan-100 sm:text-4xl">Coding Consistency Showcase</h2>
+            <p className="mt-2 text-sm text-slate-300">Live cards from your public profiles</p>
+          </div>
+
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            <article className="group rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-2xl font-semibold text-cyan-100">GitHub Streak</h3>
+                <a
+                  href={QUICK_CONTACT.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={githubStreakCardUrl}
+                  alt={`GitHub streak stats for ${githubUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
+
+            <article className="group rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-2xl font-semibold text-cyan-100">LeetCode Stats</h3>
+                <a
+                  href={QUICK_CONTACT.leetcode}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={leetcodeCardUrl}
+                  alt={`LeetCode stats for ${leetcodeUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
+          </div>
+        </FadeInUp>
 
         <div className="mt-12 grid gap-4 md:grid-cols-3">
           {highlights.map((item, index) => {
