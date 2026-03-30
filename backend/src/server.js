@@ -1,20 +1,32 @@
-import app from "./app.js";
-import { connectDatabase } from "./config/database.js";
-import { env } from "./config/env.js";
+import app from './app.js'
+import { env } from './config/env.js'
+import { connectDatabase, disconnectDatabase } from './config/db.js'
 
-async function startServer() {
-  try {
-    await connectDatabase();
+let server
 
-    app.listen(env.PORT, () => {
-      console.log(
-        `Portfolio API server running on http://localhost:${env.PORT}`,
-      );
-    });
-  } catch (error) {
-    console.error("Failed to start the server.", error);
-    process.exit(1);
+const startServer = async () => {
+  await connectDatabase()
+
+  server = app.listen(env.port, () => {
+    console.log(`Backend running on port ${env.port}`)
+  })
+}
+
+const gracefulShutdown = async (signal) => {
+  console.log(`${signal} received. Closing server...`)
+
+  if (server) {
+    server.close(async () => {
+      await disconnectDatabase()
+      process.exit(0)
+    })
   }
 }
 
-startServer();
+process.on('SIGINT', () => gracefulShutdown('SIGINT'))
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+
+startServer().catch((error) => {
+  console.error('Failed to start backend:', error)
+  process.exit(1)
+})

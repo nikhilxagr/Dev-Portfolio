@@ -1,0 +1,8 @@
+Nikhil Resume Placeholder
+
+Name: Nikhil
+Role: Full Stack Developer | Cyber Security Analyst | Penetration Testing Enthusiast
+Education: BCA (2nd Year)
+
+Note:
+Replace this file with your real resume PDF (keep the same path if needed).

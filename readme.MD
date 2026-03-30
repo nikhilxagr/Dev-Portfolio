@@ -1,135 +1,136 @@
-# Full Stack Developer Portfolio
+# Developer Portfolio (Full Stack + Cyber Security)
 
-Welcome to my personal full stack portfolio. This repository showcases my projects, technical skills, and the work I have done across frontend, backend, databases, and deployment.
+Production-ready portfolio project for a BCA 2nd year student using:
 
-## Build Roadmap
-
-I am building this portfolio step by step in public. The complete 30-day execution plan is here:
-
-- [30 Day Portfolio Roadmap](./docs/planning/30_DAY_PORTFOLIO_ROADMAP.md)
-
-## Documentation
-
-- [Documentation Index](./docs/README.md)
-- [Build Journal](./docs/progress/BUILD_JOURNAL.md)
-- [Project Checklist](./docs/progress/PROJECT_CHECKLIST.md)
-
-## Day 1 Planning Docs
-
-- [Day 1 Project Brief](./docs/planning/DAY_1_PROJECT_BRIEF.md)
-- [Day 1 Sitemap](./docs/planning/DAY_1_SITEMAP.md)
-- [Stack Decision](./docs/planning/STACK_DECISION.md)
-
-## Day 2 Content Prep
-
-- [Day 2 Content Prep](./docs/planning/DAY_2_CONTENT_PREP.md)
-- [Content Folder](./content/README.md)
-
-## Day 3 Wireframes
-
-- [Day 3 Wireframes](./docs/planning/DAY_3_WIREFRAMES.md)
-- [Day 3 Visual System](./docs/planning/DAY_3_VISUAL_SYSTEM.md)
-
-## Day 4 Project Setup
-
-- [Day 4 Project Setup](./docs/setup/DAY_4_PROJECT_SETUP.md)
-
-## About Me
-
-I am Nikhil Agrahari, a BCA student and web developer focused on building modern, user-friendly web applications while growing in cybersecurity and ethical hacking. I enjoy turning ideas into real products and learning how to make digital experiences both useful and secure.
-
-## Tech Stack
-
-### Frontend
-
-- HTML5
-- CSS3
-- JavaScript (ES6+)
-- React
-- Next.js
-- Tailwind CSS
-
-### Backend
-
-- Node.js
-- Express.js
-- REST APIs
-- Authentication and Authorization (JWT)
-- Firebase
-
-### Database
-
-- MongoDB
-
-### Tools and Platforms
-
-- Git and GitHub
-- Postman
-- VS Code
-- Vercel
-- Render
-- Kali Linux
-- Burp Suite
-- Nmap
-- Wireshark
-
-## Featured Projects
-
-### 1. Fast Feast
-
-A modern food delivery platform with interactive menu browsing, cart flow, and a clean ordering experience.
-
-- Live Demo: https://fastfeast-agr.netlify.app/
-- Source Code: https://github.com/nikhilxagr/Web-Dev-Projects/tree/main/Food%20Delivery%20Website
-
-### 2. snapURL
-
-A MERN-based URL shortener that converts long links into clean, shareable short URLs.
-
-- Live Demo: https://snapurl-url-shortner.vercel.app/
-- Source Code: https://github.com/nikhilxagr/snapurl-URL-SHORTNER
-
-### 3. AI Powered Code Reviewer
-
-An AI-assisted code review platform focused on code quality, bug detection, and developer productivity.
-
-- Source Code: https://github.com/nikhilxagr/AI-Powered-Code-Reviewer-MERN-Project
-
-## What I Focus On
-
-- Building responsive and accessible interfaces
-- Creating secure and reliable backend services
-- Writing maintainable and reusable code
-- Deploying full stack applications to production
-- Learning through cyber security labs and practical tools
-
-## Contact
-
-- Email: nikhilagrahari530@gmail.com
-- LinkedIn: https://www.linkedin.com/in/nikhilxagr/
-- GitHub: https://github.com/nikhilxagr
-- WhatsApp: https://wa.me/7897972883
-
-## Resume
-
-https://drive.google.com/file/d/1-BUv73624cDLAwxRkLhZGQBkQqyJUVWG/view?usp=drive_link
+- Frontend: React (Vite), Tailwind CSS, Framer Motion
+- Backend: Node.js, Express.js
+- Database: MongoDB Atlas (Mongoose)
+- Auth: JWT with env-based single admin credentials
 
 ## Project Structure
 
-- `frontend/` - Next.js frontend
-- `backend/` - Express backend
-- `content/` - reusable portfolio content
-- `assets/` - source assets
-- `docs/` - planning and build documentation
+- frontend: UI app with pages, components, hooks, and services
+- backend: API with controllers, routes, models, middleware, and config
 
-## Local Development
+## Quick Start
 
-- `npm run dev` - run frontend and backend together
-- `npm run dev:frontend` - run only the frontend
-- `npm run dev:backend` - run only the backend
-- `npm run build` - build the frontend
-- `npm run lint` - lint the frontend
+### 1) Install dependencies
 
----
+```bash
+cd frontend
+npm install
+cd ../backend
+npm install
+```
 
-If you like my work or want to collaborate, feel free to connect with me.
+### 2) Configure environment variables
+
+- Copy `frontend/.env.example` to `frontend/.env`
+- Copy `backend/.env.example` to `backend/.env`
+
+Set required backend values:
+
+- `MONGODB_URI`
+- `JWT_SECRET` (minimum 32 chars)
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD_HASH` (bcrypt hash)
+- `ALLOWED_ORIGINS`
+
+### 3) Create admin password hash
+
+Run in backend directory:
+
+```bash
+node -e "import bcrypt from 'bcryptjs'; bcrypt.hash('ChangeMe@123', 12).then(console.log)"
+```
+
+Copy output into `ADMIN_PASSWORD_HASH`.
+
+### 4) Seed initial projects/blogs (optional)
+
+```bash
+cd backend
+npm run seed
+```
+
+### 5) Run apps
+
+Backend:
+
+```bash
+cd backend
+npm run dev
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run dev
+```
+
+- Frontend default: `http://localhost:5173`
+- Backend default: `http://localhost:5000`
+
+### 6) Access admin dashboard
+
+- Admin login UI: `http://localhost:5173/admin/login`
+- Admin dashboard UI: `http://localhost:5173/admin`
+
+Use your `ADMIN_EMAIL` and plaintext password that matches the configured `ADMIN_PASSWORD_HASH`.
+
+## API Endpoints
+
+### Auth
+
+- `POST /api/auth/login`
+- `GET /api/auth/verify` (Bearer token)
+
+### Projects
+
+- `GET /api/projects`
+- `GET /api/projects/:slug`
+- `POST /api/projects` (admin)
+- `PUT /api/projects/:id` (admin)
+- `DELETE /api/projects/:id` (admin)
+
+### Blogs
+
+- `GET /api/blogs`
+- `GET /api/blogs/:slug`
+- `POST /api/blogs` (admin)
+- `PUT /api/blogs/:id` (admin)
+- `DELETE /api/blogs/:id` (admin)
+
+### Contact
+
+- `POST /api/contact`
+
+### Admin Contacts
+
+- `GET /api/admin/contacts` (admin)
+- `PATCH /api/admin/contacts/:id/read` (admin)
+
+## Security Practices Included
+
+- Helmet security headers
+- CORS allowlist
+- Rate limiting (general, auth, contact)
+- Input validation via express-validator
+- NoSQL injection protection via express-mongo-sanitize
+- XSS sanitization middleware
+- JWT auth on write routes
+- Centralized error handling with HTTP status codes
+
+## Deployment Notes
+
+- Frontend target: Vercel
+- Backend target: Render
+- Database: MongoDB Atlas
+
+Set production frontend domain in backend `ALLOWED_ORIGINS`.
+
+## Optional Phase 2
+
+- Dark/light mode toggle
+- Rich markdown blog editor

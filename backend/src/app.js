@@ -1,42 +1,40 @@
-import cors from "cors";
 import express from "express";
-import rateLimit from "express-rate-limit";
-import helmet from "helmet";
 import morgan from "morgan";
-
-import { env } from "./config/env.js";
-import { errorHandler } from "./middlewares/error-handler.js";
-import { notFoundHandler } from "./middlewares/not-found.js";
-import apiRouter from "./routes/index.js";
+import authRoutes from "./routes/authRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import { applySecurityMiddleware } from "./middleware/securityMiddleware.js";
+import {
+  generalLimiter,
+  authLimiter,
+  contactLimiter,
+} from "./middleware/rateLimiter.js";
+import { errorHandler, notFoundHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
 
-const globalRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 300,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-app.use(
-  cors({
-    origin: env.CLIENT_URL,
-    credentials: true,
-  }),
-);
-app.use(helmet());
-app.use(globalRateLimit);
-app.use(morgan(env.NODE_ENV === "development" ? "dev" : "combined"));
-app.use(express.json({ limit: "1mb" }));
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+app.use(express.json({ limit: "300kb" }));
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (_request, response) => {
-  response.status(200).json({
-    message: "Portfolio API is running.",
+applySecurityMiddleware(app);
+app.use(generalLimiter);
+
+app.get("/api/health", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "API is healthy",
+    data: { uptime: process.uptime(), timestamp: new Date().toISOString() },
   });
 });
 
-app.use("/api", apiRouter);
+app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/contact", contactLimiter, contactRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
