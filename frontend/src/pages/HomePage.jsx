@@ -6,13 +6,13 @@ import SectionTitle from '@/components/ui/SectionTitle'
 import LoadingState from '@/components/ui/LoadingState'
 import EmptyState from '@/components/ui/EmptyState'
 import ProjectCard from '@/components/ui/ProjectCard'
-import SkillMatrix from '@/components/ui/SkillMatrix'
 import FadeInUp from '@/components/animations/FadeInUp'
 import { useTheme } from '@/context/ThemeContext'
 import { getProjects } from '@/services/projects.service'
 import { getErrorMessage } from '@/services/api'
 import {
   HERO_CONTENT,
+  MAIN_SKILL_SHOWCASE,
   PRACTICALS,
   QUICK_CONTACT,
   SERVICE_OFFERINGS,
@@ -39,6 +39,12 @@ const highlights = [
   },
 ]
 
+const homeSkillIconMap = {
+  'SOC Analyst with AI': ShieldCheck,
+  'Web Development': Code2,
+  'Coding Languages and Frameworks': Sparkles,
+}
+
 const HomePage = () => {
   const [featuredProjects, setFeaturedProjects] = useState([])
   const [loadingProjects, setLoadingProjects] = useState(true)
@@ -47,6 +53,9 @@ const HomePage = () => {
 
   const githubUsername = QUICK_CONTACT.github.split('/').filter(Boolean).pop() || 'nikhilxagr'
   const leetcodeUsername = QUICK_CONTACT.leetcode.split('/').filter(Boolean).pop() || 'nikhilxagr'
+  const gfgUsername = QUICK_CONTACT.gfg.match(/profile\/([^/?]+)/i)?.[1] || 'nikhilxagr'
+  const tryHackMeUsername = QUICK_CONTACT.tryhackme.split('/').filter(Boolean).pop() || 'nikhilxagr'
+  const tryHackMeMetric = STATS_METRICS.find((item) => item.id === 'tryhackme')
 
   const githubStreakCardUrl = `https://streak-stats.demolab.com/?user=${githubUsername}&theme=${
     isDark ? 'algolia' : 'default'
@@ -54,6 +63,8 @@ const HomePage = () => {
   const leetcodeCardUrl = `https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=${
     isDark ? 'dark' : 'light'
   }&ext=heatmap`
+  const gfgCardUrl = `https://gfgstatscard.vercel.app/${gfgUsername}?theme=${isDark ? 'dark' : 'light'}`
+  const tryHackMeCardUrl = `https://tryhackme-badges.s3.amazonaws.com/${tryHackMeUsername}.png`
 
   useEffect(() => {
     const loadFeatured = async () => {
@@ -230,6 +241,58 @@ const HomePage = () => {
                 />
               </div>
             </article>
+
+            <article className="group rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-2xl font-semibold text-cyan-100">GFG Stats</h3>
+                <a
+                  href={QUICK_CONTACT.gfg}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={gfgCardUrl}
+                  alt={`GeeksforGeeks stats for ${gfgUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
+
+            <article className="group rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-2xl font-semibold text-cyan-100">TryHackMe Proof</h3>
+                <a
+                  href={QUICK_CONTACT.tryhackme}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="mb-3 inline-flex rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-100">
+                {tryHackMeMetric?.value || 'Top 1%'} on TryHackMe
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={tryHackMeCardUrl}
+                  alt={`TryHackMe badge for ${tryHackMeUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
           </div>
         </FadeInUp>
 
@@ -289,10 +352,37 @@ const HomePage = () => {
         <SectionTitle
           eyebrow="Skills"
           title="Core Competencies"
-          description="Practical stack across frontend engineering, backend systems, MongoDB workflows, and hands-on cybersecurity tooling."
+          description="Showcasing core identity skills across SOC analysis with AI, web development, and coding frameworks."
         />
-        <div className="mt-8">
-          <SkillMatrix />
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+          {MAIN_SKILL_SHOWCASE.map((item, index) => {
+            const Icon = homeSkillIconMap[item.title] || Sparkles
+
+            return (
+              <FadeInUp key={item.id} delay={index * 0.07} className="card-surface rounded-2xl p-5">
+                <Icon className="text-cyan-200" size={22} />
+                <h3 className="mt-3 text-xl font-semibold text-cyan-100">{item.title}</h3>
+                <p className="mt-2 text-sm text-slate-300">{item.summary}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {item.tags.map((tag) => (
+                    <span key={tag} className="rounded-md border border-cyan-300/25 bg-slate-900/70 px-2 py-1 text-xs text-cyan-100">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </FadeInUp>
+            )
+          })}
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button to="/skills">
+            View All Skills and Expertise <ArrowRight size={16} />
+          </Button>
+          <Button to="/services" variant="ghost">
+            Explore Services
+          </Button>
         </div>
       </section>
 

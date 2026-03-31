@@ -32,6 +32,7 @@ export const HERO_CONTENT = {
 export const NAV_LINKS = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
+  { to: '/skills', label: 'Skills' },
   { to: '/services', label: 'Services' },
   { to: '/projects', label: 'Projects' },
   { to: '/security', label: 'Practicals' },
@@ -54,6 +55,8 @@ export const QUICK_CONTACT = {
   linkedin: 'https://www.linkedin.com/in/nikhilxagr/',
   github: 'https://github.com/nikhilxagr',
   leetcode: 'https://leetcode.com/u/nikhilxagr/',
+  gfg: 'https://www.geeksforgeeks.org/profile/nikhilxagr?tab=activity',
+  tryhackme: 'https://tryhackme.com/p/nikhilxagr',
   medium: 'https://medium.com/@nikhilxagr',
   resume: 'https://drive.google.com/file/d/1-BUv73624cDLAwxRkLhZGQBkQqyJUVWG/view?usp=drive_link',
 }
@@ -81,23 +84,95 @@ export const SKILL_GROUPS = [
   },
   {
     title: 'Backend',
-    items: ['Node.js', 'Express.js', 'MongoDB', 'Firebase', 'MERN Stack'],
+    items: ['Node.js', 'Express.js', 'Supabase', 'REST APIs', 'Authentication', 'MERN Stack'],
   },
   {
     title: 'Languages',
-    items: ['JavaScript', 'Python', 'Java'],
+    items: ['JavaScript', 'Python', 'C', 'SQL'],
   },
   {
     title: 'Database',
-    items: ['MongoDB Atlas', 'Mongoose', 'Schema Design', 'Indexing'],
+    items: ['MongoDB Atlas', 'Mongoose', 'Supabase Postgres', 'SQL Querying', 'Schema Design', 'Indexing'],
   },
   {
     title: 'Cybersecurity Tools',
-    items: ['Kali Linux', 'Burp Suite', 'Nmap', 'Wireshark', 'Steghide'],
+    items: ['Kali Linux', 'Burp Suite', 'Nmap', 'Wireshark', 'Steghide', 'sqlmap', 'Metasploit'],
   },
   {
     title: 'Other Tools',
     items: ['Git', 'GitHub', 'Postman', 'Linux', 'Vercel', 'Render'],
+  },
+]
+
+export const MAIN_SKILL_SHOWCASE = [
+  {
+    id: 'soc-analyst-ai',
+    title: 'SOC Analyst with AI',
+    summary: 'Security monitoring and alert triage workflows strengthened with AI-assisted analysis patterns.',
+    tags: ['Threat Triage', 'Log Analysis', 'Incident Workflow', 'AI-assisted Detection'],
+  },
+  {
+    id: 'web-development',
+    title: 'Web Development',
+    summary: 'Full stack application delivery with clean frontend experience and reliable backend integration.',
+    tags: ['Frontend Engineering', 'Backend APIs', 'Responsive UI', 'Production Mindset'],
+  },
+  {
+    id: 'languages-frameworks',
+    title: 'Coding Languages and Frameworks',
+    summary: 'Strong practical focus on Python and JavaScript with React and Next.js for modern web builds.',
+    tags: ['Python', 'JavaScript', 'React', 'Next.js'],
+  },
+]
+
+export const SKILL_EXPERTISE_TRACKS = [
+  {
+    title: 'Full Stack Developer',
+    summary: 'Designing and shipping complete products from UI to API with secure implementation flow.',
+    skills: ['React', 'Next.js', 'Node.js', 'Express.js', 'MongoDB', 'Deployment Workflows'],
+  },
+  {
+    title: 'Backend Engineer',
+    summary: 'Building server-side logic, auth-ready APIs, and reliable data handling for scalable projects.',
+    skills: ['Node.js', 'Express.js', 'Supabase', 'MongoDB', 'SQL', 'API Validation'],
+  },
+  {
+    title: 'Cyber Security Analyst',
+    summary: 'Security-first review mindset for logs, vulnerabilities, and defensive checks across applications.',
+    skills: ['Threat Analysis', 'Vulnerability Review', 'Security Documentation', 'Risk-based Prioritization'],
+  },
+  {
+    title: 'Ethical Hacker',
+    summary: 'Hands-on learning in legal and authorized offensive testing with clear reporting outcomes.',
+    skills: ['Recon and Enumeration', 'Web App Testing', 'Burp Suite Workflows', 'Responsible Disclosure'],
+  },
+  {
+    title: 'Penetration Tester',
+    summary: 'Structured testing process from scope definition to proof-of-concept validation and reporting.',
+    skills: ['Attack Surface Mapping', 'Manual Testing', 'Validation of Findings', 'Remediation Guidance'],
+  },
+]
+
+export const ETHICAL_HACKING_TOOL_CARDS = [
+  {
+    title: 'Recon and Enumeration',
+    tools: ['Kali Linux', 'Nmap', 'Gobuster', 'Whois', 'Subdomain Discovery'],
+  },
+  {
+    title: 'Web Security Testing',
+    tools: ['Burp Suite', 'OWASP Testing Guide', 'SQLMap', 'Nikto', 'Manual Payload Validation'],
+  },
+  {
+    title: 'Network and Traffic Analysis',
+    tools: ['Wireshark', 'Tcpdump', 'Port Analysis', 'Protocol Inspection'],
+  },
+  {
+    title: 'Stego and Forensics Basics',
+    tools: ['Steghide', 'ExifTool', 'strings', 'File Signature Checks'],
+  },
+  {
+    title: 'Exploitation and Post-Exploitation',
+    tools: ['Metasploit', 'Hydra', 'John the Ripper', 'Privilege Escalation Basics'],
   },
 ]
 
@@ -111,9 +186,9 @@ export const STATS_METRICS = [
   },
   {
     id: 'gfg',
-    label: 'GFG Score',
-    value: '96',
-    detail: 'Problems solved',
+    label: 'GFG Coding Score',
+    value: '248',
+    detail: 'Problems solved: 97',
     link: 'https://www.geeksforgeeks.org/profile/nikhilxagr?tab=activity',
   },
   {

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { ExternalLink } from 'lucide-react'
 
 const ProjectCard = ({ project }) => {
   const summary = project.description || project.summary || ''
@@ -30,21 +29,43 @@ const ProjectCard = ({ project }) => {
         ))}
       </div>
 
-      <div className="mt-5 flex items-center justify-between">
-        <Link to={`/projects/${project.slug}`} className="text-sm font-semibold text-cyan-200 hover:text-cyan-100">
+      <div className="mt-5 space-y-3">
+        <Link to={`/projects/${project.slug}`} className="inline-block text-sm font-semibold text-cyan-200 hover:text-cyan-100">
           View Details
         </Link>
-        <div className="flex items-center gap-3 text-slate-300">
+
+        <div className="flex flex-wrap gap-2">
           {project.githubUrl ? (
-            <a href={project.githubUrl} target="_blank" rel="noreferrer" aria-label="GitHub">
-              <ExternalLink size={18} />
+            <a
+              href={project.githubUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-cyan-300/35 bg-cyan-300/10 px-3 py-1.5 text-xs font-semibold text-cyan-100 transition hover:bg-cyan-300/20"
+              aria-label="Project code"
+            >
+              Code
             </a>
-          ) : null}
+          ) : (
+            <span className="rounded-lg border border-slate-600/40 bg-slate-800/40 px-3 py-1.5 text-xs font-semibold text-slate-500">
+              Code
+            </span>
+          )}
+
           {project.liveDemoUrl ? (
-            <a href={project.liveDemoUrl} target="_blank" rel="noreferrer" aria-label="Live demo">
-              <ExternalLink size={18} />
+            <a
+              href={project.liveDemoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-emerald-300/40 bg-emerald-300/10 px-3 py-1.5 text-xs font-semibold text-emerald-100 transition hover:bg-emerald-300/20"
+              aria-label="Live demo"
+            >
+              Live Demo
             </a>
-          ) : null}
+          ) : (
+            <span className="rounded-lg border border-slate-600/40 bg-slate-800/40 px-3 py-1.5 text-xs font-semibold text-slate-500">
+              Live Demo
+            </span>
+          )}
         </div>
       </div>
     </article>

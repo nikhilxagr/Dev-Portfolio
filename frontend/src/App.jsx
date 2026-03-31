@@ -7,6 +7,7 @@ import PortfolioLoader from '@/components/layout/PortfolioLoader'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import HomePage from '@/pages/HomePage'
 import AboutPage from '@/pages/AboutPage'
+import SkillsPage from '@/pages/SkillsPage'
 import ProjectsPage from '@/pages/ProjectsPage'
 import ProjectDetailsPage from '@/pages/ProjectDetailsPage'
 import SecurityPage from '@/pages/SecurityPage'
@@ -61,6 +62,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/skills" element={<SkillsPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:slug" element={<ProjectDetailsPage />} />
             <Route path="/security" element={<SecurityPage />} />
