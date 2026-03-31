@@ -2,15 +2,38 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const requiredVariables = ['MONGODB_URI', 'JWT_SECRET', 'ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH']
+const nodeEnv = process.env.NODE_ENV || 'development'
+const isDevelopment = nodeEnv === 'development'
 
-requiredVariables.forEach((name) => {
-  if (!process.env[name]) {
+const developmentFallbacks = {
+  MONGODB_URI: 'mongodb://127.0.0.1:27017/devportfolio',
+  JWT_SECRET: 'dev_jwt_secret_for_local_portfolio_2026',
+  ADMIN_EMAIL: 'admin@example.com',
+  ADMIN_PASSWORD_HASH: '$2b$10$/6XDoyq46vS/GYEkCkttMugFHJ8rGci5n2JJ7qGu3tWSFPsKFTR.u',
+}
+
+const readRequiredVariable = (name) => {
+  const runtimeValue = process.env[name]
+  const fallbackValue = isDevelopment ? developmentFallbacks[name] : undefined
+  const value = runtimeValue || fallbackValue
+
+  if (!value) {
     throw new Error(`Missing required environment variable: ${name}`)
   }
-})
 
-if (process.env.JWT_SECRET.length < 32) {
+  if (!runtimeValue && fallbackValue) {
+    console.warn(`[env] ${name} is not set. Using development fallback value.`)
+  }
+
+  return value
+}
+
+const mongoUri = readRequiredVariable('MONGODB_URI')
+const jwtSecret = readRequiredVariable('JWT_SECRET')
+const adminEmail = readRequiredVariable('ADMIN_EMAIL').toLowerCase()
+const adminPasswordHash = readRequiredVariable('ADMIN_PASSWORD_HASH')
+
+if (jwtSecret.length < 32) {
   throw new Error('JWT_SECRET must contain at least 32 characters')
 }
 
@@ -20,13 +43,13 @@ const parseNumber = (value, fallback) => {
 }
 
 export const env = {
-  nodeEnv: process.env.NODE_ENV || 'development',
+  nodeEnv,
   port: parseNumber(process.env.PORT, 5000),
-  mongoUri: process.env.MONGODB_URI,
-  jwtSecret: process.env.JWT_SECRET,
+  mongoUri,
+  jwtSecret,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
-  adminEmail: process.env.ADMIN_EMAIL.toLowerCase(),
-  adminPasswordHash: process.env.ADMIN_PASSWORD_HASH,
+  adminEmail,
+  adminPasswordHash,
   allowedOrigins: (process.env.ALLOWED_ORIGINS || 'http://localhost:5173')
     .split(',')
     .map((origin) => origin.trim())

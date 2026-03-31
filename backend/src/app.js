@@ -22,11 +22,17 @@ app.use(express.urlencoded({ extended: true }));
 applySecurityMiddleware(app);
 app.use(generalLimiter);
 
-app.get("/api/health", (_req, res) => {
+app.get("/api/health", (req, res) => {
+  const dbConnected = Boolean(req.app.locals.dbConnected);
+
   res.status(200).json({
     success: true,
     message: "API is healthy",
-    data: { uptime: process.uptime(), timestamp: new Date().toISOString() },
+    data: {
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      dbConnected,
+    },
   });
 });
 

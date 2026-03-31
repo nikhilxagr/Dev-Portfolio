@@ -76,7 +76,11 @@ const Footer = () => {
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-cyan-300/15 pt-6 text-sm text-slate-400">
           <p>
-            Copyright {new Date().getFullYear()} {SITE_PROFILE.fullName}. All rights reserved.
+            Copyright {new Date().getFullYear()}{' '}
+            <Link to="/admin/login" className="font-semibold text-cyan-200 transition hover:text-cyan-100 hover:underline">
+              {SITE_PROFILE.fullName}
+            </Link>
+            . All rights reserved.
           </p>
           <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
             Full Stack Developer | Cyber Security Analyst

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -37,24 +37,17 @@ function App() {
     return window.sessionStorage.getItem(LOADER_VISIT_KEY) !== '1'
   })
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || isAdminRoute || !showLoader) {
-      return
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setShowLoader(false)
+  const handleLoaderComplete = () => {
+    if (typeof window !== 'undefined') {
       window.sessionStorage.setItem(LOADER_VISIT_KEY, '1')
-    }, 1650)
-
-    return () => {
-      window.clearTimeout(timeoutId)
     }
-  }, [isAdminRoute, showLoader])
+
+    setShowLoader(false)
+  }
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      {showLoader ? <PortfolioLoader /> : null}
+      {showLoader ? <PortfolioLoader onComplete={handleLoaderComplete} /> : null}
       <BackgroundGrid />
       <div className="relative z-10 flex min-h-screen flex-col">
         {!isAdminRoute ? <Navbar /> : null}
