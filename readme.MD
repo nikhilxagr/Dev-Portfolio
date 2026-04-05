@@ -1,16 +1,100 @@
-# Developer Portfolio (Full Stack + Cyber Security)
+<div align="center">
 
-Production-ready portfolio project for a BCA 2nd year student using:
+![Header](https://capsule-render.vercel.app/api?type=waving&color=0:00C2FF,100:00E5A8&height=220&section=header&text=Developer%20Portfolio&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Full%20Stack%20%7C%20Cyber%20Security%20%7C%20Production-Ready&descAlignY=56&descSize=19)
 
-- Frontend: React (Vite), Tailwind CSS, Framer Motion
-- Backend: Node.js, Express.js
-- Database: MongoDB Atlas (Mongoose)
-- Auth: JWT with env-based single admin credentials
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=2400&pause=900&color=00C2FF&center=true&vCenter=true&width=900&lines=React+%2B+Vite+%2B+Tailwind+%2B+Framer+Motion;Node.js+%2B+Express+%2B+MongoDB+Atlas;JWT+Auth+%7C+Secure+API+%7C+Admin+Dashboard" alt="Typing animation" />
+
+### Building elegant UI and secure backend systems, one feature at a time
+
+![Frontend](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Auth](https://img.shields.io/badge/Auth-JWT%20%2B%20bcryptjs-F57C00?style=for-the-badge)
+![Security](https://img.shields.io/badge/Security-Helmet%20%7C%20Rate%20Limit%20%7C%20Validation-7B1FA2?style=for-the-badge)
+
+</div>
+
+---
+
+## About This Project
+
+This is a production-ready **full-stack portfolio** project designed for a BCA 2nd year student with a strong focus on:
+
+- Modern frontend experience
+- Secure and scalable backend APIs
+- Clean architecture and maintainable code
+- Real-world deployment readiness
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- React (Vite)
+- Tailwind CSS
+- Framer Motion
+- React Router
+- Axios
+
+### Backend
+
+- Node.js
+- Express.js
+- Mongoose
+- JWT (jsonwebtoken)
+- bcryptjs
+- express-validator
+- dotenv
+
+### Database
+
+- MongoDB Atlas
+
+### Security and Middleware
+
+- Helmet security headers
+- CORS allowlist
+- express-rate-limit (general, auth, contact)
+- express-mongo-sanitize (NoSQL injection protection)
+- XSS sanitization middleware
+- JWT auth for protected routes
+- Centralized error handling
+
+### Deployment and Tooling
+
+- Vercel (frontend)
+- Render (backend)
+- npm scripts
+- Nodemon for development
+
+---
 
 ## Project Structure
 
-- frontend: UI app with pages, components, hooks, and services
-- backend: API with controllers, routes, models, middleware, and config
+```text
+Developer Portfolio/
+|-- frontend/
+|   |-- src/
+|   |   |-- components/
+|   |   |-- pages/
+|   |   |-- services/
+|   |   |-- hooks/
+|   |   |-- context/
+|   |-- public/
+|
+|-- backend/
+|   |-- src/
+|   |   |-- controllers/
+|   |   |-- routes/
+|   |   |-- models/
+|   |   |-- middleware/
+|   |   |-- config/
+|   |   |-- utils/
+|   |-- scripts/
+```
+
+---
 
 ## Quick Start
 
@@ -36,24 +120,22 @@ Set required backend values:
 - `ADMIN_PASSWORD_HASH` (bcrypt hash)
 - `ALLOWED_ORIGINS`
 
-### 3) Create admin password hash
-
-Run in backend directory:
+### 3) Generate admin password hash
 
 ```bash
 node -e "import bcrypt from 'bcryptjs'; bcrypt.hash('ChangeMe@123', 12).then(console.log)"
 ```
 
-Copy output into `ADMIN_PASSWORD_HASH`.
+Copy the generated hash into `ADMIN_PASSWORD_HASH`.
 
-### 4) Seed initial projects/blogs (optional)
+### 4) Seed data (optional)
 
 ```bash
 cd backend
 npm run seed
 ```
 
-### 5) Run apps
+### 5) Run applications
 
 Backend:
 
@@ -69,15 +151,17 @@ cd frontend
 npm run dev
 ```
 
-- Frontend default: `http://localhost:5173`
-- Backend default: `http://localhost:5000`
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:5000`
 
-### 6) Access admin dashboard
+### 6) Admin access
 
-- Admin login UI: `http://localhost:5173/admin/login`
-- Admin dashboard UI: `http://localhost:5173/admin`
+- Login: `http://localhost:5173/admin/login`
+- Dashboard: `http://localhost:5173/admin`
 
-Use your `ADMIN_EMAIL` and plaintext password that matches the configured `ADMIN_PASSWORD_HASH`.
+Use `ADMIN_EMAIL` and the plaintext password that matches `ADMIN_PASSWORD_HASH`.
+
+---
 
 ## API Endpoints
 
@@ -111,26 +195,59 @@ Use your `ADMIN_EMAIL` and plaintext password that matches the configured `ADMIN
 - `GET /api/admin/contacts` (admin)
 - `PATCH /api/admin/contacts/:id/read` (admin)
 
+---
+
 ## Security Practices Included
 
-- Helmet security headers
-- CORS allowlist
-- Rate limiting (general, auth, contact)
-- Input validation via express-validator
-- NoSQL injection protection via express-mongo-sanitize
-- XSS sanitization middleware
-- JWT auth on write routes
-- Centralized error handling with HTTP status codes
+| Area             | Implementation                              |
+| ---------------- | ------------------------------------------- |
+| Headers          | Helmet                                      |
+| CORS             | Origin allowlist                            |
+| Abuse prevention | Rate limiter on auth/contact/general routes |
+| Input safety     | express-validator                           |
+| NoSQL injection  | express-mongo-sanitize                      |
+| XSS mitigation   | XSS sanitization middleware                 |
+| Authorization    | JWT-based protected routes                  |
+| Error handling   | Centralized API error middleware            |
+
+---
 
 ## Deployment Notes
 
-- Frontend target: Vercel
-- Backend target: Render
-- Database: MongoDB Atlas
+- Frontend deployment target: **Vercel**
+- Backend deployment target: **Render**
+- Database: **MongoDB Atlas**
 
-Set production frontend domain in backend `ALLOWED_ORIGINS`.
+Make sure your production frontend domain is listed in backend `ALLOWED_ORIGINS`.
+
+---
 
 ## Optional Phase 2
 
 - Dark/light mode toggle
 - Rich markdown blog editor
+- Blog image upload and optimization
+- Analytics dashboard for admin
+
+---
+
+## Connect With Me
+
+<div align="center">
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/)
+
+</div>
+
+---
+
+<div align="center">
+
+### Star this repo if you find it useful
+
+### Built with focus, consistency, and secure engineering
+
+![Footer](https://capsule-render.vercel.app/api?type=waving&color=0:00C2FF,100:00E5A8&height=120&section=footer)
+
+</div>
