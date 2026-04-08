@@ -14,6 +14,13 @@ const ProjectDetailsPage = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const fallbackImage = "/images/placeholders/content-placeholder.svg";
+  const previewImage = project?.imageUrl || fallbackImage;
+
+  const handleImageError = (event) => {
+    event.currentTarget.onerror = null;
+    event.currentTarget.src = fallbackImage;
+  };
 
   const loadProject = useCallback(async () => {
     setLoading(true);
@@ -49,7 +56,7 @@ const ProjectDetailsPage = () => {
   return (
     <section className="section-wrap pt-12 sm:pt-20">
       {loading ? (
-        <LoadingState message="Loading project details..." cards={1} />
+        <LoadingState message="Loading project details..." cards={1} variant="details" />
       ) : null}
       {!loading && error ? (
         <ErrorState message={error} onRetry={loadProject} />
@@ -114,16 +121,15 @@ const ProjectDetailsPage = () => {
               </div>
             </header>
 
-            {project.imageUrl ? (
-              <div className="overflow-hidden rounded-2xl border border-cyan-300/20">
-                <img
-                  src={project.imageUrl}
-                  alt={project.title}
-                  className="h-auto w-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ) : null}
+            <div className="overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
+              <img
+                src={previewImage}
+                alt={`${project.title} cover`}
+                className="h-auto max-h-[460px] w-full object-cover"
+                loading="lazy"
+                onError={handleImageError}
+              />
+            </div>
 
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="card-surface rounded-2xl p-6">

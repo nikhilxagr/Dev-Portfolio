@@ -12,10 +12,17 @@ import authMiddleware from '../middleware/authMiddleware.js'
 
 const router = Router()
 
+const imageUrlValidation = body('imageUrl')
+  .optional({ values: 'falsy' })
+  .trim()
+  .custom((value) => value.startsWith('/') || /^https?:\/\/.+/i.test(value))
+  .withMessage('Image URL must be an absolute URL or root-relative path')
+
 const blogValidation = [
   body('title').trim().isLength({ min: 3, max: 150 }).withMessage('Title must be 3-150 characters'),
   body('content').trim().isLength({ min: 40 }).withMessage('Content must be at least 40 characters'),
   body('tags').optional().isArray().withMessage('Tags must be an array'),
+  imageUrlValidation,
 ]
 
 router.get('/', getBlogs)

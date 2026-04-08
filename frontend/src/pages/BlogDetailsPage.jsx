@@ -14,6 +14,13 @@ const BlogDetailsPage = () => {
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const fallbackImage = "/images/placeholders/content-placeholder.svg";
+  const previewImage = blog?.imageUrl || fallbackImage;
+
+  const handleImageError = (event) => {
+    event.currentTarget.onerror = null;
+    event.currentTarget.src = fallbackImage;
+  };
 
   const loadBlog = useCallback(async () => {
     setLoading(true);
@@ -46,7 +53,9 @@ const BlogDetailsPage = () => {
 
   return (
     <section className="section-wrap pt-12 sm:pt-20">
-      {loading ? <LoadingState message="Loading article..." cards={1} /> : null}
+      {loading ? (
+        <LoadingState message="Loading article..." cards={1} variant="details" />
+      ) : null}
       {!loading && error ? (
         <ErrorState message={error} onRetry={loadBlog} />
       ) : null}
@@ -108,6 +117,16 @@ const BlogDetailsPage = () => {
               </a>
             ) : null}
           </header>
+
+          <div className="mt-5 overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
+            <img
+              src={previewImage}
+              alt={`${blog.title} cover`}
+              className="h-auto max-h-[460px] w-full object-cover"
+              loading="lazy"
+              onError={handleImageError}
+            />
+          </div>
 
           <div className="mt-5 card-surface rounded-2xl p-6">
             <p className="whitespace-pre-line leading-8 text-slate-200">

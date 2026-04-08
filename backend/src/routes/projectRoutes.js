@@ -12,6 +12,12 @@ import authMiddleware from '../middleware/authMiddleware.js'
 
 const router = Router()
 
+const imageUrlValidation = body('imageUrl')
+  .optional({ values: 'falsy' })
+  .trim()
+  .custom((value) => value.startsWith('/') || /^https?:\/\/.+/i.test(value))
+  .withMessage('Image URL must be an absolute URL or root-relative path')
+
 const projectValidation = [
   body('title').trim().isLength({ min: 3, max: 120 }).withMessage('Title must be 3-120 characters'),
   body('description')
@@ -21,6 +27,7 @@ const projectValidation = [
   body('category').isIn(['Web Dev', 'Cyber Security', 'AI']).withMessage('Invalid category'),
   body('techStack').isArray({ min: 1 }).withMessage('Tech stack must be a non-empty array'),
   body('featured').optional().isBoolean().withMessage('Featured must be boolean'),
+  imageUrlValidation,
 ]
 
 router.get('/', getProjects)
