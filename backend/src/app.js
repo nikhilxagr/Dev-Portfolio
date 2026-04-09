@@ -39,6 +39,24 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.use("/api", (req, res, next) => {
+  if (req.path === "/health") {
+    next();
+    return;
+  }
+
+  if (req.app.locals.dbConnected === false) {
+    res.status(503).json({
+      success: false,
+      message:
+        "Database is currently unavailable. API is running in limited mode.",
+    });
+    return;
+  }
+
+  next();
+});
+
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/blogs", blogRoutes);

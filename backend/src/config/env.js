@@ -51,6 +51,24 @@ const parseNumber = (value, fallback) => {
   return Number.isNaN(parsed) ? fallback : parsed;
 };
 
+const parseBoolean = (value, fallback = false) => {
+  if (typeof value !== "string") {
+    return fallback;
+  }
+
+  const normalized = value.trim().toLowerCase();
+
+  if (["1", "true", "yes", "y", "on"].includes(normalized)) {
+    return true;
+  }
+
+  if (["0", "false", "no", "n", "off"].includes(normalized)) {
+    return false;
+  }
+
+  return fallback;
+};
+
 const normalizeOrigin = (origin) => origin.trim().replace(/\/+$/, "");
 
 const parseAllowedOrigins = (value) => {
@@ -84,6 +102,7 @@ export const env = {
     process.env.ALLOWED_ORIGIN_REGEX,
     "ALLOWED_ORIGIN_REGEX",
   ),
+  allowStartWithoutDb: parseBoolean(process.env.ALLOW_START_WITHOUT_DB, false),
   dbMaxPoolSize: parseNumber(process.env.DB_MAX_POOL_SIZE, 25),
   dbMinPoolSize: parseNumber(process.env.DB_MIN_POOL_SIZE, 5),
 };

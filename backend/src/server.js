@@ -4,6 +4,9 @@ import { connectDatabase, disconnectDatabase } from './config/db.js'
 
 let server
 
+const canStartWithoutDatabase = () =>
+  env.nodeEnv === 'development' || env.allowStartWithoutDb
+
 const startServer = async () => {
   let dbConnected = false
 
@@ -12,11 +15,13 @@ const startServer = async () => {
     dbConnected = true
     console.log('Database connected')
   } catch (error) {
-    if (env.nodeEnv !== 'development') {
+    if (!canStartWithoutDatabase()) {
       throw error
     }
 
-    console.warn('Database connection failed in development. Starting backend in limited mode.')
+    console.warn(
+      'Database connection failed. Starting backend in limited mode because ALLOW_START_WITHOUT_DB is enabled.',
+    )
     console.warn(`MongoDB error: ${error.message}`)
   }
 
@@ -43,5 +48,12 @@ process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
 
 startServer().catch((error) => {
   console.error('Failed to start backend:', error)
+
+  if (error?.name === 'MongooseServerSelectionError') {
+    console.error(
+      'MongoDB Atlas connection failed. Verify Atlas Network Access (IP allowlist), cluster status (not paused), and MongoDB user credentials.',
+    )
+  }
+
   process.exit(1)
 })

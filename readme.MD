@@ -231,6 +231,7 @@ Set these environment variables in Render:
 - `ADMIN_EMAIL=<your_admin_email>`
 - `ADMIN_PASSWORD_HASH=<bcrypt_hash>`
 - `ALLOWED_ORIGINS=https://your-vercel-domain.vercel.app,https://your-custom-domain.com`
+- `ALLOW_START_WITHOUT_DB=false` (set `true` only for temporary recovery mode)
 - `DB_MAX_POOL_SIZE=25`
 - `DB_MIN_POOL_SIZE=5`
 
@@ -239,6 +240,8 @@ Notes:
 - Backend accepts MongoDB URI from `MONGODB_URI` (preferred) or `DATABASE_URL`.
 - If deploy exits with status 1, check Render logs for missing variable names and set them in Environment.
 - If logs show `querySrv ECONNREFUSED`, regenerate the MongoDB connection string from Atlas and verify Atlas Network Access allows Render (for quick test: `0.0.0.0/0`).
+- If logs show `Could not connect to any servers` / `ReplicaSetNoPrimary`, Atlas network access or cluster status is blocking Render.
+- You can temporarily set `ALLOW_START_WITHOUT_DB=true` so backend boots in limited mode while Atlas access is fixed.
 
 Optional (recommended if you use many Vercel preview URLs):
 
@@ -260,6 +263,11 @@ Important:
 - Keep `/api` at the end of `VITE_API_BASE_URL`.
 - Do not add a trailing `/` after `/api`.
 - `frontend/vercel.json` is included to rewrite SPA routes (React Router) to `index.html`.
+
+Current deployment value examples:
+
+- Render `ALLOWED_ORIGINS=https://nikhilxagr.vercel.app`
+- Vercel `VITE_API_BASE_URL=https://dev-portfolio-r1ur.onrender.com/api`
 
 ---
 
