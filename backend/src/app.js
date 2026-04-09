@@ -15,6 +15,9 @@ import { errorHandler, notFoundHandler } from "./middleware/errorMiddleware.js";
 
 const app = express();
 
+// Required behind Render proxy for accurate req.ip and rate limiting.
+app.set("trust proxy", 1);
+
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(express.json({ limit: "300kb" }));
 app.use(express.urlencoded({ extended: true }));

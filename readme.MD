@@ -214,11 +214,46 @@ Use `ADMIN_EMAIL` and the plaintext password that matches `ADMIN_PASSWORD_HASH`.
 
 ## Deployment Notes
 
-- Frontend deployment target: **Vercel**
-- Backend deployment target: **Render**
-- Database: **MongoDB Atlas**
+### Backend on Render (Web Service)
 
-Make sure your production frontend domain is listed in backend `ALLOWED_ORIGINS`.
+- Root Directory: `backend`
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Health Check Path: `/api/health`
+
+Set these environment variables in Render:
+
+- `NODE_ENV=production`
+- `PORT=10000` (or keep empty and let Render inject `PORT`)
+- `MONGODB_URI=<your_mongodb_atlas_connection_string>`
+- `JWT_SECRET=<minimum_32_character_secret>`
+- `JWT_EXPIRES_IN=1d`
+- `ADMIN_EMAIL=<your_admin_email>`
+- `ADMIN_PASSWORD_HASH=<bcrypt_hash>`
+- `ALLOWED_ORIGINS=https://your-vercel-domain.vercel.app,https://your-custom-domain.com`
+- `DB_MAX_POOL_SIZE=25`
+- `DB_MIN_POOL_SIZE=5`
+
+Optional (recommended if you use many Vercel preview URLs):
+
+- `ALLOWED_ORIGIN_REGEX=^https://.*\\.vercel\\.app$`
+
+### Frontend on Vercel
+
+- Project Root Directory: `frontend`
+- Install Command: `npm install`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+
+Set this environment variable in Vercel:
+
+- `VITE_API_BASE_URL=https://your-backend-service.onrender.com/api`
+
+Important:
+
+- Keep `/api` at the end of `VITE_API_BASE_URL`.
+- Do not add a trailing `/` after `/api`.
+- `frontend/vercel.json` is included to rewrite SPA routes (React Router) to `index.html`.
 
 ---
 

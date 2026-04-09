@@ -1,96 +1,104 @@
-import cors from 'cors'
-import helmet from 'helmet'
-import hpp from 'hpp'
-import compression from 'compression'
-import xss from 'xss'
-import { env } from '../config/env.js'
+import cors from "cors";
+import helmet from "helmet";
+import hpp from "hpp";
+import compression from "compression";
+import xss from "xss";
+import { env } from "../config/env.js";
 
-const sanitizePayload = (value, parentKey = '') => {
-  if (typeof value === 'string') {
-    if (parentKey.toLowerCase().includes('password')) {
-      return value
+const sanitizePayload = (value, parentKey = "") => {
+  if (typeof value === "string") {
+    if (parentKey.toLowerCase().includes("password")) {
+      return value;
     }
-    return xss(value.trim())
+    return xss(value.trim());
   }
 
   if (Array.isArray(value)) {
-    return value.map((item) => sanitizePayload(item, parentKey))
+    return value.map((item) => sanitizePayload(item, parentKey));
   }
 
-  if (value && typeof value === 'object') {
+  if (value && typeof value === "object") {
     return Object.keys(value).reduce((accumulator, key) => {
-      accumulator[key] = sanitizePayload(value[key], key)
-      return accumulator
-    }, {})
+      accumulator[key] = sanitizePayload(value[key], key);
+      return accumulator;
+    }, {});
   }
 
-  return value
-}
+  return value;
+};
 
 const sanitizeObjectInPlace = (target) => {
-  if (!target || typeof target !== 'object') {
-    return
+  if (!target || typeof target !== "object") {
+    return;
   }
 
   for (const key of Object.keys(target)) {
-    target[key] = sanitizePayload(target[key], key)
+    target[key] = sanitizePayload(target[key], key);
   }
-}
+};
 
 const sanitizeNoSqlKeysInPlace = (target) => {
-  if (!target || typeof target !== 'object') {
-    return
+  if (!target || typeof target !== "object") {
+    return;
   }
 
   if (Array.isArray(target)) {
     for (const item of target) {
-      sanitizeNoSqlKeysInPlace(item)
+      sanitizeNoSqlKeysInPlace(item);
     }
-    return
+    return;
   }
 
   for (const key of Object.keys(target)) {
-    if (key.startsWith('$') || key.includes('.')) {
-      delete target[key]
-      continue
+    if (key.startsWith("$") || key.includes(".")) {
+      delete target[key];
+      continue;
     }
 
-    sanitizeNoSqlKeysInPlace(target[key])
+    sanitizeNoSqlKeysInPlace(target[key]);
   }
-}
+};
 
 export const xssSanitizeMiddleware = (req, _res, next) => {
-  sanitizeObjectInPlace(req.body)
-  sanitizeObjectInPlace(req.query)
-  sanitizeObjectInPlace(req.params)
-  next()
-}
+  sanitizeObjectInPlace(req.body);
+  sanitizeObjectInPlace(req.query);
+  sanitizeObjectInPlace(req.params);
+  next();
+};
 
 export const noSqlSanitizeMiddleware = (req, _res, next) => {
-  sanitizeNoSqlKeysInPlace(req.body)
-  sanitizeNoSqlKeysInPlace(req.query)
-  sanitizeNoSqlKeysInPlace(req.params)
-  next()
-}
+  sanitizeNoSqlKeysInPlace(req.body);
+  sanitizeNoSqlKeysInPlace(req.query);
+  sanitizeNoSqlKeysInPlace(req.params);
+  next();
+};
 
 export const applySecurityMiddleware = (app) => {
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || env.allowedOrigins.includes(origin)) {
-          callback(null, true)
-          return
+        const normalizedOrigin = origin ? origin.replace(/\/+$/, "") : "";
+        const isAllowedByList =
+          !normalizedOrigin || env.allowedOrigins.includes(normalizedOrigin);
+        const isAllowedByRegex =
+          Boolean(normalizedOrigin) &&
+          Boolean(env.allowedOriginRegex) &&
+          env.allowedOriginRegex.test(normalizedOrigin);
+
+        if (isAllowedByList || isAllowedByRegex) {
+          callback(null, true);
+          return;
         }
-        callback(new Error('CORS policy blocked this origin'))
+        callback(new Error("CORS policy blocked this origin"));
       },
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     }),
-  )
+  );
 
-  app.use(helmet())
-  app.use(hpp())
-  app.use(compression())
-  app.use(noSqlSanitizeMiddleware)
-  app.use(xssSanitizeMiddleware)
-}
+  app.use(helmet());
+  app.use(hpp());
+  app.use(compression());
+  app.use(noSqlSanitizeMiddleware);
+  app.use(xssSanitizeMiddleware);
+};
