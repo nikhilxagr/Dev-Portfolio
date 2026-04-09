@@ -15,6 +15,14 @@ const BlogCard = ({ blog, variant = "default", className = "" }) => {
   const readTime = blog.readTime || "";
   const fallbackImage = "/images/placeholders/content-placeholder.svg";
   const previewImage = blog.imageUrl || fallbackImage;
+  const tags = Array.isArray(blog.tags)
+    ? blog.tags
+    : typeof blog.tags === "string"
+      ? blog.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+      : [];
 
   const handleImageError = (event) => {
     event.currentTarget.onerror = null;
@@ -53,7 +61,7 @@ const BlogCard = ({ blog, variant = "default", className = "" }) => {
       <div
         className={`mt-4 flex flex-wrap gap-2 ${isCompact ? "min-h-[2rem]" : ""}`}
       >
-        {blog.tags?.slice(0, isCompact ? 3 : 4).map((tag) => (
+        {tags.slice(0, isCompact ? 3 : 4).map((tag) => (
           <span
             key={tag}
             className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2 py-1 text-xs text-cyan-100"

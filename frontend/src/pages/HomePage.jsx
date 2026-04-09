@@ -512,8 +512,10 @@ const HomePage = () => {
             description="A short look at my mindset, direction, and what drives my work as a developer and cybersecurity learner."
           />
 
-          <div className="relative mt-8 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-            <article className={`${homePanelBaseClass} p-6 sm:p-7`}>
+          <div className="relative mt-8 grid items-start gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+            <article
+              className={`${homePanelBaseClass} order-2 p-6 sm:p-7 lg:order-1`}
+            >
               <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
                 Who I Am
               </p>
@@ -536,7 +538,7 @@ const HomePage = () => {
                 ))}
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap justify-center gap-3 sm:justify-start">
                 <Button to="/about" className={homePrimaryGradientButtonClass}>
                   Learn About Me Deeply <ArrowRight size={16} />
                 </Button>
@@ -550,7 +552,7 @@ const HomePage = () => {
               </div>
             </article>
 
-            <article className={`${homePanelBaseClass} p-6`}>
+            <article className={`${homePanelBaseClass} order-1 p-6 lg:order-2`}>
               <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
                 Personal Focus
               </p>
