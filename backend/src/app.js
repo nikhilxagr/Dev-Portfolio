@@ -40,7 +40,9 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api", (req, res, next) => {
-  if (req.path === "/health") {
+  const allowWithoutDb = ["/health", "/auth/login", "/auth/verify"];
+
+  if (allowWithoutDb.includes(req.path)) {
     next();
     return;
   }

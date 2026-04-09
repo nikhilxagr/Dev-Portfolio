@@ -242,6 +242,7 @@ Notes:
 - If logs show `querySrv ECONNREFUSED`, regenerate the MongoDB connection string from Atlas and verify Atlas Network Access allows Render (for quick test: `0.0.0.0/0`).
 - If logs show `Could not connect to any servers` / `ReplicaSetNoPrimary`, Atlas network access or cluster status is blocking Render.
 - You can temporarily set `ALLOW_START_WITHOUT_DB=true` so backend boots in limited mode while Atlas access is fixed.
+- In limited mode, `/api/health`, `/api/auth/login`, and `/api/auth/verify` stay available; DB-backed routes return `503` until Atlas is reachable.
 
 Optional (recommended if you use many Vercel preview URLs):
 
