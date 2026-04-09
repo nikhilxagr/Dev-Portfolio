@@ -5,7 +5,15 @@ const ProjectCard = ({ project, variant = "default" }) => {
   const fallbackImage = "/images/placeholders/content-placeholder.svg";
   const previewImage = project.imageUrl || fallbackImage;
   const isFeaturedVariant = variant === "featured";
-  const imageHeightClass = isFeaturedVariant ? "h-52" : "h-44";
+  const imageHeightClass = isFeaturedVariant ? "h-full" : "h-44";
+  const imageContainerClass = isFeaturedVariant
+    ? "aspect-[16/9] overflow-hidden rounded-xl border border-cyan-300/25 bg-slate-950/80 p-1.5"
+    : "relative overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-900/70";
+  const imageClass = isFeaturedVariant
+    ? `${imageHeightClass} w-full rounded-lg object-contain object-center bg-slate-900/80 transition-transform duration-500 group-hover:scale-[1.03]`
+    : `${imageHeightClass} w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]`;
+  const summaryClass = isFeaturedVariant ? "line-clamp-2" : "line-clamp-3";
+  const cardPaddingClass = isFeaturedVariant ? "p-4" : "p-5";
   const cardStyleClass = isFeaturedVariant
     ? "border-cyan-300/35 bg-slate-900/75 shadow-[0_18px_45px_-28px_rgba(34,211,238,0.55)]"
     : "";
@@ -17,7 +25,7 @@ const ProjectCard = ({ project, variant = "default" }) => {
 
   return (
     <article
-      className={`card-surface group flex h-full flex-col rounded-2xl p-5 transition hover:-translate-y-1 ${cardStyleClass}`}
+      className={`card-surface group flex h-full flex-col rounded-2xl transition hover:-translate-y-1 ${cardPaddingClass} ${cardStyleClass}`}
     >
       <div className="mb-3 flex items-center justify-between">
         <span className="rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-xs text-emerald-200">
@@ -30,15 +38,17 @@ const ProjectCard = ({ project, variant = "default" }) => {
         ) : null}
       </div>
 
-      <div className="relative mb-4 overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-900/70">
+      <div className={`mb-4 ${imageContainerClass}`}>
         <img
           src={previewImage}
           alt={`${project.title} preview`}
-          className={`${imageHeightClass} w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]`}
+          className={imageClass}
           loading="lazy"
           onError={handleImageError}
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
+        {!isFeaturedVariant ? (
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
+        ) : null}
       </div>
 
       {project.tagline ? (
@@ -47,7 +57,7 @@ const ProjectCard = ({ project, variant = "default" }) => {
         </p>
       ) : null}
       <h3 className="text-xl font-semibold text-cyan-100">{project.title}</h3>
-      <p className="mt-2 line-clamp-3 text-sm text-slate-300">{summary}</p>
+      <p className={`mt-2 text-sm text-slate-300 ${summaryClass}`}>{summary}</p>
 
       <div className="mt-4 flex flex-wrap gap-2">
         {project.techStack?.slice(0, 4).map((tech) => (

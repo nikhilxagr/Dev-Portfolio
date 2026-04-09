@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import FadeInUp from "@/components/animations/FadeInUp";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
 import { getProjectBySlug } from "@/services/projects.service";
 import { getErrorMessage } from "@/services/api";
+import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { SIGNATURE_PROJECTS } from "@/constants/siteData";
 
 const ProjectDetailsPage = () => {
@@ -30,10 +32,7 @@ const ProjectDetailsPage = () => {
     try {
       const response = await getProjectBySlug(slug);
       const mergedProject = response.data
-        ? {
-            ...staticProject,
-            ...response.data,
-          }
+        ? mergeStaticAndApiContent(staticProject, response.data)
         : staticProject || null;
       setProject(mergedProject);
     } catch (requestError) {
@@ -83,7 +82,8 @@ const ProjectDetailsPage = () => {
           </Link>
 
           <article className="space-y-5">
-            <header className="card-surface rounded-2xl p-6">
+            <FadeInUp>
+              <header className="card-surface rounded-2xl p-6">
               <p className="text-xs uppercase tracking-[0.2em] text-emerald-200">
                 {project.category}
               </p>
@@ -119,36 +119,41 @@ const ProjectDetailsPage = () => {
                   </a>
                 ) : null}
               </div>
-            </header>
+              </header>
+            </FadeInUp>
 
-            <div className="overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
-              <img
-                src={previewImage}
-                alt={`${project.title} cover`}
-                className="h-auto max-h-[460px] w-full object-cover"
-                loading="lazy"
-                onError={handleImageError}
-              />
-            </div>
+            <FadeInUp delay={0.06}>
+              <div className="overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
+                <img
+                  src={previewImage}
+                  alt={`${project.title} cover`}
+                  className="h-auto max-h-[460px] w-full object-cover"
+                  loading="lazy"
+                  onError={handleImageError}
+                />
+              </div>
+            </FadeInUp>
 
-            <div className="grid gap-4 lg:grid-cols-2">
-              <div className="card-surface rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-cyan-100">Problem</h2>
-                <p className="mt-3 text-slate-300">
-                  {project.problemStatement ||
-                    "Problem statement will be updated soon."}
-                </p>
+            <FadeInUp delay={0.1}>
+              <div className="grid gap-4 lg:grid-cols-2">
+                <div className="card-surface rounded-2xl p-6">
+                  <h2 className="text-xl font-semibold text-cyan-100">Problem</h2>
+                  <p className="mt-3 text-slate-300">
+                    {project.problemStatement ||
+                      "Problem statement will be updated soon."}
+                  </p>
+                </div>
+                <div className="card-surface rounded-2xl p-6">
+                  <h2 className="text-xl font-semibold text-cyan-100">
+                    Solution
+                  </h2>
+                  <p className="mt-3 text-slate-300">
+                    {project.solutionSummary ||
+                      "Solution details will be updated soon."}
+                  </p>
+                </div>
               </div>
-              <div className="card-surface rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-cyan-100">
-                  Solution
-                </h2>
-                <p className="mt-3 text-slate-300">
-                  {project.solutionSummary ||
-                    "Solution details will be updated soon."}
-                </p>
-              </div>
-            </div>
+            </FadeInUp>
 
             {project.outcome ? (
               <div className="card-surface rounded-2xl p-6">

@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import FadeInUp from "@/components/animations/FadeInUp";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
 import { getBlogBySlug } from "@/services/blogs.service";
 import { getErrorMessage } from "@/services/api";
+import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { BLOG_LINKS } from "@/constants/siteData";
 
 const BlogDetailsPage = () => {
@@ -30,10 +32,7 @@ const BlogDetailsPage = () => {
     try {
       const response = await getBlogBySlug(slug);
       const mergedBlog = response.data
-        ? {
-            ...staticBlog,
-            ...response.data,
-          }
+        ? mergeStaticAndApiContent(staticBlog, response.data)
         : staticBlog || null;
       setBlog(mergedBlog);
     } catch (requestError) {
@@ -50,6 +49,18 @@ const BlogDetailsPage = () => {
   useEffect(() => {
     loadBlog().catch(() => undefined);
   }, [loadBlog]);
+
+  const rawDate = blog?.publishedAt || blog?.createdAt || "";
+  const parsedDate = rawDate ? new Date(rawDate) : null;
+  const formattedDate =
+    parsedDate && !Number.isNaN(parsedDate.getTime())
+      ? parsedDate.toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })
+      : "Published";
+  const readTime = blog?.readTime || "";
 
   return (
     <section className="section-wrap pt-12 sm:pt-20">
@@ -83,15 +94,23 @@ const BlogDetailsPage = () => {
             <ArrowLeft size={16} /> Back to Blog
           </Link>
 
-          <header className="card-surface rounded-2xl p-6">
+          <FadeInUp>
+            <header className="card-surface rounded-2xl p-6">
             <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
               {blog.source || 'Portfolio'}
+            </p>
+            <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
+              {formattedDate}
+              {readTime ? ` | ${readTime}` : ""}
             </p>
             <h1 className="mt-2 font-display text-3xl text-cyan-100 sm:text-4xl">
               {blog.title}
             </h1>
             {blog.subtitle ? (
               <p className="mt-3 text-sm text-slate-300">{blog.subtitle}</p>
+            ) : null}
+            {blog.excerpt ? (
+              <p className="mt-3 text-sm text-slate-400">{blog.excerpt}</p>
             ) : null}
             {blog.tags?.length ? (
               <div className="mt-4 flex flex-wrap gap-2">
@@ -116,23 +135,28 @@ const BlogDetailsPage = () => {
                 Read Original Article
               </a>
             ) : null}
-          </header>
+            </header>
+          </FadeInUp>
 
-          <div className="mt-5 overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
-            <img
-              src={previewImage}
-              alt={`${blog.title} cover`}
-              className="h-auto max-h-[460px] w-full object-cover"
-              loading="lazy"
-              onError={handleImageError}
-            />
-          </div>
+          <FadeInUp delay={0.06}>
+            <div className="mt-5 overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
+              <img
+                src={previewImage}
+                alt={`${blog.title} cover`}
+                className="h-auto max-h-[460px] w-full object-cover"
+                loading="lazy"
+                onError={handleImageError}
+              />
+            </div>
+          </FadeInUp>
 
-          <div className="mt-5 card-surface rounded-2xl p-6">
-            <p className="whitespace-pre-line leading-8 text-slate-200">
-              {blog.content}
-            </p>
-          </div>
+          <FadeInUp delay={0.12}>
+            <div className="mt-5 card-surface rounded-2xl p-6">
+              <p className="whitespace-pre-line leading-8 text-slate-200">
+                {blog.content || "Detailed notes will be added soon for this article."}
+              </p>
+            </div>
+          </FadeInUp>
         </article>
       ) : null}
     </section>

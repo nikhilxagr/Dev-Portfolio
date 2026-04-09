@@ -8,6 +8,7 @@ import {
   TimerReset,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import FadeInUp from "@/components/animations/FadeInUp";
 import SectionTitle from "@/components/ui/SectionTitle";
 import SkillMatrix from "@/components/ui/SkillMatrix";
 import {
@@ -35,6 +36,34 @@ const showcaseAccentMap = {
 };
 
 const SkillsPage = () => {
+  const topSkillHighlights = [
+    {
+      id: "tracks",
+      label: "Expertise Tracks",
+      value: SKILL_EXPERTISE_TRACKS.length,
+      Icon: Layers,
+    },
+    {
+      id: "tool-categories",
+      label: "Tool Categories",
+      value: ETHICAL_HACKING_TOOL_CARDS.length,
+      Icon: ShieldCheck,
+    },
+    {
+      id: "main-pillars",
+      label: "Main Pillars",
+      value: MAIN_SKILL_SHOWCASE.length,
+      Icon: Sparkles,
+    },
+  ];
+
+  const topSkillTags = [
+    "Full Stack Delivery",
+    "Backend APIs",
+    "Security Labs",
+    "Clean UI Engineering",
+  ];
+
   return (
     <>
       <Helmet>
@@ -46,57 +75,107 @@ const SkillsPage = () => {
       </Helmet>
 
       <section className="section-wrap pt-12 sm:pt-20">
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <SectionTitle
-            eyebrow="Skills"
-            title="Core Skills and Expertise"
-            description="Hands-on capability across full stack development, backend systems, cyber security analysis, and ethical hacking toolchains."
-          />
+        <FadeInUp className="relative overflow-hidden rounded-[2rem] border border-cyan-300/25 bg-gradient-to-br from-slate-950/88 via-[#08192a]/90 to-slate-900/86 p-6 sm:p-8">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(34,211,238,0.16),transparent_34%),radial-gradient(circle_at_88%_84%,rgba(168,85,247,0.14),transparent_40%)]" />
 
-          <aside className="card-surface rounded-3xl p-6">
-            <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-              Quick Skills Snapshot
-            </p>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-cyan-300/25 bg-slate-900/70 p-3">
-                <p className="text-xs uppercase tracking-[0.15em] text-slate-500">
-                  Expertise Tracks
-                </p>
-                <p className="mt-1 font-display text-2xl text-cyan-100">
-                  {SKILL_EXPERTISE_TRACKS.length}
-                </p>
-              </div>
-              <div className="rounded-xl border border-cyan-300/25 bg-slate-900/70 p-3">
-                <p className="text-xs uppercase tracking-[0.15em] text-slate-500">
-                  Tool Categories
-                </p>
-                <p className="mt-1 font-display text-2xl text-cyan-100">
-                  {ETHICAL_HACKING_TOOL_CARDS.length}
-                </p>
-              </div>
-              <div className="rounded-xl border border-cyan-300/25 bg-slate-900/70 p-3">
-                <p className="text-xs uppercase tracking-[0.15em] text-slate-500">
-                  Primary Domains
-                </p>
-                <p className="mt-1 text-base font-semibold text-cyan-100">
-                  Full Stack + Security
-                </p>
-              </div>
-              <div className="rounded-xl border border-cyan-300/25 bg-slate-900/70 p-3">
-                <p className="text-xs uppercase tracking-[0.15em] text-slate-500">
-                  Learning Mode
-                </p>
-                <p className="mt-1 text-base font-semibold text-cyan-100">
-                  Continuous and Practical
-                </p>
-              </div>
+          <div className="relative">
+            <div className="text-center">
+              <p className="font-display text-xs uppercase tracking-[0.3em] text-emerald-300">
+                Skills
+              </p>
+              <h1 className="mt-2 font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+                <span className="bg-gradient-to-r from-violet-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
+                  Core Skills and Expertise
+                </span>
+              </h1>
+              <p className="mx-auto mt-4 max-w-3xl text-slate-300">
+                Hands-on capability across full stack development, backend
+                systems, cybersecurity analysis, and ethical hacking toolchains.
+              </p>
             </div>
-            <p className="mt-4 text-sm text-slate-300">
-              Each skill card below reflects practical usage in projects, labs,
-              and public learning progress.
-            </p>
-          </aside>
-        </div>
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+              {topSkillTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+              <article className="rounded-2xl border border-cyan-300/25 bg-slate-950/45 p-5">
+                <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+                  Quick Skills Snapshot
+                </p>
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                  {topSkillHighlights.map((highlight) => (
+                    <div
+                      key={highlight.id}
+                      className="rounded-xl border border-cyan-300/25 bg-slate-900/70 p-3"
+                    >
+                      <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-300/35 bg-cyan-300/10 text-cyan-100">
+                        <highlight.Icon size={16} />
+                      </div>
+                      <p className="mt-3 font-display text-2xl text-cyan-100">
+                        {highlight.value}
+                      </p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.13em] text-slate-500">
+                        {highlight.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="mt-4 text-sm text-slate-300">
+                  Each skill section below reflects practical usage in projects,
+                  labs, and consistent public learning progress.
+                </p>
+              </article>
+
+              <article className="rounded-2xl border border-cyan-300/25 bg-slate-950/45 p-5">
+                <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+                  Priority Domains
+                </p>
+
+                <div className="mt-4 space-y-3">
+                  {MAIN_SKILL_SHOWCASE.map((item) => (
+                    <div
+                      key={item.id}
+                      className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-3"
+                    >
+                      <h3 className="text-base font-semibold text-cyan-100">
+                        {item.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-slate-300">
+                        {item.summary}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Button
+                    to="/projects"
+                    className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 text-white hover:from-violet-400 hover:via-fuchsia-400 hover:to-cyan-400"
+                  >
+                    See Skills in Projects <ArrowRight size={16} />
+                  </Button>
+                  <Button
+                    to="/contact"
+                    variant="ghost"
+                    className="border-cyan-300/45 text-cyan-100 hover:bg-cyan-300/10"
+                  >
+                    Work With Me
+                  </Button>
+                </div>
+              </article>
+            </div>
+          </div>
+        </FadeInUp>
       </section>
 
       <section className="section-wrap section-divider pt-10">

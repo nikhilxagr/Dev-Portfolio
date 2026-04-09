@@ -65,6 +65,7 @@ function App() {
             <Route path="/security" element={<SecurityPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blogs" element={<Navigate to="/blog" replace />} />
             <Route path="/blog/:slug" element={<BlogDetailsPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/admin/login" element={<AdminLoginPage />} />

@@ -6,8 +6,11 @@ import ErrorState from '@/components/ui/ErrorState'
 import EmptyState from '@/components/ui/EmptyState'
 import BlogCard from '@/components/ui/BlogCard'
 import Button from '@/components/ui/Button'
+import FadeInUp from '@/components/animations/FadeInUp'
+import { StaggerGrid, StaggerItem } from '@/components/animations/StaggerGrid'
 import { getBlogs } from '@/services/blogs.service'
 import { getErrorMessage } from '@/services/api'
+import { mergeStaticAndApiContent } from '@/services/contentMerge'
 import { BLOG_LINKS } from '@/constants/siteData'
 
 const BlogPage = () => {
@@ -22,14 +25,28 @@ const BlogPage = () => {
 
     try {
       const response = await getBlogs(keyword.trim() ? { search: keyword.trim() } : {})
-      const merged = (response.data || []).map((blog) => {
-        const staticBlog = BLOG_LINKS.find((item) => item.slug === blog.slug)
-        return {
-          ...staticBlog,
-          ...blog,
-        }
+      const apiBlogs = response.data || []
+
+      const mergedMap = new Map()
+
+      BLOG_LINKS.forEach((staticBlog) => {
+        mergedMap.set(staticBlog.slug, staticBlog)
       })
-      setBlogs(merged)
+
+      apiBlogs.forEach((apiBlog) => {
+        const staticBlog = BLOG_LINKS.find((item) => item.slug === apiBlog.slug)
+        const merged = mergeStaticAndApiContent(staticBlog, apiBlog)
+        mergedMap.set(merged.slug || apiBlog.slug || apiBlog._id, merged)
+      })
+
+      const combined = Array.from(mergedMap.values())
+      combined.sort((a, b) => {
+        const timeA = new Date(a.publishedAt || a.createdAt || 0).getTime()
+        const timeB = new Date(b.publishedAt || b.createdAt || 0).getTime()
+        return timeB - timeA
+      })
+
+      setBlogs(combined)
     } catch (requestError) {
       setError(getErrorMessage(requestError, 'Unable to load blogs at the moment.'))
     } finally {
@@ -76,7 +93,7 @@ const BlogPage = () => {
           Includes both backend-published posts and verified external writing published on Medium and LinkedIn.
         </p>
 
-        <div className="mt-8 rounded-2xl border border-cyan-300/20 bg-slate-950/70 p-4">
+        <FadeInUp className="mt-8 rounded-2xl border border-cyan-300/20 bg-slate-950/70 p-4">
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -86,20 +103,22 @@ const BlogPage = () => {
           <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500">
             Showing {displayBlogs.length} article{displayBlogs.length === 1 ? '' : 's'}
           </p>
-        </div>
+        </FadeInUp>
 
         <div className="mt-8">
-          {loading ? <LoadingState message="Loading blog posts..." cards={6} /> : null}
+          {loading ? <LoadingState message="Loading blog posts..." cards={6} variant="blog" /> : null}
           {!loading && error ? <ErrorState message={error} onRetry={() => loadBlogs(search)} /> : null}
           {!loading && !error && displayBlogs.length === 0 ? (
             <EmptyState title="No posts found" message="Blog entries will appear here once published." />
           ) : null}
           {!loading && !error && displayBlogs.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <StaggerGrid className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {displayBlogs.map((blog) => (
-                <BlogCard key={blog._id || blog.slug} blog={blog} />
+                <StaggerItem key={blog._id || blog.slug}>
+                  <BlogCard blog={blog} />
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerGrid>
           ) : null}
 
           {!loading && featuredExternal.length > 0 ? (
