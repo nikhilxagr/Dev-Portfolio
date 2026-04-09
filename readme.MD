@@ -234,6 +234,12 @@ Set these environment variables in Render:
 - `DB_MAX_POOL_SIZE=25`
 - `DB_MIN_POOL_SIZE=5`
 
+Notes:
+
+- Backend accepts MongoDB URI from `MONGODB_URI` (preferred) or `DATABASE_URL`.
+- If deploy exits with status 1, check Render logs for missing variable names and set them in Environment.
+- If logs show `querySrv ECONNREFUSED`, regenerate the MongoDB connection string from Atlas and verify Atlas Network Access allows Render (for quick test: `0.0.0.0/0`).
+
 Optional (recommended if you use many Vercel preview URLs):
 
 - `ALLOWED_ORIGIN_REGEX=^https://.*\\.vercel\\.app$`

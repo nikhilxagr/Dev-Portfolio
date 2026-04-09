@@ -13,13 +13,21 @@ const developmentFallbacks = {
     "$2b$10$/6XDoyq46vS/GYEkCkttMugFHJ8rGci5n2JJ7qGu3tWSFPsKFTR.u",
 };
 
-const readRequiredVariable = (name) => {
-  const runtimeValue = process.env[name];
+const readRequiredVariable = (name, aliases = []) => {
+  const acceptedNames = [name, ...aliases];
+  const runtimeName = acceptedNames.find((variableName) =>
+    Boolean(process.env[variableName]),
+  );
+  const runtimeValue = runtimeName ? process.env[runtimeName] : undefined;
   const fallbackValue = isDevelopment ? developmentFallbacks[name] : undefined;
   const value = runtimeValue || fallbackValue;
 
   if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
+    throw new Error(
+      `Missing required environment variable: ${acceptedNames.join(
+        " or ",
+      )}. Set it in Render service Environment settings.`,
+    );
   }
 
   if (!runtimeValue && fallbackValue) {
@@ -29,7 +37,7 @@ const readRequiredVariable = (name) => {
   return value;
 };
 
-const mongoUri = readRequiredVariable("MONGODB_URI");
+const mongoUri = readRequiredVariable("MONGODB_URI", ["DATABASE_URL"]);
 const jwtSecret = readRequiredVariable("JWT_SECRET");
 const adminEmail = readRequiredVariable("ADMIN_EMAIL").toLowerCase();
 const adminPasswordHash = readRequiredVariable("ADMIN_PASSWORD_HASH");
