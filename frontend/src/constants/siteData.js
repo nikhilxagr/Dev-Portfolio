@@ -117,7 +117,7 @@ export const SKILL_GROUPS = [
       "Nmap",
       "Wireshark",
       "Steghide",
-      "sqlmap",
+      "SQLMap",
       "Metasploit",
     ],
   },
@@ -132,31 +132,31 @@ export const MAIN_SKILL_SHOWCASE = [
     id: "soc-analyst-ai",
     title: "SOC Analyst with AI",
     summary:
-      "Security monitoring and alert triage workflows strengthened with AI-assisted analysis patterns.",
+      "Combining SOC workflows with AI-assisted triage to reduce alert noise and accelerate response decisions.",
     tags: [
-      "Threat Triage",
+      "Alert Prioritization",
       "Log Analysis",
       "Incident Workflow",
-      "AI-assisted Detection",
+      "AI-assisted Triage",
     ],
   },
   {
     id: "web-development",
     title: "Web Development",
     summary:
-      "Full stack application delivery with clean frontend experience and reliable backend integration.",
+      "Delivering end-to-end web applications with responsive interfaces, clean architecture, and reliable backend integration.",
     tags: [
       "Frontend Engineering",
       "Backend APIs",
       "Responsive UI",
-      "Production Mindset",
+      "Deployment Readiness",
     ],
   },
   {
     id: "languages-frameworks",
     title: "Coding Languages and Frameworks",
     summary:
-      "Strong practical focus on Python and JavaScript with React and Next.js for modern web builds.",
+      "Building practical solutions with JavaScript and Python, powered by React and Next.js for modern product development.",
     tags: ["Python", "JavaScript", "React", "Next.js"],
   },
 ];
@@ -165,7 +165,7 @@ export const SKILL_EXPERTISE_TRACKS = [
   {
     title: "Full Stack Developer",
     summary:
-      "Designing and shipping complete products from UI to API with secure implementation flow.",
+      "Designing and shipping complete products from frontend experience to backend delivery with security-aware implementation.",
     skills: [
       "React",
       "Next.js",
@@ -178,7 +178,7 @@ export const SKILL_EXPERTISE_TRACKS = [
   {
     title: "Backend Engineer",
     summary:
-      "Building server-side logic, auth-ready APIs, and reliable data handling for scalable projects.",
+      "Building robust server-side logic, authentication-ready APIs, and reliable data pipelines for scalable applications.",
     skills: [
       "Node.js",
       "Express.js",
@@ -191,7 +191,7 @@ export const SKILL_EXPERTISE_TRACKS = [
   {
     title: "Cyber Security Analyst",
     summary:
-      "Security-first review mindset for logs, vulnerabilities, and defensive checks across applications.",
+      "Applying a defense-first mindset to log review, vulnerability assessment, and practical risk reduction across applications.",
     skills: [
       "Threat Analysis",
       "Vulnerability Review",
@@ -202,7 +202,7 @@ export const SKILL_EXPERTISE_TRACKS = [
   {
     title: "Ethical Hacker",
     summary:
-      "Hands-on learning in legal and authorized offensive testing with clear reporting outcomes.",
+      "Practicing legal and authorized offensive testing with structured methodology and clear reporting outcomes.",
     skills: [
       "Recon and Enumeration",
       "Web App Testing",
@@ -213,7 +213,7 @@ export const SKILL_EXPERTISE_TRACKS = [
   {
     title: "Penetration Tester",
     summary:
-      "Structured testing process from scope definition to proof-of-concept validation and reporting.",
+      "Following a structured testing lifecycle from scope definition to proof-of-concept validation and remediation reporting.",
     skills: [
       "Attack Surface Mapping",
       "Manual Testing",
@@ -226,10 +226,14 @@ export const SKILL_EXPERTISE_TRACKS = [
 export const ETHICAL_HACKING_TOOL_CARDS = [
   {
     title: "Recon and Enumeration",
+    summary:
+      "Discovery-focused tools for mapping target surfaces and collecting actionable reconnaissance data.",
     tools: ["Kali Linux", "Nmap", "Gobuster", "Whois", "Subdomain Discovery"],
   },
   {
     title: "Web Security Testing",
+    summary:
+      "Testing web applications for common vulnerabilities with both manual validation and guided frameworks.",
     tools: [
       "Burp Suite",
       "OWASP Testing Guide",
@@ -240,14 +244,20 @@ export const ETHICAL_HACKING_TOOL_CARDS = [
   },
   {
     title: "Network and Traffic Analysis",
+    summary:
+      "Inspecting packets, services, and protocol behavior to identify attack paths and defensive gaps.",
     tools: ["Wireshark", "Tcpdump", "Port Analysis", "Protocol Inspection"],
   },
   {
     title: "Stego and Forensics Basics",
+    summary:
+      "Using basic forensic utilities to inspect hidden data, metadata clues, and file integrity indicators.",
     tools: ["Steghide", "ExifTool", "strings", "File Signature Checks"],
   },
   {
     title: "Exploitation and Post-Exploitation",
+    summary:
+      "Controlled exploitation practice to validate findings and understand real-world privilege escalation flow.",
     tools: [
       "Metasploit",
       "Hydra",

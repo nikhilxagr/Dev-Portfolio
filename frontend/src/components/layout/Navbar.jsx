@@ -1,30 +1,26 @@
-import { useState } from 'react'
-import clsx from 'clsx'
-import { Link, NavLink } from 'react-router-dom'
-import { Menu, Moon, SunMedium, X } from 'lucide-react'
-import { NAV_LINKS, SITE_PROFILE } from '@/constants/siteData'
-import { useTheme } from '@/context/ThemeContext'
+import { useState } from "react";
+import clsx from "clsx";
+import { Link, NavLink } from "react-router-dom";
+import { Menu, Moon, SunMedium, X } from "lucide-react";
+import { NAV_LINKS, SITE_PROFILE } from "@/constants/siteData";
+import { useTheme } from "@/context/ThemeContext";
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false)
-  const { isDark, toggleTheme } = useTheme()
+  const [open, setOpen] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
 
   const navItemClass = ({ isActive }) =>
     clsx(
-      'rounded-lg px-3 py-2 text-sm font-medium transition',
+      "rounded-lg px-3 py-2 text-sm font-medium transition",
       isActive
-        ? 'bg-cyan-400/15 text-cyan-200 shadow-neon'
-        : 'text-slate-300 hover:bg-cyan-400/10 hover:text-cyan-100',
-    )
+        ? "bg-cyan-400/15 text-cyan-200 shadow-neon"
+        : "text-slate-300 hover:bg-cyan-400/10 hover:text-cyan-100",
+    );
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 border-b border-cyan-300/15 bg-slate-950/80 backdrop-blur-lg">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-10">
-        <Link
-          to="/"
-          onClick={() => setOpen(false)}
-          className="group"
-        >
+        <Link to="/" onClick={() => setOpen(false)} className="group">
           <p className="font-display text-xs uppercase tracking-[0.2em] text-cyan-100 sm:text-sm">
             {SITE_PROFILE.fullName}
           </p>
@@ -49,13 +45,6 @@ const Navbar = () => {
           >
             {isDark ? <SunMedium size={16} /> : <Moon size={16} />}
           </button>
-
-          <Link
-            to="/contact"
-            className="ml-2 rounded-lg border border-emerald-300/45 bg-emerald-300/10 px-3 py-2 text-sm font-medium text-emerald-100 transition hover:bg-emerald-300/20"
-          >
-            Work With Me
-          </Link>
         </nav>
 
         <button
@@ -72,7 +61,12 @@ const Navbar = () => {
         <nav className="border-t border-cyan-300/15 bg-slate-950/80 px-4 py-4 md:hidden">
           <div className="mx-auto flex max-w-6xl flex-col gap-2">
             {NAV_LINKS.map((item) => (
-              <NavLink key={item.to} to={item.to} className={navItemClass} onClick={() => setOpen(false)}>
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={navItemClass}
+                onClick={() => setOpen(false)}
+              >
                 {item.label}
               </NavLink>
             ))}
@@ -82,13 +76,13 @@ const Navbar = () => {
               onClick={toggleTheme}
               className="rounded-lg border border-cyan-300/40 bg-cyan-300/10 px-3 py-2 text-sm font-medium text-cyan-100 transition hover:bg-cyan-300/20"
             >
-              {isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              {isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             </button>
           </div>
         </nav>
       )}
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

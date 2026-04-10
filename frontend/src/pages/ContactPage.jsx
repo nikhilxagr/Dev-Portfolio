@@ -136,29 +136,32 @@ const ContactPage = () => {
         <title>Contact | Nikhil Portfolio</title>
         <meta
           name="description"
-          content="Contact Nikhil Agrahari for projects, mentorship, portfolio guidance, and collaboration."
+          content="Contact Nikhil Agrahari for projects, freelance collaboration, mentorship, and developer support through one unified contact hub."
         />
       </Helmet>
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
-          eyebrow="Contact"
-          title="Let's build something useful together"
-          description="The fastest way to reach me is email, LinkedIn, or WhatsApp. You can also use this form for project or service inquiries."
+          eyebrow="Contact Hub"
+          title="One Route for Collaboration and Direct Contact"
+          description="This page combines project inquiry and direct channels in one place. Share your brief or reach out instantly through your preferred platform."
         />
 
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
           <form
-            className="card-surface rounded-3xl p-6 lg:col-span-2"
+            className="card-surface relative overflow-hidden rounded-3xl p-6 lg:col-span-2"
             onSubmit={handleSubmit}
           >
-            <div className="mb-5 rounded-xl border border-cyan-300/20 bg-slate-900/65 p-4">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" />
+
+            <div className="mb-5 rounded-xl border border-cyan-300/25 bg-slate-900/70 p-4">
               <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-                Project Inquiry Form
+                Collaboration Brief
               </p>
               <p className="mt-2 text-sm text-slate-300">
-                Share your scope clearly and I will respond with feasible next
-                steps, timeline guidance, and delivery expectation.
+                Share your scope, timelines, and goal clearly. You will get a
+                practical response with next steps and realistic delivery
+                direction.
               </p>
               <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
                 Typical response time: within 12-24 hours
@@ -258,17 +261,18 @@ const ContactPage = () => {
 
             <div className="mt-5">
               <Button type="submit" disabled={submitting}>
-                {submitting ? "Sending..." : "Send Message"}
+                {submitting ? "Sending..." : "Send Inquiry"}
               </Button>
             </div>
           </form>
 
-          <aside className="card-surface rounded-3xl p-6">
+          <aside className="card-surface relative overflow-hidden rounded-3xl p-6">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/65 to-transparent" />
             <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-              Contact + Work With Me
+              Contact Hub
             </p>
             <h3 className="mt-2 text-lg font-semibold text-cyan-100">
-              One Place for Every Contact Channel
+              All Contact Channels in One Place
             </h3>
             <p className="mt-2 text-sm text-slate-300">
               {SITE_PROFILE.availability}
@@ -304,7 +308,7 @@ const ContactPage = () => {
             </div>
 
             <h4 className="mt-5 text-xs uppercase tracking-[0.16em] text-slate-500">
-              All Social and Profile Links
+              Official Social and Coding Profiles
             </h4>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {allContactPlatforms.map((item) => {
@@ -339,11 +343,10 @@ const ContactPage = () => {
 
             <div className="mt-5 rounded-xl border border-emerald-300/25 bg-emerald-300/10 p-4">
               <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-                Preferred for Fast Collaboration
+                Fastest Response Channels
               </p>
               <p className="mt-2 text-sm text-slate-200">
-                LinkedIn, WhatsApp, and Email are the fastest channels for
-                project discussions.
+                For quickest replies, use Email, LinkedIn, or WhatsApp.
               </p>
             </div>
 
@@ -355,10 +358,10 @@ const ContactPage = () => {
                 variant="ghost"
                 className="w-full"
               >
-                View Resume
+                Download Resume
               </Button>
               <Button href={`mailto:${QUICK_CONTACT.email}`} className="w-full">
-                Email Me
+                Start Email
               </Button>
             </div>
           </aside>

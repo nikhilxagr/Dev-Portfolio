@@ -70,7 +70,7 @@ const SkillsPage = () => {
         <title>Skills | Nikhil Portfolio</title>
         <meta
           name="description"
-          content="Skills and expertise of Nikhil Agrahari across full stack development, backend engineering, ethical hacking, penetration testing, and cyber security analysis."
+          content="Explore Nikhil Agrahari's skills across full stack engineering, backend systems, cybersecurity analysis, ethical hacking, and practical security workflows."
         />
       </Helmet>
 
@@ -89,8 +89,9 @@ const SkillsPage = () => {
                 </span>
               </h1>
               <p className="mx-auto mt-4 max-w-3xl text-slate-300">
-                Hands-on capability across full stack development, backend
-                systems, cybersecurity analysis, and ethical hacking toolchains.
+                Practical capabilities across product engineering and security,
+                from clean user interfaces and reliable APIs to structured
+                testing and defensive analysis.
               </p>
             </div>
 
@@ -108,7 +109,7 @@ const SkillsPage = () => {
             <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
               <article className="rounded-2xl border border-cyan-300/25 bg-slate-950/45 p-5">
                 <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-                  Quick Skills Snapshot
+                  Skills at a Glance
                 </p>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -131,14 +132,14 @@ const SkillsPage = () => {
                 </div>
 
                 <p className="mt-4 text-sm text-slate-300">
-                  Each skill section below reflects practical usage in projects,
-                  labs, and consistent public learning progress.
+                  Each section below reflects practical application through real
+                  projects, labs, and consistent public learning.
                 </p>
               </article>
 
               <article className="rounded-2xl border border-cyan-300/25 bg-slate-950/45 p-5">
                 <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-                  Priority Domains
+                  Focus Domains
                 </p>
 
                 <div className="mt-4 space-y-3">
@@ -162,14 +163,14 @@ const SkillsPage = () => {
                     to="/projects"
                     className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 text-white hover:from-violet-400 hover:via-fuchsia-400 hover:to-cyan-400"
                   >
-                    See Skills in Projects <ArrowRight size={16} />
+                    View Skill Proof in Projects <ArrowRight size={16} />
                   </Button>
                   <Button
                     to="/contact"
                     variant="ghost"
                     className="border-cyan-300/45 text-cyan-100 hover:bg-cyan-300/10"
                   >
-                    Work With Me
+                    Open Contact Hub
                   </Button>
                 </div>
               </article>
@@ -180,9 +181,9 @@ const SkillsPage = () => {
 
       <section className="section-wrap section-divider pt-10">
         <SectionTitle
-          eyebrow="Main Showcase"
-          title="Priority Skill Focus"
-          description="The main skill identity highlighted across this portfolio and project work."
+          eyebrow="Main Capability Areas"
+          title="Primary Skill Focus"
+          description="The top capability pillars that define how I design, build, and secure software products."
         />
 
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
@@ -211,7 +212,7 @@ const SkillsPage = () => {
         <SectionTitle
           eyebrow="Expertise Tracks"
           title="Full Stack, Backend, and Security Roles"
-          description="Focused competency cards covering development, security analysis, and penetration testing paths."
+          description="Role-focused competency cards showing strengths across development, security analysis, and penetration testing paths."
         />
 
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -246,8 +247,8 @@ const SkillsPage = () => {
       <section className="section-wrap section-divider pt-10">
         <SectionTitle
           eyebrow="Ethical Hacking Toolkit"
-          title="Practical Security Tools"
-          description="Core tool cards used in reconnaissance, testing, traffic analysis, and basic post-exploitation workflows."
+          title="Practical Security Toolkit"
+          description="Core tools used in reconnaissance, web testing, traffic inspection, and controlled post-exploitation learning workflows."
         />
 
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -256,6 +257,9 @@ const SkillsPage = () => {
               <h3 className="text-lg font-semibold text-cyan-100">
                 {card.title}
               </h3>
+              {card.summary ? (
+                <p className="mt-2 text-sm text-slate-300">{card.summary}</p>
+              ) : null}
               <ul className="mt-3 space-y-2 text-sm text-slate-300">
                 {card.tools.map((tool) => (
                   <li key={tool} className="flex items-center gap-2">
@@ -273,7 +277,7 @@ const SkillsPage = () => {
         <SectionTitle
           eyebrow="Complete Matrix"
           title="All Skills and Technologies"
-          description="Expanded matrix of frontend, backend, language, database, cyber security, and delivery tools used in active work."
+          description="A complete matrix of frontend, backend, languages, databases, cybersecurity tools, and delivery platforms used in active work."
         />
 
         <div className="mt-8">
@@ -282,7 +286,7 @@ const SkillsPage = () => {
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Button to="/projects">
-            See Skills in Projects <ArrowRight size={16} />
+            View Skills in Projects <ArrowRight size={16} />
           </Button>
           <Button
             href={QUICK_CONTACT.tryhackme}
@@ -290,7 +294,7 @@ const SkillsPage = () => {
             rel="noreferrer"
             variant="ghost"
           >
-            TryHackMe Profile
+            Visit TryHackMe Profile
           </Button>
           <Button
             href={QUICK_CONTACT.linkedin}
@@ -303,8 +307,8 @@ const SkillsPage = () => {
         </div>
 
         <p className="mt-4 text-sm text-slate-400">
-          Built by {SITE_PROFILE.fullName} with a full stack + security-first
-          approach.
+          Built by {SITE_PROFILE.fullName} with a product-first, security-aware
+          engineering mindset.
         </p>
       </section>
     </>
