@@ -1,65 +1,112 @@
-import { useState } from 'react'
-import { Helmet } from 'react-helmet-async'
-import SectionTitle from '@/components/ui/SectionTitle'
-import Button from '@/components/ui/Button'
-import { sendContactMessage } from '@/services/contact.service'
-import { getErrorMessage } from '@/services/api'
-import { QUICK_CONTACT, SERVICE_OFFERINGS, SITE_PROFILE, SOCIAL_LINKS } from '@/constants/siteData'
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { ExternalLink, Mail, MapPin, PhoneCall } from "lucide-react";
+import SectionTitle from "@/components/ui/SectionTitle";
+import Button from "@/components/ui/Button";
+import { sendContactMessage } from "@/services/contact.service";
+import { getErrorMessage } from "@/services/api";
+import {
+  QUICK_CONTACT,
+  SERVICE_OFFERINGS,
+  SITE_PROFILE,
+  SOCIAL_LINKS,
+} from "@/constants/siteData";
 
 const initialForm = {
-  name: '',
-  email: '',
-  phone: '',
-  service: '',
-  message: '',
-}
+  name: "",
+  email: "",
+  phone: "",
+  service: "",
+  message: "",
+};
+
+const contactPlatformMap = {
+  GitHub: {
+    href: QUICK_CONTACT.github,
+    logo: "https://cdn.simpleicons.org/github/ffffff",
+  },
+  LinkedIn: {
+    href: QUICK_CONTACT.linkedin,
+    logo: "https://cdn.simpleicons.org/linkedin/0A66C2",
+  },
+  Medium: {
+    href: QUICK_CONTACT.medium,
+    logo: "https://cdn.simpleicons.org/medium/ffffff",
+  },
+  TryHackMe: {
+    href: QUICK_CONTACT.tryhackme,
+    logo: "https://cdn.simpleicons.org/tryhackme/E11D48",
+  },
+  WhatsApp: {
+    href: QUICK_CONTACT.whatsapp,
+    logo: "https://cdn.simpleicons.org/whatsapp/25D366",
+  },
+};
+
+const allContactPlatforms = [
+  ...SOCIAL_LINKS.map((item) => ({
+    label: item.label,
+    href: item.href,
+    ...(contactPlatformMap[item.label] || {}),
+  })),
+  {
+    label: "LeetCode",
+    href: QUICK_CONTACT.leetcode,
+    logo: "https://cdn.simpleicons.org/leetcode/FFA116",
+  },
+  {
+    label: "GeeksforGeeks",
+    href: QUICK_CONTACT.gfg,
+    logo: "https://cdn.simpleicons.org/geeksforgeeks/2F8D46",
+  },
+];
 
 const ContactPage = () => {
-  const [formData, setFormData] = useState(initialForm)
-  const [submitting, setSubmitting] = useState(false)
-  const [formError, setFormError] = useState('')
-  const [formSuccess, setFormSuccess] = useState('')
+  const [formData, setFormData] = useState(initialForm);
+  const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [formSuccess, setFormSuccess] = useState("");
 
   const handleChange = (event) => {
     setFormData((previous) => ({
       ...previous,
       [event.target.name]: event.target.value,
-    }))
-  }
+    }));
+  };
 
   const selectService = (serviceName) => {
     setFormData((previous) => ({
       ...previous,
       service: serviceName,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    setFormError('')
-    setFormSuccess('')
+    event.preventDefault();
+    setFormError("");
+    setFormSuccess("");
 
     if (formData.name.trim().length < 2) {
-      setFormError('Please enter a valid name.')
-      return
+      setFormError("Please enter a valid name.");
+      return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      setFormError('Please enter a valid email address.')
-      return
+      setFormError("Please enter a valid email address.");
+      return;
     }
 
     if (formData.phone && !/^[0-9+\-\s]{8,18}$/.test(formData.phone.trim())) {
-      setFormError('Please enter a valid phone number.')
-      return
+      setFormError("Please enter a valid phone number.");
+      return;
     }
 
     if (formData.message.trim().length < 10) {
-      setFormError('Message should be at least 10 characters long.')
-      return
+      setFormError("Message should be at least 10 characters long.");
+      return;
     }
 
-    setSubmitting(true)
+    setSubmitting(true);
 
     try {
       await sendContactMessage({
@@ -68,21 +115,29 @@ const ContactPage = () => {
         phone: formData.phone.trim(),
         service: formData.service.trim(),
         message: formData.message.trim(),
-      })
-      setFormSuccess('Message sent successfully. I will get back to you soon.')
-      setFormData(initialForm)
+      });
+      setFormSuccess("Message sent successfully. I will get back to you soon.");
+      setFormData(initialForm);
     } catch (error) {
-      setFormError(getErrorMessage(error, 'Could not send your message. Please try again.'))
+      setFormError(
+        getErrorMessage(
+          error,
+          "Could not send your message. Please try again.",
+        ),
+      );
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <>
       <Helmet>
         <title>Contact | Nikhil Portfolio</title>
-        <meta name="description" content="Contact Nikhil Agrahari for projects, mentorship, portfolio guidance, and collaboration." />
+        <meta
+          name="description"
+          content="Contact Nikhil Agrahari for projects, mentorship, portfolio guidance, and collaboration."
+        />
       </Helmet>
 
       <section className="section-wrap pt-12 sm:pt-20">
@@ -93,13 +148,21 @@ const ContactPage = () => {
         />
 
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
-          <form className="card-surface rounded-3xl p-6 lg:col-span-2" onSubmit={handleSubmit}>
+          <form
+            className="card-surface rounded-3xl p-6 lg:col-span-2"
+            onSubmit={handleSubmit}
+          >
             <div className="mb-5 rounded-xl border border-cyan-300/20 bg-slate-900/65 p-4">
-              <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">Project Inquiry Form</p>
-              <p className="mt-2 text-sm text-slate-300">
-                Share your scope clearly and I will respond with feasible next steps, timeline guidance, and delivery expectation.
+              <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+                Project Inquiry Form
               </p>
-              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">Typical response time: within 12-24 hours</p>
+              <p className="mt-2 text-sm text-slate-300">
+                Share your scope clearly and I will respond with feasible next
+                steps, timeline guidance, and delivery expectation.
+              </p>
+              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
+                Typical response time: within 12-24 hours
+              </p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -165,8 +228,8 @@ const ContactPage = () => {
                   onClick={() => selectService(item.name)}
                   className={`rounded-full border px-3 py-1.5 text-xs transition ${
                     formData.service === item.name
-                      ? 'border-cyan-300 bg-cyan-300/15 text-cyan-100'
-                      : 'border-cyan-300/20 text-slate-300 hover:border-cyan-300/55 hover:text-cyan-100'
+                      ? "border-cyan-300 bg-cyan-300/15 text-cyan-100"
+                      : "border-cyan-300/20 text-slate-300 hover:border-cyan-300/55 hover:text-cyan-100"
                   }`}
                 >
                   {item.name}
@@ -186,73 +249,123 @@ const ContactPage = () => {
               />
             </label>
 
-            {formError ? <p className="mt-3 text-sm text-rose-300">{formError}</p> : null}
-            {formSuccess ? <p className="mt-3 text-sm text-emerald-300">{formSuccess}</p> : null}
+            {formError ? (
+              <p className="mt-3 text-sm text-rose-300">{formError}</p>
+            ) : null}
+            {formSuccess ? (
+              <p className="mt-3 text-sm text-emerald-300">{formSuccess}</p>
+            ) : null}
 
             <div className="mt-5">
               <Button type="submit" disabled={submitting}>
-                {submitting ? 'Sending...' : 'Send Message'}
+                {submitting ? "Sending..." : "Send Message"}
               </Button>
             </div>
           </form>
 
           <aside className="card-surface rounded-3xl p-6">
-            <h3 className="text-lg font-semibold text-cyan-100">Quick Contact</h3>
-            <div className="mt-3 space-y-2 text-sm text-slate-300">
-              <p>
-                <span className="text-slate-500">Email:</span> {QUICK_CONTACT.email}
+            <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+              Contact + Work With Me
+            </p>
+            <h3 className="mt-2 text-lg font-semibold text-cyan-100">
+              One Place for Every Contact Channel
+            </h3>
+            <p className="mt-2 text-sm text-slate-300">
+              {SITE_PROFILE.availability}
+            </p>
+
+            <div className="mt-4 space-y-2 text-sm text-slate-200">
+              <a
+                href={`mailto:${QUICK_CONTACT.email}`}
+                className="flex items-center justify-between rounded-xl border border-cyan-300/20 bg-slate-900/65 px-3 py-2.5 transition hover:border-cyan-300/55 hover:text-cyan-100"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <Mail size={16} className="text-cyan-200" />
+                  {QUICK_CONTACT.email}
+                </span>
+                <ExternalLink size={14} className="text-slate-500" />
+              </a>
+
+              <a
+                href={`tel:${QUICK_CONTACT.phone.replace(/\s+/g, "")}`}
+                className="flex items-center justify-between rounded-xl border border-cyan-300/20 bg-slate-900/65 px-3 py-2.5 transition hover:border-cyan-300/55 hover:text-cyan-100"
+              >
+                <span className="inline-flex items-center gap-2">
+                  <PhoneCall size={16} className="text-cyan-200" />
+                  {QUICK_CONTACT.phone}
+                </span>
+                <ExternalLink size={14} className="text-slate-500" />
+              </a>
+
+              <div className="flex items-center gap-2 rounded-xl border border-cyan-300/20 bg-slate-900/65 px-3 py-2.5 text-slate-300">
+                <MapPin size={16} className="text-cyan-200" />
+                {SITE_PROFILE.location}
+              </div>
+            </div>
+
+            <h4 className="mt-5 text-xs uppercase tracking-[0.16em] text-slate-500">
+              All Social and Profile Links
+            </h4>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {allContactPlatforms.map((item) => {
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group flex items-center justify-between rounded-xl border border-cyan-300/20 bg-slate-900/65 px-3 py-2.5 text-sm text-slate-200 transition hover:-translate-y-0.5 hover:border-cyan-300/60 hover:text-cyan-100"
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-cyan-300/20 bg-slate-950/80">
+                        <img
+                          src={item.logo}
+                          alt={`${item.label} logo`}
+                          loading="lazy"
+                          decoding="async"
+                          className="h-[15px] w-[15px] object-contain"
+                        />
+                      </span>
+                      {item.label}
+                    </span>
+                    <ExternalLink
+                      size={14}
+                      className="text-slate-500 transition group-hover:text-cyan-200"
+                    />
+                  </a>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 rounded-xl border border-emerald-300/25 bg-emerald-300/10 p-4">
+              <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+                Preferred for Fast Collaboration
               </p>
-              <p>
-                <span className="text-slate-500">Phone:</span> {QUICK_CONTACT.phone}
-              </p>
-              <p>
-                <span className="text-slate-500">Location:</span> {SITE_PROFILE.location}
+              <p className="mt-2 text-sm text-slate-200">
+                LinkedIn, WhatsApp, and Email are the fastest channels for
+                project discussions.
               </p>
             </div>
 
-            <div className="mt-5 rounded-xl border border-cyan-300/20 bg-slate-900/65 p-4">
-              <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">Working Modes</p>
-              <ul className="mt-2 space-y-2 text-sm text-slate-300">
-                <li className="flex gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                  Freelance development modules
-                </li>
-                <li className="flex gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                  Student mentorship and portfolio guidance
-                </li>
-                <li className="flex gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                  Basic authorized security review scope
-                </li>
-              </ul>
-            </div>
-
-            <h4 className="mt-5 text-xs uppercase tracking-[0.16em] text-slate-500">Social and Profiles</h4>
-            <div className="mt-3 space-y-2 text-sm text-slate-300">
-              {SOCIAL_LINKS.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block rounded-lg border border-cyan-300/20 px-3 py-2 hover:border-cyan-300/60 hover:text-cyan-100"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-
-            <div className="mt-5">
-              <Button href={QUICK_CONTACT.resume} target="_blank" rel="noreferrer" variant="ghost" className="w-full">
+            <div className="mt-5 grid gap-2 sm:grid-cols-2">
+              <Button
+                href={QUICK_CONTACT.resume}
+                target="_blank"
+                rel="noreferrer"
+                variant="ghost"
+                className="w-full"
+              >
                 View Resume
+              </Button>
+              <Button href={`mailto:${QUICK_CONTACT.email}`} className="w-full">
+                Email Me
               </Button>
             </div>
           </aside>
         </div>
       </section>
     </>
-  )
-}
+  );
+};
 
-export default ContactPage
+export default ContactPage;
