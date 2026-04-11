@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { ExternalLink, Mail, MapPin, PhoneCall } from "lucide-react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Button from "@/components/ui/Button";
+import { useTheme } from "@/context/ThemeContext";
 import { sendContactMessage } from "@/services/contact.service";
 import { getErrorMessage } from "@/services/api";
 import {
@@ -20,48 +21,55 @@ const initialForm = {
   message: "",
 };
 
-const contactPlatformMap = {
-  GitHub: {
-    href: QUICK_CONTACT.github,
-    logo: "https://cdn.simpleicons.org/github/ffffff",
-  },
-  LinkedIn: {
-    href: QUICK_CONTACT.linkedin,
-    logo: "https://cdn.simpleicons.org/linkedin/0A66C2",
-  },
-  Medium: {
-    href: QUICK_CONTACT.medium,
-    logo: "https://cdn.simpleicons.org/medium/ffffff",
-  },
-  TryHackMe: {
-    href: QUICK_CONTACT.tryhackme,
-    logo: "https://cdn.simpleicons.org/tryhackme/E11D48",
-  },
-  WhatsApp: {
-    href: QUICK_CONTACT.whatsapp,
-    logo: "https://cdn.simpleicons.org/whatsapp/25D366",
-  },
+const getContactPlatforms = (isDark) => {
+  const neutralBrand = isDark ? "ffffff" : "0f172a";
+
+  const contactPlatformMap = {
+    GitHub: {
+      href: QUICK_CONTACT.github,
+      logo: `https://cdn.simpleicons.org/github/${neutralBrand}`,
+    },
+    LinkedIn: {
+      href: QUICK_CONTACT.linkedin,
+      logo: "https://cdn.simpleicons.org/linkedin/0A66C2",
+    },
+    Medium: {
+      href: QUICK_CONTACT.medium,
+      logo: `https://cdn.simpleicons.org/medium/${neutralBrand}`,
+    },
+    TryHackMe: {
+      href: QUICK_CONTACT.tryhackme,
+      logo: "https://cdn.simpleicons.org/tryhackme/E11D48",
+    },
+    WhatsApp: {
+      href: QUICK_CONTACT.whatsapp,
+      logo: "https://cdn.simpleicons.org/whatsapp/25D366",
+    },
+  };
+
+  return [
+    ...SOCIAL_LINKS.map((item) => ({
+      label: item.label,
+      href: item.href,
+      ...(contactPlatformMap[item.label] || {}),
+    })),
+    {
+      label: "LeetCode",
+      href: QUICK_CONTACT.leetcode,
+      logo: "https://cdn.simpleicons.org/leetcode/FFA116",
+    },
+    {
+      label: "GeeksforGeeks",
+      href: QUICK_CONTACT.gfg,
+      logo: "https://cdn.simpleicons.org/geeksforgeeks/2F8D46",
+    },
+  ];
 };
 
-const allContactPlatforms = [
-  ...SOCIAL_LINKS.map((item) => ({
-    label: item.label,
-    href: item.href,
-    ...(contactPlatformMap[item.label] || {}),
-  })),
-  {
-    label: "LeetCode",
-    href: QUICK_CONTACT.leetcode,
-    logo: "https://cdn.simpleicons.org/leetcode/FFA116",
-  },
-  {
-    label: "GeeksforGeeks",
-    href: QUICK_CONTACT.gfg,
-    logo: "https://cdn.simpleicons.org/geeksforgeeks/2F8D46",
-  },
-];
-
 const ContactPage = () => {
+  const { isDark } = useTheme();
+  const allContactPlatforms = getContactPlatforms(isDark);
+
   const [formData, setFormData] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");

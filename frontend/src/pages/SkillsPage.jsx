@@ -11,6 +11,7 @@ import Button from "@/components/ui/Button";
 import FadeInUp from "@/components/animations/FadeInUp";
 import SectionTitle from "@/components/ui/SectionTitle";
 import SkillMatrix from "@/components/ui/SkillMatrix";
+import { useTheme } from "@/context/ThemeContext";
 import {
   ETHICAL_HACKING_TOOL_CARDS,
   MAIN_SKILL_SHOWCASE,
@@ -36,6 +37,8 @@ const showcaseAccentMap = {
 };
 
 const SkillsPage = () => {
+  const { isDark } = useTheme();
+
   const topSkillHighlights = [
     {
       id: "tracks",
@@ -75,8 +78,14 @@ const SkillsPage = () => {
       </Helmet>
 
       <section className="section-wrap pt-12 sm:pt-20">
-        <FadeInUp className="relative overflow-hidden rounded-[2rem] border border-cyan-300/25 bg-gradient-to-br from-slate-950/88 via-[#08192a]/90 to-slate-900/86 p-6 sm:p-8">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(34,211,238,0.16),transparent_34%),radial-gradient(circle_at_88%_84%,rgba(168,85,247,0.14),transparent_40%)]" />
+        <FadeInUp className="skills-hero-surface relative overflow-hidden rounded-[2rem] border border-cyan-300/25 p-6 sm:p-8">
+          <div
+            className={`pointer-events-none absolute inset-0 ${
+              isDark
+                ? "bg-[radial-gradient(circle_at_14%_18%,rgba(34,211,238,0.16),transparent_34%),radial-gradient(circle_at_88%_84%,rgba(168,85,247,0.14),transparent_40%)]"
+                : "bg-[radial-gradient(circle_at_14%_18%,rgba(14,165,233,0.16),transparent_34%),radial-gradient(circle_at_88%_84%,rgba(16,185,129,0.12),transparent_40%)]"
+            }`}
+          />
 
           <div className="relative">
             <div className="text-center">
@@ -107,7 +116,7 @@ const SkillsPage = () => {
             </div>
 
             <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-              <article className="rounded-2xl border border-cyan-300/25 bg-slate-950/45 p-5">
+              <article className="skills-panel-surface rounded-2xl border border-cyan-300/25 p-5">
                 <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
                   Skills at a Glance
                 </p>
@@ -137,7 +146,7 @@ const SkillsPage = () => {
                 </p>
               </article>
 
-              <article className="rounded-2xl border border-cyan-300/25 bg-slate-950/45 p-5">
+              <article className="skills-panel-surface rounded-2xl border border-cyan-300/25 p-5">
                 <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
                   Focus Domains
                 </p>
