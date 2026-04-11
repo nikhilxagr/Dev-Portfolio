@@ -5,7 +5,15 @@ import compression from "compression";
 import xss from "xss";
 import { env } from "../config/env.js";
 
+const isBinaryLike = (value) =>
+  Buffer.isBuffer(value) ||
+  (ArrayBuffer.isView(value) && !(value instanceof DataView));
+
 const sanitizePayload = (value, parentKey = "") => {
+  if (isBinaryLike(value)) {
+    return value;
+  }
+
   if (typeof value === "string") {
     if (parentKey.toLowerCase().includes("password")) {
       return value;
@@ -28,7 +36,7 @@ const sanitizePayload = (value, parentKey = "") => {
 };
 
 const sanitizeObjectInPlace = (target) => {
-  if (!target || typeof target !== "object") {
+  if (!target || typeof target !== "object" || isBinaryLike(target)) {
     return;
   }
 
@@ -38,7 +46,7 @@ const sanitizeObjectInPlace = (target) => {
 };
 
 const sanitizeNoSqlKeysInPlace = (target) => {
-  if (!target || typeof target !== "object") {
+  if (!target || typeof target !== "object" || isBinaryLike(target)) {
     return;
   }
 

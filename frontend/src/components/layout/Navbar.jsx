@@ -138,9 +138,13 @@ const Navbar = () => {
             <button
               type="button"
               onClick={toggleTheme}
-              className="rounded-lg border border-cyan-300/40 bg-cyan-300/10 px-3 py-2 text-sm font-medium text-cyan-100 transition hover:bg-cyan-300/20"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-cyan-300/40 bg-cyan-300/10 px-3 py-2 text-cyan-100 transition hover:bg-cyan-300/20"
+              aria-label="Toggle theme"
             >
-              {isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              <span className="text-xs font-semibold uppercase tracking-[0.14em]">
+                Theme
+              </span>
+              {isDark ? <SunMedium size={16} /> : <Moon size={16} />}
             </button>
           </div>
         </nav>

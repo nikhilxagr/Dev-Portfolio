@@ -345,10 +345,10 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="order-1 mx-auto w-full max-w-sm lg:order-2">
+            <div className="order-1 mx-auto flex w-full max-w-sm justify-center lg:order-2">
               {SITE_PROFILE.profileImage ? (
-                <div className="relative">
-                  <div className="absolute inset-2 rounded-full bg-cyan-300/15 blur-3xl" />
+                <div className="relative inline-flex">
+                  <div className="absolute inset-0 -z-10 rounded-full bg-cyan-300/15 blur-3xl" />
                   <div className="relative h-[240px] w-[240px] overflow-hidden rounded-full border-4 border-cyan-300/45 bg-[#e0b93c] shadow-[0_0_0_6px_rgba(34,211,238,0.12)] sm:h-[300px] sm:w-[300px] lg:h-[360px] lg:w-[360px]">
                     <img
                       src={SITE_PROFILE.profileImage}
@@ -358,7 +358,7 @@ const HomePage = () => {
                     />
                   </div>
 
-                  <span className="absolute bottom-3 right-3 rounded-full border border-emerald-300/50 bg-emerald-300/20 px-3 py-1 text-xs font-semibold text-emerald-100 sm:bottom-4 sm:right-4">
+                  <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border border-emerald-300/50 bg-emerald-300/20 px-3 py-1 text-xs font-semibold text-emerald-100 sm:bottom-4 sm:left-auto sm:right-4 sm:translate-x-0">
                     Available
                   </span>
                 </div>
