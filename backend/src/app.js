@@ -45,9 +45,16 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api", (req, res, next) => {
-  const allowWithoutDb = ["/health", "/auth/login", "/auth/verify"];
+  const allowWithoutDb = [
+    "/health",
+    "/auth/login",
+    "/auth/verify",
+    "/payments/config-status",
+  ];
+  const allowReadFallbackWithoutDb =
+    req.method === "GET" && /^\/(projects|blogs)\/?$/.test(req.path);
 
-  if (allowWithoutDb.includes(req.path)) {
+  if (allowWithoutDb.includes(req.path) || allowReadFallbackWithoutDb) {
     next();
     return;
   }

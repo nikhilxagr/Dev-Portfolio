@@ -11,8 +11,24 @@ import FadeInUp from "@/components/animations/FadeInUp";
 import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
 import { PROJECT_CATEGORIES, SIGNATURE_PROJECTS } from "@/constants/siteData";
 import { getProjects } from "@/services/projects.service";
-import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
+
+const matchesProjectFilters = (project, selectedCategory, currentSearch) => {
+  const matchesCategory =
+    selectedCategory === "All" || project.category === selectedCategory;
+  const keyword = currentSearch.trim().toLowerCase();
+
+  if (!keyword) {
+    return matchesCategory;
+  }
+
+  const searchable =
+    `${project.title} ${project.tagline} ${project.description} ${(
+      project.techStack || []
+    ).join(" ")}`.toLowerCase();
+
+  return matchesCategory && searchable.includes(keyword);
+};
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState([]);
@@ -42,10 +58,9 @@ const ProjectsPage = () => {
         return mergeStaticAndApiContent(staticProject, project);
       });
       setProjects(merged);
-    } catch (requestError) {
-      setError(
-        getErrorMessage(requestError, "Unable to load projects right now."),
-      );
+    } catch {
+      setError("");
+      setProjects([]);
     } finally {
       setLoading(false);
     }
@@ -59,18 +74,9 @@ const ProjectsPage = () => {
     return () => clearTimeout(timeoutId);
   }, [category, search]);
 
-  const fallbackProjects = SIGNATURE_PROJECTS.filter((project) => {
-    const matchesCategory = category === "All" || project.category === category;
-    const keyword = search.trim().toLowerCase();
-
-    if (!keyword) {
-      return matchesCategory;
-    }
-
-    const searchable =
-      `${project.title} ${project.tagline} ${project.description} ${(project.techStack || []).join(" ")}`.toLowerCase();
-    return matchesCategory && searchable.includes(keyword);
-  });
+  const fallbackProjects = SIGNATURE_PROJECTS.filter((project) =>
+    matchesProjectFilters(project, category, search),
+  );
 
   const displayProjects = projects.length > 0 ? projects : fallbackProjects;
   const fallbackProjectImage = "/images/placeholders/content-placeholder.svg";
@@ -104,8 +110,7 @@ const ProjectsPage = () => {
         />
 
         <p className="mt-4 max-w-3xl text-sm text-slate-400">
-          This section combines live backend data with curated signature project
-          narratives from my verified portfolio profile.
+          Projects are loaded from backend data with static fallback content.
         </p>
 
         <FadeInUp className="mt-8 rounded-2xl border border-cyan-300/20 bg-slate-950/70 p-4">
@@ -150,12 +155,6 @@ const ProjectsPage = () => {
               message={error}
               onRetry={() => loadProjects(category, search)}
             />
-          ) : null}
-          {!loading && error && displayProjects.length > 0 ? (
-            <div className="mb-4 rounded-xl border border-amber-300/35 bg-amber-300/10 px-4 py-3 text-sm text-amber-100">
-              Live API is temporarily unavailable. Showing local portfolio
-              project data.
-            </div>
           ) : null}
           {!loading && !error && displayProjects.length === 0 ? (
             <EmptyState

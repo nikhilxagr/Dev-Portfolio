@@ -1,89 +1,138 @@
 import { Helmet } from 'react-helmet-async'
+import { FileText, ShieldAlert, Wrench } from 'lucide-react'
 import SectionTitle from '@/components/ui/SectionTitle'
 import FadeInUp from '@/components/animations/FadeInUp'
 import { LEGAL_NOTICES, PRACTICALS } from '@/constants/siteData'
 
 const vulnerabilities = [
-  'SQL Injection and NoSQL Injection vectors',
-  'Cross-Site Scripting (XSS) and output encoding issues',
-  'Broken Authentication and weak session patterns',
-  'Security Misconfiguration in APIs and HTTP headers',
-  'Insecure Direct Object References and access control flaws',
+  'SQL and NoSQL injection attack patterns',
+  'Cross-site scripting (XSS) and output encoding gaps',
+  'Broken authentication and weak session handling',
+  'Security misconfiguration in APIs and HTTP headers',
+  'Access-control weaknesses including insecure direct object references',
 ]
 
 const allTools = Array.from(new Set(PRACTICALS.flatMap((item) => item.tools))).sort((a, b) =>
   a.localeCompare(b),
 )
 
+const statusLabelMap = {
+  ready: 'Ready',
+  ongoing: 'Ongoing',
+  'summary-ready': 'Summary Ready',
+  'add-room-wise-later': 'Room-wise Writeups Planned',
+}
+
+const formatStatusLabel = (value = '') => {
+  if (statusLabelMap[value]) {
+    return statusLabelMap[value]
+  }
+
+  return value
+    .split('-')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
 const SecurityPage = () => {
   return (
     <>
       <Helmet>
-        <title>Cyber Security | Nikhil Portfolio</title>
+        <title>Practicals | Nikhil Portfolio</title>
         <meta
           name="description"
-          content="Cybersecurity labs, tools, vulnerabilities learned, and penetration testing practical writeups."
+          content="Cybersecurity practicals, tools used, core vulnerability themes, and ethical testing scope notes."
         />
       </Helmet>
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
-          eyebrow="Cyber Security"
-          title="Hands-on Learning & Practical Assessments"
-          description="A practical archive of labs, tools, and writeups built through ethical and authorized learning workflows."
+          eyebrow="Practicals"
+          title="Cybersecurity Practicals"
+          description="Hands-on lab work with focused notes on tools, methodology, and ethical scope."
         />
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
+        <div className="mt-8 grid gap-4 sm:gap-5 xl:grid-cols-2">
           {PRACTICALS.map((item, index) => (
-            <FadeInUp key={item.slug} delay={index * 0.06} className="card-surface rounded-2xl p-5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">{item.focus}</p>
-                <span className="rounded-full border border-cyan-300/25 px-2 py-0.5 text-xs text-cyan-100">
-                  {item.level}
-                </span>
-              </div>
+            <FadeInUp
+              key={item.slug}
+              delay={index * 0.06}
+              className="card-surface relative overflow-hidden rounded-3xl p-5 sm:p-6"
+            >
+              <div className="pointer-events-none absolute -top-14 -right-12 h-32 w-32 rounded-full bg-cyan-300/10 blur-3xl" />
 
-              <h3 className="mt-2 text-lg font-semibold text-cyan-100">{item.title}</h3>
-              <p className="mt-3 text-sm text-slate-300">{item.summary}</p>
-
-              <div className="mt-3 flex flex-wrap gap-2">
-                {item.tools.map((tool) => (
-                  <span
-                    key={`${item.slug}-${tool}`}
-                    className="rounded-md border border-cyan-300/20 bg-slate-900/70 px-2 py-1 text-xs text-slate-300"
-                  >
-                    {tool}
+              <div className="relative">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+                    {item.focus}
+                  </p>
+                  <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2.5 py-1 text-xs font-medium text-cyan-100">
+                    {item.level}
                   </span>
-                ))}
-              </div>
+                </div>
 
-              <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500">
-                Status: {item.status} | Writeup: {item.writeupStatus}
-              </p>
+                <h3 className="mt-3 text-xl font-semibold text-cyan-100 sm:text-2xl">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-slate-300">{item.summary}</p>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {item.tools.map((tool) => (
+                    <span
+                      key={`${item.slug}-${tool}`}
+                      className="rounded-md border border-cyan-300/20 bg-slate-900/70 px-2.5 py-1 text-xs text-slate-300"
+                    >
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-2 text-xs uppercase tracking-[0.12em]">
+                  <span className="rounded-full border border-emerald-300/35 bg-emerald-300/10 px-2.5 py-1 text-emerald-100">
+                    Status: {formatStatusLabel(item.status)}
+                  </span>
+                  <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-2.5 py-1 text-cyan-100">
+                    Writeup: {formatStatusLabel(item.writeupStatus)}
+                  </span>
+                </div>
+              </div>
             </FadeInUp>
           ))}
         </div>
       </section>
 
-      <section className="section-wrap pt-0">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="card-surface rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-cyan-100">Tools Used</h2>
+      <section className="section-wrap pt-4 sm:pt-6">
+        <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
+          <article className="card-surface rounded-3xl p-5 sm:p-6">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-100">
+                <Wrench size={17} />
+              </span>
+              <h2 className="text-xl font-semibold text-cyan-100">Tools Used Across Labs</h2>
+            </div>
+
             <div className="mt-4 flex flex-wrap gap-2">
               {allTools.map((tool) => (
                 <span
                   key={tool}
-                  className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2 py-1 text-xs text-cyan-100"
+                  className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2.5 py-1 text-xs font-medium text-cyan-100"
                 >
                   {tool}
                 </span>
               ))}
             </div>
-          </div>
+          </article>
 
-          <div className="card-surface rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-cyan-100">Vulnerabilities Learned</h2>
-            <ul className="mt-4 space-y-2 text-sm text-slate-300">
+          <article className="card-surface rounded-3xl p-5 sm:p-6">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-emerald-300/30 bg-emerald-300/10 text-emerald-100">
+                <ShieldAlert size={17} />
+              </span>
+              <h2 className="text-xl font-semibold text-cyan-100">Vulnerability Themes Practiced</h2>
+            </div>
+
+            <ul className="mt-4 space-y-2.5 text-sm leading-7 text-slate-300">
               {vulnerabilities.map((item) => (
                 <li key={item} className="flex gap-2">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300" />
@@ -91,27 +140,32 @@ const SecurityPage = () => {
                 </li>
               ))}
             </ul>
-          </div>
+          </article>
         </div>
       </section>
 
-      <section className="section-wrap pt-0">
+      <section className="section-wrap pt-4 sm:pt-6">
         <SectionTitle
-          eyebrow="Ethics"
+          eyebrow="Ethics and Scope"
           title="Responsible Security Practice"
-          description="Security practice is done only in labs, owned systems, or explicitly authorized environments."
+          description="All testing is limited to lab environments, owned assets, or explicitly authorized targets."
         />
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          <article className="card-surface rounded-2xl p-5">
-            <h3 className="text-lg font-semibold text-cyan-100">Security Testing Notice</h3>
-            <p className="mt-3 text-sm text-slate-300">{LEGAL_NOTICES.securityTesting}</p>
+        <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-2">
+          <article className="card-surface rounded-3xl p-5 sm:p-6">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-100">
+                <FileText size={17} />
+              </span>
+              <h3 className="text-lg font-semibold text-cyan-100">Security Testing Notice</h3>
+            </div>
+            <p className="mt-3 text-sm leading-7 text-slate-300">{LEGAL_NOTICES.securityTesting}</p>
           </article>
 
-          <article className="card-surface rounded-2xl p-5">
+          <article className="card-surface rounded-3xl p-5 sm:p-6">
             <h3 className="text-lg font-semibold text-cyan-100">Portfolio Disclaimer</h3>
-            <p className="mt-3 text-sm text-slate-300">{LEGAL_NOTICES.portfolioDisclaimer}</p>
-            <p className="mt-3 text-sm text-slate-300">{LEGAL_NOTICES.practicalsEthics}</p>
+            <p className="mt-3 text-sm leading-7 text-slate-300">{LEGAL_NOTICES.portfolioDisclaimer}</p>
+            <p className="mt-3 text-sm leading-7 text-slate-300">{LEGAL_NOTICES.practicalsEthics}</p>
           </article>
         </div>
       </section>

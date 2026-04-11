@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { SITE_PROFILE } from "@/constants/siteData";
 
 const MotionDiv = motion.div;
 const LOADER_DURATION_MS = 1800;
@@ -23,9 +24,8 @@ const PortfolioLoader = ({ onComplete }) => {
     const duration = prefersReducedMotion
       ? REDUCED_MOTION_DURATION_MS
       : LOADER_DURATION_MS;
-    const stepMs = prefersReducedMotion ? 80 : 32;
     const startTime = window.performance.now();
-    let intervalId = null;
+    let frameId = null;
 
     const updateProgress = () => {
       const currentTime = window.performance.now();
@@ -34,16 +34,17 @@ const PortfolioLoader = ({ onComplete }) => {
       const easedProgress = easeOutCubic(normalized) * 100;
       setProgress(easedProgress);
 
-      if (normalized >= 1) {
-        window.clearInterval(intervalId);
+      if (normalized < 1) {
+        frameId = window.requestAnimationFrame(updateProgress);
       }
     };
 
-    updateProgress();
-    intervalId = window.setInterval(updateProgress, stepMs);
+    frameId = window.requestAnimationFrame(updateProgress);
 
     return () => {
-      window.clearInterval(intervalId);
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
     };
   }, [prefersReducedMotion]);
 
@@ -97,13 +98,44 @@ const PortfolioLoader = ({ onComplete }) => {
           ease: "easeOut",
         }}
       >
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-cyan-300/45 bg-cyan-300/10">
-          <div className="h-2.5 w-2.5 rounded-full bg-cyan-200" />
+        <div className="relative mx-auto h-20 w-20">
+          <MotionDiv
+            className="absolute inset-0 rounded-full border border-cyan-300/45"
+            animate={{ rotate: 360 }}
+            transition={{
+              duration: prefersReducedMotion ? 2.2 : 5.5,
+              ease: "linear",
+              repeat: Infinity,
+            }}
+          />
+          <MotionDiv
+            className="absolute inset-2 rounded-full border border-emerald-300/30 bg-cyan-300/10"
+            animate={{ opacity: [0.45, 0.95, 0.45], scale: [1, 1.04, 1] }}
+            transition={{
+              duration: prefersReducedMotion ? 1.2 : 2.4,
+              ease: "easeInOut",
+              repeat: Infinity,
+            }}
+          />
+          <MotionDiv
+            className="absolute inset-[13px] flex items-center justify-center rounded-full border border-cyan-200/60 bg-gradient-to-br from-cyan-400/30 via-cyan-300/20 to-emerald-300/20 shadow-[0_0_18px_rgba(34,211,238,0.28)]"
+            initial={{ scale: 0.9, opacity: 0.85 }}
+            animate={{ scale: [0.94, 1, 0.94], opacity: [0.8, 1, 0.8] }}
+            transition={{
+              duration: prefersReducedMotion ? 1.2 : 2.2,
+              ease: "easeInOut",
+              repeat: Infinity,
+            }}
+          >
+            <span className="font-display text-xl font-bold uppercase tracking-[0.14em] text-cyan-100">
+              NA
+            </span>
+          </MotionDiv>
         </div>
 
         <div>
           <p className="font-display text-lg uppercase tracking-[0.16em] text-cyan-100">
-            Nikhil Agrahari
+            {SITE_PROFILE.fullName}
           </p>
           <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-emerald-200">
             Full Stack and Security Portfolio

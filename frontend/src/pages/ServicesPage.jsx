@@ -219,8 +219,8 @@ const ServicesPage = () => {
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <SectionTitle
             eyebrow="Verified Services"
-            title="Build and Security Services in One Place"
-            description="Transparent pricing, focused outcomes, and secure Razorpay checkout with verifiable receipt confirmation."
+            title="Build and Security Services"
+            description="Service categories, pricing, and Razorpay checkout status."
           />
 
           <PaymentTrustPanel />
@@ -262,7 +262,7 @@ const ServicesPage = () => {
         <SectionTitle
           eyebrow="Service Catalog"
           title="All Services"
-          description="Everything listed in one place for easy comparison by category, pricing, and turnaround expectation."
+          description="Compare services by category, price, and timeline."
         />
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">

@@ -33,27 +33,6 @@ import {
   STATS_METRICS,
 } from "@/constants/siteData";
 
-const highlights = [
-  {
-    title: "Full Stack Engineering",
-    description:
-      "Frontend to backend delivery with production-focused architecture and clean integration flow.",
-    icon: Code2,
-  },
-  {
-    title: "Cybersecurity Mindset",
-    description:
-      "Practical security awareness from lab learning to secure implementation patterns in builds.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "AI Curiosity",
-    description:
-      "I explore AI-assisted workflows that improve developer productivity and practical problem-solving.",
-    icon: Sparkles,
-  },
-];
-
 const homeSkillIconMap = {
   "SOC Analyst with AI": ShieldCheck,
   "Web Development": Code2,
@@ -185,11 +164,10 @@ const HomePage = () => {
     QUICK_CONTACT.github.split("/").filter(Boolean).pop() || "nikhilxagr";
   const leetcodeUsername =
     QUICK_CONTACT.leetcode.split("/").filter(Boolean).pop() || "nikhilxagr";
-  const gfgUsername =
-    QUICK_CONTACT.gfg.match(/profile\/([^/?]+)/i)?.[1] || "nikhilxagr";
   const tryHackMeUsername =
     QUICK_CONTACT.tryhackme.split("/").filter(Boolean).pop() || "nikhilxagr";
   const tryHackMeMetric = STATS_METRICS.find((item) => item.id === "tryhackme");
+  const homePublicMetrics = STATS_METRICS.filter((item) => item.id !== "gfg");
 
   const githubStreakCardUrl = `https://streak-stats.demolab.com/?user=${githubUsername}&theme=${
     isDark ? "algolia" : "default"
@@ -197,7 +175,6 @@ const HomePage = () => {
   const leetcodeCardUrl = `https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=${
     isDark ? "dark" : "light"
   }&ext=heatmap`;
-  const gfgCardUrl = `https://gfgstatscard.vercel.app/${gfgUsername}?theme=${isDark ? "dark" : "light"}`;
   const tryHackMeCardUrl = `https://tryhackme-badges.s3.amazonaws.com/${tryHackMeUsername}.png`;
 
   useEffect(() => {
@@ -284,7 +261,7 @@ const HomePage = () => {
         <meta name="description" content={HERO_CONTENT.description} />
       </Helmet>
 
-      <section className="section-wrap pt-12 sm:pt-20">
+      <section className="section-wrap pt-12 pb-10 sm:pt-20 sm:pb-12">
         <FadeInUp className="card-surface overflow-hidden rounded-3xl p-6 sm:p-8">
           <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <div className="order-2 text-center sm:text-left lg:order-1">
@@ -295,7 +272,7 @@ const HomePage = () => {
                 {SITE_PROFILE.fullName}
               </h1>
               <p className="mt-4 text-sm uppercase tracking-[0.18em] text-slate-400">
-                {SITE_PROFILE.headline}
+                Security Learner | Full Stack Developer | Cyber Security Analyst
               </p>
 
               <div className="mt-5 flex flex-wrap justify-center gap-2 text-sm sm:justify-start">
@@ -328,19 +305,17 @@ const HomePage = () => {
               </p>
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:justify-start">
+                <Button
+                  to="/services"
+                  className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 text-white shadow-[0_0_0_1px_rgba(103,232,249,0.35),0_0_28px_rgba(34,211,238,0.28)] transition hover:from-violet-400 hover:via-fuchsia-400 hover:to-cyan-400 motion-safe:animate-[pulse_2.4s_ease-in-out_infinite]"
+                >
+                  Book Service <ArrowRight size={16} />
+                </Button>
                 <Button to={HERO_CONTENT.primaryCta.to}>
                   {HERO_CONTENT.primaryCta.label} <ArrowRight size={16} />
                 </Button>
                 <Button to={HERO_CONTENT.secondaryCta.to} variant="ghost">
                   {HERO_CONTENT.secondaryCta.label}
-                </Button>
-                <Button
-                  href={QUICK_CONTACT.resume}
-                  target="_blank"
-                  rel="noreferrer"
-                  variant="secondary"
-                >
-                  Resume
                 </Button>
               </div>
             </div>
@@ -367,7 +342,7 @@ const HomePage = () => {
           </div>
         </FadeInUp>
 
-        <div className="mt-12 flex items-end justify-between gap-4">
+        <div className="mt-10 flex items-end justify-between gap-4 sm:mt-12">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
               Public Learning Progress
@@ -378,8 +353,8 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {STATS_METRICS.map((item) => (
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {homePublicMetrics.map((item) => (
             <a
               key={item.id}
               href={item.link}
@@ -400,20 +375,18 @@ const HomePage = () => {
           ))}
         </div>
 
-        <FadeInUp className="mt-12 card-surface rounded-3xl p-6 sm:p-8">
+        <FadeInUp className="mt-10 card-surface rounded-3xl p-6 sm:mt-12 sm:p-8">
           <div className="text-center">
             <h2 className="font-display text-3xl font-bold text-cyan-100 sm:text-4xl">
               Coding Consistency Showcase
             </h2>
-            <p className="mt-2 text-sm text-slate-300">
-              Live cards from your public profiles
-            </p>
+            <p className="mt-2 text-sm text-slate-300">Live profile cards</p>
           </div>
 
-          <div className="mt-8 grid gap-6 lg:grid-cols-2">
-            <article className="group rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4">
+          <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-2xl font-semibold text-cyan-100">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
                   GitHub Streak
                 </h3>
                 <a
@@ -437,9 +410,9 @@ const HomePage = () => {
               </div>
             </article>
 
-            <article className="group rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4">
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-2xl font-semibold text-cyan-100">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
                   LeetCode Stats
                 </h3>
                 <a
@@ -463,35 +436,9 @@ const HomePage = () => {
               </div>
             </article>
 
-            <article className="group rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4">
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5 md:col-span-2 xl:col-span-1">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-2xl font-semibold text-cyan-100">
-                  GFG Stats
-                </h3>
-                <a
-                  href={QUICK_CONTACT.gfg}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
-                >
-                  Open ↗
-                </a>
-              </div>
-
-              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
-                <img
-                  src={gfgCardUrl}
-                  alt={`GeeksforGeeks stats for ${gfgUsername}`}
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </article>
-
-            <article className="group rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-2xl font-semibold text-cyan-100">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
                   TryHackMe Proof
                 </h3>
                 <a
@@ -520,30 +467,9 @@ const HomePage = () => {
             </article>
           </div>
         </FadeInUp>
-
-        <div className="mt-12 grid gap-4 md:grid-cols-3">
-          {highlights.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <FadeInUp
-                key={item.title}
-                delay={index * 0.08}
-                className="card-surface rounded-2xl p-5"
-              >
-                <Icon className="text-cyan-200" size={22} />
-                <h2 className="mt-3 text-lg font-semibold text-cyan-100">
-                  {item.title}
-                </h2>
-                <p className="mt-2 text-sm text-slate-300">
-                  {item.description}
-                </p>
-              </FadeInUp>
-            );
-          })}
-        </div>
       </section>
 
-      <section className="section-wrap section-divider pt-10">
+      <section className="section-wrap section-divider pt-8 sm:pt-10">
         <FadeInUp className={homePremiumShellClass}>
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_14%,rgba(34,211,238,0.16),transparent_36%),radial-gradient(circle_at_84%_82%,rgba(16,185,129,0.12),transparent_42%)]" />
 
@@ -551,7 +477,7 @@ const HomePage = () => {
             className="relative text-center lg:text-left"
             eyebrow="About Me"
             title="About Me"
-            description="Who I am, what I build, and how I can contribute."
+            description="Background, capabilities, and current focus."
           />
 
           <div className="relative mt-6 grid gap-4 sm:mt-8 sm:gap-5 lg:grid-cols-2">
@@ -683,10 +609,10 @@ const HomePage = () => {
                 Practicals and Services
               </p>
               <h2 className="mt-2 font-display text-3xl font-semibold text-cyan-100 sm:text-4xl">
-                Real Practice with Student-Friendly Support
+                Practicals and Services
               </h2>
               <p className="mx-auto mt-3 max-w-3xl text-slate-300">
-                Practical work highlights and services I currently offer.
+                Current practicals and active services.
               </p>
             </div>
 
@@ -782,7 +708,7 @@ const HomePage = () => {
               return (
                 <StaggerItem key={item.id} className="h-full">
                   <article
-                    className={`group relative h-full overflow-hidden rounded-2xl border p-5 shadow-[0_20px_45px_-30px_rgba(15,23,42,0.95)] transition duration-300 hover:-translate-y-1 ${visual.cardClass}`}
+                    className={`group relative h-full overflow-hidden rounded-2xl border p-4 sm:p-5 shadow-[0_20px_45px_-30px_rgba(15,23,42,0.95)] transition duration-300 hover:-translate-y-1 ${visual.cardClass}`}
                   >
                     <div
                       className={`pointer-events-none absolute -top-12 -right-10 h-32 w-32 rounded-full blur-3xl ${visual.orbClass}`}
@@ -796,15 +722,15 @@ const HomePage = () => {
                       </div>
 
                       <h3
-                        className={`mt-4 min-h-[5.2rem] text-2xl font-semibold leading-tight sm:text-[2rem] ${visual.titleClass}`}
+                        className={`mt-3 text-xl font-semibold leading-snug sm:mt-4 sm:text-[1.8rem] ${visual.titleClass}`}
                       >
                         {item.title}
                       </h3>
-                      <p className="mt-3 min-h-[6rem] text-sm leading-7 text-slate-300">
+                      <p className="mt-2 text-sm leading-6 text-slate-300 sm:mt-3 sm:leading-7">
                         {item.summary}
                       </p>
 
-                      <div className="mt-5 flex flex-wrap gap-2">
+                      <div className="mt-4 flex flex-wrap gap-2">
                         {item.tags.map((tag) => (
                           <span
                             key={tag}
@@ -840,7 +766,7 @@ const HomePage = () => {
         <SectionTitle
           eyebrow="Latest Blog"
           title="Fresh Perspective"
-          description="Most recent writing from Medium and LinkedIn with quick access to the full blog archive."
+          description="Recent writing from Medium and LinkedIn."
         />
 
         <div className="mx-auto mt-8 grid w-full max-w-[1180px] gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-stretch">
@@ -913,7 +839,7 @@ const HomePage = () => {
         <SectionTitle
           eyebrow="Featured Projects"
           title="Selected Work"
-          description="Selected projects with live demos, source links, and clear outcomes."
+          description="Featured projects with demos and source links."
         />
 
         <div className="mt-8">

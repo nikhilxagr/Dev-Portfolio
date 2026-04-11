@@ -83,37 +83,67 @@ function App() {
       >
         {!isAdminRoute ? <Navbar /> : null}
         <main className="flex-1" style={mainStyle}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/skills" element={<SkillsPage />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/:slug" element={<ProjectDetailsPage />} />
-            <Route path="/security" element={<SecurityPage />} />
-            <Route path="/services" element={<ServicesPage />} />
-            <Route path="/payment/success" element={<PaymentSuccessPage />} />
-            <Route path="/receipts" element={<ReceiptPortalPage />} />
-            <Route path="/refund-policy" element={<RefundPolicyPage />} />
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/blogs" element={<Navigate to="/blog" replace />} />
-            <Route path="/blog/:slug" element={<BlogDetailsPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <AdminDashboardPage />
-                </ProtectedRoute>
+          <AnimatePresence mode="wait" initial={false}>
+            <MotionDiv
+              key={location.pathname}
+              initial={
+                prefersReducedMotion
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: 14 }
               }
-            />
-            <Route
-              path="/admin/dashboard"
-              element={<Navigate to="/admin" replace />}
-            />
-            <Route path="/home" element={<Navigate to="/" replace />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+              animate={{ opacity: 1, y: 0 }}
+              exit={
+                prefersReducedMotion
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: -10 }
+              }
+              transition={{
+                duration: prefersReducedMotion ? 0.05 : 0.34,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <Routes location={location}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/skills" element={<SkillsPage />} />
+                <Route path="/projects" element={<ProjectsPage />} />
+                <Route
+                  path="/projects/:slug"
+                  element={<ProjectDetailsPage />}
+                />
+                <Route path="/security" element={<SecurityPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route
+                  path="/blogs"
+                  element={<Navigate to="/blog" replace />}
+                />
+                <Route path="/blog/:slug" element={<BlogDetailsPage />} />
+                <Route path="/services" element={<ServicesPage />} />
+                <Route
+                  path="/payment/success"
+                  element={<PaymentSuccessPage />}
+                />
+                <Route path="/receipts" element={<ReceiptPortalPage />} />
+                <Route path="/refund-policy" element={<RefundPolicyPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/admin/login" element={<AdminLoginPage />} />
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminDashboardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/dashboard"
+                  element={<Navigate to="/admin" replace />}
+                />
+                <Route path="/home" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </MotionDiv>
+          </AnimatePresence>
         </main>
         {!showLoader ? <ScrollProgressButton /> : null}
         {!isAdminRoute ? <Footer /> : null}

@@ -127,7 +127,7 @@ const SkillsPage = () => {
         <SectionTitle
           eyebrow="Intelligent Classification"
           title="One-Time, Clearly Classified Skills"
-          description="A focused, professional structure where each capability appears once in the domain where it belongs."
+          description="Skills grouped once by domain."
         />
 
         <StaggerGrid className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-2">
@@ -188,8 +188,7 @@ const SkillsPage = () => {
         </div>
 
         <p className="mt-4 text-sm leading-7 text-slate-400">
-          Built by {SITE_PROFILE.fullName} with a product-first, security-aware
-          engineering mindset and practical execution workflow.
+          Skills are listed once per domain to avoid duplication.
         </p>
       </section>
     </>

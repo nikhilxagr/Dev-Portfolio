@@ -151,8 +151,8 @@ const ContactPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Contact Hub"
-          title="One Route for Collaboration and Direct Contact"
-          description="This page combines project inquiry and direct channels in one place. Share your brief or reach out instantly through your preferred platform."
+          title="Contact and Project Inquiry"
+          description="Use this route for inquiries and direct contact channels."
         />
 
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
@@ -167,9 +167,8 @@ const ContactPage = () => {
                 Collaboration Brief
               </p>
               <p className="mt-2 text-sm text-slate-300">
-                Share your scope, timelines, and goal clearly. You will get a
-                practical response with next steps and realistic delivery
-                direction.
+                Share your scope, timeline, and goal. You will receive a direct
+                response with next steps.
               </p>
               <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
                 Typical response time: within 12-24 hours
@@ -276,7 +275,7 @@ const ContactPage = () => {
               Contact Hub
             </p>
             <h3 className="mt-2 text-lg font-semibold text-cyan-100">
-              All Contact Channels in One Place
+              All Contact Channels
             </h3>
             <p className="mt-2 text-sm text-slate-300">
               {SITE_PROFILE.availability}

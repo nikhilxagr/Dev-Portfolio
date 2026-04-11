@@ -62,7 +62,7 @@ const AboutPage = () => {
           className="text-center [&>p]:mx-auto"
           eyebrow="Professional Profile"
           title="About Me"
-          description="A direct view of who I am, what I can deliver, and where I am growing as a developer and security learner."
+          description="Background, capabilities, and current learning focus."
         />
 
         <FadeInUp className="card-surface relative mt-8 overflow-hidden rounded-[2rem] p-5 sm:p-8">
@@ -250,16 +250,24 @@ const AboutPage = () => {
             </div>
 
             <div className="mt-5 grid gap-2 sm:grid-cols-2">
-              {STATS_METRICS.slice(0, 4).map((metric) => (
-                <div
+              {STATS_METRICS.map((metric) => (
+                <a
                   key={metric.id}
+                  href={metric.link}
+                  target="_blank"
+                  rel="noreferrer"
                   className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-3"
                 >
                   <p className="font-display text-2xl text-cyan-100">
                     {metric.value}
                   </p>
-                  <p className="text-sm text-slate-400">{metric.label}</p>
-                </div>
+                  <p className="mt-1 text-sm font-medium text-slate-300">
+                    {metric.label}
+                  </p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
+                    {metric.detail}
+                  </p>
+                </a>
               ))}
             </div>
 

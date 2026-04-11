@@ -1,59 +1,95 @@
-import app from './app.js'
-import { env } from './config/env.js'
-import { connectDatabase, disconnectDatabase } from './config/db.js'
+import app from "./app.js";
+import { env } from "./config/env.js";
+import { connectDatabase, disconnectDatabase } from "./config/db.js";
 
-let server
+let server;
+let reconnectTimerId = null;
+
+const DB_RECONNECT_INTERVAL_MS = 15000;
 
 const canStartWithoutDatabase = () =>
-  env.nodeEnv === 'development' || env.allowStartWithoutDb
+  env.nodeEnv === "development" || env.allowStartWithoutDb;
+
+const clearReconnectTimer = () => {
+  if (!reconnectTimerId) {
+    return;
+  }
+
+  clearInterval(reconnectTimerId);
+  reconnectTimerId = null;
+};
+
+const scheduleReconnect = () => {
+  if (reconnectTimerId) {
+    return;
+  }
+
+  reconnectTimerId = setInterval(async () => {
+    if (app.locals.dbConnected === true) {
+      clearReconnectTimer();
+      return;
+    }
+
+    try {
+      await connectDatabase();
+      app.locals.dbConnected = true;
+      console.log("Database reconnected");
+      clearReconnectTimer();
+    } catch (error) {
+      console.warn(`Database reconnect attempt failed: ${error.message}`);
+    }
+  }, DB_RECONNECT_INTERVAL_MS);
+};
 
 const startServer = async () => {
-  let dbConnected = false
+  let dbConnected = false;
 
   try {
-    await connectDatabase()
-    dbConnected = true
-    console.log('Database connected')
+    await connectDatabase();
+    dbConnected = true;
+    console.log("Database connected");
   } catch (error) {
     if (!canStartWithoutDatabase()) {
-      throw error
+      throw error;
     }
 
     console.warn(
-      'Database connection failed. Starting backend in limited mode because ALLOW_START_WITHOUT_DB is enabled.',
-    )
-    console.warn(`MongoDB error: ${error.message}`)
+      "Database connection failed. Starting backend in limited mode because ALLOW_START_WITHOUT_DB is enabled.",
+    );
+    console.warn(`MongoDB error: ${error.message}`);
+    scheduleReconnect();
   }
 
-  app.locals.dbConnected = dbConnected
+  app.locals.dbConnected = dbConnected;
 
   server = app.listen(env.port, () => {
-    console.log(`Backend running on port ${env.port}`)
-  })
-}
+    console.log(`Backend running on port ${env.port}`);
+  });
+};
 
 const gracefulShutdown = async (signal) => {
-  console.log(`${signal} received. Closing server...`)
+  console.log(`${signal} received. Closing server...`);
+  clearReconnectTimer();
 
   if (server) {
     server.close(async () => {
-      await disconnectDatabase()
-      process.exit(0)
-    })
+      await disconnectDatabase();
+      process.exit(0);
+    });
   }
-}
+};
 
-process.on('SIGINT', () => gracefulShutdown('SIGINT'))
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 
 startServer().catch((error) => {
-  console.error('Failed to start backend:', error)
+  console.error("Failed to start backend:", error);
 
-  if (error?.name === 'MongooseServerSelectionError') {
+  if (error?.name === "MongooseServerSelectionError") {
     console.error(
-      'MongoDB Atlas connection failed. Verify Atlas Network Access (IP allowlist), cluster status (not paused), and MongoDB user credentials.',
-    )
+      "MongoDB Atlas connection failed. Verify Atlas Network Access (IP allowlist), cluster status (not paused), and MongoDB user credentials.",
+    );
   }
 
-  process.exit(1)
-})
+  process.exit(1);
+});
