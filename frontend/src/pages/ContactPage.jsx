@@ -31,7 +31,7 @@ const getContactPlatforms = (isDark) => {
     },
     LinkedIn: {
       href: QUICK_CONTACT.linkedin,
-      logo: "https://cdn.simpleicons.org/linkedin/0A66C2",
+      logo: "/images/brand/linkedin.svg",
     },
     Medium: {
       href: QUICK_CONTACT.medium,
@@ -185,7 +185,6 @@ const ContactPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
-                  placeholder="Your name"
                 />
               </label>
 
@@ -197,7 +196,6 @@ const ContactPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
-                  placeholder="you@example.com"
                 />
               </label>
 
@@ -209,7 +207,6 @@ const ContactPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
-                  placeholder="+91 7897972883"
                 />
               </label>
 
@@ -256,7 +253,6 @@ const ContactPage = () => {
                 onChange={handleChange}
                 rows={6}
                 className="mt-1 w-full resize-none rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
-                placeholder="Tell me about your project or opportunity"
               />
             </label>
 
@@ -330,13 +326,26 @@ const ContactPage = () => {
                   >
                     <span className="inline-flex items-center gap-2">
                       <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-cyan-300/20 bg-slate-950/80">
-                        <img
-                          src={item.logo}
-                          alt={`${item.label} logo`}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-[15px] w-[15px] object-contain"
-                        />
+                        {item.label === "LinkedIn" ? (
+                          <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            className="h-[15px] w-[15px]"
+                          >
+                            <path
+                              fill="#0A66C2"
+                              d="M20.447 20.452h-3.554v-5.569c0-1.328-.026-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.063 2.063 0 1 1 0-4.126 2.063 2.063 0 0 1 0 4.126zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                            />
+                          </svg>
+                        ) : (
+                          <img
+                            src={item.logo}
+                            alt={`${item.label} logo`}
+                            loading="lazy"
+                            decoding="async"
+                            className="h-[15px] w-[15px] object-contain"
+                          />
+                        )}
                       </span>
                       {item.label}
                     </span>

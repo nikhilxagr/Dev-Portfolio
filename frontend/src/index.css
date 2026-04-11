@@ -193,3 +193,31 @@ html.light .skills-panel-surface {
 html.light .shadow-neon {
   box-shadow: 0 0 0 1px rgba(14, 116, 144, 0.35), 0 0 24px rgba(14, 116, 144, 0.2) !important;
 }
+
+@media (max-width: 420px) {
+  .skills-mobile-card {
+    min-height: 292px;
+    padding: 0.95rem;
+  }
+
+  .skills-mobile-icon {
+    height: 2rem;
+    width: 2rem;
+  }
+
+  .skills-mobile-title {
+    min-height: 2.75rem;
+    font-size: 1.1rem;
+    line-height: 1.35;
+  }
+
+  .skills-mobile-summary {
+    min-height: 5.15rem;
+    font-size: 0.84rem;
+    line-height: 1.42rem;
+  }
+
+  .skills-mobile-chip-row {
+    gap: 0.4rem;
+  }
+}

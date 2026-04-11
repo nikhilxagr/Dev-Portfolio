@@ -1,70 +1,75 @@
 import { Helmet } from "react-helmet-async";
-import {
-  ArrowRight,
-  Code2,
-  Layers,
-  ShieldCheck,
-  Sparkles,
-  TimerReset,
-} from "lucide-react";
+import { ArrowRight, Code2, Cpu, ShieldCheck, Terminal } from "lucide-react";
 import Button from "@/components/ui/Button";
 import FadeInUp from "@/components/animations/FadeInUp";
 import SectionTitle from "@/components/ui/SectionTitle";
-import SkillMatrix from "@/components/ui/SkillMatrix";
+import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
+import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
 import { useTheme } from "@/context/ThemeContext";
-import {
-  ETHICAL_HACKING_TOOL_CARDS,
-  MAIN_SKILL_SHOWCASE,
-  QUICK_CONTACT,
-  SITE_PROFILE,
-  SKILL_EXPERTISE_TRACKS,
-} from "@/constants/siteData";
+import { QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
 
-const trackIconMap = {
-  "Full Stack Developer": Code2,
-  "Backend Engineer": Layers,
-  "Cyber Security Analyst": ShieldCheck,
-  "Ethical Hacker": Sparkles,
-  "Penetration Tester": TimerReset,
-};
-
-const showcaseAccentMap = {
-  "SOC Analyst with AI":
-    "border-emerald-300/40 bg-emerald-300/10 text-emerald-100",
-  "Web Development": "border-violet-300/40 bg-violet-300/10 text-violet-100",
-  "Coding Languages and Frameworks":
-    "border-cyan-300/40 bg-cyan-300/10 text-cyan-100",
-};
+const intelligentSkillDomains = [
+  {
+    id: "software-developer",
+    title: "Software Developer",
+    summary:
+      "Product-focused engineering from frontend architecture to backend delivery with maintainable code and production readiness.",
+    Icon: Code2,
+    accentClass: "via-cyan-300/50",
+    skills: [
+      "React",
+      "Next.js",
+      "JavaScript",
+      "Node.js",
+      "Express.js",
+      "Supabase",
+      "MongoDB",
+    ],
+  },
+  {
+    id: "cyber-security",
+    title: "Cyber Security",
+    summary:
+      "Security testing and defensive analysis workflows for identifying vulnerabilities, prioritizing risks, and improving resilience.",
+    Icon: ShieldCheck,
+    accentClass: "via-emerald-300/50",
+    skills: [
+      "Kali Linux",
+      "Burp Suite",
+      "Nmap",
+      "Wireshark",
+      "Metasploit",
+      "TryHackMe",
+    ],
+  },
+  {
+    id: "python-engineering",
+    title: "Python Engineering",
+    summary:
+      "Python-driven problem solving for scripting, data-oriented logic, and practical automation that supports development and security tasks.",
+    Icon: Cpu,
+    accentClass: "via-violet-300/45",
+    skills: ["Python", "SQL", "C", "Postman"],
+  },
+  {
+    id: "linux-systems",
+    title: "Linux and Delivery",
+    summary:
+      "Linux-based operational workflows for deployment, collaboration, and day-to-day system-level engineering support.",
+    Icon: Terminal,
+    accentClass: "via-fuchsia-300/45",
+    skills: ["Linux", "Git", "GitHub", "Vercel", "Render"],
+  },
+];
 
 const SkillsPage = () => {
   const { isDark } = useTheme();
 
-  const topSkillHighlights = [
-    {
-      id: "tracks",
-      label: "Expertise Tracks",
-      value: SKILL_EXPERTISE_TRACKS.length,
-      Icon: Layers,
-    },
-    {
-      id: "tool-categories",
-      label: "Tool Categories",
-      value: ETHICAL_HACKING_TOOL_CARDS.length,
-      Icon: ShieldCheck,
-    },
-    {
-      id: "main-pillars",
-      label: "Main Pillars",
-      value: MAIN_SKILL_SHOWCASE.length,
-      Icon: Sparkles,
-    },
-  ];
-
   const topSkillTags = [
-    "Full Stack Delivery",
-    "Backend APIs",
-    "Security Labs",
-    "Clean UI Engineering",
+    "Software Development",
+    "Cyber Security",
+    "Python Engineering",
+    "Linux Delivery",
   ];
 
   return (
@@ -78,7 +83,7 @@ const SkillsPage = () => {
       </Helmet>
 
       <section className="section-wrap pt-12 sm:pt-20">
-        <FadeInUp className="skills-hero-surface relative overflow-hidden rounded-[2rem] border border-cyan-300/25 p-6 sm:p-8">
+        <FadeInUp className="skills-hero-surface relative overflow-hidden rounded-[1.5rem] border border-cyan-300/25 p-5 sm:rounded-[2rem] sm:p-8">
           <div
             className={`pointer-events-none absolute inset-0 ${
               isDark
@@ -89,100 +94,30 @@ const SkillsPage = () => {
 
           <div className="relative">
             <div className="text-center">
-              <p className="font-display text-xs uppercase tracking-[0.3em] text-emerald-300">
-                Skills
+              <p className="font-display text-[10px] uppercase tracking-[0.28em] text-emerald-300 sm:text-xs sm:tracking-[0.3em]">
+                Skill Architecture
               </p>
-              <h1 className="mt-2 font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+              <h1 className="mt-2 font-display text-3xl font-bold leading-tight sm:text-5xl lg:text-6xl">
                 <span className="bg-gradient-to-r from-violet-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
-                  Core Skills and Expertise
+                  Focused Engineering and Security Stack
                 </span>
               </h1>
-              <p className="mx-auto mt-4 max-w-3xl text-slate-300">
-                Practical capabilities across product engineering and security,
-                from clean user interfaces and reliable APIs to structured
-                testing and defensive analysis.
+              <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-slate-300 sm:mt-4 sm:text-base">
+                A single, clearly structured skills route covering Software
+                Development, Cyber Security, Python Engineering, and Linux
+                Delivery workflows.
               </p>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-6">
               {topSkillTags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100"
+                  className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-2.5 py-1 text-[11px] font-medium text-cyan-100 sm:px-3 sm:text-xs"
                 >
                   {tag}
                 </span>
               ))}
-            </div>
-
-            <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-              <article className="skills-panel-surface rounded-2xl border border-cyan-300/25 p-5">
-                <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-                  Skills at a Glance
-                </p>
-
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  {topSkillHighlights.map((highlight) => (
-                    <div
-                      key={highlight.id}
-                      className="rounded-xl border border-cyan-300/25 bg-slate-900/70 p-3"
-                    >
-                      <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-300/35 bg-cyan-300/10 text-cyan-100">
-                        <highlight.Icon size={16} />
-                      </div>
-                      <p className="mt-3 font-display text-2xl text-cyan-100">
-                        {highlight.value}
-                      </p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.13em] text-slate-500">
-                        {highlight.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <p className="mt-4 text-sm text-slate-300">
-                  Each section below reflects practical application through real
-                  projects, labs, and consistent public learning.
-                </p>
-              </article>
-
-              <article className="skills-panel-surface rounded-2xl border border-cyan-300/25 p-5">
-                <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-                  Focus Domains
-                </p>
-
-                <div className="mt-4 space-y-3">
-                  {MAIN_SKILL_SHOWCASE.map((item) => (
-                    <div
-                      key={item.id}
-                      className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-3"
-                    >
-                      <h3 className="text-base font-semibold text-cyan-100">
-                        {item.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-slate-300">
-                        {item.summary}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-5 flex flex-wrap gap-3">
-                  <Button
-                    to="/projects"
-                    className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 text-white hover:from-violet-400 hover:via-fuchsia-400 hover:to-cyan-400"
-                  >
-                    View Skill Proof in Projects <ArrowRight size={16} />
-                  </Button>
-                  <Button
-                    to="/contact"
-                    variant="ghost"
-                    className="border-cyan-300/45 text-cyan-100 hover:bg-cyan-300/10"
-                  >
-                    Open Contact Hub
-                  </Button>
-                </div>
-              </article>
             </div>
           </div>
         </FadeInUp>
@@ -190,110 +125,44 @@ const SkillsPage = () => {
 
       <section className="section-wrap section-divider pt-10">
         <SectionTitle
-          eyebrow="Main Capability Areas"
-          title="Primary Skill Focus"
-          description="The top capability pillars that define how I design, build, and secure software products."
+          eyebrow="Intelligent Classification"
+          title="One-Time, Clearly Classified Skills"
+          description="A focused, professional structure where each capability appears once in the domain where it belongs."
         />
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {MAIN_SKILL_SHOWCASE.map((item) => (
-            <article key={item.id} className="card-surface rounded-2xl p-5">
-              <h3 className="text-2xl font-semibold text-cyan-100">
-                {item.title}
-              </h3>
-              <p className="mt-2 text-sm text-slate-300">{item.summary}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {item.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={`rounded-full border px-3 py-1 text-xs ${showcaseAccentMap[item.title] || "border-cyan-300/30 bg-cyan-300/10 text-cyan-100"}`}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+        <StaggerGrid className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-2">
+          {intelligentSkillDomains.map((domain) => (
+            <StaggerItem key={domain.id} className="h-full">
+              <article className="skills-mobile-card group relative h-full overflow-hidden rounded-2xl border border-cyan-300/25 bg-slate-950/70 p-4 shadow-[0_16px_36px_rgba(2,8,20,0.26)] transition duration-300 hover:-translate-y-1 hover:border-cyan-300/45 sm:p-5">
+                <div
+                  className={`pointer-events-none absolute inset-x-0 top-0 h-px animate-pulseLine bg-gradient-to-r from-transparent ${domain.accentClass} to-transparent`}
+                />
+                <div className="pointer-events-none absolute -right-14 -top-14 h-28 w-28 rounded-full bg-cyan-300/10 blur-3xl transition duration-300 group-hover:scale-125" />
 
-      <section className="section-wrap section-divider pt-10">
-        <SectionTitle
-          eyebrow="Expertise Tracks"
-          title="Full Stack, Backend, and Security Roles"
-          description="Role-focused competency cards showing strengths across development, security analysis, and penetration testing paths."
-        />
+                <div className="relative">
+                  <div className="skills-mobile-icon inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-300/35 bg-cyan-300/10 text-cyan-100 sm:h-10 sm:w-10">
+                    <domain.Icon size={17} />
+                  </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {SKILL_EXPERTISE_TRACKS.map((track) => {
-            const Icon = trackIconMap[track.title] || Sparkles;
-            return (
-              <article
-                key={track.title}
-                className="card-surface rounded-2xl p-5"
-              >
-                <Icon size={20} className="text-cyan-200" />
-                <h3 className="mt-3 text-xl font-semibold text-cyan-100">
-                  {track.title}
-                </h3>
-                <p className="mt-2 text-sm text-slate-300">{track.summary}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {track.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="rounded-md border border-cyan-300/25 bg-slate-900/70 px-2 py-1 text-xs text-cyan-100"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+                  <h3 className="skills-mobile-title mt-3 text-xl font-semibold text-cyan-100 sm:text-2xl">
+                    {domain.title}
+                  </h3>
+                  <p className="skills-mobile-summary mt-2 text-sm leading-6 text-slate-300 sm:leading-7">
+                    {domain.summary}
+                  </p>
+
+                  <div className="skills-mobile-chip-row mt-4 flex flex-wrap gap-2">
+                    {domain.skills.map((skill) => (
+                      <SkillLogoBadge key={skill} skill={skill} />
+                    ))}
+                  </div>
                 </div>
               </article>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="section-wrap section-divider pt-10">
-        <SectionTitle
-          eyebrow="Ethical Hacking Toolkit"
-          title="Practical Security Toolkit"
-          description="Core tools used in reconnaissance, web testing, traffic inspection, and controlled post-exploitation learning workflows."
-        />
-
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {ETHICAL_HACKING_TOOL_CARDS.map((card) => (
-            <article key={card.title} className="card-surface rounded-2xl p-5">
-              <h3 className="text-lg font-semibold text-cyan-100">
-                {card.title}
-              </h3>
-              {card.summary ? (
-                <p className="mt-2 text-sm text-slate-300">{card.summary}</p>
-              ) : null}
-              <ul className="mt-3 space-y-2 text-sm text-slate-300">
-                {card.tools.map((tool) => (
-                  <li key={tool} className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
-                    {tool}
-                  </li>
-                ))}
-              </ul>
-            </article>
+            </StaggerItem>
           ))}
-        </div>
-      </section>
+        </StaggerGrid>
 
-      <section className="section-wrap section-divider pt-10">
-        <SectionTitle
-          eyebrow="Complete Matrix"
-          title="All Skills and Technologies"
-          description="A complete matrix of frontend, backend, languages, databases, cybersecurity tools, and delivery platforms used in active work."
-        />
-
-        <div className="mt-8">
-          <SkillMatrix />
-        </div>
-
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-wrap gap-2.5 sm:gap-3">
           <Button to="/projects">
             View Skills in Projects <ArrowRight size={16} />
           </Button>
@@ -303,7 +172,7 @@ const SkillsPage = () => {
             rel="noreferrer"
             variant="ghost"
           >
-            Visit TryHackMe Profile
+            TryHackMe
           </Button>
           <Button
             href={QUICK_CONTACT.linkedin}
@@ -311,13 +180,16 @@ const SkillsPage = () => {
             rel="noreferrer"
             variant="secondary"
           >
-            Connect on LinkedIn
+            LinkedIn
+          </Button>
+          <Button to="/contact" variant="ghost">
+            Contact Hub
           </Button>
         </div>
 
-        <p className="mt-4 text-sm text-slate-400">
+        <p className="mt-4 text-sm leading-7 text-slate-400">
           Built by {SITE_PROFILE.fullName} with a product-first, security-aware
-          engineering mindset.
+          engineering mindset and practical execution workflow.
         </p>
       </section>
     </>

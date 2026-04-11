@@ -22,9 +22,7 @@ import { getBlogs } from "@/services/blogs.service";
 import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import {
-  ABOUT_STORY,
   BLOG_LINKS,
-  FOCUS_AREAS,
   HERO_CONTENT,
   MAIN_SKILL_SHOWCASE,
   PRACTICALS,
@@ -125,8 +123,29 @@ const sortBlogsByDate = (blogs = []) =>
   });
 
 const staticLatestBlogs = sortBlogsByDate(BLOG_LINKS).slice(0, 2);
-const aboutStoryPreview = ABOUT_STORY.slice(1, 3);
-const aboutFocusPreview = FOCUS_AREAS.slice(0, 4);
+const homeIdentityPoints = [
+  "I am Nikhil Agrahari, a BCA student focused on full stack development and cybersecurity fundamentals.",
+  "I build practical products with clean architecture, clear UI, and reliable backend structure.",
+  "I grow through disciplined learning, hands-on implementation, and ethical security practice.",
+];
+
+const homeCapabilityPoints = [
+  "Build responsive frontend interfaces with React and modern component patterns.",
+  "Develop backend APIs with Node.js, Express, validation, and database integration.",
+  "Apply security-first thinking in authorized projects and lab-based practical workflows.",
+  "Support students with mentorship, portfolio refinement, and roadmap guidance.",
+];
+
+const servicePreviewSummaryMap = {
+  "mentorship-call":
+    "Focused 1:1 guidance for roadmap clarity, project decisions, and consistent progress.",
+  "resume-review-help":
+    "Targeted resume refinement to present projects, skills, and outcomes more effectively.",
+  "portfolio-guidance":
+    "Practical feedback to strengthen portfolio structure, trust signals, and presentation quality.",
+  "frontend-development":
+    "Responsive frontend delivery with clean layouts, reusable components, and user-friendly flow.",
+};
 
 const HomePage = () => {
   const [featuredProjects, setFeaturedProjects] = useState([]);
@@ -509,7 +528,7 @@ const HomePage = () => {
             className="relative"
             eyebrow="About Me"
             title="A Quick Personal Snapshot"
-            description="A short look at my mindset, direction, and what drives my work as a developer and cybersecurity learner."
+            description="A clear introduction to who I am, how I work, and the value I can bring to real projects."
           />
 
           <div className="relative mt-8 grid items-start gap-5 lg:grid-cols-[1.15fr_0.85fr]">
@@ -520,15 +539,16 @@ const HomePage = () => {
                 Who I Am
               </p>
               <h2 className="mt-2 text-2xl font-semibold text-cyan-100 sm:text-3xl">
-                Building Products, Learning Security, Growing with Discipline
+                Developer and Security Learner with a Practical Mindset
               </h2>
 
               <p className="mt-4 text-base leading-7 text-slate-300">
-                {SITE_PROFILE.shortIntro}
+                I focus on building useful digital products while strengthening
+                cybersecurity skills through real lab practice.
               </p>
 
               <div className="mt-5 space-y-3">
-                {aboutStoryPreview.map((line) => (
+                {homeIdentityPoints.map((line) => (
                   <p
                     key={line}
                     className={`${homePanelItemBaseClass} p-3 text-sm leading-7 text-slate-300`}
@@ -554,14 +574,14 @@ const HomePage = () => {
 
             <article className={`${homePanelBaseClass} order-1 p-6 lg:order-2`}>
               <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
-                Personal Focus
+                What I Can Do
               </p>
               <h3 className="mt-2 text-xl font-semibold text-cyan-100">
-                What I Am Improving Right Now
+                Practical Support Across Build and Guidance
               </h3>
 
               <div className="mt-4 space-y-3">
-                {aboutFocusPreview.map((item) => (
+                {homeCapabilityPoints.map((item) => (
                   <article
                     key={item}
                     className={`${homePanelItemBaseClass} p-3`}
@@ -573,11 +593,11 @@ const HomePage = () => {
 
               <div className="mt-5 rounded-2xl border border-emerald-300/25 bg-emerald-300/10 p-4">
                 <p className="text-xs uppercase tracking-[0.14em] text-emerald-100">
-                  Current Goal
+                  Best Fit
                 </p>
                 <p className="mt-2 text-sm leading-7 text-slate-200">
-                  Become an engineer who can build clean, modern products and
-                  secure them with practical, real-world thinking.
+                  Students, founders, and small teams who need clear execution,
+                  practical delivery, and honest technical guidance.
                 </p>
               </div>
             </article>
@@ -598,8 +618,8 @@ const HomePage = () => {
                 Real Practice with Student-Friendly Support
               </h2>
               <p className="mx-auto mt-3 max-w-3xl text-slate-300">
-                Practical security progress and service offerings presented in a
-                clean format for quick recruiter review.
+                A short view of the practical work I do and the services I can
+                deliver.
               </p>
             </div>
 
@@ -609,7 +629,7 @@ const HomePage = () => {
                   Practicals
                 </p>
                 <h3 className="mt-2 text-2xl font-semibold text-cyan-100">
-                  Hands-on Cyber Lab Work
+                  What I Practice
                 </h3>
                 <div className="mt-4 space-y-3">
                   {PRACTICALS.slice(0, 3).map((item) => (
@@ -624,7 +644,10 @@ const HomePage = () => {
                         {item.level} | {item.status}
                       </p>
                       <p className="mt-2 text-sm leading-7 text-slate-300">
-                        {item.summary}
+                        {item.focus}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-400">
+                        Tools: {item.tools.slice(0, 3).join(", ")}
                       </p>
                     </article>
                   ))}
@@ -636,7 +659,7 @@ const HomePage = () => {
                   Services
                 </p>
                 <h3 className="mt-2 text-2xl font-semibold text-cyan-100">
-                  Student-Friendly, Build-Focused
+                  What I Can Deliver
                 </h3>
                 <div className="mt-4 space-y-3">
                   {SERVICE_OFFERINGS.slice(0, 4).map((item) => (
@@ -653,7 +676,7 @@ const HomePage = () => {
                         </span>
                       </div>
                       <p className="mt-2 text-sm leading-7 text-slate-300">
-                        {item.summary}
+                        {servicePreviewSummaryMap[item.slug] || item.summary}
                       </p>
                     </article>
                   ))}
