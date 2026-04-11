@@ -37,6 +37,17 @@ const readRequiredVariable = (name, aliases = []) => {
   return value;
 };
 
+const readOptionalVariable = (name, aliases = []) => {
+  const acceptedNames = [name, ...aliases];
+  const runtimeName = acceptedNames.find((variableName) =>
+    Boolean(process.env[variableName]),
+  );
+  const runtimeValue = runtimeName ? process.env[runtimeName] : undefined;
+  const fallbackValue = isDevelopment ? developmentFallbacks[name] : undefined;
+
+  return runtimeValue || fallbackValue || "";
+};
+
 const mongoUri = readRequiredVariable("MONGODB_URI", ["DATABASE_URL"]);
 const jwtSecret = readRequiredVariable("JWT_SECRET");
 const adminEmail = readRequiredVariable("ADMIN_EMAIL").toLowerCase();
@@ -105,4 +116,65 @@ export const env = {
   allowStartWithoutDb: parseBoolean(process.env.ALLOW_START_WITHOUT_DB, false),
   dbMaxPoolSize: parseNumber(process.env.DB_MAX_POOL_SIZE, 25),
   dbMinPoolSize: parseNumber(process.env.DB_MIN_POOL_SIZE, 5),
+  razorpayKeyId: readOptionalVariable("RAZORPAY_KEY_ID"),
+  razorpayKeySecret: readOptionalVariable("RAZORPAY_KEY_SECRET"),
+  razorpayWebhookSecret: readOptionalVariable("RAZORPAY_WEBHOOK_SECRET"),
+  resendApiKey: readOptionalVariable("RESEND_API_KEY"),
+  paymentFromEmail: readOptionalVariable("PAYMENT_FROM_EMAIL"),
+  paymentBusinessName:
+    readOptionalVariable("PAYMENT_BUSINESS_NAME") || "Nikhil Agrahari",
+  paymentSupportEmail:
+    readOptionalVariable("PAYMENT_SUPPORT_EMAIL") || adminEmail,
+  paymentRefundPolicyUrl:
+    readOptionalVariable("PAYMENT_REFUND_POLICY_URL") ||
+    "https://example.com/refund-policy",
+  paymentReceiptTokenSecret:
+    readOptionalVariable("PAYMENT_RECEIPT_TOKEN_SECRET") ||
+    (isDevelopment ? jwtSecret : ""),
+  paymentAccessCodeTtlMinutes: Math.max(
+    3,
+    parseNumber(process.env.PAYMENT_ACCESS_CODE_TTL_MINUTES, 10),
+  ),
+  paymentPortalTokenTtlMinutes: Math.max(
+    5,
+    parseNumber(process.env.PAYMENT_PORTAL_TOKEN_TTL_MINUTES, 30),
+  ),
+  paymentDownloadTokenTtlMinutes: Math.max(
+    5,
+    parseNumber(process.env.PAYMENT_DOWNLOAD_TOKEN_TTL_MINUTES, 20),
+  ),
+  paymentReceiptEmailEnabled: parseBoolean(
+    process.env.PAYMENT_RECEIPT_EMAIL_ENABLED,
+    false,
+  ),
 };
+
+const hasRazorpayKeyId = Boolean(env.razorpayKeyId);
+const hasRazorpayKeySecret = Boolean(env.razorpayKeySecret);
+
+if (hasRazorpayKeyId !== hasRazorpayKeySecret) {
+  throw new Error(
+    "RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET must be set together",
+  );
+}
+
+if (hasRazorpayKeyId && !env.razorpayWebhookSecret) {
+  console.warn(
+    "[env] RAZORPAY_WEBHOOK_SECRET is not set. Webhook signature verification will fail.",
+  );
+}
+
+if (!env.paymentReceiptTokenSecret) {
+  throw new Error(
+    "Missing required environment variable: PAYMENT_RECEIPT_TOKEN_SECRET",
+  );
+}
+
+if (
+  env.paymentReceiptEmailEnabled &&
+  (!env.resendApiKey || !env.paymentFromEmail)
+) {
+  throw new Error(
+    "PAYMENT_RECEIPT_EMAIL_ENABLED=true requires RESEND_API_KEY and PAYMENT_FROM_EMAIL",
+  );
+}

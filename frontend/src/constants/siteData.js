@@ -50,6 +50,8 @@ export const SOCIAL_LINKS = [
 
 export const QUICK_CONTACT = {
   email: "nikhilagrahari530@gmail.com",
+  billingEmail: "nikhilagrahari530@gmail.com",
+  supportEmail: "nikhilagrahari530@gmail.com",
   phone: "+91 7897972883",
   whatsapp: "https://wa.me/7897972883",
   linkedin: "https://www.linkedin.com/in/nikhilxagr/",
@@ -58,6 +60,7 @@ export const QUICK_CONTACT = {
   gfg: "https://www.geeksforgeeks.org/profile/nikhilxagr?tab=activity",
   tryhackme: "https://tryhackme.com/p/nikhilxagr",
   medium: "https://medium.com/@nikhilxagr",
+  refundPolicyPath: "/refund-policy",
   resume:
     "https://drive.google.com/file/d/1-BUv73624cDLAwxRkLhZGQBkQqyJUVWG/view?usp=drive_link",
 };
@@ -450,6 +453,7 @@ export const SERVICE_OFFERINGS = [
     name: "1:1 Mentorship",
     category: "Guidance",
     price: "INR 99",
+    amountInr: 99,
     turnaround: "Schedule-based",
     summary:
       "A short student-friendly session for guidance on web development, project direction, learning roadmaps, or portfolio improvement.",
@@ -459,6 +463,7 @@ export const SERVICE_OFFERINGS = [
     name: "Resume Review and Help",
     category: "Career Support",
     price: "INR 149",
+    amountInr: 149,
     turnaround: "1 to 2 days",
     summary:
       "Resume feedback and improvement support for students and freshers who want a cleaner, stronger technical profile.",
@@ -468,6 +473,7 @@ export const SERVICE_OFFERINGS = [
     name: "Portfolio Guidance",
     category: "Guidance",
     price: "INR 99",
+    amountInr: 99,
     turnaround: "1 to 2 days",
     summary:
       "Guidance for students who want to improve portfolio structure, project presentation, and personal branding.",
@@ -477,6 +483,7 @@ export const SERVICE_OFFERINGS = [
     name: "Frontend Development",
     category: "Build and Delivery",
     price: "INR 1099 - 1499",
+    amountInr: 1499,
     turnaround: "3 to 5 days for basic scope",
     summary:
       "Responsive frontend modules or small websites focused on clean UI, usability, and handover clarity.",
@@ -486,6 +493,7 @@ export const SERVICE_OFFERINGS = [
     name: "Backend Development",
     category: "Build and Delivery",
     price: "INR 1299 - 1799",
+    amountInr: 1799,
     turnaround: "3 to 6 days",
     summary:
       "Node.js and Express-based backend support for APIs, validation, routing, and simple data workflows.",
@@ -495,6 +503,7 @@ export const SERVICE_OFFERINGS = [
     name: "Full Stack Development",
     category: "Build and Delivery",
     price: "INR 2999 - 3499",
+    amountInr: 3499,
     turnaround: "Depends on scope",
     summary:
       "Small full stack builds with frontend, backend, database integration, and basic deployment support.",
@@ -504,6 +513,7 @@ export const SERVICE_OFFERINGS = [
     name: "Website Security Review",
     category: "Cyber Security",
     price: "INR 2499 - 4999",
+    amountInr: 4999,
     turnaround: "Depends on scope",
     summary:
       "Basic website security review for owned websites or explicitly authorized targets only.",

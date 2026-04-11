@@ -124,16 +124,39 @@ const sortBlogsByDate = (blogs = []) =>
 
 const staticLatestBlogs = sortBlogsByDate(BLOG_LINKS).slice(0, 2);
 const homeIdentityPoints = [
-  "I am Nikhil Agrahari, a BCA student focused on full stack development and cybersecurity fundamentals.",
-  "I build practical products with clean architecture, clear UI, and reliable backend structure.",
-  "I grow through disciplined learning, hands-on implementation, and ethical security practice.",
+  "BCA student at BBD University, Lucknow, learning full stack engineering with a practical workflow.",
+  "Strong interest in cybersecurity labs, secure coding habits, and ethical testing fundamentals.",
+  "Focused on building clear products that solve real problems and reflect disciplined execution.",
+];
+
+const homeIdentityTags = [
+  "Student",
+  "Problem Solver",
+  "Full Stack Learner",
+  "Security Mindset",
 ];
 
 const homeCapabilityPoints = [
-  "Build responsive frontend interfaces with React and modern component patterns.",
-  "Develop backend APIs with Node.js, Express, validation, and database integration.",
-  "Apply security-first thinking in authorized projects and lab-based practical workflows.",
-  "Support students with mentorship, portfolio refinement, and roadmap guidance.",
+  {
+    title: "Frontend Interfaces",
+    summary:
+      "Responsive React pages with clear information flow, reusable components, and clean interactions.",
+  },
+  {
+    title: "Backend API Delivery",
+    summary:
+      "Node.js and Express API development with validation, data modeling, and maintainable structure.",
+  },
+  {
+    title: "Security-First Practice",
+    summary:
+      "Authorized lab-based testing mindset with practical awareness of vulnerabilities and safer implementation.",
+  },
+  {
+    title: "Student Support",
+    summary:
+      "Portfolio guidance, project feedback, and roadmap clarity for students who need practical direction.",
+  },
 ];
 
 const servicePreviewSummaryMap = {
@@ -522,85 +545,130 @@ const HomePage = () => {
 
       <section className="section-wrap section-divider pt-10">
         <FadeInUp className={homePremiumShellClass}>
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(34,211,238,0.14),transparent_36%),radial-gradient(circle_at_86%_82%,rgba(16,185,129,0.1),transparent_40%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_14%,rgba(34,211,238,0.16),transparent_36%),radial-gradient(circle_at_84%_82%,rgba(16,185,129,0.12),transparent_42%)]" />
 
           <SectionTitle
-            className="relative"
+            className="relative text-center lg:text-left"
             eyebrow="About Me"
-            title="A Quick Personal Snapshot"
-            description="A clear introduction to who I am, how I work, and the value I can bring to real projects."
+            title="About Me"
+            description="Who I am, what I build, and how I can contribute."
           />
 
-          <div className="relative mt-8 grid items-start gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="relative mt-6 grid gap-4 sm:mt-8 sm:gap-5 lg:grid-cols-2">
             <article
-              className={`${homePanelBaseClass} order-2 p-6 sm:p-7 lg:order-1`}
+              className={`${homePanelBaseClass} relative overflow-hidden p-5 sm:p-7`}
             >
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
-                Who I Am
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold text-cyan-100 sm:text-3xl">
-                Developer and Security Learner with a Practical Mindset
-              </h2>
+              <div className="pointer-events-none absolute -top-14 -right-12 h-32 w-32 rounded-full bg-cyan-300/15 blur-3xl" />
 
-              <p className="mt-4 text-base leading-7 text-slate-300">
-                I focus on building useful digital products while strengthening
-                cybersecurity skills through real lab practice.
-              </p>
+              <div className="relative">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
+                      Who I Am
+                    </p>
+                    <h2 className="mt-2 text-[1.55rem] font-semibold leading-tight text-cyan-100 sm:text-3xl">
+                      Builder with Consistent Learning Discipline
+                    </h2>
+                  </div>
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-300/35 bg-cyan-300/12 text-cyan-100">
+                    <Sparkles size={18} />
+                  </span>
+                </div>
 
-              <div className="mt-5 space-y-3">
-                {homeIdentityPoints.map((line) => (
-                  <p
-                    key={line}
-                    className={`${homePanelItemBaseClass} p-3 text-sm leading-7 text-slate-300`}
-                  >
-                    {line}
+                <p className="mt-4 text-[0.95rem] leading-6 text-slate-300 sm:text-base sm:leading-7">
+                  I combine student curiosity with practical project execution,
+                  balancing product quality, clean architecture, and secure
+                  implementation habits.
+                </p>
+
+                <ul className="mt-4 space-y-2.5 sm:space-y-3">
+                  {homeIdentityPoints.map((line) => (
+                    <li
+                      key={line}
+                      className={`${homePanelItemBaseClass} flex items-start gap-3 p-3`}
+                    >
+                      <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-cyan-200" />
+                      <p className="text-sm leading-6 text-slate-300 sm:leading-7">
+                        {line}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {homeIdentityTags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </article>
+
+            <article
+              className={`${homePanelBaseClass} relative overflow-hidden p-5 sm:p-7`}
+            >
+              <div className="pointer-events-none absolute -bottom-16 -left-12 h-36 w-36 rounded-full bg-emerald-300/12 blur-3xl" />
+
+              <div className="relative">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
+                      What I Can Do
+                    </p>
+                    <h3 className="mt-2 text-[1.55rem] font-semibold leading-tight text-cyan-100 sm:text-3xl">
+                      Practical Delivery Across Product and Guidance
+                    </h3>
+                  </div>
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-300/35 bg-emerald-300/12 text-emerald-100">
+                    <Code2 size={18} />
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-2.5 sm:mt-5 sm:space-y-3">
+                  {homeCapabilityPoints.map((item) => (
+                    <article
+                      key={item.title}
+                      className={`${homePanelItemBaseClass} p-3`}
+                    >
+                      <p className="text-sm font-semibold text-cyan-100">
+                        {item.title}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-slate-300 sm:leading-7">
+                        {item.summary}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mt-5 rounded-2xl border border-emerald-300/25 bg-emerald-300/10 p-4">
+                  <p className="text-xs uppercase tracking-[0.14em] text-emerald-100">
+                    Best Fit
                   </p>
-                ))}
-              </div>
-
-              <div className="mt-6 flex flex-wrap justify-center gap-3 sm:justify-start">
-                <Button to="/about" className={homePrimaryGradientButtonClass}>
-                  Learn About Me Deeply <ArrowRight size={16} />
-                </Button>
-                <Button
-                  to="/contact"
-                  variant="ghost"
-                  className={homeGhostOutlineButtonClass}
-                >
-                  Connect With Me
-                </Button>
+                  <p className="mt-2 text-sm leading-6 text-slate-200 sm:leading-7">
+                    Students, founders, and small teams who need clear
+                    execution, practical delivery, and honest technical
+                    guidance.
+                  </p>
+                </div>
               </div>
             </article>
+          </div>
 
-            <article className={`${homePanelBaseClass} order-1 p-6 lg:order-2`}>
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
-                What I Can Do
-              </p>
-              <h3 className="mt-2 text-xl font-semibold text-cyan-100">
-                Practical Support Across Build and Guidance
-              </h3>
-
-              <div className="mt-4 space-y-3">
-                {homeCapabilityPoints.map((item) => (
-                  <article
-                    key={item}
-                    className={`${homePanelItemBaseClass} p-3`}
-                  >
-                    <p className="text-sm text-slate-300">{item}</p>
-                  </article>
-                ))}
-              </div>
-
-              <div className="mt-5 rounded-2xl border border-emerald-300/25 bg-emerald-300/10 p-4">
-                <p className="text-xs uppercase tracking-[0.14em] text-emerald-100">
-                  Best Fit
-                </p>
-                <p className="mt-2 text-sm leading-7 text-slate-200">
-                  Students, founders, and small teams who need clear execution,
-                  practical delivery, and honest technical guidance.
-                </p>
-              </div>
-            </article>
+          <div className="relative mt-6 flex flex-wrap justify-center gap-3 sm:mt-7 sm:justify-start">
+            <Button to="/about" className={homePrimaryGradientButtonClass}>
+              Learn More About Me <ArrowRight size={16} />
+            </Button>
+            <Button
+              to="/contact"
+              variant="ghost"
+              className={homeGhostOutlineButtonClass}
+            >
+              Connect With Me
+            </Button>
           </div>
         </FadeInUp>
       </section>
@@ -618,8 +686,7 @@ const HomePage = () => {
                 Real Practice with Student-Friendly Support
               </h2>
               <p className="mx-auto mt-3 max-w-3xl text-slate-300">
-                A short view of the practical work I do and the services I can
-                deliver.
+                Practical work highlights and services I currently offer.
               </p>
             </div>
 
@@ -701,8 +768,8 @@ const HomePage = () => {
               </span>
             </h2>
             <p className="mx-auto mt-4 max-w-3xl text-slate-300">
-              Technologies and tools I use to build practical products, write
-              better code, and grow in security-focused engineering.
+              Core technologies I use to ship reliable products and keep
+              improving as an engineer.
             </p>
           </div>
 
@@ -846,7 +913,7 @@ const HomePage = () => {
         <SectionTitle
           eyebrow="Featured Projects"
           title="Selected Work"
-          description="A quick look at applications and security-focused builds from my portfolio."
+          description="Selected projects with live demos, source links, and clear outcomes."
         />
 
         <div className="mt-8">

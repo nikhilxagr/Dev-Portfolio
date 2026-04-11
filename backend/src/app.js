@@ -5,6 +5,7 @@ import projectRoutes from "./routes/projectRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import { applySecurityMiddleware } from "./middleware/securityMiddleware.js";
 import {
   generalLimiter,
@@ -19,6 +20,10 @@ const app = express();
 app.set("trust proxy", 1);
 
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+app.use(
+  "/api/payments/webhook",
+  express.raw({ type: "application/json", limit: "300kb" }),
+);
 app.use(express.json({ limit: "300kb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -64,6 +69,7 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
