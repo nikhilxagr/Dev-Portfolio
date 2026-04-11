@@ -166,9 +166,13 @@ const ProjectsPage = () => {
           {!loading && displayProjects.length > 0 ? (
             <>
               <StaggerGrid className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {displayProjects.map((project) => (
+                {displayProjects.map((project, index) => (
                   <StaggerItem key={project._id || project.slug}>
-                    <ProjectCard project={project} variant="featured" />
+                    <ProjectCard
+                      project={project}
+                      variant="featured"
+                      priority={index < 3}
+                    />
                   </StaggerItem>
                 ))}
               </StaggerGrid>
@@ -253,6 +257,9 @@ const ProjectsPage = () => {
                             alt={`${project.title} preview`}
                             className="h-20 w-full object-cover transition-transform duration-500 group-hover:scale-[1.06] sm:h-24"
                             loading="lazy"
+                            width={192}
+                            height={96}
+                            decoding="async"
                             onError={handleProjectPreviewError}
                           />
                         </div>

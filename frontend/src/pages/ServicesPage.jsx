@@ -216,12 +216,35 @@ const ServicesPage = () => {
       </Helmet>
 
       <section className="section-wrap pt-12 sm:pt-20">
-        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-          <SectionTitle
-            eyebrow="Verified Services"
-            title="Build and Security Services"
-            description="Service categories, pricing, and Razorpay checkout status."
-          />
+        <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+          <div className="space-y-4 lg:space-y-5">
+            <SectionTitle
+              eyebrow="Verified Services"
+              title="Build and Security Services"
+              description="Service categories, pricing, and Razorpay checkout status."
+            />
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+              {serviceHighlights.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <article
+                    key={item.title}
+                    className="card-surface rounded-2xl p-5"
+                  >
+                    <Icon size={20} className="text-cyan-200" />
+                    <h2 className="mt-3 text-lg font-semibold text-cyan-100">
+                      {item.title}
+                    </h2>
+                    <p className="mt-2 text-sm text-slate-300">
+                      {item.summary}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
 
           <PaymentTrustPanel />
         </div>
@@ -236,26 +259,6 @@ const ServicesPage = () => {
             {paymentInfo}
           </p>
         ) : null}
-      </section>
-
-      <section className="section-wrap section-divider pt-10">
-        <div className="grid gap-4 md:grid-cols-3">
-          {serviceHighlights.map((item) => {
-            const Icon = item.icon;
-            return (
-              <article
-                key={item.title}
-                className="card-surface rounded-2xl p-5"
-              >
-                <Icon size={20} className="text-cyan-200" />
-                <h2 className="mt-3 text-lg font-semibold text-cyan-100">
-                  {item.title}
-                </h2>
-                <p className="mt-2 text-sm text-slate-300">{item.summary}</p>
-              </article>
-            );
-          })}
-        </div>
       </section>
 
       <section className="section-wrap section-divider pt-10">

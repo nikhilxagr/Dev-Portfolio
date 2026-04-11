@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { ArrowRight, Code2, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Code2, Server, ShieldCheck } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SectionTitle from "@/components/ui/SectionTitle";
 import FadeInUp from "@/components/animations/FadeInUp";
@@ -28,7 +28,7 @@ const aboutCapabilities = [
     title: "Backend API Development",
     summary:
       "Develop maintainable Node.js and Express APIs with validation and reliable data flow.",
-    icon: Sparkles,
+    icon: Server,
   },
   {
     title: "Security-Aware Delivery",

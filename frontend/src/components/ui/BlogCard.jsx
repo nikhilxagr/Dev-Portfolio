@@ -1,6 +1,12 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 
-const BlogCard = ({ blog, variant = "default", className = "" }) => {
+const BlogCard = ({
+  blog,
+  variant = "default",
+  className = "",
+  priority = false,
+}) => {
   const isCompact = variant === "compact";
   const rawDate = blog.createdAt || blog.publishedAt || "";
   const parsedDate = rawDate ? new Date(rawDate) : null;
@@ -15,6 +21,14 @@ const BlogCard = ({ blog, variant = "default", className = "" }) => {
   const readTime = blog.readTime || "";
   const fallbackImage = "/images/placeholders/content-placeholder.svg";
   const previewImage = blog.imageUrl || fallbackImage;
+  const localWebpImage =
+    previewImage.startsWith("/images/") && previewImage.endsWith(".png")
+      ? previewImage.replace(/\.png$/i, ".webp")
+      : "";
+  const imageWidth = isCompact ? 320 : 352;
+  const imageHeight = isCompact ? 144 : 176;
+  const imageLoading = priority ? "eager" : "lazy";
+  const imageFetchPriority = priority ? "high" : "auto";
   const tags = Array.isArray(blog.tags)
     ? blog.tags
     : typeof blog.tags === "string"
@@ -34,13 +48,22 @@ const BlogCard = ({ blog, variant = "default", className = "" }) => {
       className={`card-surface group flex h-full flex-col rounded-2xl transition hover:-translate-y-1 ${isCompact ? "p-4" : "p-5"} ${className}`}
     >
       <div className="mb-4 overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-900/70">
-        <img
-          src={previewImage}
-          alt={`${blog.title} preview`}
-          className={`${isCompact ? "h-36" : "h-44"} w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]`}
-          loading="lazy"
-          onError={handleImageError}
-        />
+        <picture>
+          {localWebpImage ? (
+            <source srcSet={localWebpImage} type="image/webp" />
+          ) : null}
+          <img
+            src={previewImage}
+            alt={`${blog.title} preview`}
+            className={`${isCompact ? "h-36" : "h-44"} w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]`}
+            width={imageWidth}
+            height={imageHeight}
+            loading={imageLoading}
+            decoding="async"
+            fetchPriority={imageFetchPriority}
+            onError={handleImageError}
+          />
+        </picture>
       </div>
 
       <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">
@@ -81,4 +104,8 @@ const BlogCard = ({ blog, variant = "default", className = "" }) => {
   );
 };
 
-export default BlogCard;
+const MemoizedBlogCard = memo(BlogCard);
+
+MemoizedBlogCard.displayName = "BlogCard";
+
+export default MemoizedBlogCard;

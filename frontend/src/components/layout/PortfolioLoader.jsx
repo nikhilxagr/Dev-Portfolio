@@ -101,28 +101,21 @@ const PortfolioLoader = ({ onComplete }) => {
         <div className="relative mx-auto h-20 w-20">
           <MotionDiv
             className="absolute inset-0 rounded-full border border-cyan-300/45"
+            style={{ willChange: "transform" }}
             animate={{ rotate: 360 }}
             transition={{
-              duration: prefersReducedMotion ? 2.2 : 5.5,
+              duration: prefersReducedMotion ? 2 : 7.5,
               ease: "linear",
               repeat: Infinity,
             }}
           />
           <MotionDiv
-            className="absolute inset-2 rounded-full border border-emerald-300/30 bg-cyan-300/10"
-            animate={{ opacity: [0.45, 0.95, 0.45], scale: [1, 1.04, 1] }}
-            transition={{
-              duration: prefersReducedMotion ? 1.2 : 2.4,
-              ease: "easeInOut",
-              repeat: Infinity,
-            }}
-          />
-          <MotionDiv
             className="absolute inset-[13px] flex items-center justify-center rounded-full border border-cyan-200/60 bg-gradient-to-br from-cyan-400/30 via-cyan-300/20 to-emerald-300/20 shadow-[0_0_18px_rgba(34,211,238,0.28)]"
-            initial={{ scale: 0.9, opacity: 0.85 }}
-            animate={{ scale: [0.94, 1, 0.94], opacity: [0.8, 1, 0.8] }}
+            style={{ willChange: "opacity" }}
+            initial={{ opacity: 0.82 }}
+            animate={{ opacity: [0.82, 1, 0.82] }}
             transition={{
-              duration: prefersReducedMotion ? 1.2 : 2.2,
+              duration: prefersReducedMotion ? 1.1 : 1.9,
               ease: "easeInOut",
               repeat: Infinity,
             }}
@@ -160,6 +153,7 @@ const PortfolioLoader = ({ onComplete }) => {
           >
             <MotionDiv
               className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-300 via-cyan-300 to-cyan-200"
+              style={{ willChange: "width" }}
               initial={{ width: "0%" }}
               animate={{ width: `${progress}%` }}
               transition={{

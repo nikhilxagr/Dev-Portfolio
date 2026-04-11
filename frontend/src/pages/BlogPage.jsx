@@ -140,9 +140,9 @@ const BlogPage = () => {
           ) : null}
           {!loading && !error && displayBlogs.length > 0 ? (
             <StaggerGrid className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {displayBlogs.map((blog) => (
+              {displayBlogs.map((blog, index) => (
                 <StaggerItem key={blog._id || blog.slug}>
-                  <BlogCard blog={blog} />
+                  <BlogCard blog={blog} priority={index < 3} />
                 </StaggerItem>
               ))}
             </StaggerGrid>

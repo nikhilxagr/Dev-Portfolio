@@ -10,7 +10,7 @@ export const SITE_PROFILE = {
     "Open to freelance projects, portfolio guidance, mentorship, and collaboration.",
   shortIntro:
     "Passionate about creating modern, user-friendly web applications and exploring the world of cybersecurity. Transforming ideas into interactive digital experiences.",
-  profileImage: "/images/profile/nikhil-upload-hero.png",
+  profileImage: "/images/profile/nikhil-upload-hero.webp",
   profileImageAlt: "Portrait of Nikhil Agrahari",
 };
 
@@ -328,7 +328,7 @@ export const SIGNATURE_PROJECTS = [
     githubUrl:
       "https://github.com/nikhilxagr/Web-Dev-Projects/tree/main/Food%20Delivery%20Website",
     liveDemoUrl: "https://fastfeast-agr.netlify.app/",
-    imageUrl: "/images/projects/fast-feast-cover.png",
+    imageUrl: "/images/projects/fast-feast-cover.webp",
     featured: true,
   },
   {
@@ -362,7 +362,7 @@ export const SIGNATURE_PROJECTS = [
     ],
     githubUrl: "https://github.com/nikhilxagr/snapurl-URL-SHORTNER",
     liveDemoUrl: "https://snapurl-url-shortner.vercel.app/",
-    imageUrl: "/images/projects/snapurl-cover.png",
+    imageUrl: "/images/projects/snapurl-cover.webp",
     featured: true,
   },
   {
@@ -389,7 +389,7 @@ export const SIGNATURE_PROJECTS = [
     githubUrl:
       "https://github.com/nikhilxagr/AI-Powered-Code-Reviewer-MERN-Project",
     liveDemoUrl: "",
-    imageUrl: "/images/projects/ai-powered-code-reviewer-cover.png",
+    imageUrl: "/images/projects/ai-powered-code-reviewer-cover.webp",
     featured: true,
   },
 ];
@@ -531,7 +531,7 @@ export const BLOG_LINKS = [
     url: "https://medium.com/@nikhilxagr/artificial-intelligence-concepts-for-beginnershow-im-learning-cybersecurity-web-development-and-a899bc6b4d1c",
     excerpt:
       "A reflection on learning across three connected areas and building a realistic roadmap as a student.",
-    imageUrl: "/images/placeholders/content-placeholder.svg",
+    imageUrl: "/images/blogs/image.png?v=20260412",
     publishedAt: "2025-12-14T08:30:00.000Z",
     readTime: "5 min read",
     content:
@@ -549,7 +549,7 @@ export const BLOG_LINKS = [
     url: "https://www.linkedin.com/pulse/how-chatbots-shaping-mindset-college-students-sword-nikhil-agrahari-gjhbf/",
     excerpt:
       "An opinion piece exploring opportunities and risks that chatbot-driven learning brings to students.",
-    imageUrl: "/images/blogs/artmet02.png",
+    imageUrl: "/images/blogs/artmet02.webp",
     publishedAt: "2026-03-22T09:00:00.000Z",
     readTime: "4 min read",
     content:
@@ -567,7 +567,7 @@ export const BLOG_LINKS = [
     url: "https://www.linkedin.com/pulse/how-metro-systems-work-token-allocation-technology-behind-agrahari-wgxqf/",
     excerpt:
       "A practical look at systems and technology that power metro networks and modern rail experiences.",
-    imageUrl: "/images/blogs/artmet01.png",
+    imageUrl: "/images/blogs/artmet01.webp",
     publishedAt: "2026-03-28T11:15:00.000Z",
     readTime: "6 min read",
     content:
@@ -585,7 +585,7 @@ export const BLOG_LINKS = [
     url: "https://www.linkedin.com/pulse/india-produces-toppers-world-innovators-why-we-falling-agrahari-fyp0c/",
     excerpt:
       "A reflective piece on the difference between exam-oriented success and innovation-oriented learning.",
-    imageUrl: "/images/blogs/1769378186476.png",
+    imageUrl: "/images/blogs/1769378186476.webp",
     publishedAt: "2026-04-07T15:45:00.000Z",
     readTime: "5 min read",
     content:

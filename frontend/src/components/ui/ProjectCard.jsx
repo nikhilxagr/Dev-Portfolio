@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
@@ -12,12 +13,20 @@ const GitHubMark = ({ className = "h-[13px] w-[13px]" }) => (
   </svg>
 );
 
-const ProjectCard = ({ project, variant = "default" }) => {
+const ProjectCard = ({ project, variant = "default", priority = false }) => {
   const summary = project.description || project.summary || "";
   const fallbackImage = "/images/placeholders/content-placeholder.svg";
   const previewImage = project.imageUrl || fallbackImage;
+  const localWebpImage =
+    previewImage.startsWith("/images/") && previewImage.endsWith(".png")
+      ? previewImage.replace(/\.png$/i, ".webp")
+      : "";
   const isFeaturedVariant = variant === "featured";
   const imageHeightClass = isFeaturedVariant ? "h-full" : "h-44";
+  const imageWidth = isFeaturedVariant ? 640 : 352;
+  const imageHeight = isFeaturedVariant ? 360 : 176;
+  const imageLoading = priority ? "eager" : "lazy";
+  const imageFetchPriority = priority ? "high" : "auto";
   const imageContainerClass = isFeaturedVariant
     ? "aspect-[16/9] overflow-hidden rounded-xl border border-cyan-300/25 bg-slate-950/80 p-1.5"
     : "relative overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-900/70";
@@ -51,13 +60,22 @@ const ProjectCard = ({ project, variant = "default" }) => {
       </div>
 
       <div className={`mb-4 ${imageContainerClass}`}>
-        <img
-          src={previewImage}
-          alt={`${project.title} preview`}
-          className={imageClass}
-          loading="lazy"
-          onError={handleImageError}
-        />
+        <picture>
+          {localWebpImage ? (
+            <source srcSet={localWebpImage} type="image/webp" />
+          ) : null}
+          <img
+            src={previewImage}
+            alt={`${project.title} preview`}
+            className={imageClass}
+            width={imageWidth}
+            height={imageHeight}
+            loading={imageLoading}
+            decoding="async"
+            fetchPriority={imageFetchPriority}
+            onError={handleImageError}
+          />
+        </picture>
         {!isFeaturedVariant ? (
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent" />
         ) : null}
@@ -135,4 +153,8 @@ const ProjectCard = ({ project, variant = "default" }) => {
   );
 };
 
-export default ProjectCard;
+const MemoizedProjectCard = memo(ProjectCard);
+
+MemoizedProjectCard.displayName = "ProjectCard";
+
+export default MemoizedProjectCard;

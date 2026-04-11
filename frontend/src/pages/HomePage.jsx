@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import {
   ArrowRight,
+  BadgeCheck,
+  Braces,
   Code2,
   MapPin,
   Rocket,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SectionTitle from "@/components/ui/SectionTitle";
@@ -36,7 +37,7 @@ import {
 const homeSkillIconMap = {
   "SOC Analyst with AI": ShieldCheck,
   "Web Development": Code2,
-  "Coding Languages and Frameworks": Sparkles,
+  "Coding Languages and Frameworks": Braces,
 };
 
 const homeSkillVisualMap = {
@@ -329,7 +330,12 @@ const HomePage = () => {
                       src={SITE_PROFILE.profileImage}
                       alt={SITE_PROFILE.profileImageAlt}
                       className="h-full w-full object-cover object-center"
-                      loading="lazy"
+                      width={360}
+                      height={360}
+                      sizes="(min-width: 1024px) 360px, (min-width: 640px) 300px, 240px"
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
                     />
                   </div>
 
@@ -405,6 +411,7 @@ const HomePage = () => {
                   alt={`GitHub streak stats for ${githubUsername}`}
                   className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
                   loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
                 />
               </div>
@@ -431,6 +438,7 @@ const HomePage = () => {
                   alt={`LeetCode stats for ${leetcodeUsername}`}
                   className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
                   loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
                 />
               </div>
@@ -461,6 +469,7 @@ const HomePage = () => {
                   alt={`TryHackMe badge for ${tryHackMeUsername}`}
                   className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
                   loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
                 />
               </div>
@@ -497,7 +506,7 @@ const HomePage = () => {
                     </h2>
                   </div>
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-300/35 bg-cyan-300/12 text-cyan-100">
-                    <Sparkles size={18} />
+                    <BadgeCheck size={18} />
                   </span>
                 </div>
 
@@ -701,7 +710,7 @@ const HomePage = () => {
 
           <StaggerGrid className="relative mt-8 grid gap-4 lg:grid-cols-3">
             {MAIN_SKILL_SHOWCASE.map((item) => {
-              const Icon = homeSkillIconMap[item.title] || Sparkles;
+              const Icon = homeSkillIconMap[item.title] || Braces;
               const visual =
                 homeSkillVisualMap[item.title] || defaultHomeSkillVisual;
 
@@ -788,12 +797,13 @@ const HomePage = () => {
             ) : null}
             {latestBlogs.length > 0 ? (
               <StaggerGrid className="grid gap-4 sm:grid-cols-2 sm:auto-rows-fr">
-                {latestBlogs.map((blog) => (
+                {latestBlogs.map((blog, index) => (
                   <StaggerItem key={blog._id || blog.slug} className="h-full">
                     <BlogCard
                       blog={blog}
                       variant="compact"
                       className="h-full"
+                      priority={index < 2}
                     />
                   </StaggerItem>
                 ))}
@@ -856,11 +866,12 @@ const HomePage = () => {
           ) : null}
           {!loadingProjects && mergedFeaturedProjects.length > 0 ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(280px,0.95fr)]">
-              {mergedFeaturedProjects.map((project) => (
+              {mergedFeaturedProjects.map((project, index) => (
                 <ProjectCard
                   key={project._id || project.slug}
                   project={project}
                   variant="featured"
+                  priority={index < 2}
                 />
               ))}
 
@@ -918,6 +929,9 @@ const HomePage = () => {
                             alt={`${project.title} thumbnail`}
                             className="h-14 w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
                             loading="lazy"
+                            width={168}
+                            height={56}
+                            decoding="async"
                             onError={handleProjectPreviewError}
                           />
                         </div>

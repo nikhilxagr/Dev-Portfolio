@@ -18,6 +18,10 @@ const ProjectDetailsPage = () => {
   const [error, setError] = useState("");
   const fallbackImage = "/images/placeholders/content-placeholder.svg";
   const previewImage = project?.imageUrl || fallbackImage;
+  const localWebpImage =
+    previewImage.startsWith("/images/") && previewImage.endsWith(".png")
+      ? previewImage.replace(/\.png$/i, ".webp")
+      : "";
 
   const handleImageError = (event) => {
     event.currentTarget.onerror = null;
@@ -40,7 +44,10 @@ const ProjectDetailsPage = () => {
         setProject(staticProject);
       } else {
         setError(
-          getErrorMessage(requestError, "Unable to load this project right now."),
+          getErrorMessage(
+            requestError,
+            "Unable to load this project right now.",
+          ),
         );
       }
     } finally {
@@ -55,7 +62,11 @@ const ProjectDetailsPage = () => {
   return (
     <section className="section-wrap pt-12 sm:pt-20">
       {loading ? (
-        <LoadingState message="Loading project details..." cards={1} variant="details" />
+        <LoadingState
+          message="Loading project details..."
+          cards={1}
+          variant="details"
+        />
       ) : null}
       {!loading && error ? (
         <ErrorState message={error} onRetry={loadProject} />
@@ -84,60 +95,71 @@ const ProjectDetailsPage = () => {
           <article className="space-y-5">
             <FadeInUp>
               <header className="card-surface rounded-2xl p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200">
-                {project.category}
-              </p>
-              {project.tagline ? (
-                <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
-                  {project.tagline}
+                <p className="text-xs uppercase tracking-[0.2em] text-emerald-200">
+                  {project.category}
                 </p>
-              ) : null}
-              <h1 className="mt-2 font-display text-3xl text-cyan-100 sm:text-4xl">
-                {project.title}
-              </h1>
-              <p className="mt-3 text-slate-300">{project.description}</p>
+                {project.tagline ? (
+                  <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
+                    {project.tagline}
+                  </p>
+                ) : null}
+                <h1 className="mt-2 font-display text-3xl text-cyan-100 sm:text-4xl">
+                  {project.title}
+                </h1>
+                <p className="mt-3 text-slate-300">{project.description}</p>
 
-              <div className="mt-5 flex flex-wrap items-center gap-4 text-slate-200">
-                {project.githubUrl ? (
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-sm hover:text-cyan-100"
-                  >
-                    <ExternalLink size={16} /> GitHub
-                  </a>
-                ) : null}
-                {project.liveDemoUrl ? (
-                  <a
-                    href={project.liveDemoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-sm hover:text-cyan-100"
-                  >
-                    <ExternalLink size={16} /> Live Demo
-                  </a>
-                ) : null}
-              </div>
+                <div className="mt-5 flex flex-wrap items-center gap-4 text-slate-200">
+                  {project.githubUrl ? (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-sm hover:text-cyan-100"
+                    >
+                      <ExternalLink size={16} /> GitHub
+                    </a>
+                  ) : null}
+                  {project.liveDemoUrl ? (
+                    <a
+                      href={project.liveDemoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-sm hover:text-cyan-100"
+                    >
+                      <ExternalLink size={16} /> Live Demo
+                    </a>
+                  ) : null}
+                </div>
               </header>
             </FadeInUp>
 
             <FadeInUp delay={0.06}>
               <div className="overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
-                <img
-                  src={previewImage}
-                  alt={`${project.title} cover`}
-                  className="h-auto max-h-[460px] w-full object-cover"
-                  loading="lazy"
-                  onError={handleImageError}
-                />
+                <picture>
+                  {localWebpImage ? (
+                    <source srcSet={localWebpImage} type="image/webp" />
+                  ) : null}
+                  <img
+                    src={previewImage}
+                    alt={`${project.title} cover`}
+                    className="h-auto max-h-[460px] w-full object-cover"
+                    width={1280}
+                    height={720}
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    onError={handleImageError}
+                  />
+                </picture>
               </div>
             </FadeInUp>
 
             <FadeInUp delay={0.1}>
               <div className="grid gap-4 lg:grid-cols-2">
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold text-cyan-100">Problem</h2>
+                  <h2 className="text-xl font-semibold text-cyan-100">
+                    Problem
+                  </h2>
                   <p className="mt-3 text-slate-300">
                     {project.problemStatement ||
                       "Problem statement will be updated soon."}
@@ -164,7 +186,9 @@ const ProjectDetailsPage = () => {
 
             {project.highlights?.length ? (
               <div className="card-surface rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-cyan-100">Key Highlights</h2>
+                <h2 className="text-xl font-semibold text-cyan-100">
+                  Key Highlights
+                </h2>
                 <ul className="mt-3 space-y-2 text-sm text-slate-300">
                   {project.highlights.map((item) => (
                     <li key={item} className="flex gap-2">

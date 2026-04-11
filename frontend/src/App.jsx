@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
@@ -7,25 +7,34 @@ import BackgroundGrid from "@/components/layout/BackgroundGrid";
 import PortfolioLoader from "@/components/layout/PortfolioLoader";
 import ScrollProgressButton from "@/components/layout/ScrollProgressButton";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import HomePage from "@/pages/HomePage";
-import AboutPage from "@/pages/AboutPage";
-import SkillsPage from "@/pages/SkillsPage";
-import ProjectsPage from "@/pages/ProjectsPage";
-import ProjectDetailsPage from "@/pages/ProjectDetailsPage";
-import SecurityPage from "@/pages/SecurityPage";
-import ServicesPage from "@/pages/ServicesPage";
-import PaymentSuccessPage from "@/pages/PaymentSuccessPage";
-import ReceiptPortalPage from "@/pages/ReceiptPortalPage";
-import RefundPolicyPage from "@/pages/RefundPolicyPage";
-import BlogPage from "@/pages/BlogPage";
-import BlogDetailsPage from "@/pages/BlogDetailsPage";
-import ContactPage from "@/pages/ContactPage";
-import AdminLoginPage from "@/pages/AdminLoginPage";
-import AdminDashboardPage from "@/pages/AdminDashboardPage";
-import NotFoundPage from "@/pages/NotFoundPage";
+
+const HomePage = lazy(() => import("@/pages/HomePage"));
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const SkillsPage = lazy(() => import("@/pages/SkillsPage"));
+const ProjectsPage = lazy(() => import("@/pages/ProjectsPage"));
+const ProjectDetailsPage = lazy(() => import("@/pages/ProjectDetailsPage"));
+const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
+const ServicesPage = lazy(() => import("@/pages/ServicesPage"));
+const PaymentSuccessPage = lazy(() => import("@/pages/PaymentSuccessPage"));
+const ReceiptPortalPage = lazy(() => import("@/pages/ReceiptPortalPage"));
+const RefundPolicyPage = lazy(() => import("@/pages/RefundPolicyPage"));
+const BlogPage = lazy(() => import("@/pages/BlogPage"));
+const BlogDetailsPage = lazy(() => import("@/pages/BlogDetailsPage"));
+const ContactPage = lazy(() => import("@/pages/ContactPage"));
+const AdminLoginPage = lazy(() => import("@/pages/AdminLoginPage"));
+const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage"));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
 
 const LOADER_VISIT_KEY = "portfolio_loader_seen";
 const MotionDiv = motion.div;
+
+const RouteFallback = () => (
+  <div className="section-wrap pt-16 pb-16">
+    <div className="mx-auto max-w-md rounded-2xl border border-cyan-300/25 bg-slate-950/70 p-5 text-center text-sm text-slate-300">
+      Loading page...
+    </div>
+  </div>
+);
 
 function App() {
   const location = useLocation();
@@ -62,7 +71,7 @@ function App() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {showLoader ? (
           <PortfolioLoader
             key="portfolio-loader"
@@ -83,65 +92,70 @@ function App() {
       >
         {!isAdminRoute ? <Navbar /> : null}
         <main className="flex-1" style={mainStyle}>
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence initial={false}>
             <MotionDiv
               key={location.pathname}
               initial={
                 prefersReducedMotion
                   ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 14 }
+                  : { opacity: 0, y: 8 }
               }
               animate={{ opacity: 1, y: 0 }}
               exit={
                 prefersReducedMotion
                   ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: -10 }
+                  : { opacity: 0, y: -6 }
               }
               transition={{
-                duration: prefersReducedMotion ? 0.05 : 0.34,
+                duration: prefersReducedMotion ? 0.04 : 0.2,
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <Routes location={location}>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/skills" element={<SkillsPage />} />
-                <Route path="/projects" element={<ProjectsPage />} />
-                <Route
-                  path="/projects/:slug"
-                  element={<ProjectDetailsPage />}
-                />
-                <Route path="/security" element={<SecurityPage />} />
-                <Route path="/blog" element={<BlogPage />} />
-                <Route
-                  path="/blogs"
-                  element={<Navigate to="/blog" replace />}
-                />
-                <Route path="/blog/:slug" element={<BlogDetailsPage />} />
-                <Route path="/services" element={<ServicesPage />} />
-                <Route
-                  path="/payment/success"
-                  element={<PaymentSuccessPage />}
-                />
-                <Route path="/receipts" element={<ReceiptPortalPage />} />
-                <Route path="/refund-policy" element={<RefundPolicyPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/admin/login" element={<AdminLoginPage />} />
-                <Route
-                  path="/admin"
-                  element={
-                    <ProtectedRoute>
-                      <AdminDashboardPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin/dashboard"
-                  element={<Navigate to="/admin" replace />}
-                />
-                <Route path="/home" element={<Navigate to="/" replace />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
+              <Suspense fallback={<RouteFallback />}>
+                <Routes location={location}>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/skills" element={<SkillsPage />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
+                  <Route
+                    path="/projects/:slug"
+                    element={<ProjectDetailsPage />}
+                  />
+                  <Route path="/security" element={<SecurityPage />} />
+                  <Route path="/blog" element={<BlogPage />} />
+                  <Route
+                    path="/blogs"
+                    element={<Navigate to="/blog" replace />}
+                  />
+                  <Route path="/blog/:slug" element={<BlogDetailsPage />} />
+                  <Route path="/services" element={<ServicesPage />} />
+                  <Route
+                    path="/payment/success"
+                    element={<PaymentSuccessPage />}
+                  />
+                  <Route path="/receipts" element={<ReceiptPortalPage />} />
+                  <Route
+                    path="/refund-policy"
+                    element={<RefundPolicyPage />}
+                  />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/admin/login" element={<AdminLoginPage />} />
+                  <Route
+                    path="/admin"
+                    element={
+                      <ProtectedRoute>
+                        <AdminDashboardPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/dashboard"
+                    element={<Navigate to="/admin" replace />}
+                  />
+                  <Route path="/home" element={<Navigate to="/" replace />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </Suspense>
             </MotionDiv>
           </AnimatePresence>
         </main>
