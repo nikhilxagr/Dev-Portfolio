@@ -83,11 +83,12 @@ export const createPersonSchema = () => {
     image: toAbsoluteUrl(SEO_DEFAULTS.defaultImage),
     knowsAbout: [
       "Full Stack Development",
-      "Web Security",
-      "Cybersecurity Labs",
+      "Application Security",
+      "Secure Coding",
       "MERN Stack",
       "Node.js",
       "React",
+      "API Design",
     ],
     alumniOf: {
       "@type": "CollegeOrUniversity",

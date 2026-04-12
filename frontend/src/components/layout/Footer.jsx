@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Mail, ShieldCheck } from "lucide-react";
 import {
+  LEGAL_LINKS,
   NAV_LINKS,
   QUICK_CONTACT,
   SITE_PROFILE,
@@ -32,8 +33,8 @@ const Footer = () => {
               {SITE_PROFILE.fullName}
             </h2>
             <p className="mt-3 max-w-xl text-slate-300">
-              Full stack and security-focused professional portfolio. Open for
-              internships, freelance modules, and practical collaboration.
+              Full stack professional portfolio focused on practical delivery,
+              clear communication, and reliable execution.
             </p>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
@@ -87,7 +88,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <h3 className="text-xl font-semibold text-cyan-100">
                 Quick Navigation
@@ -111,8 +112,8 @@ const Footer = () => {
                 Let's Work Together
               </h3>
               <p className="mt-4 text-sm text-slate-300">
-                Have a project in mind? Need a full stack or security-aware
-                build path?
+                Have a project in mind? Need frontend, backend, or full stack
+                delivery support?
               </p>
               <Link
                 to="/contact"
@@ -121,6 +122,21 @@ const Footer = () => {
                 <Mail size={16} />
                 Let's Talk
               </Link>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-cyan-100">Policies</h3>
+              <div className="mt-4 grid gap-2 text-sm text-slate-300">
+                {LEGAL_LINKS.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className="transition hover:text-cyan-100"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -137,7 +153,7 @@ const Footer = () => {
             . All rights reserved.
           </p>
           <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
-            Full Stack Developer | Cyber Security Analyst
+            Full Stack Developer | Web Solutions
           </p>
         </div>
       </div>

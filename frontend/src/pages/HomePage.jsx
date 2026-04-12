@@ -36,13 +36,13 @@ import {
 } from "@/constants/siteData";
 
 const homeSkillIconMap = {
-  "SOC Analyst with AI": ShieldCheck,
+  "AI-Assisted Product Quality": ShieldCheck,
   "Web Development": Code2,
   "Coding Languages and Frameworks": Braces,
 };
 
 const homeSkillVisualMap = {
-  "SOC Analyst with AI": {
+  "AI-Assisted Product Quality": {
     cardClass:
       "border-cyan-300/30 bg-gradient-to-br from-slate-900/88 via-slate-900/80 to-cyan-950/55",
     orbClass: "bg-cyan-300/20",
@@ -106,7 +106,7 @@ const sortBlogsByDate = (blogs = []) =>
 const staticLatestBlogs = sortBlogsByDate(BLOG_LINKS).slice(0, 2);
 const homeIdentityPoints = [
   "BCA student at BBD University, Lucknow, learning full stack engineering with a practical workflow.",
-  "Strong interest in cybersecurity labs, secure coding habits, and ethical testing fundamentals.",
+  "Strong focus on secure coding habits, product quality, and production-ready implementation.",
   "Focused on building clear products that solve real problems and reflect disciplined execution.",
 ];
 
@@ -260,7 +260,7 @@ const HomePage = () => {
     <>
       <SeoHead
         title={SITE_PROFILE.title}
-        description="Portfolio of Nikhil Agrahari from Lucknow and BBD University, featuring full stack development projects, cybersecurity practicals, and technical blogs."
+        description="Portfolio of Nikhil Agrahari from Lucknow and BBD University, featuring full stack development projects, secure engineering practicals, and technical blogs."
         pathname="/"
         image={SITE_PROFILE.profileImage}
         imageAlt={SITE_PROFILE.profileImageAlt}
@@ -285,18 +285,18 @@ const HomePage = () => {
                 {SITE_PROFILE.fullName}
               </h1>
               <p className="mt-4 text-sm uppercase tracking-[0.18em] text-slate-400">
-                Security Learner | Full Stack Developer | Cyber Security Analyst
+                Product Engineer | Full Stack Developer | Secure Coding Mindset
               </p>
 
               <div className="mt-5 flex flex-wrap justify-center gap-2 text-sm sm:justify-start">
                 <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-cyan-100">
-                  WEB PENETRATION TESTER
+                  Frontend Engineering
                 </span>
                 <span className="rounded-full border border-violet-300/30 bg-violet-300/10 px-3 py-1 text-violet-200">
-                  SOC Analyst with AI
+                  API Development
                 </span>
                 <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-amber-200">
-                  Ethical Hacker
+                  AI-Assisted Quality
                 </span>
                 <span className="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-emerald-200">
                   Full Stack Developer

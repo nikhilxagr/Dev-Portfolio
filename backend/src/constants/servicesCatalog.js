@@ -41,13 +41,6 @@ const SERVICE_CATALOG = [
     amountPaise: 349900,
     currency: "INR",
   },
-  {
-    slug: "website-security-review",
-    name: "Website Security Review",
-    amountInr: 4999,
-    amountPaise: 499900,
-    currency: "INR",
-  },
 ];
 
 const serviceMap = new Map(

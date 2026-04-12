@@ -117,12 +117,12 @@ const ProjectsPage = () => {
     <>
       <SeoHead
         title="Projects"
-        description="Project portfolio of Nikhil Agrahari covering web development, cybersecurity practical builds, and AI-focused experiments."
+        description="Project portfolio of Nikhil Agrahari covering web development, secure engineering practical builds, and AI-focused experiments."
         pathname="/projects"
         keywords={[
           "Nikhil portfolio projects",
           "Nikhil Lucknow projects",
-          "full stack and cybersecurity projects",
+          "full stack and engineering projects",
         ]}
         jsonLd={[
           createBreadcrumbSchema([
@@ -136,7 +136,7 @@ const ProjectsPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Projects"
-          title="Builds, Security Labs & AI Experiments"
+          title="Builds, Engineering Practicals & AI Experiments"
           description="Filter and search through my project archive by domain and technology focus."
         />
 

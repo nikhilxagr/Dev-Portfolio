@@ -25,7 +25,6 @@ const categoryStyle = {
   Guidance: "border-emerald-300/45 bg-emerald-300/10 text-emerald-200",
   "Career Support": "border-cyan-300/45 bg-cyan-300/10 text-cyan-200",
   "Build and Delivery": "border-violet-300/45 bg-violet-300/10 text-violet-200",
-  "Cyber Security": "border-amber-300/45 bg-amber-300/10 text-amber-200",
 };
 
 const serviceHighlights = [
@@ -210,7 +209,7 @@ const ServicesPage = () => {
     <>
       <SeoHead
         title="Services"
-        description="Services by Nikhil Agrahari including mentorship, resume review, full stack development, and authorized security-focused consultation."
+        description="Services by Nikhil Agrahari including mentorship, resume review, frontend/backend development, and full stack delivery."
         pathname="/services"
         keywords={[
           "Nikhil services",
@@ -228,8 +227,8 @@ const ServicesPage = () => {
           <div className="space-y-4 lg:space-y-5">
             <SectionTitle
               eyebrow="Verified Services"
-              title="Build and Security Services"
-              description="Service categories, pricing, and Razorpay checkout status."
+              title="Development and Guidance Services"
+              description="Service categories, transparent pricing, and Razorpay checkout status."
             />
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">

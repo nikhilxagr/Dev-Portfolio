@@ -113,12 +113,12 @@ const BlogPage = () => {
     <>
       <SeoHead
         title="Blog"
-        description="Technical blog by Nikhil Agrahari with notes on development, cybersecurity, and practical engineering experiments."
+        description="Technical blog by Nikhil Agrahari with notes on development, secure engineering, and practical experiments."
         pathname="/blog"
         keywords={[
           "Nikhil portfolio blog",
           "Nikhil Lucknow technical blog",
-          "development and cybersecurity notes",
+          "development and engineering notes",
         ]}
         jsonLd={[
           createBreadcrumbSchema([
@@ -132,7 +132,7 @@ const BlogPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Blog"
-          title="Notes on Code, Security & AI"
+          title="Notes on Code, Engineering & AI"
           description="Posts from projects, labs, and experiments."
         />
 

@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 import { ShieldCheck, ReceiptText, Mail, BadgeCheck } from "lucide-react";
-import { QUICK_CONTACT } from "@/constants/siteData";
+import { LEGAL_LINKS, QUICK_CONTACT } from "@/constants/siteData";
+
+const legalQuickLinks = LEGAL_LINKS.filter((item) =>
+  ["Terms and Conditions", "Privacy Policy"].includes(item.label),
+);
 
 const trustPoints = [
   {
@@ -64,6 +68,15 @@ const PaymentTrustPanel = () => {
         >
           View Refund Policy
         </Link>
+        {legalQuickLinks.map((item) => (
+          <Link
+            key={item.to}
+            to={item.to}
+            className="rounded-full border border-cyan-300/35 px-3 py-1 text-cyan-100 transition hover:border-cyan-300"
+          >
+            {item.label}
+          </Link>
+        ))}
         <a
           href={`mailto:${QUICK_CONTACT.billingEmail}`}
           className="rounded-full border border-cyan-300/35 px-3 py-1 text-cyan-100 transition hover:border-cyan-300"

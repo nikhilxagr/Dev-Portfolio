@@ -28,7 +28,7 @@ export const SEO_TARGET_KEYWORDS = [
   "Nikhil Agrahari",
   "BBD University developer",
   "Lucknow full stack developer",
-  "Lucknow cybersecurity learner",
+  "Lucknow web developer",
 ];
 
 export const SEO_DEFAULTS = {
@@ -36,7 +36,7 @@ export const SEO_DEFAULTS = {
   brandName: "Nikhil Portfolio",
   siteTitle: "Nikhil Agrahari Portfolio",
   defaultDescription:
-    "Portfolio of Nikhil Agrahari from Lucknow, featuring full stack projects, cybersecurity practicals, and technical writing.",
+    "Portfolio of Nikhil Agrahari from Lucknow, featuring full stack projects, secure engineering practicals, and technical writing.",
   defaultImage:
     SITE_PROFILE.profileImage || "/images/profile/nikhil-upload-hero.webp",
   defaultImageAlt:
@@ -51,7 +51,7 @@ export const SEO_DEFAULTS = {
 export const PERSON_ENTITY = {
   name: SITE_PROFILE.fullName,
   alternateName: SITE_PROFILE.shortName,
-  jobTitle: "Full Stack Developer and Cybersecurity Learner",
+  jobTitle: "Full Stack Developer and Product Engineer",
   description: SITE_PROFILE.shortIntro,
   email: QUICK_CONTACT.email,
   telephone: QUICK_CONTACT.phone,

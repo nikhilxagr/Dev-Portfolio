@@ -6,7 +6,8 @@ const matrixToneMap = {
   Backend: "from-emerald-300/18 via-cyan-300/10 to-transparent",
   Languages: "from-violet-300/18 via-cyan-300/10 to-transparent",
   Database: "from-amber-300/16 via-emerald-300/10 to-transparent",
-  "Cybersecurity Tools": "from-rose-300/16 via-emerald-300/10 to-transparent",
+  "Security and Testing Tools":
+    "from-rose-300/16 via-emerald-300/10 to-transparent",
   "Other Tools": "from-cyan-300/18 via-slate-300/10 to-transparent",
 };
 

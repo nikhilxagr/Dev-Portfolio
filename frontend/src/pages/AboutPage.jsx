@@ -41,7 +41,7 @@ const aboutCapabilities = [
 
 const aboutCurrentDirection = [
   "Improve full stack architecture decisions and production readiness.",
-  "Strengthen practical cybersecurity methodology through consistent labs.",
+  "Strengthen secure coding methodology and implementation quality.",
   "Build portfolio projects that show clear impact and technical depth.",
 ];
 
@@ -52,7 +52,7 @@ const AboutPage = () => {
     <>
       <SeoHead
         title="About"
-        description="About Nikhil Agrahari, BCA student at BBD University Lucknow, focused on full stack development, practical cybersecurity learning, and reliable product execution."
+        description="About Nikhil Agrahari, BCA student at BBD University Lucknow, focused on full stack development, practical engineering workflows, and reliable product execution."
         pathname="/about"
         image={SITE_PROFILE.profileImage}
         imageAlt={SITE_PROFILE.profileImageAlt}
@@ -91,7 +91,7 @@ const AboutPage = () => {
                   Who I Am
                 </p>
                 <h3 className="mt-2 text-[1.55rem] font-semibold leading-tight text-cyan-100 sm:text-3xl">
-                  Student Builder with a Security Learning Mindset
+                  Student Builder with a Product Engineering Mindset
                 </h3>
 
                 <div className="mt-4 space-y-3 text-[0.95rem] leading-6 text-slate-300 sm:space-y-4 sm:text-base sm:leading-7">

@@ -18,6 +18,12 @@ const ServicesPage = lazy(() => import("@/pages/ServicesPage"));
 const PaymentSuccessPage = lazy(() => import("@/pages/PaymentSuccessPage"));
 const ReceiptPortalPage = lazy(() => import("@/pages/ReceiptPortalPage"));
 const RefundPolicyPage = lazy(() => import("@/pages/RefundPolicyPage"));
+const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage"));
+const TermsPage = lazy(() => import("@/pages/TermsPage"));
+const CancellationPolicyPage = lazy(
+  () => import("@/pages/CancellationPolicyPage"),
+);
+const DeliveryPolicyPage = lazy(() => import("@/pages/DeliveryPolicyPage"));
 const BlogPage = lazy(() => import("@/pages/BlogPage"));
 const BlogDetailsPage = lazy(() => import("@/pages/BlogDetailsPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
@@ -134,9 +140,19 @@ function App() {
                     element={<PaymentSuccessPage />}
                   />
                   <Route path="/receipts" element={<ReceiptPortalPage />} />
+                  <Route path="/refund-policy" element={<RefundPolicyPage />} />
                   <Route
-                    path="/refund-policy"
-                    element={<RefundPolicyPage />}
+                    path="/privacy-policy"
+                    element={<PrivacyPolicyPage />}
+                  />
+                  <Route path="/terms-and-conditions" element={<TermsPage />} />
+                  <Route
+                    path="/cancellation-policy"
+                    element={<CancellationPolicyPage />}
+                  />
+                  <Route
+                    path="/delivery-policy"
+                    element={<DeliveryPolicyPage />}
                   />
                   <Route path="/contact" element={<ContactPage />} />
                   <Route path="/admin/login" element={<AdminLoginPage />} />

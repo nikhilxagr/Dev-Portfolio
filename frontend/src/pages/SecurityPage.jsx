@@ -40,13 +40,13 @@ const SecurityPage = () => {
   return (
     <>
       <SeoHead
-        title="Cybersecurity Practicals"
-        description="Cybersecurity practicals by Nikhil Agrahari, including vulnerability themes, lab tooling, methodology notes, and responsible testing scope."
+        title="Security Engineering Practicals"
+        description="Security engineering practicals by Nikhil Agrahari, including vulnerability themes, lab tooling, methodology notes, and responsible testing scope."
         pathname="/security"
         keywords={[
-          "Nikhil cybersecurity practicals",
-          "Nikhil Lucknow security labs",
-          "ethical hacking portfolio",
+          "Nikhil security practicals",
+          "Nikhil Lucknow secure engineering labs",
+          "application security learning",
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", path: "/" },
@@ -57,8 +57,8 @@ const SecurityPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Practicals"
-          title="Cybersecurity Practicals"
-          description="Hands-on lab work with focused notes on tools, methodology, and ethical scope."
+          title="Security Engineering Practicals"
+          description="Hands-on lab work with focused notes on tools, methodology, and approved scope."
         />
 
         <div className="mt-8 grid gap-4 sm:gap-5 xl:grid-cols-2">
@@ -160,7 +160,7 @@ const SecurityPage = () => {
 
       <section className="section-wrap pt-4 sm:pt-6">
         <SectionTitle
-          eyebrow="Ethics and Scope"
+          eyebrow="Governance and Scope"
           title="Responsible Security Practice"
           description="All testing is limited to lab environments, owned assets, or explicitly authorized targets."
         />

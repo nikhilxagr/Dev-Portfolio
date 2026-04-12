@@ -2,23 +2,23 @@ export const SITE_PROFILE = {
   fullName: "Nikhil Agrahari",
   shortName: "Nikhil",
   title: "Nikhil Agrahari Portfolio",
-  headline: "BCA Student | Full Stack Developer | Cyber Security Analyst",
+  headline: "BCA Student | Full Stack Developer | Web Solutions Builder",
   role: "Web Developer",
   education: "BCA, BBD University, Lucknow",
   location: "Lucknow, India",
   availability:
     "Open to freelance projects, portfolio guidance, mentorship, and collaboration.",
   shortIntro:
-    "Passionate about creating modern, user-friendly web applications and exploring the world of cybersecurity. Transforming ideas into interactive digital experiences.",
+    "Passionate about creating modern, user-friendly web applications with clean architecture and reliable delivery. Transforming ideas into interactive digital experiences.",
   profileImage: "/images/profile/nikhil-upload-hero.webp",
   profileImageAlt: "Portrait of Nikhil Agrahari",
 };
 
 export const HERO_CONTENT = {
-  eyebrow: "Full Stack Developer | Cyber Security Learner",
-  title: "Building modern web products and learning how to secure them.",
+  eyebrow: "Full Stack Developer | Product Builder",
+  title: "Building modern web products with clean and reliable implementation.",
   description:
-    "I work across frontend and backend development, build clean user-focused experiences, and document my cyber security journey through labs, writeups, and hands-on practice.",
+    "I work across frontend and backend development, build user-focused experiences, and follow secure coding practices for production-ready delivery.",
   primaryCta: {
     label: "View Projects",
     to: "/projects",
@@ -64,11 +64,19 @@ export const QUICK_CONTACT = {
   resume: "/WebDev_Resume.pdf",
 };
 
+export const LEGAL_LINKS = [
+  { label: "Refund Policy", to: "/refund-policy" },
+  { label: "Privacy Policy", to: "/privacy-policy" },
+  { label: "Terms and Conditions", to: "/terms-and-conditions" },
+  { label: "Cancellation Policy", to: "/cancellation-policy" },
+  { label: "Delivery and Fulfillment", to: "/delivery-policy" },
+];
+
 export const ABOUT_STORY = [
   "Hi, I'm Nikhil Agrahari.",
-  "I am a second-year BCA student at BBD University, Lucknow, with a growing passion for web development, cybersecurity, and ethical hacking. Currently working as a web developer, I enjoy turning ideas into interactive, user-friendly digital solutions.",
-  "I believe in writing clean, efficient code and building projects that not only work well but also create real value. Alongside development, I am deeply interested in cyber defense and ethical hacking, and I keep exploring how systems can be made safer, faster, and more reliable.",
-  "My learning path stays broad on purpose. I enjoy frontend development, backend logic, and practical security work, because understanding how things are built also helps me understand how they should be protected.",
+  "I am a second-year BCA student at BBD University, Lucknow, focused on web development and practical software engineering. Currently working as a web developer, I enjoy turning ideas into interactive, user-friendly digital solutions.",
+  "I believe in writing clean, efficient code and building projects that create real value. Alongside development, I continuously improve secure coding practices, performance, and reliability.",
+  "My learning path stays broad on purpose. I enjoy frontend development, backend logic, and deployment workflows, because understanding the complete system helps deliver better products.",
   "Beyond coding, I am focused on consistent growth, collaboration, and building work that reflects both curiosity and discipline.",
 ];
 
@@ -76,7 +84,7 @@ export const FOCUS_AREAS = [
   "Responsive frontend development",
   "Backend API development",
   "Portfolio and product building",
-  "Cyber security labs and practical learning",
+  "Secure coding and production best practices",
   "Clean UI with strong usability",
 ];
 
@@ -112,7 +120,7 @@ export const SKILL_GROUPS = [
     ],
   },
   {
-    title: "Cybersecurity Tools",
+    title: "Security and Testing Tools",
     items: [
       "Kali Linux",
       "Burp Suite",
@@ -132,14 +140,14 @@ export const SKILL_GROUPS = [
 export const MAIN_SKILL_SHOWCASE = [
   {
     id: "soc-analyst-ai",
-    title: "SOC Analyst with AI",
+    title: "AI-Assisted Product Quality",
     summary:
-      "Combining SOC workflows with AI-assisted triage to reduce alert noise and accelerate response decisions.",
+      "Using AI-assisted workflows to improve testing quality, issue prioritization, and delivery confidence.",
     tags: [
-      "Alert Prioritization",
-      "Log Analysis",
-      "Incident Workflow",
-      "AI-assisted Triage",
+      "Quality Signals",
+      "Issue Prioritization",
+      "Release Readiness",
+      "AI-assisted Insights",
     ],
   },
   {
@@ -191,34 +199,34 @@ export const SKILL_EXPERTISE_TRACKS = [
     ],
   },
   {
-    title: "Cyber Security Analyst",
+    title: "Application Security Learner",
     summary:
-      "Applying a defense-first mindset to log review, vulnerability assessment, and practical risk reduction across applications.",
+      "Applying a defense-first mindset to application review, secure coding, and practical risk reduction across products.",
     skills: [
       "Threat Analysis",
-      "Vulnerability Review",
+      "Security Review",
       "Security Documentation",
       "Risk-based Prioritization",
     ],
   },
   {
-    title: "Ethical Hacker",
+    title: "Secure Development Practitioner",
     summary:
-      "Practicing legal and authorized offensive testing with structured methodology and clear reporting outcomes.",
+      "Practicing authorized testing methodology with structured validation and clear remediation reporting.",
     skills: [
-      "Recon and Enumeration",
+      "Scope Validation",
       "Web App Testing",
       "Burp Suite Workflows",
-      "Responsible Disclosure",
+      "Remediation Notes",
     ],
   },
   {
-    title: "Penetration Tester",
+    title: "Quality and Risk Reviewer",
     summary:
-      "Following a structured testing lifecycle from scope definition to proof-of-concept validation and remediation reporting.",
+      "Following a structured review lifecycle from scope definition to risk validation and implementation improvements.",
     skills: [
-      "Attack Surface Mapping",
-      "Manual Testing",
+      "Surface Mapping",
+      "Manual Review",
       "Validation of Findings",
       "Remediation Guidance",
     ],
@@ -227,15 +235,15 @@ export const SKILL_EXPERTISE_TRACKS = [
 
 export const ETHICAL_HACKING_TOOL_CARDS = [
   {
-    title: "Recon and Enumeration",
+    title: "Recon and Diagnostics",
     summary:
-      "Discovery-focused tools for mapping target surfaces and collecting actionable reconnaissance data.",
+      "Discovery-focused tools for mapping system surfaces and collecting actionable diagnostic data.",
     tools: ["Kali Linux", "Nmap", "Gobuster", "Whois", "Subdomain Discovery"],
   },
   {
-    title: "Web Security Testing",
+    title: "Application Security Review",
     summary:
-      "Testing web applications for common vulnerabilities with both manual validation and guided frameworks.",
+      "Reviewing web applications for common risks with manual validation and guided frameworks.",
     tools: [
       "Burp Suite",
       "OWASP Testing Guide",
@@ -245,26 +253,26 @@ export const ETHICAL_HACKING_TOOL_CARDS = [
     ],
   },
   {
-    title: "Network and Traffic Analysis",
+    title: "Network and Traffic Diagnostics",
     summary:
-      "Inspecting packets, services, and protocol behavior to identify attack paths and defensive gaps.",
+      "Inspecting packets, services, and protocol behavior to identify reliability and defense gaps.",
     tools: ["Wireshark", "Tcpdump", "Port Analysis", "Protocol Inspection"],
   },
   {
-    title: "Stego and Forensics Basics",
+    title: "Data and File Analysis Basics",
     summary:
       "Using basic forensic utilities to inspect hidden data, metadata clues, and file integrity indicators.",
     tools: ["Steghide", "ExifTool", "strings", "File Signature Checks"],
   },
   {
-    title: "Exploitation and Post-Exploitation",
+    title: "Validation and Hardening Workflows",
     summary:
-      "Controlled exploitation practice to validate findings and understand real-world privilege escalation flow.",
+      "Structured validation practice to confirm findings and support practical hardening workflows.",
     tools: [
       "Metasploit",
-      "Hydra",
-      "John the Ripper",
-      "Privilege Escalation Basics",
+      "Risk Verification",
+      "Configuration Checks",
+      "Hardening Basics",
     ],
   },
 ];
@@ -421,7 +429,7 @@ export const PRACTICALS = [
     title: "TryHackMe Room Practice",
     summary:
       "Working through guided rooms to strengthen fundamentals in networking, web security, privilege escalation, and practical attack-defense thinking.",
-    focus: "Guided cyber security learning",
+    focus: "Guided application security learning",
     tools: ["TryHackMe", "Linux", "Burp Suite", "Nmap"],
     level: "Beginner to Intermediate",
     status: "ongoing",
@@ -507,16 +515,6 @@ export const SERVICE_OFFERINGS = [
     summary:
       "Small full stack builds with frontend, backend, database integration, and basic deployment support.",
   },
-  {
-    slug: "website-security-review",
-    name: "Website Security Review",
-    category: "Cyber Security",
-    price: "INR 2499 - 4999",
-    amountInr: 4999,
-    turnaround: "Depends on scope",
-    summary:
-      "Basic website security review for owned websites or explicitly authorized targets only.",
-  },
 ];
 
 export const BLOG_LINKS = [
@@ -596,9 +594,9 @@ export const BLOG_LINKS = [
 
 export const LEGAL_NOTICES = {
   securityTesting:
-    "Security testing is offered only for owned websites or targets where the client has clear written permission.",
+    "Security guidance is limited to defensive best practices for owned products and approved application contexts.",
   portfolioDisclaimer:
-    "This portfolio presents real learning, real projects, and ethical security practice only.",
+    "This portfolio presents real learning and project delivery focused on web development and secure engineering practices.",
   practicalsEthics:
-    "All security practice is limited to labs, owned systems, or explicitly authorized targets.",
+    "All security practice is limited to labs, owned systems, or explicitly authorized defensive testing contexts.",
 };

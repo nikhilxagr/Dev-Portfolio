@@ -29,9 +29,9 @@ const intelligentSkillDomains = [
   },
   {
     id: "cyber-security",
-    title: "Cyber Security",
+    title: "Application Security",
     summary:
-      "Security testing and defensive analysis workflows for identifying vulnerabilities, prioritizing risks, and improving resilience.",
+      "Security review and defensive analysis workflows for identifying risks, prioritizing fixes, and improving resilience.",
     Icon: ShieldCheck,
     accentClass: "via-emerald-300/50",
     skills: [
@@ -68,7 +68,7 @@ const SkillsPage = () => {
 
   const topSkillTags = [
     "Software Development",
-    "Cyber Security",
+    "Application Security",
     "Python Engineering",
     "Linux Delivery",
   ];
@@ -77,14 +77,14 @@ const SkillsPage = () => {
     <>
       <SeoHead
         title="Skills"
-        description="Technical skills of Nikhil Agrahari across software development, cybersecurity, Python engineering, Linux workflows, and project delivery."
+        description="Technical skills of Nikhil Agrahari across software development, application security, Python engineering, Linux workflows, and project delivery."
         pathname="/skills"
         image={SITE_PROFILE.profileImage}
         imageAlt={SITE_PROFILE.profileImageAlt}
         keywords={[
           "Nikhil portfolio skills",
           "Nikhil Lucknow developer skills",
-          "Cybersecurity and full stack skills",
+          "Application security and full stack skills",
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", path: "/" },
@@ -114,7 +114,7 @@ const SkillsPage = () => {
               </h1>
               <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-slate-300 sm:mt-4 sm:text-base">
                 A single, clearly structured skills route covering Software
-                Development, Cyber Security, Python Engineering, and Linux
+                Development, Application Security, Python Engineering, and Linux
                 Delivery workflows.
               </p>
             </div>

@@ -28,6 +28,14 @@ const staticPages = [
   { path: "/services", changefreq: "monthly", priority: "0.7" },
   { path: "/contact", changefreq: "monthly", priority: "0.7" },
   { path: "/refund-policy", changefreq: "yearly", priority: "0.3" },
+  { path: "/privacy-policy", changefreq: "yearly", priority: "0.3" },
+  {
+    path: "/terms-and-conditions",
+    changefreq: "yearly",
+    priority: "0.3",
+  },
+  { path: "/cancellation-policy", changefreq: "yearly", priority: "0.3" },
+  { path: "/delivery-policy", changefreq: "yearly", priority: "0.3" },
 ];
 
 const escapeXml = (value = "") =>
