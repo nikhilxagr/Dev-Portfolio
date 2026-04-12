@@ -1,11 +1,12 @@
-import { Helmet } from "react-helmet-async";
 import { ArrowRight, Code2, Cpu, ShieldCheck, Terminal } from "lucide-react";
 import Button from "@/components/ui/Button";
+import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import SectionTitle from "@/components/ui/SectionTitle";
 import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
 import { useTheme } from "@/context/ThemeContext";
+import { createBreadcrumbSchema } from "@/utils/seo";
 import { QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
 
 const intelligentSkillDomains = [
@@ -74,13 +75,22 @@ const SkillsPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Skills | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="Explore Nikhil Agrahari's skills across full stack engineering, backend systems, cybersecurity analysis, ethical hacking, and practical security workflows."
-        />
-      </Helmet>
+      <SeoHead
+        title="Skills"
+        description="Technical skills of Nikhil Agrahari across software development, cybersecurity, Python engineering, Linux workflows, and project delivery."
+        pathname="/skills"
+        image={SITE_PROFILE.profileImage}
+        imageAlt={SITE_PROFILE.profileImageAlt}
+        keywords={[
+          "Nikhil portfolio skills",
+          "Nikhil Lucknow developer skills",
+          "Cybersecurity and full stack skills",
+        ]}
+        jsonLd={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Skills", path: "/skills" },
+        ])}
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <FadeInUp className="skills-hero-surface relative overflow-hidden rounded-[1.5rem] border border-cyan-300/25 p-5 sm:rounded-[2rem] sm:p-8">

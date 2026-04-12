@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { ExternalLink, Mail, MapPin, PhoneCall } from "lucide-react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Button from "@/components/ui/Button";
+import SeoHead from "@/components/seo/SeoHead";
 import { useTheme } from "@/context/ThemeContext";
 import { sendContactMessage } from "@/services/contact.service";
 import { getErrorMessage } from "@/services/api";
+import { createBreadcrumbSchema } from "@/utils/seo";
 import {
   QUICK_CONTACT,
   SERVICE_OFFERINGS,
@@ -140,13 +141,22 @@ const ContactPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Contact | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="Contact Nikhil Agrahari for projects, freelance collaboration, mentorship, and developer support through one unified contact hub."
-        />
-      </Helmet>
+      <SeoHead
+        title="Contact"
+        description="Contact Nikhil Agrahari for project inquiries, freelance collaboration, mentorship, and developer support from Lucknow."
+        pathname="/contact"
+        image={SITE_PROFILE.profileImage}
+        imageAlt={SITE_PROFILE.profileImageAlt}
+        keywords={[
+          "Contact Nikhil Lucknow",
+          "Nikhil BBD contact",
+          "Nikhil portfolio contact",
+        ]}
+        jsonLd={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Contact", path: "/contact" },
+        ])}
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle

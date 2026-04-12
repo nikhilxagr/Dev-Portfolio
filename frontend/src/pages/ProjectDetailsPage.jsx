@@ -1,20 +1,25 @@
-import { useCallback, useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
+import SeoHead from "@/components/seo/SeoHead";
 import { getProjectBySlug } from "@/services/projects.service";
 import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
+import { createBreadcrumbSchema, createProjectSchema } from "@/utils/seo";
 import { SIGNATURE_PROJECTS } from "@/constants/siteData";
 
 const ProjectDetailsPage = () => {
   const { slug } = useParams();
-  const [project, setProject] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const staticProject = useMemo(
+    () => SIGNATURE_PROJECTS.find((item) => item.slug === slug) || null,
+    [slug],
+  );
+  const [project, setProject] = useState(staticProject);
+  const [loading, setLoading] = useState(!staticProject);
   const [error, setError] = useState("");
   const fallbackImage = "/images/placeholders/content-placeholder.svg";
   const previewImage = project?.imageUrl || fallbackImage;
@@ -28,36 +33,49 @@ const ProjectDetailsPage = () => {
     event.currentTarget.src = fallbackImage;
   };
 
-  const loadProject = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    const staticProject = SIGNATURE_PROJECTS.find((item) => item.slug === slug);
-
-    try {
-      const response = await getProjectBySlug(slug);
-      const mergedProject = response.data
-        ? mergeStaticAndApiContent(staticProject, response.data)
-        : staticProject || null;
-      setProject(mergedProject);
-    } catch (requestError) {
-      if (staticProject) {
-        setProject(staticProject);
-      } else {
-        setError(
-          getErrorMessage(
-            requestError,
-            "Unable to load this project right now.",
-          ),
-        );
+  const loadProject = useCallback(
+    async (withSkeleton = false) => {
+      if (withSkeleton) {
+        setLoading(true);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [slug]);
+
+      setError("");
+
+      try {
+        const response = await getProjectBySlug(slug);
+        const mergedProject = response.data
+          ? mergeStaticAndApiContent(staticProject, response.data)
+          : staticProject || null;
+        setProject(mergedProject);
+      } catch (requestError) {
+        if (staticProject) {
+          setProject(staticProject);
+        } else {
+          setError(
+            getErrorMessage(
+              requestError,
+              "Unable to load this project right now.",
+            ),
+          );
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [slug, staticProject],
+  );
 
   useEffect(() => {
-    loadProject().catch(() => undefined);
-  }, [loadProject]);
+    setProject(staticProject);
+    setError("");
+    setLoading(!staticProject);
+    loadProject(false).catch(() => undefined);
+  }, [loadProject, staticProject]);
+
+  const canonicalPath = `/projects/${project?.slug || slug || ""}`;
+  const projectSchema = project
+    ? createProjectSchema(project, canonicalPath)
+    : null;
 
   return (
     <section className="section-wrap pt-12 sm:pt-20">
@@ -69,7 +87,7 @@ const ProjectDetailsPage = () => {
         />
       ) : null}
       {!loading && error ? (
-        <ErrorState message={error} onRetry={loadProject} />
+        <ErrorState message={error} onRetry={() => loadProject(true)} />
       ) : null}
       {!loading && !error && !project ? (
         <EmptyState
@@ -80,10 +98,26 @@ const ProjectDetailsPage = () => {
 
       {!loading && !error && project ? (
         <>
-          <Helmet>
-            <title>{project.title} | Project Details</title>
-            <meta name="description" content={project.description} />
-          </Helmet>
+          <SeoHead
+            title={project.title}
+            description={project.description || project.solutionSummary}
+            pathname={canonicalPath}
+            image={previewImage}
+            imageAlt={`${project.title} cover`}
+            keywords={[
+              project.category,
+              ...(Array.isArray(project.techStack) ? project.techStack : []),
+              "Nikhil project",
+            ]}
+            jsonLd={[
+              createBreadcrumbSchema([
+                { name: "Home", path: "/" },
+                { name: "Projects", path: "/projects" },
+                { name: project.title, path: canonicalPath },
+              ]),
+              projectSchema,
+            ]}
+          />
 
           <Link
             to="/projects"

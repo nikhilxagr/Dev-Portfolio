@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { Helmet } from "react-helmet-async";
 import { CircleCheckBig, Download, Mail, RefreshCw } from "lucide-react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Button from "@/components/ui/Button";
+import SeoHead from "@/components/seo/SeoHead";
 import { QUICK_CONTACT } from "@/constants/siteData";
 import { getLatestReceipt, toAbsoluteApiUrl } from "@/services/payment.service";
 
@@ -23,13 +23,12 @@ const PaymentSuccessPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Payment Success | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="Payment confirmation with receipt download and support references."
-        />
-      </Helmet>
+      <SeoHead
+        title="Payment Success"
+        description="Payment confirmation route with receipt download and billing support references."
+        pathname="/payment/success"
+        robots="noindex, nofollow"
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle

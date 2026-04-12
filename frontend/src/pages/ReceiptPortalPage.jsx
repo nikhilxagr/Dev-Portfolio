@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { KeyRound, MailCheck, Download, History } from "lucide-react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Button from "@/components/ui/Button";
+import SeoHead from "@/components/seo/SeoHead";
 import { getErrorMessage } from "@/services/api";
 import {
   getReceiptHistory,
@@ -124,13 +124,12 @@ const ReceiptPortalPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Receipt History | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="Secure portal for payment receipt access and download history."
-        />
-      </Helmet>
+      <SeoHead
+        title="Receipt History"
+        description="Secure portal for payment receipt access and download history."
+        pathname="/receipts"
+        robots="noindex, nofollow"
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle

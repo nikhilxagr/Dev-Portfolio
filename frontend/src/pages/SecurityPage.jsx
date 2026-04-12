@@ -1,50 +1,58 @@
-import { Helmet } from 'react-helmet-async'
-import { FileText, ShieldAlert, Wrench } from 'lucide-react'
-import SectionTitle from '@/components/ui/SectionTitle'
-import FadeInUp from '@/components/animations/FadeInUp'
-import { LEGAL_NOTICES, PRACTICALS } from '@/constants/siteData'
+import { FileText, ShieldAlert, Wrench } from "lucide-react";
+import SectionTitle from "@/components/ui/SectionTitle";
+import FadeInUp from "@/components/animations/FadeInUp";
+import SeoHead from "@/components/seo/SeoHead";
+import { createBreadcrumbSchema } from "@/utils/seo";
+import { LEGAL_NOTICES, PRACTICALS } from "@/constants/siteData";
 
 const vulnerabilities = [
-  'SQL and NoSQL injection attack patterns',
-  'Cross-site scripting (XSS) and output encoding gaps',
-  'Broken authentication and weak session handling',
-  'Security misconfiguration in APIs and HTTP headers',
-  'Access-control weaknesses including insecure direct object references',
-]
+  "SQL and NoSQL injection attack patterns",
+  "Cross-site scripting (XSS) and output encoding gaps",
+  "Broken authentication and weak session handling",
+  "Security misconfiguration in APIs and HTTP headers",
+  "Access-control weaknesses including insecure direct object references",
+];
 
-const allTools = Array.from(new Set(PRACTICALS.flatMap((item) => item.tools))).sort((a, b) =>
-  a.localeCompare(b),
-)
+const allTools = Array.from(
+  new Set(PRACTICALS.flatMap((item) => item.tools)),
+).sort((a, b) => a.localeCompare(b));
 
 const statusLabelMap = {
-  ready: 'Ready',
-  ongoing: 'Ongoing',
-  'summary-ready': 'Summary Ready',
-  'add-room-wise-later': 'Room-wise Writeups Planned',
-}
+  ready: "Ready",
+  ongoing: "Ongoing",
+  "summary-ready": "Summary Ready",
+  "add-room-wise-later": "Room-wise Writeups Planned",
+};
 
-const formatStatusLabel = (value = '') => {
+const formatStatusLabel = (value = "") => {
   if (statusLabelMap[value]) {
-    return statusLabelMap[value]
+    return statusLabelMap[value];
   }
 
   return value
-    .split('-')
+    .split("-")
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-}
+    .join(" ");
+};
 
 const SecurityPage = () => {
   return (
     <>
-      <Helmet>
-        <title>Practicals | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="Cybersecurity practicals, tools used, core vulnerability themes, and ethical testing scope notes."
-        />
-      </Helmet>
+      <SeoHead
+        title="Cybersecurity Practicals"
+        description="Cybersecurity practicals by Nikhil Agrahari, including vulnerability themes, lab tooling, methodology notes, and responsible testing scope."
+        pathname="/security"
+        keywords={[
+          "Nikhil cybersecurity practicals",
+          "Nikhil Lucknow security labs",
+          "ethical hacking portfolio",
+        ]}
+        jsonLd={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Practicals", path: "/security" },
+        ])}
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
@@ -75,7 +83,9 @@ const SecurityPage = () => {
                 <h3 className="mt-3 text-xl font-semibold text-cyan-100 sm:text-2xl">
                   {item.title}
                 </h3>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{item.summary}</p>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  {item.summary}
+                </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
                   {item.tools.map((tool) => (
@@ -109,7 +119,9 @@ const SecurityPage = () => {
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-100">
                 <Wrench size={17} />
               </span>
-              <h2 className="text-xl font-semibold text-cyan-100">Tools Used Across Labs</h2>
+              <h2 className="text-xl font-semibold text-cyan-100">
+                Tools Used Across Labs
+              </h2>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
@@ -129,7 +141,9 @@ const SecurityPage = () => {
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-emerald-300/30 bg-emerald-300/10 text-emerald-100">
                 <ShieldAlert size={17} />
               </span>
-              <h2 className="text-xl font-semibold text-cyan-100">Vulnerability Themes Practiced</h2>
+              <h2 className="text-xl font-semibold text-cyan-100">
+                Vulnerability Themes Practiced
+              </h2>
             </div>
 
             <ul className="mt-4 space-y-2.5 text-sm leading-7 text-slate-300">
@@ -157,20 +171,30 @@ const SecurityPage = () => {
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-100">
                 <FileText size={17} />
               </span>
-              <h3 className="text-lg font-semibold text-cyan-100">Security Testing Notice</h3>
+              <h3 className="text-lg font-semibold text-cyan-100">
+                Security Testing Notice
+              </h3>
             </div>
-            <p className="mt-3 text-sm leading-7 text-slate-300">{LEGAL_NOTICES.securityTesting}</p>
+            <p className="mt-3 text-sm leading-7 text-slate-300">
+              {LEGAL_NOTICES.securityTesting}
+            </p>
           </article>
 
           <article className="card-surface rounded-3xl p-5 sm:p-6">
-            <h3 className="text-lg font-semibold text-cyan-100">Portfolio Disclaimer</h3>
-            <p className="mt-3 text-sm leading-7 text-slate-300">{LEGAL_NOTICES.portfolioDisclaimer}</p>
-            <p className="mt-3 text-sm leading-7 text-slate-300">{LEGAL_NOTICES.practicalsEthics}</p>
+            <h3 className="text-lg font-semibold text-cyan-100">
+              Portfolio Disclaimer
+            </h3>
+            <p className="mt-3 text-sm leading-7 text-slate-300">
+              {LEGAL_NOTICES.portfolioDisclaimer}
+            </p>
+            <p className="mt-3 text-sm leading-7 text-slate-300">
+              {LEGAL_NOTICES.practicalsEthics}
+            </p>
           </article>
         </div>
       </section>
     </>
-  )
-}
+  );
+};
 
-export default SecurityPage
+export default SecurityPage;

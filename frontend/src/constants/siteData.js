@@ -1,7 +1,7 @@
 export const SITE_PROFILE = {
   fullName: "Nikhil Agrahari",
   shortName: "Nikhil",
-  title: "Nikhil Agrahari | Full Stack Developer | Cyber Security Analyst",
+  title: "Nikhil Agrahari Portfolio",
   headline: "BCA Student | Full Stack Developer | Cyber Security Analyst",
   role: "Web Developer",
   education: "BCA, BBD University, Lucknow",
@@ -530,7 +530,7 @@ export const BLOG_LINKS = [
     url: "https://medium.com/@nikhilxagr/artificial-intelligence-concepts-for-beginnershow-im-learning-cybersecurity-web-development-and-a899bc6b4d1c",
     excerpt:
       "A reflection on learning across three connected areas and building a realistic roadmap as a student.",
-    imageUrl: "/images/blogs/image.png?v=20260412",
+    imageUrl: "/images/blogs/artmet03.webp",
     publishedAt: "2025-12-14T08:30:00.000Z",
     readTime: "5 min read",
     content:

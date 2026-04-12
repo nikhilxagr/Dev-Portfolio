@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /payment/success
+Disallow: /receipts
+
+Sitemap: https://nikhilxagr.vercel.app/sitemap.xml

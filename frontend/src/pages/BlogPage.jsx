@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useEffect, useMemo, useState } from "react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
 import BlogCard from "@/components/ui/BlogCard";
 import Button from "@/components/ui/Button";
+import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
 import { getBlogs } from "@/services/blogs.service";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
+import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";
 import { BLOG_LINKS } from "@/constants/siteData";
 
 const matchesBlogSearch = (blog, currentKeyword) => {
@@ -80,22 +81,53 @@ const BlogPage = () => {
     return () => clearTimeout(timeoutId);
   }, [search]);
 
-  const fallbackBlogs = BLOG_LINKS.filter((blog) =>
-    matchesBlogSearch(blog, search),
+  const fallbackBlogs = useMemo(
+    () => BLOG_LINKS.filter((blog) => matchesBlogSearch(blog, search)),
+    [search],
   );
-
   const displayBlogs = blogs.length > 0 ? blogs : fallbackBlogs;
-  const featuredExternal = BLOG_LINKS.filter((item) => item.featured);
+  const showInitialLoader = loading && displayBlogs.length === 0;
+  const showBlogGrid = displayBlogs.length > 0;
+  const featuredExternal = useMemo(
+    () => BLOG_LINKS.filter((item) => item.featured),
+    [],
+  );
+  const blogListSchema = useMemo(
+    () =>
+      createItemListSchema({
+        name: "Nikhil Blog Archive",
+        description: "Blog posts and technical notes by Nikhil Agrahari.",
+        path: "/blog",
+        items: displayBlogs
+          .filter((item) => Boolean(item?.slug))
+          .slice(0, 50)
+          .map((item) => ({
+            name: item.title,
+            path: `/blog/${item.slug}`,
+          })),
+      }),
+    [displayBlogs],
+  );
 
   return (
     <>
-      <Helmet>
-        <title>Blog | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="Backend-driven blog posts on development, security, and AI experiments."
-        />
-      </Helmet>
+      <SeoHead
+        title="Blog"
+        description="Technical blog by Nikhil Agrahari with notes on development, cybersecurity, and practical engineering experiments."
+        pathname="/blog"
+        keywords={[
+          "Nikhil portfolio blog",
+          "Nikhil Lucknow technical blog",
+          "development and cybersecurity notes",
+        ]}
+        jsonLd={[
+          createBreadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Blog", path: "/blog" },
+          ]),
+          blogListSchema,
+        ]}
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
@@ -122,23 +154,23 @@ const BlogPage = () => {
         </FadeInUp>
 
         <div className="mt-8">
-          {loading ? (
+          {showInitialLoader ? (
             <LoadingState
               message="Loading blog posts..."
               cards={6}
               variant="blog"
             />
           ) : null}
-          {!loading && error ? (
+          {!loading && error && !showBlogGrid ? (
             <ErrorState message={error} onRetry={() => loadBlogs(search)} />
           ) : null}
-          {!loading && !error && displayBlogs.length === 0 ? (
+          {!loading && !error && !showBlogGrid ? (
             <EmptyState
               title="No posts found"
               message="Blog entries will appear here once published."
             />
           ) : null}
-          {!loading && !error && displayBlogs.length > 0 ? (
+          {!error && showBlogGrid ? (
             <StaggerGrid className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {displayBlogs.map((blog, index) => (
                 <StaggerItem key={blog._id || blog.slug}>
@@ -146,6 +178,12 @@ const BlogPage = () => {
                 </StaggerItem>
               ))}
             </StaggerGrid>
+          ) : null}
+
+          {loading && showBlogGrid ? (
+            <p className="mt-4 text-xs uppercase tracking-[0.14em] text-slate-500">
+              Syncing latest articles...
+            </p>
           ) : null}
 
           {!loading && featuredExternal.length > 0 ? (

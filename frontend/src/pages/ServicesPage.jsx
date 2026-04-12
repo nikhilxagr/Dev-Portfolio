@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import {
   ArrowRight,
   ShieldCheck,
@@ -10,6 +9,7 @@ import {
 } from "lucide-react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Button from "@/components/ui/Button";
+import SeoHead from "@/components/seo/SeoHead";
 import PaymentTrustPanel from "@/components/ui/PaymentTrustPanel";
 import {
   createPaymentOrder,
@@ -18,6 +18,7 @@ import {
 } from "@/services/payment.service";
 import { getErrorMessage } from "@/services/api";
 import { loadRazorpayCheckout } from "@/utils/loadRazorpay";
+import { createBreadcrumbSchema } from "@/utils/seo";
 import { QUICK_CONTACT, SERVICE_OFFERINGS } from "@/constants/siteData";
 
 const categoryStyle = {
@@ -207,13 +208,20 @@ const ServicesPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Services | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="All services by Nikhil Agrahari including mentorship, resume review, full stack development, and authorized security review."
-        />
-      </Helmet>
+      <SeoHead
+        title="Services"
+        description="Services by Nikhil Agrahari including mentorship, resume review, full stack development, and authorized security-focused consultation."
+        pathname="/services"
+        keywords={[
+          "Nikhil services",
+          "Nikhil Lucknow mentorship",
+          "Nikhil portfolio services",
+        ]}
+        jsonLd={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+        ])}
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">

@@ -1,5 +1,6 @@
-import { Helmet } from "react-helmet-async";
 import SectionTitle from "@/components/ui/SectionTitle";
+import SeoHead from "@/components/seo/SeoHead";
+import { createBreadcrumbSchema } from "@/utils/seo";
 import { QUICK_CONTACT } from "@/constants/siteData";
 
 const policyItems = [
@@ -27,13 +28,21 @@ const policyItems = [
 const RefundPolicyPage = () => {
   return (
     <>
-      <Helmet>
-        <title>Refund Policy | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="Refund policy for paid services, verification standards, and support channels."
-        />
-      </Helmet>
+      <SeoHead
+        title="Refund Policy"
+        description="Refund policy for paid services by Nikhil Agrahari, including eligibility, review timeline, and billing support channels."
+        pathname="/refund-policy"
+        robots="index, follow"
+        keywords={[
+          "Nikhil refund policy",
+          "service refund terms",
+          "Nikhil portfolio payments",
+        ]}
+        jsonLd={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Refund Policy", path: "/refund-policy" },
+        ])}
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle

@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Rocket } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SectionTitle from "@/components/ui/SectionTitle";
@@ -7,11 +6,13 @@ import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
 import ProjectCard from "@/components/ui/ProjectCard";
+import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
 import { PROJECT_CATEGORIES, SIGNATURE_PROJECTS } from "@/constants/siteData";
 import { getProjects } from "@/services/projects.service";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
+import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";
 
 const matchesProjectFilters = (project, selectedCategory, currentSearch) => {
   const matchesCategory =
@@ -74,11 +75,15 @@ const ProjectsPage = () => {
     return () => clearTimeout(timeoutId);
   }, [category, search]);
 
-  const fallbackProjects = SIGNATURE_PROJECTS.filter((project) =>
-    matchesProjectFilters(project, category, search),
+  const fallbackProjects = useMemo(
+    () =>
+      SIGNATURE_PROJECTS.filter((project) =>
+        matchesProjectFilters(project, category, search),
+      ),
+    [category, search],
   );
-
   const displayProjects = projects.length > 0 ? projects : fallbackProjects;
+  const showInitialLoader = loading && displayProjects.length === 0;
   const fallbackProjectImage = "/images/placeholders/content-placeholder.svg";
   const liveDemoCount = displayProjects.filter((project) =>
     Boolean(project.liveDemoUrl),
@@ -86,6 +91,22 @@ const ProjectsPage = () => {
   const githubCount = displayProjects.filter((project) =>
     Boolean(project.githubUrl),
   ).length;
+  const projectListSchema = useMemo(
+    () =>
+      createItemListSchema({
+        name: "Nikhil Project Archive",
+        description: "Project portfolio by Nikhil Agrahari.",
+        path: "/projects",
+        items: displayProjects
+          .filter((item) => Boolean(item?.slug))
+          .slice(0, 60)
+          .map((item) => ({
+            name: item.title,
+            path: `/projects/${item.slug}`,
+          })),
+      }),
+    [displayProjects],
+  );
 
   const handleProjectPreviewError = (event) => {
     event.currentTarget.onerror = null;
@@ -94,13 +115,23 @@ const ProjectsPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Projects | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="Project portfolio covering web development, cybersecurity, and AI-based systems."
-        />
-      </Helmet>
+      <SeoHead
+        title="Projects"
+        description="Project portfolio of Nikhil Agrahari covering web development, cybersecurity practical builds, and AI-focused experiments."
+        pathname="/projects"
+        keywords={[
+          "Nikhil portfolio projects",
+          "Nikhil Lucknow projects",
+          "full stack and cybersecurity projects",
+        ]}
+        jsonLd={[
+          createBreadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Projects", path: "/projects" },
+          ]),
+          projectListSchema,
+        ]}
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
@@ -147,7 +178,7 @@ const ProjectsPage = () => {
         </FadeInUp>
 
         <div className="mt-8">
-          {loading ? (
+          {showInitialLoader ? (
             <LoadingState message="Loading projects..." cards={6} />
           ) : null}
           {!loading && error && displayProjects.length === 0 ? (
@@ -163,7 +194,7 @@ const ProjectsPage = () => {
             />
           ) : null}
 
-          {!loading && displayProjects.length > 0 ? (
+          {displayProjects.length > 0 ? (
             <>
               <StaggerGrid className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {displayProjects.map((project, index) => (
@@ -269,6 +300,12 @@ const ProjectsPage = () => {
                 </article>
               </FadeInUp>
             </>
+          ) : null}
+
+          {loading && displayProjects.length > 0 ? (
+            <p className="mt-4 text-xs uppercase tracking-[0.14em] text-slate-500">
+              Syncing latest projects...
+            </p>
           ) : null}
         </div>
       </section>

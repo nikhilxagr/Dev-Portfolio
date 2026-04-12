@@ -1,8 +1,9 @@
-import { Helmet } from "react-helmet-async";
 import { ArrowRight, Code2, Server, ShieldCheck } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SectionTitle from "@/components/ui/SectionTitle";
+import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
+import { createBreadcrumbSchema, createPersonSchema } from "@/utils/seo";
 import {
   ABOUT_STORY,
   FOCUS_AREAS,
@@ -49,13 +50,26 @@ const AboutPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>About | Nikhil Portfolio</title>
-        <meta
-          name="description"
-          content="About Nikhil Agrahari: BCA student, full stack developer, and cybersecurity learner building practical products and labs."
-        />
-      </Helmet>
+      <SeoHead
+        title="About"
+        description="About Nikhil Agrahari, BCA student at BBD University Lucknow, focused on full stack development, practical cybersecurity learning, and reliable product execution."
+        pathname="/about"
+        image={SITE_PROFILE.profileImage}
+        imageAlt={SITE_PROFILE.profileImageAlt}
+        keywords={[
+          "Nikhil Lucknow",
+          "Nikhil BBD",
+          "About Nikhil Agrahari",
+          "BBD University student portfolio",
+        ]}
+        jsonLd={[
+          createPersonSchema(),
+          createBreadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "About", path: "/about" },
+          ]),
+        ]}
+      />
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle

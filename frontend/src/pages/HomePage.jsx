@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
 import {
   ArrowRight,
   BadgeCheck,
@@ -15,6 +14,7 @@ import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 import ProjectCard from "@/components/ui/ProjectCard";
 import BlogCard from "@/components/ui/BlogCard";
+import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
 import { useTheme } from "@/context/ThemeContext";
@@ -22,6 +22,7 @@ import { getProjects } from "@/services/projects.service";
 import { getBlogs } from "@/services/blogs.service";
 import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
+import { createPersonSchema, createWebSiteSchema } from "@/utils/seo";
 import {
   BLOG_LINKS,
   HERO_CONTENT,
@@ -257,10 +258,21 @@ const HomePage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{SITE_PROFILE.title}</title>
-        <meta name="description" content={HERO_CONTENT.description} />
-      </Helmet>
+      <SeoHead
+        title={SITE_PROFILE.title}
+        description="Portfolio of Nikhil Agrahari from Lucknow and BBD University, featuring full stack development projects, cybersecurity practicals, and technical blogs."
+        pathname="/"
+        image={SITE_PROFILE.profileImage}
+        imageAlt={SITE_PROFILE.profileImageAlt}
+        keywords={[
+          "Nikhil Lucknow",
+          "Nikhil BBD",
+          "Nikhil Portfolio",
+          "BBD University",
+          "Full stack developer Lucknow",
+        ]}
+        jsonLd={[createPersonSchema(), createWebSiteSchema()]}
+      />
 
       <section className="section-wrap pt-12 pb-10 sm:pt-20 sm:pb-12">
         <FadeInUp className="card-surface overflow-hidden rounded-3xl p-6 sm:p-8">

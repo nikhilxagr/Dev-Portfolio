@@ -1,20 +1,25 @@
-import { useCallback, useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
+import SeoHead from "@/components/seo/SeoHead";
 import { getBlogBySlug } from "@/services/blogs.service";
 import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
+import { createBlogPostingSchema, createBreadcrumbSchema } from "@/utils/seo";
 import { BLOG_LINKS } from "@/constants/siteData";
 
 const BlogDetailsPage = () => {
   const { slug } = useParams();
-  const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const staticBlog = useMemo(
+    () => BLOG_LINKS.find((item) => item.slug === slug) || null,
+    [slug],
+  );
+  const [blog, setBlog] = useState(staticBlog);
+  const [loading, setLoading] = useState(!staticBlog);
   const [error, setError] = useState("");
   const fallbackImage = "/images/placeholders/content-placeholder.svg";
   const previewImage = blog?.imageUrl || fallbackImage;
@@ -28,33 +33,44 @@ const BlogDetailsPage = () => {
     event.currentTarget.src = fallbackImage;
   };
 
-  const loadBlog = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    const staticBlog = BLOG_LINKS.find((item) => item.slug === slug);
-
-    try {
-      const response = await getBlogBySlug(slug);
-      const mergedBlog = response.data
-        ? mergeStaticAndApiContent(staticBlog, response.data)
-        : staticBlog || null;
-      setBlog(mergedBlog);
-    } catch (requestError) {
-      if (staticBlog) {
-        setBlog(staticBlog);
-      } else {
-        setError(getErrorMessage(requestError, "Unable to load this article."));
+  const loadBlog = useCallback(
+    async (withSkeleton = false) => {
+      if (withSkeleton) {
+        setLoading(true);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [slug]);
+
+      setError("");
+
+      try {
+        const response = await getBlogBySlug(slug);
+        const mergedBlog = response.data
+          ? mergeStaticAndApiContent(staticBlog, response.data)
+          : staticBlog || null;
+        setBlog(mergedBlog);
+      } catch (requestError) {
+        if (staticBlog) {
+          setBlog(staticBlog);
+        } else {
+          setError(
+            getErrorMessage(requestError, "Unable to load this article."),
+          );
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [slug, staticBlog],
+  );
 
   useEffect(() => {
-    loadBlog().catch(() => undefined);
-  }, [loadBlog]);
+    setBlog(staticBlog);
+    setError("");
+    setLoading(!staticBlog);
+    loadBlog(false).catch(() => undefined);
+  }, [loadBlog, staticBlog]);
 
   const rawDate = blog?.publishedAt || blog?.createdAt || "";
+  const modifiedDate = blog?.updatedAt || rawDate;
   const parsedDate = rawDate ? new Date(rawDate) : null;
   const formattedDate =
     parsedDate && !Number.isNaN(parsedDate.getTime())
@@ -65,6 +81,16 @@ const BlogDetailsPage = () => {
         })
       : "Published";
   const readTime = blog?.readTime || "";
+  const canonicalPath = `/blog/${blog?.slug || slug || ""}`;
+  const publishedTime =
+    rawDate && !Number.isNaN(new Date(rawDate).getTime())
+      ? new Date(rawDate).toISOString()
+      : undefined;
+  const modifiedTime =
+    modifiedDate && !Number.isNaN(new Date(modifiedDate).getTime())
+      ? new Date(modifiedDate).toISOString()
+      : undefined;
+  const blogSchema = blog ? createBlogPostingSchema(blog, canonicalPath) : null;
 
   return (
     <section className="section-wrap pt-12 sm:pt-20">
@@ -76,7 +102,7 @@ const BlogDetailsPage = () => {
         />
       ) : null}
       {!loading && error ? (
-        <ErrorState message={error} onRetry={loadBlog} />
+        <ErrorState message={error} onRetry={() => loadBlog(true)} />
       ) : null}
       {!loading && !error && !blog ? (
         <EmptyState
@@ -87,13 +113,29 @@ const BlogDetailsPage = () => {
 
       {!loading && !error && blog ? (
         <article className="mx-auto max-w-4xl">
-          <Helmet>
-            <title>{blog.title} | Blog</title>
-            <meta
-              name="description"
-              content={blog.excerpt || blog.content?.slice(0, 150)}
-            />
-          </Helmet>
+          <SeoHead
+            title={blog.title}
+            description={blog.excerpt || blog.subtitle || blog.content}
+            pathname={canonicalPath}
+            image={previewImage}
+            imageAlt={`${blog.title} cover`}
+            type="article"
+            publishedTime={publishedTime}
+            modifiedTime={modifiedTime}
+            keywords={[
+              ...(Array.isArray(blog.tags) ? blog.tags : []),
+              "Nikhil blog",
+              "Nikhil portfolio",
+            ]}
+            jsonLd={[
+              createBreadcrumbSchema([
+                { name: "Home", path: "/" },
+                { name: "Blog", path: "/blog" },
+                { name: blog.title, path: canonicalPath },
+              ]),
+              blogSchema,
+            ]}
+          />
 
           <Link
             to="/blog"
