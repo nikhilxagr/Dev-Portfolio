@@ -45,15 +45,15 @@ export const SOCIAL_LINKS = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/nikhilxagr/" },
   { label: "Medium", href: "https://medium.com/@nikhilxagr" },
   { label: "TryHackMe", href: "https://tryhackme.com/p/nikhilxagr" },
-  { label: "WhatsApp", href: "https://wa.me/7897972883" },
+  { label: "WhatsApp", href: "https://wa.me/7897872883" },
 ];
 
 export const QUICK_CONTACT = {
   email: "nikhilagrahari530@gmail.com",
   billingEmail: "nikhilagrahari530@gmail.com",
   supportEmail: "nikhilagrahari530@gmail.com",
-  phone: "+91 7897972883",
-  whatsapp: "https://wa.me/7897972883",
+  phone: "+91 7897872883",
+  whatsapp: "https://wa.me/7897872883",
   linkedin: "https://www.linkedin.com/in/nikhilxagr/",
   github: "https://github.com/nikhilxagr",
   leetcode: "https://leetcode.com/u/nikhilxagr/",
@@ -61,8 +61,7 @@ export const QUICK_CONTACT = {
   tryhackme: "https://tryhackme.com/p/nikhilxagr",
   medium: "https://medium.com/@nikhilxagr",
   refundPolicyPath: "/refund-policy",
-  resume:
-    "https://drive.google.com/file/d/1-BUv73624cDLAwxRkLhZGQBkQqyJUVWG/view?usp=drive_link",
+  resume: "/WebDev_Resume.pdf",
 };
 
 export const ABOUT_STORY = [
