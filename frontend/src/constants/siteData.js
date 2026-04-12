@@ -582,7 +582,7 @@ export const BLOG_LINKS = [
     url: "https://www.linkedin.com/pulse/india-produces-toppers-world-innovators-why-we-falling-agrahari-fyp0c/",
     excerpt:
       "A reflective piece on the difference between exam-oriented success and innovation-oriented learning.",
-    imageUrl: "/images/blogs/1769378186476.webp",
+    imageUrl: "/images/blogs/artmet04.webp",
     publishedAt: "2026-04-07T15:45:00.000Z",
     readTime: "5 min read",
     content:
