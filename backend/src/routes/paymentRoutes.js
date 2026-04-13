@@ -5,7 +5,7 @@ import {
   downloadReceipt,
   getPaymentConfigStatus,
   getReceiptHistory,
-  handleRazorpayWebhook,
+  handleCashfreeWebhook,
   requestReceiptAccessCode,
   verifyPayment,
   verifyReceiptAccessCode,
@@ -37,10 +37,9 @@ router.post(
       .withMessage("Name must be 2-120 characters"),
     body("customerEmail").isEmail().withMessage("Valid email is required"),
     body("customerPhone")
-      .optional({ values: "falsy" })
       .trim()
-      .matches(/^[0-9+\-\s]{8,18}$/)
-      .withMessage("Phone must be 8-18 characters and use valid symbols"),
+      .matches(/^\d{10}$/)
+      .withMessage("Phone must be a valid 10-digit number"),
     body("notes")
       .optional({ values: "falsy" })
       .trim()
@@ -59,24 +58,16 @@ router.post(
   "/verify",
   paymentVerifyLimiter,
   [
-    body("razorpay_order_id")
+    body("orderId")
       .trim()
       .isLength({ min: 8, max: 80 })
       .withMessage("Invalid order id"),
-    body("razorpay_payment_id")
-      .trim()
-      .isLength({ min: 8, max: 80 })
-      .withMessage("Invalid payment id"),
-    body("razorpay_signature")
-      .trim()
-      .isLength({ min: 20, max: 180 })
-      .withMessage("Invalid payment signature"),
   ],
   validateRequest,
   verifyPayment,
 );
 
-router.post("/webhook", webhookLimiter, handleRazorpayWebhook);
+router.post("/webhook", webhookLimiter, handleCashfreeWebhook);
 
 router.get(
   "/receipts/:receiptNumber/download",

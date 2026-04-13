@@ -98,7 +98,7 @@ export const buildReceiptPdfBuffer = (transaction) =>
       .fontSize(9)
       .fillColor("#64748b")
       .text(
-        "This is a system-generated receipt for a successful payment processed via Razorpay.",
+        "This is a system-generated receipt for a successful payment processed via Cashfree.",
       );
 
     doc.end();

@@ -14,10 +14,9 @@ import PaymentTrustPanel from "@/components/ui/PaymentTrustPanel";
 import {
   createPaymentOrder,
   persistLatestReceipt,
-  verifyServicePayment,
 } from "@/services/payment.service";
 import { getErrorMessage } from "@/services/api";
-import { loadRazorpayCheckout } from "@/utils/loadRazorpay";
+import { loadCashfreeCheckout } from "@/utils/loadCashfree";
 import { createBreadcrumbSchema } from "@/utils/seo";
 import { QUICK_CONTACT, SERVICE_OFFERINGS } from "@/constants/siteData";
 
@@ -84,11 +83,9 @@ const ServicesPage = () => {
       return "Please enter a valid email for payment confirmation.";
     }
 
-    if (
-      buyerForm.customerPhone.trim() &&
-      !/^[0-9+\-\s]{8,18}$/.test(buyerForm.customerPhone.trim())
-    ) {
-      return "Phone number must be 8-18 characters and use valid symbols.";
+    const normalizedPhone = buyerForm.customerPhone.replace(/\D/g, "");
+    if (!/^\d{10}$/.test(normalizedPhone)) {
+      return "Enter a valid 10-digit phone number for checkout.";
     }
 
     return "";
@@ -107,17 +104,17 @@ const ServicesPage = () => {
     setProcessingSlug(service.slug);
 
     try {
-      const scriptLoaded = await loadRazorpayCheckout();
+      const scriptLoaded = await loadCashfreeCheckout();
 
-      if (!scriptLoaded || typeof window.Razorpay === "undefined") {
-        throw new Error("Unable to load Razorpay checkout. Please try again.");
+      if (!scriptLoaded || typeof window.Cashfree !== "function") {
+        throw new Error("Unable to load Cashfree checkout. Please try again.");
       }
 
       const orderResponse = await createPaymentOrder({
         serviceSlug: service.slug,
         customerName: buyerForm.customerName.trim(),
         customerEmail: buyerForm.customerEmail.trim(),
-        customerPhone: buyerForm.customerPhone.trim(),
+        customerPhone: buyerForm.customerPhone.replace(/\D/g, ""),
         idempotencyKey: generateIdempotencyKey(),
         notes: `Services page checkout for ${service.name}`,
       });
@@ -134,69 +131,33 @@ const ServicesPage = () => {
 
       const checkout = orderResponse?.data?.checkout;
 
-      if (!checkout?.orderId || !checkout?.key) {
+      if (!checkout?.orderId || !checkout?.paymentSessionId) {
         throw new Error("Checkout initialization failed. Please retry.");
       }
 
-      const razorpay = new window.Razorpay({
-        key: checkout.key,
-        amount: checkout.amount,
-        currency: checkout.currency,
-        name: checkout.name,
-        description: checkout.description,
-        order_id: checkout.orderId,
-        prefill: checkout.prefill,
-        notes: checkout.notes,
-        theme: {
-          color: "#22d3ee",
-        },
-        handler: async (response) => {
-          setPaymentInfo("Payment received. Verifying transaction...");
-
-          try {
-            const verifyResponse = await verifyServicePayment(response);
-            const receipt = verifyResponse?.data?.receipt;
-
-            if (!receipt) {
-              throw new Error(
-                "Payment verified but receipt was not generated.",
-              );
-            }
-
-            persistLatestReceipt({
-              receipt,
-              serviceSlug: service.slug,
-              serviceName: service.name,
-            });
-
-            navigate("/payment/success");
-          } catch (verificationError) {
-            setPaymentError(
-              getErrorMessage(
-                verificationError,
-                "Payment was completed but verification failed. Contact support with payment ID.",
-              ),
-            );
-            setProcessingSlug("");
-          }
-        },
-        modal: {
-          ondismiss: () => {
-            setPaymentInfo("Payment popup closed. You can retry anytime.");
-            setProcessingSlug("");
-          },
-        },
+      const cashfree = window.Cashfree({
+        mode: checkout.environment === "production" ? "production" : "sandbox",
       });
 
-      razorpay.on("payment.failed", (event) => {
-        setPaymentError(
-          event?.error?.description ||
-            "Payment failed at gateway. Please retry or use support contact.",
+      setPaymentInfo("Redirecting to secure Cashfree checkout...");
+
+      const result = await cashfree.checkout({
+        paymentSessionId: checkout.paymentSessionId,
+        redirectTarget: "_self",
+      });
+
+      if (result?.error) {
+        throw new Error(
+          result.error?.message ||
+            "Cashfree checkout could not be opened. Please retry.",
         );
-        setProcessingSlug("");
-      });
+      }
 
-      razorpay.open();
+      if (!result?.redirect) {
+        navigate(
+          `/payment/success?order_id=${encodeURIComponent(checkout.orderId)}`,
+        );
+      }
     } catch (error) {
       setPaymentError(
         getErrorMessage(error, "Could not initialize payment gateway."),
@@ -228,7 +189,7 @@ const ServicesPage = () => {
             <SectionTitle
               eyebrow="Verified Services"
               title="Development and Guidance Services"
-              description="Service categories, transparent pricing, and Razorpay checkout status."
+              description="Service categories, transparent pricing, and Cashfree checkout status."
             />
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
@@ -372,7 +333,7 @@ const ServicesPage = () => {
                       Secure Checkout Details
                     </p>
                     <p className="mt-1 text-sm text-slate-300">
-                      Enter your details once. Razorpay opens after this with
+                      Enter your details once. Cashfree opens after this with
                       secure verification.
                     </p>
 
@@ -404,7 +365,7 @@ const ServicesPage = () => {
                       </label>
 
                       <label className="text-xs text-slate-300 sm:col-span-2">
-                        Phone (optional)
+                        Phone (required for Cashfree)
                         <input
                           type="text"
                           value={buyerForm.customerPhone}
@@ -412,7 +373,7 @@ const ServicesPage = () => {
                             updateBuyerForm("customerPhone", event.target.value)
                           }
                           className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none focus:border-cyan-300"
-                          placeholder="+91 XXXXX XXXXX"
+                          placeholder="9876543210"
                         />
                       </label>
                     </div>

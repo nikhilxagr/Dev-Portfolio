@@ -1,10 +1,17 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { CircleCheckBig, Download, Mail, RefreshCw } from "lucide-react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
 import { QUICK_CONTACT } from "@/constants/siteData";
-import { getLatestReceipt, toAbsoluteApiUrl } from "@/services/payment.service";
+import { getErrorMessage } from "@/services/api";
+import {
+  getLatestReceipt,
+  persistLatestReceipt,
+  toAbsoluteApiUrl,
+  verifyServicePayment,
+} from "@/services/payment.service";
 
 const formatDate = (value) => {
   if (!value) {
@@ -18,8 +25,78 @@ const formatDate = (value) => {
 };
 
 const PaymentSuccessPage = () => {
+  const [searchParams] = useSearchParams();
+  const orderIdFromQuery = useMemo(
+    () =>
+      String(
+        searchParams.get("order_id") || searchParams.get("orderId") || "",
+      ).trim(),
+    [searchParams],
+  );
+
   const receiptState = useMemo(() => getLatestReceipt(), []);
-  const receipt = receiptState?.receipt || null;
+  const [receipt, setReceipt] = useState(receiptState?.receipt || null);
+  const [isVerifying, setIsVerifying] = useState(
+    Boolean(!receiptState?.receipt && orderIdFromQuery),
+  );
+  const [verificationInfo, setVerificationInfo] = useState("");
+  const [verificationError, setVerificationError] = useState("");
+
+  useEffect(() => {
+    if (receipt || !orderIdFromQuery) {
+      return;
+    }
+
+    let isMounted = true;
+
+    const verifyOrder = async () => {
+      setIsVerifying(true);
+      setVerificationError("");
+      setVerificationInfo("Verifying payment with Cashfree...");
+
+      try {
+        const verifyResponse = await verifyServicePayment({
+          orderId: orderIdFromQuery,
+        });
+        const nextReceipt = verifyResponse?.data?.receipt || null;
+
+        if (nextReceipt) {
+          persistLatestReceipt({ receipt: nextReceipt });
+          if (isMounted) {
+            setReceipt(nextReceipt);
+            setVerificationInfo("Payment verified successfully.");
+          }
+          return;
+        }
+
+        if (isMounted) {
+          setVerificationInfo(
+            verifyResponse?.message ||
+              "Payment is pending. Complete payment and refresh this page.",
+          );
+        }
+      } catch (error) {
+        if (isMounted) {
+          setVerificationError(
+            getErrorMessage(
+              error,
+              "Could not verify payment yet. Retry from receipt history or contact billing support.",
+            ),
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setIsVerifying(false);
+        }
+      }
+    };
+
+    verifyOrder();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [orderIdFromQuery, receipt]);
 
   return (
     <>
@@ -34,8 +111,20 @@ const PaymentSuccessPage = () => {
         <SectionTitle
           eyebrow="Payment Confirmed"
           title="Your Service Booking Is Confirmed"
-          description="Payment verification is complete. Save the receipt for your records and support references."
+          description="Payment status is verified server-side and receipt is generated once the transaction is successful."
         />
+
+        {verificationInfo ? (
+          <p className="mt-4 rounded-xl border border-emerald-300/35 bg-emerald-300/10 px-4 py-3 text-sm text-emerald-200">
+            {verificationInfo}
+          </p>
+        ) : null}
+
+        {verificationError ? (
+          <p className="mt-4 rounded-xl border border-rose-300/35 bg-rose-300/10 px-4 py-3 text-sm text-rose-200">
+            {verificationError}
+          </p>
+        ) : null}
 
         <div className="mt-8 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
           <article className="card-surface rounded-3xl p-6">
@@ -44,7 +133,24 @@ const PaymentSuccessPage = () => {
               Verified Payment
             </div>
 
-            {receipt ? (
+            {isVerifying ? (
+              <>
+                <h2 className="mt-4 text-2xl font-semibold text-cyan-100">
+                  Verifying Payment Status
+                </h2>
+                <p className="mt-2 text-sm text-slate-300">
+                  Please wait while we validate your transaction and prepare the
+                  receipt.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <Button to="/receipts" className="min-w-[200px]">
+                    Open Receipt History
+                  </Button>
+                </div>
+              </>
+            ) : null}
+
+            {!isVerifying && receipt ? (
               <>
                 <h2 className="mt-4 text-2xl font-semibold text-cyan-100">
                   Receipt Ready for Download
@@ -117,14 +223,16 @@ const PaymentSuccessPage = () => {
                   </Button>
                 </div>
               </>
-            ) : (
+            ) : null}
+
+            {!isVerifying && !receipt ? (
               <>
                 <h2 className="mt-4 text-2xl font-semibold text-cyan-100">
                   Receipt Session Not Found
                 </h2>
                 <p className="mt-2 text-sm text-slate-300">
-                  Your payment may still be successful. Open receipt history and
-                  verify using your payment email.
+                  Your payment may still be pending. Open receipt history and
+                  verify using your payment email or retry checkout.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   <Button to="/receipts" className="min-w-[200px]">
@@ -139,7 +247,7 @@ const PaymentSuccessPage = () => {
                   </Button>
                 </div>
               </>
-            )}
+            ) : null}
           </article>
 
           <aside className="card-surface rounded-3xl p-6">
