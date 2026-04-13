@@ -3,13 +3,20 @@ import jwt from "jsonwebtoken";
 import ApiError from "../utils/ApiError.js";
 import { sendResponse } from "../utils/apiResponse.js";
 import { env } from "../config/env.js";
+import { logSecurityEvent } from "../utils/securityAudit.js";
 
 export const loginAdmin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = String(email || "")
+      .toLowerCase()
+      .trim();
 
     if (normalizedEmail !== env.adminEmail) {
+      logSecurityEvent("ADMIN_LOGIN_FAILED", req, {
+        reason: "email_mismatch",
+        attemptedEmail: normalizedEmail,
+      });
       throw new ApiError(401, "Invalid credentials");
     }
 
@@ -18,6 +25,10 @@ export const loginAdmin = async (req, res, next) => {
       env.adminPasswordHash,
     );
     if (!isValidPassword) {
+      logSecurityEvent("ADMIN_LOGIN_FAILED", req, {
+        reason: "password_mismatch",
+        attemptedEmail: normalizedEmail,
+      });
       throw new ApiError(401, "Invalid credentials");
     }
 
@@ -28,6 +39,10 @@ export const loginAdmin = async (req, res, next) => {
         expiresIn: env.jwtExpiresIn,
       },
     );
+
+    logSecurityEvent("ADMIN_LOGIN_SUCCESS", req, {
+      email: normalizedEmail,
+    });
 
     sendResponse(res, 200, "Admin login successful", {
       token,

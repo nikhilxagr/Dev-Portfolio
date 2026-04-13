@@ -210,6 +210,20 @@ Use `ADMIN_EMAIL` and the plaintext password that matches `ADMIN_PASSWORD_HASH`.
 | Authorization    | JWT-based protected routes                  |
 | Error handling   | Centralized API error middleware            |
 
+Security documentation:
+
+- [SECURITY.md](SECURITY.md)
+- [DEPLOYMENT_SECURITY.md](DEPLOYMENT_SECURITY.md)
+- [THREAT_MODEL.md](THREAT_MODEL.md)
+
+---
+
+## License
+
+This repository is proprietary and released under all-rights-reserved terms.
+
+- [LICENSE](LICENSE)
+
 ---
 
 ## Deployment Notes

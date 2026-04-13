@@ -2,6 +2,7 @@ import Blog from "../models/Blog.js";
 import mongoose from "mongoose";
 import ApiError from "../utils/ApiError.js";
 import { sendResponse } from "../utils/apiResponse.js";
+import { logSecurityEvent } from "../utils/securityAudit.js";
 
 const createSearchFilter = (search) => ({
   $or: [
@@ -76,6 +77,11 @@ export const getBlogBySlug = async (req, res, next) => {
 export const createBlog = async (req, res, next) => {
   try {
     const blog = await Blog.create(req.body);
+    logSecurityEvent("ADMIN_BLOG_CREATED", req, {
+      blogId: blog.id,
+      slug: blog.slug,
+      title: blog.title,
+    });
     sendResponse(res, 201, "Blog created successfully", blog);
   } catch (error) {
     next(error);
@@ -93,6 +99,12 @@ export const updateBlog = async (req, res, next) => {
       throw new ApiError(404, "Blog not found");
     }
 
+    logSecurityEvent("ADMIN_BLOG_UPDATED", req, {
+      blogId: blog.id,
+      slug: blog.slug,
+      title: blog.title,
+    });
+
     sendResponse(res, 200, "Blog updated successfully", blog);
   } catch (error) {
     next(error);
@@ -106,6 +118,12 @@ export const deleteBlog = async (req, res, next) => {
     if (!blog) {
       throw new ApiError(404, "Blog not found");
     }
+
+    logSecurityEvent("ADMIN_BLOG_DELETED", req, {
+      blogId: blog.id,
+      slug: blog.slug,
+      title: blog.title,
+    });
 
     sendResponse(res, 200, "Blog deleted successfully");
   } catch (error) {

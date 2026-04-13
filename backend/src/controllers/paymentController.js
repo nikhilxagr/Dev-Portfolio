@@ -25,9 +25,44 @@ import {
   sendReceiptEmail,
 } from "../services/receiptEmail.service.js";
 import { env } from "../config/env.js";
+import { logSecurityEvent } from "../utils/securityAudit.js";
 
 const MAX_HISTORY_ITEMS = 60;
 const MAX_OTP_ATTEMPTS = 5;
+
+const failTransaction = async (transaction, reason) => {
+  transaction.status = "failed";
+  transaction.failedAt = new Date();
+  transaction.failureReason = reason;
+  await transaction.save();
+};
+
+const getPaymentMismatchReason = (transaction, paymentEntity) => {
+  if (!paymentEntity || typeof paymentEntity !== "object") {
+    return "missing_payment_entity";
+  }
+
+  if (
+    paymentEntity.order_id &&
+    paymentEntity.order_id !== transaction.razorpayOrderId
+  ) {
+    return "order_mismatch";
+  }
+
+  const normalizedCurrency = String(paymentEntity.currency || "").toUpperCase();
+  if (normalizedCurrency && normalizedCurrency !== transaction.currency) {
+    return "currency_mismatch";
+  }
+
+  if (
+    typeof paymentEntity.amount === "number" &&
+    paymentEntity.amount !== transaction.amountPaise
+  ) {
+    return "amount_mismatch";
+  }
+
+  return "";
+};
 
 const normalizeEmail = (value) => String(value).toLowerCase().trim();
 
@@ -300,11 +335,43 @@ export const verifyPayment = async (req, res, next) => {
     });
 
     if (!isValidSignature) {
-      transaction.status = "failed";
-      transaction.failedAt = new Date();
-      transaction.failureReason = "Signature verification failed";
-      await transaction.save();
+      await failTransaction(transaction, "signature_verification_failed");
+      logSecurityEvent("PAYMENT_VERIFY_FAILED", req, {
+        orderId: razorpayOrderId,
+        reason: "signature_mismatch",
+      });
       throw new ApiError(400, "Payment signature verification failed");
+    }
+
+    let gatewayPayment;
+
+    try {
+      const razorpay = getRazorpayClient();
+      gatewayPayment = await razorpay.payments.fetch(razorpayPaymentId);
+    } catch {
+      logSecurityEvent("PAYMENT_VERIFY_LOOKUP_FAILED", req, {
+        orderId: razorpayOrderId,
+        paymentId: razorpayPaymentId,
+      });
+      throw new ApiError(
+        502,
+        "Unable to validate payment details right now. Please try again.",
+      );
+    }
+
+    const mismatchReason = getPaymentMismatchReason(
+      transaction,
+      gatewayPayment,
+    );
+
+    if (mismatchReason) {
+      await failTransaction(transaction, `gateway_${mismatchReason}`);
+      logSecurityEvent("PAYMENT_VERIFY_FAILED", req, {
+        orderId: razorpayOrderId,
+        paymentId: razorpayPaymentId,
+        reason: mismatchReason,
+      });
+      throw new ApiError(400, "Payment verification failed integrity checks");
     }
 
     const isAlreadyPaid = transaction.status === "paid";
@@ -322,6 +389,13 @@ export const verifyPayment = async (req, res, next) => {
 
     await transaction.save();
     await sendReceiptEmailForTransaction(transaction, req);
+
+    logSecurityEvent("PAYMENT_VERIFY_SUCCESS", req, {
+      orderId: razorpayOrderId,
+      paymentId: razorpayPaymentId,
+      receiptNumber: transaction.receiptNumber,
+      alreadyPaid: isAlreadyPaid,
+    });
 
     sendResponse(
       res,
@@ -363,6 +437,9 @@ export const handleRazorpayWebhook = async (req, res, next) => {
     });
 
     if (!isValidWebhook) {
+      logSecurityEvent("PAYMENT_WEBHOOK_REJECTED", req, {
+        reason: "invalid_signature",
+      });
       throw new ApiError(401, "Webhook signature verification failed");
     }
 
@@ -379,6 +456,7 @@ export const handleRazorpayWebhook = async (req, res, next) => {
     const alreadyProcessed = await PaymentWebhookEvent.findOne({ eventId });
 
     if (alreadyProcessed) {
+      logSecurityEvent("PAYMENT_WEBHOOK_DUPLICATE", req, { eventId });
       sendResponse(res, 200, "Webhook event already processed", { eventId });
       return;
     }
@@ -392,6 +470,10 @@ export const handleRazorpayWebhook = async (req, res, next) => {
     const orderId = paymentEntity?.order_id;
 
     if (!orderId) {
+      logSecurityEvent("PAYMENT_WEBHOOK_NO_ORDER", req, {
+        eventId,
+        eventType: payload.event,
+      });
       sendResponse(res, 200, "Webhook processed without order reference", {
         eventId,
       });
@@ -403,6 +485,10 @@ export const handleRazorpayWebhook = async (req, res, next) => {
     });
 
     if (!transaction) {
+      logSecurityEvent("PAYMENT_WEBHOOK_NO_TRANSACTION", req, {
+        eventId,
+        orderId,
+      });
       sendResponse(res, 200, "Webhook processed with no matching transaction", {
         eventId,
       });
@@ -412,6 +498,26 @@ export const handleRazorpayWebhook = async (req, res, next) => {
     transaction.lastWebhookEventId = eventId;
 
     if (["payment.captured", "payment.authorized"].includes(payload.event)) {
+      const mismatchReason = getPaymentMismatchReason(
+        transaction,
+        paymentEntity,
+      );
+
+      if (mismatchReason) {
+        await failTransaction(transaction, `webhook_${mismatchReason}`);
+        logSecurityEvent("PAYMENT_WEBHOOK_MISMATCH", req, {
+          eventId,
+          eventType: payload.event,
+          orderId,
+          reason: mismatchReason,
+        });
+        sendResponse(res, 202, "Webhook accepted with integrity mismatch", {
+          eventId,
+          eventType: payload.event,
+        });
+        return;
+      }
+
       transaction.status = "paid";
       transaction.razorpayPaymentId =
         transaction.razorpayPaymentId || paymentEntity?.id || null;
@@ -425,18 +531,37 @@ export const handleRazorpayWebhook = async (req, res, next) => {
 
       await transaction.save();
       await sendReceiptEmailForTransaction(transaction, req);
+      logSecurityEvent("PAYMENT_WEBHOOK_MARKED_PAID", req, {
+        eventId,
+        eventType: payload.event,
+        orderId,
+        receiptNumber: transaction.receiptNumber,
+      });
     } else if (payload.event === "payment.failed") {
       transaction.status = "failed";
       transaction.failedAt = new Date();
       transaction.failureReason =
         paymentEntity?.error_description || "Payment failed at gateway";
       await transaction.save();
+      logSecurityEvent("PAYMENT_WEBHOOK_MARKED_FAILED", req, {
+        eventId,
+        orderId,
+      });
     } else if (["refund.created", "refund.processed"].includes(payload.event)) {
       transaction.status = "refunded";
       transaction.refundedAt = new Date();
       await transaction.save();
+      logSecurityEvent("PAYMENT_WEBHOOK_MARKED_REFUNDED", req, {
+        eventId,
+        orderId,
+      });
     } else {
       await transaction.save();
+      logSecurityEvent("PAYMENT_WEBHOOK_IGNORED_EVENT", req, {
+        eventId,
+        eventType: payload.event,
+        orderId,
+      });
     }
 
     sendResponse(res, 200, "Webhook processed successfully", {
@@ -510,6 +635,10 @@ export const requestReceiptAccessCode = async (req, res, next) => {
     });
 
     if (!hasReceipts) {
+      logSecurityEvent("RECEIPT_ACCESS_REQUESTED", req, {
+        email: normalizedEmail,
+        hasReceipts: false,
+      });
       sendResponse(
         res,
         200,
@@ -542,6 +671,13 @@ export const requestReceiptAccessCode = async (req, res, next) => {
     const emailResult = await sendReceiptAccessCodeEmail({
       email: normalizedEmail,
       code,
+    });
+
+    logSecurityEvent("RECEIPT_ACCESS_REQUESTED", req, {
+      email: normalizedEmail,
+      hasReceipts: true,
+      emailDeliverySkipped: Boolean(emailResult.skipped),
+      emailDeliverySent: Boolean(emailResult.sent),
     });
 
     const responseData = {
@@ -616,6 +752,10 @@ export const verifyReceiptAccessCode = async (req, res, next) => {
         accessCode.consumedAt = new Date();
       }
       await accessCode.save();
+      logSecurityEvent("RECEIPT_ACCESS_VERIFY_FAILED", req, {
+        email: normalizedEmail,
+        attempts: accessCode.attempts,
+      });
       throw new ApiError(400, "Access code is invalid or expired");
     }
 
@@ -623,6 +763,10 @@ export const verifyReceiptAccessCode = async (req, res, next) => {
     await accessCode.save();
 
     const portalToken = createPortalToken({ email: normalizedEmail });
+
+    logSecurityEvent("RECEIPT_ACCESS_VERIFY_SUCCESS", req, {
+      email: normalizedEmail,
+    });
 
     sendResponse(res, 200, "Receipt access verified", {
       portalToken,

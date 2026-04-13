@@ -91,8 +91,20 @@ const parseOptionalRegex = (pattern, variableName) => {
     return null;
   }
 
+  const normalized = pattern.trim();
+
+  if ([".*", ".+", "^.*$", "^.+$"].includes(normalized)) {
+    throw new Error(
+      `${variableName} is too permissive. Use an explicit domain pattern.`,
+    );
+  }
+
+  if (normalized.length > 180) {
+    throw new Error(`${variableName} exceeds maximum allowed length`);
+  }
+
   try {
-    return new RegExp(pattern);
+    return new RegExp(normalized);
   } catch {
     throw new Error(`Invalid ${variableName} regular expression`);
   }
@@ -113,6 +125,7 @@ export const env = {
     process.env.ALLOWED_ORIGIN_REGEX,
     "ALLOWED_ORIGIN_REGEX",
   ),
+  trustProxyHops: Math.max(0, parseNumber(process.env.TRUST_PROXY_HOPS, 1)),
   allowStartWithoutDb: parseBoolean(process.env.ALLOW_START_WITHOUT_DB, false),
   dbMaxPoolSize: parseNumber(process.env.DB_MAX_POOL_SIZE, 25),
   dbMinPoolSize: parseNumber(process.env.DB_MIN_POOL_SIZE, 5),

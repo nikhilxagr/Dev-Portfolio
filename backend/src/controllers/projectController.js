@@ -2,6 +2,7 @@ import Project from "../models/Project.js";
 import mongoose from "mongoose";
 import ApiError from "../utils/ApiError.js";
 import { sendResponse } from "../utils/apiResponse.js";
+import { logSecurityEvent } from "../utils/securityAudit.js";
 
 const createSearchFilter = (search) => ({
   $or: [
@@ -85,6 +86,11 @@ export const getProjectBySlug = async (req, res, next) => {
 export const createProject = async (req, res, next) => {
   try {
     const project = await Project.create(req.body);
+    logSecurityEvent("ADMIN_PROJECT_CREATED", req, {
+      projectId: project.id,
+      slug: project.slug,
+      title: project.title,
+    });
     sendResponse(res, 201, "Project created successfully", project);
   } catch (error) {
     next(error);
@@ -102,6 +108,12 @@ export const updateProject = async (req, res, next) => {
       throw new ApiError(404, "Project not found");
     }
 
+    logSecurityEvent("ADMIN_PROJECT_UPDATED", req, {
+      projectId: project.id,
+      slug: project.slug,
+      title: project.title,
+    });
+
     sendResponse(res, 200, "Project updated successfully", project);
   } catch (error) {
     next(error);
@@ -115,6 +127,12 @@ export const deleteProject = async (req, res, next) => {
     if (!project) {
       throw new ApiError(404, "Project not found");
     }
+
+    logSecurityEvent("ADMIN_PROJECT_DELETED", req, {
+      projectId: project.id,
+      slug: project.slug,
+      title: project.title,
+    });
 
     sendResponse(res, 200, "Project deleted successfully");
   } catch (error) {

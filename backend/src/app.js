@@ -13,11 +13,12 @@ import {
   contactLimiter,
 } from "./middleware/rateLimiter.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorMiddleware.js";
+import { env } from "./config/env.js";
 
 const app = express();
 
 // Required behind Render proxy for accurate req.ip and rate limiting.
-app.set("trust proxy", 1);
+app.set("trust proxy", env.trustProxyHops);
 
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(
@@ -26,6 +27,28 @@ app.use(
 );
 app.use(express.json({ limit: "300kb" }));
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/api", (req, res, next) => {
+  if (!["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+    next();
+    return;
+  }
+
+  if (req.path === "/payments/webhook") {
+    next();
+    return;
+  }
+
+  if (!req.is("application/json")) {
+    res.status(415).json({
+      success: false,
+      message: "Content-Type must be application/json",
+    });
+    return;
+  }
+
+  next();
+});
 
 applySecurityMiddleware(app);
 app.use(generalLimiter);

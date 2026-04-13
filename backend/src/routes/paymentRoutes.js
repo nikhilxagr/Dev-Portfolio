@@ -48,7 +48,7 @@ router.post(
       .withMessage("Notes must be up to 500 characters"),
     body("idempotencyKey")
       .trim()
-      .matches(/^[A-Za-z0-9._:-]{12,120}$/)
+      .matches(/^[A-Za-z0-9_-]{12,120}$/)
       .withMessage("Invalid idempotency key"),
   ],
   validateRequest,

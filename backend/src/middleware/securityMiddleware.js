@@ -99,12 +99,32 @@ export const applySecurityMiddleware = (app) => {
         }
         callback(new Error("CORS policy blocked this origin"));
       },
-      methods: ["GET", "POST", "PUT", "DELETE"],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
+      maxAge: 3600,
     }),
   );
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      hsts:
+        env.nodeEnv === "production"
+          ? {
+              maxAge: 31536000,
+              includeSubDomains: true,
+              preload: true,
+            }
+          : false,
+      referrerPolicy: {
+        policy: "no-referrer",
+      },
+      xDnsPrefetchControl: {
+        allow: false,
+      },
+    }),
+  );
   app.use(hpp());
   app.use(compression());
   app.use(noSqlSanitizeMiddleware);
