@@ -6,7 +6,7 @@ This policy covers the full repository and deployed services:
 
 - Frontend: Vercel deployment
 - Backend API: Render deployment
-- Data and payment flow: MongoDB Atlas and Razorpay integration
+- Data and payment flow: MongoDB Atlas and Cashfree integration
 
 ## Supported Versions
 
@@ -55,8 +55,8 @@ Do not post security vulnerabilities in public issues, discussions, or social me
 - Required rotation targets:
   - JWT secret
   - Admin password hash
-  - Razorpay key secret
-  - Razorpay webhook secret
+  - Cashfree secret key
+  - Cashfree webhook secret
 
 ## Security Testing Expectations
 

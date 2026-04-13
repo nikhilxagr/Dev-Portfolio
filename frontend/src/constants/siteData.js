@@ -454,6 +454,14 @@ export const SECURITY_PRACTICALS = PRACTICALS.map((item) => ({
   summary: item.summary,
 }));
 
+export const SUPPORT_PAYMENT_CONFIG = {
+  slug: "support-me",
+  title: "Support My Work",
+  minAmountInr: 1,
+  maxAmountInr: 50000,
+  quickAmounts: [49, 99, 149, 199, 499, 999],
+};
+
 export const SERVICE_OFFERINGS = [
   {
     slug: "mentorship-call",

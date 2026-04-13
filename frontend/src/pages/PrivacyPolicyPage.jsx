@@ -11,7 +11,7 @@ const privacyItems = [
   {
     title: "Payment Data",
     detail:
-      "Payments are processed by Razorpay. Card, UPI, and banking credentials are handled on Razorpay pages and are not stored on this website.",
+      "Payments are processed by Cashfree. Card, UPI, and banking credentials are handled on Cashfree pages and are not stored on this website.",
   },
   {
     title: "How Data Is Used",

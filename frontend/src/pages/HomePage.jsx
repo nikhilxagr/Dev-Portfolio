@@ -4,6 +4,7 @@ import {
   BadgeCheck,
   Braces,
   Code2,
+  HeartHandshake,
   MapPin,
   Rocket,
   ShieldCheck,
@@ -290,16 +291,13 @@ const HomePage = () => {
 
               <div className="mt-5 flex flex-wrap justify-center gap-2 text-sm sm:justify-start">
                 <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-cyan-100">
-                  Frontend Engineering
+                  Full Stack Developer
                 </span>
                 <span className="rounded-full border border-violet-300/30 bg-violet-300/10 px-3 py-1 text-violet-200">
-                  API Development
+                  Cyber Security Learner
                 </span>
                 <span className="rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-amber-200">
-                  AI-Assisted Quality
-                </span>
-                <span className="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-emerald-200">
-                  Full Stack Developer
+                  SOC ANALYST
                 </span>
               </div>
 
@@ -323,6 +321,9 @@ const HomePage = () => {
                   className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 text-white shadow-[0_0_0_1px_rgba(103,232,249,0.35),0_0_28px_rgba(34,211,238,0.28)] transition hover:from-violet-400 hover:via-fuchsia-400 hover:to-cyan-400 motion-safe:animate-[pulse_2.4s_ease-in-out_infinite]"
                 >
                   Book Service <ArrowRight size={16} />
+                </Button>
+                <Button to="/support" variant="secondary">
+                  Support Me <HeartHandshake size={16} />
                 </Button>
                 <Button to={HERO_CONTENT.primaryCta.to}>
                   {HERO_CONTENT.primaryCta.label} <ArrowRight size={16} />

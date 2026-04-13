@@ -71,21 +71,17 @@ const paymentTransactionSchema = new mongoose.Schema(
       enum: ["created", "paid", "failed", "refunded"],
       default: "created",
     },
-    razorpayOrderId: {
+    cashfreeOrderId: {
       type: String,
       trim: true,
-      unique: true,
-      sparse: true,
-      default: null,
+      default: undefined,
     },
-    razorpayPaymentId: {
+    cashfreePaymentId: {
       type: String,
       trim: true,
-      unique: true,
-      sparse: true,
-      default: null,
+      default: undefined,
     },
-    razorpaySignature: {
+    cashfreePaymentSessionId: {
       type: String,
       trim: true,
       default: "",
@@ -93,9 +89,7 @@ const paymentTransactionSchema = new mongoose.Schema(
     receiptNumber: {
       type: String,
       trim: true,
-      unique: true,
-      sparse: true,
-      default: null,
+      default: undefined,
     },
     paidAt: {
       type: Date,
@@ -144,10 +138,47 @@ const paymentTransactionSchema = new mongoose.Schema(
 paymentTransactionSchema.index({ createdAt: -1 });
 paymentTransactionSchema.index({ customerEmail: 1, createdAt: -1 });
 paymentTransactionSchema.index({ status: 1, createdAt: -1 });
+paymentTransactionSchema.index(
+  { cashfreeOrderId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      cashfreeOrderId: {
+        $gt: "",
+      },
+    },
+  },
+);
+paymentTransactionSchema.index(
+  { cashfreePaymentId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      cashfreePaymentId: {
+        $gt: "",
+      },
+    },
+  },
+);
+paymentTransactionSchema.index(
+  { receiptNumber: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      receiptNumber: {
+        $gt: "",
+      },
+    },
+  },
+);
 
 const PaymentTransaction = mongoose.model(
   "PaymentTransaction",
   paymentTransactionSchema,
 );
+
+export const ensurePaymentTransactionIndexes = async () => {
+  await PaymentTransaction.syncIndexes();
+};
 
 export default PaymentTransaction;

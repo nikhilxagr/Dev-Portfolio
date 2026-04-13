@@ -5,7 +5,10 @@ import ReceiptAccessCode from "../models/ReceiptAccessCode.js";
 import PaymentWebhookEvent from "../models/PaymentWebhookEvent.js";
 import ApiError from "../utils/ApiError.js";
 import { sendResponse } from "../utils/apiResponse.js";
-import { getServiceBySlug } from "../constants/servicesCatalog.js";
+import {
+  getServiceBySlug,
+  SUPPORT_PAYMENT_CONFIG,
+} from "../constants/servicesCatalog.js";
 import {
   createDownloadToken,
   createPortalToken,
@@ -13,11 +16,12 @@ import {
   verifyPortalToken,
 } from "../utils/tokenSigner.js";
 import {
-  getRazorpayClient,
-  isRazorpayConfigured,
-  verifyRazorpayPaymentSignature,
-  verifyRazorpayWebhookSignature,
-} from "../utils/razorpayClient.js";
+  createCashfreeOrder,
+  fetchCashfreeOrderPayments,
+  getCashfreeMode,
+  isCashfreeConfigured,
+  verifyCashfreeWebhookSignature,
+} from "../utils/cashfreeClient.js";
 import { buildReceiptPdfBuffer } from "../utils/receiptPdf.js";
 import {
   isReceiptEmailEnabled,
@@ -37,34 +41,81 @@ const failTransaction = async (transaction, reason) => {
   await transaction.save();
 };
 
-const getPaymentMismatchReason = (transaction, paymentEntity) => {
-  if (!paymentEntity || typeof paymentEntity !== "object") {
-    return "missing_payment_entity";
-  }
+const normalizeEmail = (value) => String(value).toLowerCase().trim();
+const normalizePhone = (value) => String(value || "").replace(/\D/g, "");
+const normalizeOrigin = (value) =>
+  String(value || "")
+    .trim()
+    .replace(/\/+$/, "");
 
-  if (
-    paymentEntity.order_id &&
-    paymentEntity.order_id !== transaction.razorpayOrderId
-  ) {
-    return "order_mismatch";
-  }
+const isSuccessPaymentStatus = (status) =>
+  ["SUCCESS", "CAPTURED", "PAID"].includes(
+    String(status || "")
+      .trim()
+      .toUpperCase(),
+  );
 
-  const normalizedCurrency = String(paymentEntity.currency || "").toUpperCase();
-  if (normalizedCurrency && normalizedCurrency !== transaction.currency) {
-    return "currency_mismatch";
-  }
+const isFailurePaymentStatus = (status) =>
+  ["FAILED", "CANCELLED", "USER_DROPPED", "EXPIRED"].includes(
+    String(status || "")
+      .trim()
+      .toUpperCase(),
+  );
 
-  if (
-    typeof paymentEntity.amount === "number" &&
-    paymentEntity.amount !== transaction.amountPaise
-  ) {
-    return "amount_mismatch";
-  }
-
-  return "";
+const toSortableTime = (value) => {
+  const parsed = new Date(value || 0).getTime();
+  return Number.isNaN(parsed) ? 0 : parsed;
 };
 
-const normalizeEmail = (value) => String(value).toLowerCase().trim();
+const sortPaymentsByLatest = (payments = []) =>
+  [...payments].sort((left, right) => {
+    const leftTime = Math.max(
+      toSortableTime(left.payment_completion_time),
+      toSortableTime(left.payment_time),
+    );
+    const rightTime = Math.max(
+      toSortableTime(right.payment_completion_time),
+      toSortableTime(right.payment_time),
+    );
+
+    return rightTime - leftTime;
+  });
+
+const pickLatestPayment = (payments = []) =>
+  sortPaymentsByLatest(payments)[0] || null;
+
+const pickSuccessfulPayment = (payments = []) =>
+  sortPaymentsByLatest(payments).find((payment) =>
+    isSuccessPaymentStatus(payment?.payment_status),
+  ) || null;
+
+const createGatewayOrderId = (transaction) => {
+  const idSuffix = transaction._id.toString().slice(-12);
+  return `order_${idSuffix}_${Date.now()}`;
+};
+
+const getAllowedCheckoutOrigin = (req) => {
+  const requestOrigin = normalizeOrigin(req.get("origin"));
+
+  if (requestOrigin && env.allowedOrigins.includes(requestOrigin)) {
+    return requestOrigin;
+  }
+
+  if (
+    requestOrigin &&
+    env.allowedOriginRegex &&
+    env.allowedOriginRegex.test(requestOrigin)
+  ) {
+    return requestOrigin;
+  }
+
+  const fallbackOrigin = normalizeOrigin(env.allowedOrigins[0]);
+  if (fallbackOrigin) {
+    return fallbackOrigin;
+  }
+
+  return null;
+};
 
 const isDatabaseReady = (req) => {
   const ready = mongoose.connection.readyState === 1;
@@ -73,13 +124,34 @@ const isDatabaseReady = (req) => {
 };
 
 const ensurePaymentConfigured = () => {
-  if (!isRazorpayConfigured()) {
+  if (!isCashfreeConfigured()) {
     throw new ApiError(
       503,
       "Payment gateway is not configured yet. Please contact support.",
     );
   }
 };
+
+const normalizeSupportAmount = (value) => {
+  const parsed = Number(value);
+
+  if (!Number.isFinite(parsed) || !Number.isInteger(parsed)) {
+    return NaN;
+  }
+
+  return parsed;
+};
+
+const getBaseUrl = (req) => `${req.protocol}://${req.get("host")}`;
+
+const buildCashfreeReturnUrl = (req) => {
+  const checkoutOrigin = getAllowedCheckoutOrigin(req);
+  const base = checkoutOrigin || getBaseUrl(req);
+  return `${base}/payment/success?order_id={order_id}`;
+};
+
+const buildCashfreeNotifyUrl = (req) =>
+  `${getBaseUrl(req)}/api/payments/webhook`;
 
 const createReceiptNumber = () => {
   const timestamp = Date.now();
@@ -95,8 +167,6 @@ const createOtpHash = (email, otpCode) =>
     .createHmac("sha256", env.paymentReceiptTokenSecret)
     .update(`${normalizeEmail(email)}:${otpCode}`)
     .digest("hex");
-
-const getBaseUrl = (req) => `${req.protocol}://${req.get("host")}`;
 
 const buildDownloadUrl = (transaction) => {
   const downloadToken = createDownloadToken({
@@ -155,28 +225,25 @@ const getReceiptPayload = (transaction) => ({
   amountInr: transaction.amountInr,
   currency: transaction.currency,
   paidAt: transaction.paidAt,
-  orderId: transaction.razorpayOrderId,
-  paymentId: transaction.razorpayPaymentId,
+  orderId: transaction.cashfreeOrderId,
+  paymentId: transaction.cashfreePaymentId,
   emailStatus: transaction.receiptEmailStatus,
   downloadUrl: buildDownloadUrl(transaction),
 });
 
 export const getPaymentConfigStatus = (_req, res) => {
-  const hasRazorpayKeyId = Boolean(env.razorpayKeyId);
-  const hasRazorpayKeySecret = Boolean(env.razorpayKeySecret);
+  const hasCashfreeAppId = Boolean(env.cashfreeAppId);
+  const hasCashfreeSecretKey = Boolean(env.cashfreeSecretKey);
   const receiptEmailConfigured = Boolean(
     env.resendApiKey && env.paymentFromEmail,
   );
-  const checkoutReady = hasRazorpayKeyId && hasRazorpayKeySecret;
+  const checkoutReady = hasCashfreeAppId && hasCashfreeSecretKey;
 
   sendResponse(res, 200, "Payment configuration status fetched", {
-    mode: env.razorpayKeyId.startsWith("rzp_live_")
-      ? "live"
-      : hasRazorpayKeyId
-        ? "test"
-        : "not-configured",
+    gateway: "cashfree",
+    mode: checkoutReady ? getCashfreeMode() : "not-configured",
     checkoutReady,
-    webhookReady: checkoutReady && Boolean(env.razorpayWebhookSecret),
+    webhookReady: checkoutReady && Boolean(env.cashfreeWebhookSecret),
     receiptTokenReady: Boolean(env.paymentReceiptTokenSecret),
     receiptEmailEnabled: env.paymentReceiptEmailEnabled,
     receiptEmailReady: env.paymentReceiptEmailEnabled
@@ -214,6 +281,14 @@ export const createPaymentOrder = async (req, res, next) => {
     }
 
     const normalizedEmail = normalizeEmail(customerEmail);
+    const normalizedPhone = normalizePhone(customerPhone);
+
+    if (normalizedPhone.length !== 10) {
+      throw new ApiError(
+        400,
+        "A valid 10-digit phone number is required for checkout",
+      );
+    }
 
     transaction = await PaymentTransaction.findOne({ idempotencyKey });
 
@@ -244,24 +319,41 @@ export const createPaymentOrder = async (req, res, next) => {
         currency: service.currency,
         customerName: customerName.trim(),
         customerEmail: normalizedEmail,
-        customerPhone: customerPhone.trim(),
+        customerPhone: normalizedPhone,
         notes: notes.trim(),
       });
     }
 
-    if (!transaction.razorpayOrderId) {
-      const razorpay = getRazorpayClient();
-      const razorpayOrder = await razorpay.orders.create({
-        amount: service.amountPaise,
-        currency: service.currency,
-        receipt: `svc-${transaction._id.toString().slice(-10)}`,
-        notes: {
-          serviceSlug: service.slug,
-          customerEmail: normalizedEmail,
+    if (!transaction.cashfreeOrderId || !transaction.cashfreePaymentSessionId) {
+      const gatewayOrderId = createGatewayOrderId(transaction);
+      const cashfreeOrder = await createCashfreeOrder({
+        order_id: gatewayOrderId,
+        order_amount: Number(transaction.amountInr.toFixed(2)),
+        order_currency: transaction.currency,
+        customer_details: {
+          customer_id: `cust_${transaction._id.toString().slice(-12)}`,
+          customer_name: transaction.customerName,
+          customer_email: transaction.customerEmail,
+          customer_phone: transaction.customerPhone,
         },
+        order_meta: {
+          return_url: buildCashfreeReturnUrl(req),
+          notify_url: buildCashfreeNotifyUrl(req),
+        },
+        order_note:
+          transaction.notes ||
+          `Services page checkout for ${transaction.serviceName}`,
       });
 
-      transaction.razorpayOrderId = razorpayOrder.id;
+      if (!cashfreeOrder?.order_id || !cashfreeOrder?.payment_session_id) {
+        throw new ApiError(
+          502,
+          "Unable to initialize payment session. Please try again.",
+        );
+      }
+
+      transaction.cashfreeOrderId = cashfreeOrder.order_id;
+      transaction.cashfreePaymentSessionId = cashfreeOrder.payment_session_id;
       transaction.status = "created";
       transaction.failureReason = "";
       transaction.failedAt = null;
@@ -271,17 +363,16 @@ export const createPaymentOrder = async (req, res, next) => {
     sendResponse(res, 201, "Payment order created successfully", {
       transactionRef: transaction.id,
       checkout: {
-        key: env.razorpayKeyId,
-        orderId: transaction.razorpayOrderId,
-        amount: transaction.amountPaise,
+        gateway: "cashfree",
+        appId: env.cashfreeAppId,
+        environment: getCashfreeMode(),
+        paymentSessionId: transaction.cashfreePaymentSessionId,
+        orderId: transaction.cashfreeOrderId,
+        amount: transaction.amountInr,
         currency: transaction.currency,
         name: env.paymentBusinessName,
         description: transaction.serviceName,
-        prefill: {
-          name: transaction.customerName,
-          email: transaction.customerEmail,
-          contact: transaction.customerPhone,
-        },
+        returnUrl: buildCashfreeReturnUrl(req),
         notes: {
           serviceSlug: transaction.serviceSlug,
           transactionRef: transaction.id,
@@ -294,7 +385,164 @@ export const createPaymentOrder = async (req, res, next) => {
       },
     });
   } catch (error) {
-    if (transaction && !transaction.razorpayOrderId) {
+    if (transaction && !transaction.cashfreeOrderId) {
+      transaction.status = "failed";
+      transaction.failedAt = new Date();
+      transaction.failureReason = error.message || "Order creation failed";
+      await transaction.save();
+    }
+
+    next(error);
+  }
+};
+
+export const createSupportPaymentOrder = async (req, res, next) => {
+  let transaction = null;
+
+  try {
+    if (!isDatabaseReady(req)) {
+      throw new ApiError(
+        503,
+        "Payments are temporarily unavailable while database reconnects.",
+      );
+    }
+
+    ensurePaymentConfigured();
+
+    const {
+      amountInr,
+      customerName,
+      customerEmail,
+      customerPhone = "",
+      notes = "",
+      idempotencyKey,
+    } = req.body;
+
+    const normalizedEmail = normalizeEmail(customerEmail);
+    const normalizedPhone = normalizePhone(customerPhone);
+    const normalizedAmountInr = normalizeSupportAmount(amountInr);
+
+    if (
+      !Number.isInteger(normalizedAmountInr) ||
+      normalizedAmountInr < SUPPORT_PAYMENT_CONFIG.minAmountInr ||
+      normalizedAmountInr > SUPPORT_PAYMENT_CONFIG.maxAmountInr
+    ) {
+      throw new ApiError(
+        400,
+        `Support amount must be between INR ${SUPPORT_PAYMENT_CONFIG.minAmountInr} and INR ${SUPPORT_PAYMENT_CONFIG.maxAmountInr}`,
+      );
+    }
+
+    if (normalizedPhone.length !== 10) {
+      throw new ApiError(
+        400,
+        "A valid 10-digit phone number is required for checkout",
+      );
+    }
+
+    transaction = await PaymentTransaction.findOne({ idempotencyKey });
+
+    if (transaction && transaction.status === "paid") {
+      const data = {
+        alreadyPaid: true,
+        transactionRef: transaction.id,
+        receipt: transaction.receiptNumber
+          ? getReceiptPayload(transaction)
+          : null,
+      };
+      sendResponse(
+        res,
+        200,
+        "Payment already completed for this request",
+        data,
+      );
+      return;
+    }
+
+    if (!transaction) {
+      transaction = await PaymentTransaction.create({
+        idempotencyKey,
+        serviceSlug: SUPPORT_PAYMENT_CONFIG.slug,
+        serviceName: SUPPORT_PAYMENT_CONFIG.name,
+        amountInr: normalizedAmountInr,
+        amountPaise: normalizedAmountInr * 100,
+        currency: SUPPORT_PAYMENT_CONFIG.currency,
+        customerName: customerName.trim(),
+        customerEmail: normalizedEmail,
+        customerPhone: normalizedPhone,
+        notes: notes.trim(),
+      });
+    }
+
+    if (!transaction.cashfreeOrderId || !transaction.cashfreePaymentSessionId) {
+      const gatewayOrderId = createGatewayOrderId(transaction);
+      const cashfreeOrder = await createCashfreeOrder({
+        order_id: gatewayOrderId,
+        order_amount: Number(transaction.amountInr.toFixed(2)),
+        order_currency: transaction.currency,
+        customer_details: {
+          customer_id: `cust_${transaction._id.toString().slice(-12)}`,
+          customer_name: transaction.customerName,
+          customer_email: transaction.customerEmail,
+          customer_phone: transaction.customerPhone,
+        },
+        order_meta: {
+          return_url: buildCashfreeReturnUrl(req),
+          notify_url: buildCashfreeNotifyUrl(req),
+        },
+        order_note:
+          transaction.notes ||
+          "Support contribution via Services support section",
+      });
+
+      if (!cashfreeOrder?.order_id || !cashfreeOrder?.payment_session_id) {
+        throw new ApiError(
+          502,
+          "Unable to initialize payment session. Please try again.",
+        );
+      }
+
+      transaction.cashfreeOrderId = cashfreeOrder.order_id;
+      transaction.cashfreePaymentSessionId = cashfreeOrder.payment_session_id;
+      transaction.status = "created";
+      transaction.failureReason = "";
+      transaction.failedAt = null;
+      await transaction.save();
+    }
+
+    logSecurityEvent("PAYMENT_SUPPORT_ORDER_CREATED", req, {
+      transactionRef: transaction.id,
+      amountInr: transaction.amountInr,
+      orderId: transaction.cashfreeOrderId,
+      serviceSlug: transaction.serviceSlug,
+    });
+
+    sendResponse(res, 201, "Support payment order created successfully", {
+      transactionRef: transaction.id,
+      checkout: {
+        gateway: "cashfree",
+        appId: env.cashfreeAppId,
+        environment: getCashfreeMode(),
+        paymentSessionId: transaction.cashfreePaymentSessionId,
+        orderId: transaction.cashfreeOrderId,
+        amount: transaction.amountInr,
+        currency: transaction.currency,
+        name: env.paymentBusinessName,
+        description: transaction.serviceName,
+        returnUrl: buildCashfreeReturnUrl(req),
+        notes: {
+          serviceSlug: transaction.serviceSlug,
+          transactionRef: transaction.id,
+        },
+      },
+      service: {
+        slug: transaction.serviceSlug,
+        name: transaction.serviceName,
+        amountInr: transaction.amountInr,
+      },
+    });
+  } catch (error) {
+    if (transaction && !transaction.cashfreeOrderId) {
       transaction.status = "failed";
       transaction.failedAt = new Date();
       transaction.failureReason = error.message || "Order creation failed";
@@ -316,42 +564,23 @@ export const verifyPayment = async (req, res, next) => {
 
     ensurePaymentConfigured();
 
-    const {
-      razorpay_order_id: razorpayOrderId,
-      razorpay_payment_id: razorpayPaymentId,
-      razorpay_signature: razorpaySignature,
-    } = req.body;
+    const orderId = String(req.body.orderId || "").trim();
 
-    const transaction = await PaymentTransaction.findOne({ razorpayOrderId });
+    const transaction = await PaymentTransaction.findOne({
+      cashfreeOrderId: orderId,
+    });
 
     if (!transaction) {
       throw new ApiError(404, "Payment order not found");
     }
 
-    const isValidSignature = verifyRazorpayPaymentSignature({
-      razorpayOrderId,
-      razorpayPaymentId,
-      razorpaySignature,
-    });
-
-    if (!isValidSignature) {
-      await failTransaction(transaction, "signature_verification_failed");
-      logSecurityEvent("PAYMENT_VERIFY_FAILED", req, {
-        orderId: razorpayOrderId,
-        reason: "signature_mismatch",
-      });
-      throw new ApiError(400, "Payment signature verification failed");
-    }
-
-    let gatewayPayment;
+    let gatewayPayments;
 
     try {
-      const razorpay = getRazorpayClient();
-      gatewayPayment = await razorpay.payments.fetch(razorpayPaymentId);
+      gatewayPayments = await fetchCashfreeOrderPayments(orderId);
     } catch {
       logSecurityEvent("PAYMENT_VERIFY_LOOKUP_FAILED", req, {
-        orderId: razorpayOrderId,
-        paymentId: razorpayPaymentId,
+        orderId,
       });
       throw new ApiError(
         502,
@@ -359,17 +588,64 @@ export const verifyPayment = async (req, res, next) => {
       );
     }
 
-    const mismatchReason = getPaymentMismatchReason(
-      transaction,
-      gatewayPayment,
-    );
+    const successfulPayment = pickSuccessfulPayment(gatewayPayments || []);
 
-    if (mismatchReason) {
-      await failTransaction(transaction, `gateway_${mismatchReason}`);
+    if (!successfulPayment) {
+      const latestPayment = pickLatestPayment(gatewayPayments || []);
+
+      if (
+        latestPayment &&
+        isFailurePaymentStatus(latestPayment.payment_status)
+      ) {
+        await failTransaction(
+          transaction,
+          `payment_${String(latestPayment.payment_status || "failed").toLowerCase()}`,
+        );
+      }
+
       logSecurityEvent("PAYMENT_VERIFY_FAILED", req, {
-        orderId: razorpayOrderId,
-        paymentId: razorpayPaymentId,
-        reason: mismatchReason,
+        orderId,
+        reason: latestPayment?.payment_status || "payment_pending",
+      });
+
+      sendResponse(
+        res,
+        202,
+        latestPayment && isFailurePaymentStatus(latestPayment.payment_status)
+          ? "Payment attempt was not successful. Please retry checkout."
+          : "Payment is pending. Complete payment and refresh this page.",
+        {
+          transactionRef: transaction.id,
+          orderId,
+          status: transaction.status,
+        },
+      );
+      return;
+    }
+
+    const normalizedCurrency = String(
+      successfulPayment.payment_currency || transaction.currency,
+    ).toUpperCase();
+    if (normalizedCurrency !== transaction.currency) {
+      await failTransaction(transaction, "gateway_currency_mismatch");
+      logSecurityEvent("PAYMENT_VERIFY_FAILED", req, {
+        orderId,
+        reason: "currency_mismatch",
+      });
+      throw new ApiError(400, "Payment verification failed integrity checks");
+    }
+
+    const paymentAmount = Number(
+      successfulPayment.payment_amount || successfulPayment.order_amount || 0,
+    );
+    if (
+      !Number.isFinite(paymentAmount) ||
+      Math.abs(paymentAmount - transaction.amountInr) > 0.01
+    ) {
+      await failTransaction(transaction, "gateway_amount_mismatch");
+      logSecurityEvent("PAYMENT_VERIFY_FAILED", req, {
+        orderId,
+        reason: "amount_mismatch",
       });
       throw new ApiError(400, "Payment verification failed integrity checks");
     }
@@ -377,9 +653,19 @@ export const verifyPayment = async (req, res, next) => {
     const isAlreadyPaid = transaction.status === "paid";
 
     transaction.status = "paid";
-    transaction.razorpayPaymentId = razorpayPaymentId;
-    transaction.razorpaySignature = razorpaySignature;
-    transaction.paidAt = transaction.paidAt || new Date();
+    transaction.cashfreePaymentId = String(
+      successfulPayment.cf_payment_id || transaction.cashfreePaymentId || "",
+    );
+    transaction.cashfreePaymentSessionId = String(
+      successfulPayment.payment_group || transaction.cashfreePaymentSessionId || "",
+    );
+    transaction.paidAt =
+      transaction.paidAt ||
+      new Date(
+        successfulPayment.payment_completion_time ||
+          successfulPayment.payment_time ||
+          Date.now(),
+      );
     transaction.failedAt = null;
     transaction.failureReason = "";
 
@@ -391,8 +677,8 @@ export const verifyPayment = async (req, res, next) => {
     await sendReceiptEmailForTransaction(transaction, req);
 
     logSecurityEvent("PAYMENT_VERIFY_SUCCESS", req, {
-      orderId: razorpayOrderId,
-      paymentId: razorpayPaymentId,
+      orderId,
+      paymentId: transaction.cashfreePaymentId,
       receiptNumber: transaction.receiptNumber,
       alreadyPaid: isAlreadyPaid,
     });
@@ -413,7 +699,24 @@ export const verifyPayment = async (req, res, next) => {
   }
 };
 
-export const handleRazorpayWebhook = async (req, res, next) => {
+const extractCashfreeOrderId = (payload) =>
+  payload?.data?.order?.order_id ||
+  payload?.data?.payment?.order_id ||
+  payload?.order?.order_id ||
+  payload?.payment?.order_id ||
+  payload?.order_id ||
+  "";
+
+const extractCashfreePaymentStatus = (payload) =>
+  payload?.data?.payment?.payment_status ||
+  payload?.payment?.payment_status ||
+  payload?.payment_status ||
+  "";
+
+const extractCashfreeEventType = (payload) =>
+  payload?.type || payload?.event || "unknown";
+
+export const handleCashfreeWebhook = async (req, res, next) => {
   try {
     if (!isDatabaseReady(req)) {
       throw new ApiError(
@@ -422,36 +725,46 @@ export const handleRazorpayWebhook = async (req, res, next) => {
       );
     }
 
-    const signatureHeader = req.headers["x-razorpay-signature"];
+    const signatureHeader = req.headers["x-webhook-signature"];
+    const timestampHeader = req.headers["x-webhook-timestamp"];
     const signature = Array.isArray(signatureHeader)
       ? signatureHeader[0]
       : signatureHeader;
+    const timestamp = Array.isArray(timestampHeader)
+      ? timestampHeader[0]
+      : timestampHeader;
 
-    if (!signature || !Buffer.isBuffer(req.body)) {
+    if (!Buffer.isBuffer(req.body)) {
       throw new ApiError(400, "Invalid webhook payload");
     }
 
-    const isValidWebhook = verifyRazorpayWebhookSignature({
-      rawBody: req.body,
-      signature,
-    });
+    if (env.cashfreeWebhookSecret && !signature) {
+      throw new ApiError(401, "Webhook signature is missing");
+    }
 
-    if (!isValidWebhook) {
-      logSecurityEvent("PAYMENT_WEBHOOK_REJECTED", req, {
-        reason: "invalid_signature",
+    if (env.cashfreeWebhookSecret) {
+      const isValidWebhook = verifyCashfreeWebhookSignature({
+        rawBody: req.body,
+        signature,
+        timestamp,
       });
-      throw new ApiError(401, "Webhook signature verification failed");
+
+      if (!isValidWebhook) {
+        logSecurityEvent("PAYMENT_WEBHOOK_REJECTED", req, {
+          reason: "invalid_signature",
+        });
+        throw new ApiError(401, "Webhook signature verification failed");
+      }
     }
 
     const payload = JSON.parse(req.body.toString("utf8"));
 
-    const headerEventId = req.headers["x-razorpay-event-id"];
+    const headerEventId =
+      req.headers["x-webhook-id"] || req.headers["x-webhook-event-id"];
     const eventId = Array.isArray(headerEventId)
       ? headerEventId[0]
       : headerEventId ||
-        `${payload.event}:${payload.created_at || Date.now()}:${
-          payload.payload?.payment?.entity?.id || "na"
-        }`;
+        `${extractCashfreeEventType(payload)}:${Date.now()}:${extractCashfreeOrderId(payload) || "na"}`;
 
     const alreadyProcessed = await PaymentWebhookEvent.findOne({ eventId });
 
@@ -463,16 +776,17 @@ export const handleRazorpayWebhook = async (req, res, next) => {
 
     await PaymentWebhookEvent.create({
       eventId,
-      eventType: payload.event || "unknown",
+      eventType: extractCashfreeEventType(payload),
     });
 
-    const paymentEntity = payload.payload?.payment?.entity;
-    const orderId = paymentEntity?.order_id;
+    const orderId = String(extractCashfreeOrderId(payload) || "").trim();
+    const eventType = extractCashfreeEventType(payload);
+    const paymentStatus = extractCashfreePaymentStatus(payload);
 
     if (!orderId) {
       logSecurityEvent("PAYMENT_WEBHOOK_NO_ORDER", req, {
         eventId,
-        eventType: payload.event,
+        eventType,
       });
       sendResponse(res, 200, "Webhook processed without order reference", {
         eventId,
@@ -481,7 +795,7 @@ export const handleRazorpayWebhook = async (req, res, next) => {
     }
 
     const transaction = await PaymentTransaction.findOne({
-      razorpayOrderId: orderId,
+      cashfreeOrderId: orderId,
     });
 
     if (!transaction) {
@@ -497,31 +811,36 @@ export const handleRazorpayWebhook = async (req, res, next) => {
 
     transaction.lastWebhookEventId = eventId;
 
-    if (["payment.captured", "payment.authorized"].includes(payload.event)) {
-      const mismatchReason = getPaymentMismatchReason(
-        transaction,
-        paymentEntity,
-      );
+    let gatewayPayments;
 
-      if (mismatchReason) {
-        await failTransaction(transaction, `webhook_${mismatchReason}`);
-        logSecurityEvent("PAYMENT_WEBHOOK_MISMATCH", req, {
-          eventId,
-          eventType: payload.event,
-          orderId,
-          reason: mismatchReason,
-        });
-        sendResponse(res, 202, "Webhook accepted with integrity mismatch", {
-          eventId,
-          eventType: payload.event,
-        });
-        return;
-      }
+    try {
+      gatewayPayments = await fetchCashfreeOrderPayments(orderId);
+    } catch {
+      logSecurityEvent("PAYMENT_WEBHOOK_LOOKUP_FAILED", req, {
+        eventId,
+        orderId,
+      });
+      throw new ApiError(502, "Unable to validate webhook payment details");
+    }
 
+    const successfulPayment = pickSuccessfulPayment(gatewayPayments || []);
+    const latestPayment = pickLatestPayment(gatewayPayments || []);
+
+    if (successfulPayment) {
       transaction.status = "paid";
-      transaction.razorpayPaymentId =
-        transaction.razorpayPaymentId || paymentEntity?.id || null;
-      transaction.paidAt = transaction.paidAt || new Date();
+      transaction.cashfreePaymentId = String(
+        successfulPayment.cf_payment_id || transaction.cashfreePaymentId || "",
+      );
+      transaction.cashfreePaymentSessionId = String(
+        successfulPayment.payment_group || transaction.cashfreePaymentSessionId || "",
+      );
+      transaction.paidAt =
+        transaction.paidAt ||
+        new Date(
+          successfulPayment.payment_completion_time ||
+            successfulPayment.payment_time ||
+            Date.now(),
+        );
       transaction.failedAt = null;
       transaction.failureReason = "";
 
@@ -531,42 +850,41 @@ export const handleRazorpayWebhook = async (req, res, next) => {
 
       await transaction.save();
       await sendReceiptEmailForTransaction(transaction, req);
+
       logSecurityEvent("PAYMENT_WEBHOOK_MARKED_PAID", req, {
         eventId,
-        eventType: payload.event,
+        eventType,
         orderId,
+        paymentStatus,
         receiptNumber: transaction.receiptNumber,
       });
-    } else if (payload.event === "payment.failed") {
-      transaction.status = "failed";
-      transaction.failedAt = new Date();
-      transaction.failureReason =
-        paymentEntity?.error_description || "Payment failed at gateway";
-      await transaction.save();
+    } else if (
+      latestPayment &&
+      isFailurePaymentStatus(latestPayment.payment_status)
+    ) {
+      await failTransaction(
+        transaction,
+        `payment_${String(latestPayment.payment_status || "failed").toLowerCase()}`,
+      );
       logSecurityEvent("PAYMENT_WEBHOOK_MARKED_FAILED", req, {
         eventId,
+        eventType,
         orderId,
-      });
-    } else if (["refund.created", "refund.processed"].includes(payload.event)) {
-      transaction.status = "refunded";
-      transaction.refundedAt = new Date();
-      await transaction.save();
-      logSecurityEvent("PAYMENT_WEBHOOK_MARKED_REFUNDED", req, {
-        eventId,
-        orderId,
+        paymentStatus: latestPayment.payment_status,
       });
     } else {
       await transaction.save();
       logSecurityEvent("PAYMENT_WEBHOOK_IGNORED_EVENT", req, {
         eventId,
-        eventType: payload.event,
+        eventType,
         orderId,
+        paymentStatus,
       });
     }
 
     sendResponse(res, 200, "Webhook processed successfully", {
       eventId,
-      eventType: payload.event,
+      eventType,
     });
   } catch (error) {
     next(error);
@@ -809,8 +1127,8 @@ export const getReceiptHistory = async (req, res, next) => {
       currency: transaction.currency,
       status: transaction.status,
       paidAt: transaction.paidAt,
-      orderId: transaction.razorpayOrderId,
-      paymentId: transaction.razorpayPaymentId,
+      orderId: transaction.cashfreeOrderId,
+      paymentId: transaction.cashfreePaymentId,
       downloadUrl: buildDownloadUrl(transaction),
     }));
 

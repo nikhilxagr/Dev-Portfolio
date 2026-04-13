@@ -12,8 +12,8 @@
 3. ADMIN_EMAIL and ADMIN_PASSWORD_HASH set.
 4. MONGODB_URI set and connectivity verified.
 5. ALLOWED_ORIGINS set to explicit domains.
-6. RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET set together when payments are enabled.
-7. RAZORPAY_WEBHOOK_SECRET set when webhook route is enabled.
+6. CASHFREE_APP_ID and CASHFREE_SECRET_KEY set together when payments are enabled.
+7. CASHFREE_WEBHOOK_SECRET set when webhook route is enabled.
 8. PAYMENT_RECEIPT_TOKEN_SECRET set.
 9. ALLOW_START_WITHOUT_DB set to false for production.
 
@@ -41,7 +41,7 @@ When rotating JWT or admin credentials:
 2. Redeploy backend.
 3. Verify admin re-authentication behavior.
 
-When rotating Razorpay secrets:
+When rotating Cashfree secrets:
 
 1. Update API secret and webhook secret.
 2. Redeploy backend.

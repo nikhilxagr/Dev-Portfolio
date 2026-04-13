@@ -8,9 +8,9 @@ const legalQuickLinks = LEGAL_LINKS.filter((item) =>
 
 const trustPoints = [
   {
-    title: "Secure Razorpay Checkout",
+    title: "Secure Cashfree Checkout",
     detail:
-      "Cards, UPI, net banking, and wallets are processed on Razorpay encrypted pages.",
+      "Cards, UPI, net banking, and wallets are processed on Cashfree encrypted pages.",
     icon: ShieldCheck,
   },
   {

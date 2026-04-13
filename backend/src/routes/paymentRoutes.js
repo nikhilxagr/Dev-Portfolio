@@ -1,16 +1,20 @@
 import { Router } from "express";
 import { body, param, query } from "express-validator";
 import {
+  createSupportPaymentOrder,
   createPaymentOrder,
   downloadReceipt,
   getPaymentConfigStatus,
   getReceiptHistory,
-  handleRazorpayWebhook,
+  handleCashfreeWebhook,
   requestReceiptAccessCode,
   verifyPayment,
   verifyReceiptAccessCode,
 } from "../controllers/paymentController.js";
-import { getServiceBySlug } from "../constants/servicesCatalog.js";
+import {
+  getServiceBySlug,
+  SUPPORT_PAYMENT_CONFIG,
+} from "../constants/servicesCatalog.js";
 import {
   otpLimiter,
   paymentLimiter,
@@ -37,10 +41,9 @@ router.post(
       .withMessage("Name must be 2-120 characters"),
     body("customerEmail").isEmail().withMessage("Valid email is required"),
     body("customerPhone")
-      .optional({ values: "falsy" })
       .trim()
-      .matches(/^[0-9+\-\s]{8,18}$/)
-      .withMessage("Phone must be 8-18 characters and use valid symbols"),
+      .matches(/^\d{10}$/)
+      .withMessage("Phone must be a valid 10-digit number"),
     body("notes")
       .optional({ values: "falsy" })
       .trim()
@@ -56,27 +59,54 @@ router.post(
 );
 
 router.post(
+  "/create-support-order",
+  paymentLimiter,
+  [
+    body("amountInr")
+      .isInt({
+        min: SUPPORT_PAYMENT_CONFIG.minAmountInr,
+        max: SUPPORT_PAYMENT_CONFIG.maxAmountInr,
+      })
+      .withMessage(
+        `Support amount must be between INR ${SUPPORT_PAYMENT_CONFIG.minAmountInr} and INR ${SUPPORT_PAYMENT_CONFIG.maxAmountInr}`,
+      ),
+    body("customerName")
+      .trim()
+      .isLength({ min: 2, max: 120 })
+      .withMessage("Name must be 2-120 characters"),
+    body("customerEmail").isEmail().withMessage("Valid email is required"),
+    body("customerPhone")
+      .trim()
+      .matches(/^\d{10}$/)
+      .withMessage("Phone must be a valid 10-digit number"),
+    body("notes")
+      .optional({ values: "falsy" })
+      .trim()
+      .isLength({ max: 500 })
+      .withMessage("Notes must be up to 500 characters"),
+    body("idempotencyKey")
+      .trim()
+      .matches(/^[A-Za-z0-9_-]{12,120}$/)
+      .withMessage("Invalid idempotency key"),
+  ],
+  validateRequest,
+  createSupportPaymentOrder,
+);
+
+router.post(
   "/verify",
   paymentVerifyLimiter,
   [
-    body("razorpay_order_id")
+    body("orderId")
       .trim()
       .isLength({ min: 8, max: 80 })
       .withMessage("Invalid order id"),
-    body("razorpay_payment_id")
-      .trim()
-      .isLength({ min: 8, max: 80 })
-      .withMessage("Invalid payment id"),
-    body("razorpay_signature")
-      .trim()
-      .isLength({ min: 20, max: 180 })
-      .withMessage("Invalid payment signature"),
   ],
   validateRequest,
   verifyPayment,
 );
 
-router.post("/webhook", webhookLimiter, handleRazorpayWebhook);
+router.post("/webhook", webhookLimiter, handleCashfreeWebhook);
 
 router.get(
   "/receipts/:receiptNumber/download",

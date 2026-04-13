@@ -1,10 +1,10 @@
-const RAZORPAY_SCRIPT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
+const CASHFREE_SCRIPT_SRC = "https://sdk.cashfree.com/js/v3/cashfree.js";
 
-const hasRazorpayObject = () =>
-  typeof window !== "undefined" && typeof window.Razorpay !== "undefined";
+const hasCashfreeObject = () =>
+  typeof window !== "undefined" && typeof window.Cashfree !== "undefined";
 
-export const loadRazorpayCheckout = () => {
-  if (hasRazorpayObject()) {
+export const loadCashfreeCheckout = () => {
+  if (hasCashfreeObject()) {
     return Promise.resolve(true);
   }
 
@@ -13,7 +13,7 @@ export const loadRazorpayCheckout = () => {
   }
 
   const existingScript = document.querySelector(
-    `script[src="${RAZORPAY_SCRIPT_SRC}"]`,
+    `script[src="${CASHFREE_SCRIPT_SRC}"]`,
   );
 
   if (existingScript) {
@@ -29,9 +29,8 @@ export const loadRazorpayCheckout = () => {
 
   return new Promise((resolve) => {
     const script = document.createElement("script");
-    script.src = RAZORPAY_SCRIPT_SRC;
+    script.src = CASHFREE_SCRIPT_SRC;
     script.async = true;
-    script.crossOrigin = "anonymous";
     script.referrerPolicy = "no-referrer";
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);

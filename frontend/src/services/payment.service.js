@@ -22,6 +22,11 @@ export const createPaymentOrder = async (payload) => {
   return data;
 };
 
+export const createSupportPaymentOrder = async (payload) => {
+  const { data } = await api.post("/payments/create-support-order", payload);
+  return data;
+};
+
 export const verifyServicePayment = async (payload) => {
   const { data } = await api.post("/payments/verify", payload);
   return data;

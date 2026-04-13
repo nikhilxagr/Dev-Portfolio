@@ -129,9 +129,11 @@ export const env = {
   allowStartWithoutDb: parseBoolean(process.env.ALLOW_START_WITHOUT_DB, false),
   dbMaxPoolSize: parseNumber(process.env.DB_MAX_POOL_SIZE, 25),
   dbMinPoolSize: parseNumber(process.env.DB_MIN_POOL_SIZE, 5),
-  razorpayKeyId: readOptionalVariable("RAZORPAY_KEY_ID"),
-  razorpayKeySecret: readOptionalVariable("RAZORPAY_KEY_SECRET"),
-  razorpayWebhookSecret: readOptionalVariable("RAZORPAY_WEBHOOK_SECRET"),
+  cashfreeAppId: readOptionalVariable("CASHFREE_APP_ID"),
+  cashfreeSecretKey: readOptionalVariable("CASHFREE_SECRET_KEY"),
+  cashfreeEnvironment:
+    readOptionalVariable("CASHFREE_ENVIRONMENT") || "sandbox",
+  cashfreeWebhookSecret: readOptionalVariable("CASHFREE_WEBHOOK_SECRET"),
   resendApiKey: readOptionalVariable("RESEND_API_KEY"),
   paymentFromEmail: readOptionalVariable("PAYMENT_FROM_EMAIL"),
   paymentBusinessName:
@@ -162,18 +164,32 @@ export const env = {
   ),
 };
 
-const hasRazorpayKeyId = Boolean(env.razorpayKeyId);
-const hasRazorpayKeySecret = Boolean(env.razorpayKeySecret);
+const hasCashfreeAppId = Boolean(env.cashfreeAppId);
+const hasCashfreeSecretKey = Boolean(env.cashfreeSecretKey);
 
-if (hasRazorpayKeyId !== hasRazorpayKeySecret) {
+if (hasCashfreeAppId !== hasCashfreeSecretKey) {
   throw new Error(
-    "RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET must be set together",
+    "CASHFREE_APP_ID and CASHFREE_SECRET_KEY must be set together",
   );
 }
 
-if (hasRazorpayKeyId && !env.razorpayWebhookSecret) {
+const normalizedCashfreeEnvironment = String(
+  env.cashfreeEnvironment || "sandbox",
+)
+  .trim()
+  .toLowerCase();
+
+if (!["sandbox", "production"].includes(normalizedCashfreeEnvironment)) {
+  throw new Error(
+    "CASHFREE_ENVIRONMENT must be either 'sandbox' or 'production'",
+  );
+}
+
+env.cashfreeEnvironment = normalizedCashfreeEnvironment;
+
+if (hasCashfreeAppId && !env.cashfreeWebhookSecret) {
   console.warn(
-    "[env] RAZORPAY_WEBHOOK_SECRET is not set. Webhook signature verification will fail.",
+    "[env] CASHFREE_WEBHOOK_SECRET is not set. Webhook signature verification is bypassed.",
   );
 }
 

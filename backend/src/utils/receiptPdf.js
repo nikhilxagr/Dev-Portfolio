@@ -62,8 +62,8 @@ export const buildReceiptPdfBuffer = (transaction) =>
       ["Currency", transaction.currency],
       ["Payment Status", transaction.status.toUpperCase()],
       ["Paid At", formatDateTime(transaction.paidAt)],
-      ["Order ID", transaction.razorpayOrderId || "-"],
-      ["Payment ID", transaction.razorpayPaymentId || "-"],
+      ["Order ID", transaction.cashfreeOrderId || "-"],
+      ["Payment ID", transaction.cashfreePaymentId || "-"],
       ["Customer Name", transaction.customerName],
       ["Customer Email", transaction.customerEmail],
       ["Customer Phone", transaction.customerPhone || "-"],
@@ -98,7 +98,7 @@ export const buildReceiptPdfBuffer = (transaction) =>
       .fontSize(9)
       .fillColor("#64748b")
       .text(
-        "This is a system-generated receipt for a successful payment processed via Razorpay.",
+        "This is a system-generated receipt for a successful payment processed via Cashfree.",
       );
 
     doc.end();
