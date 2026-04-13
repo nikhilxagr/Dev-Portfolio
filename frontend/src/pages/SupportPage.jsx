@@ -90,15 +90,8 @@ const SupportPage = () => {
     setProcessing(true);
 
     try {
-      const scriptLoaded = await loadCashfreeCheckout();
-
-      if (!scriptLoaded || typeof window.Cashfree !== "function") {
-        throw new Error("Unable to load Cashfree checkout. Please try again.");
-      }
-
       const normalizedAmountInr = Number(supportForm.amountInr);
-
-      const orderResponse = await createSupportPaymentOrder({
+      const orderPayload = {
         amountInr: normalizedAmountInr,
         customerName: supportForm.customerName.trim(),
         customerEmail: supportForm.customerEmail.trim(),
@@ -107,7 +100,14 @@ const SupportPage = () => {
         notes:
           supportForm.notes.trim() ||
           `Support contribution of INR ${normalizedAmountInr}`,
-      });
+      };
+
+      setPaymentInfo("Preparing secure checkout...");
+
+      const [orderResponse, scriptLoaded] = await Promise.all([
+        createSupportPaymentOrder(orderPayload),
+        loadCashfreeCheckout(),
+      ]);
 
       const alreadyPaidReceipt = orderResponse?.data?.receipt;
       if (orderResponse?.data?.alreadyPaid && alreadyPaidReceipt) {
@@ -117,6 +117,10 @@ const SupportPage = () => {
         });
         navigate("/payment/success");
         return;
+      }
+
+      if (!scriptLoaded || typeof window.Cashfree !== "function") {
+        throw new Error("Unable to load Cashfree checkout. Please try again.");
       }
 
       const checkout = orderResponse?.data?.checkout;

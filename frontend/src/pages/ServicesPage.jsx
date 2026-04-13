@@ -208,20 +208,21 @@ const ServicesPage = () => {
     setProcessingSlug(service.slug);
 
     try {
-      const scriptLoaded = await loadCashfreeCheckout();
-
-      if (!scriptLoaded || typeof window.Cashfree !== "function") {
-        throw new Error("Unable to load Cashfree checkout. Please try again.");
-      }
-
-      const orderResponse = await createPaymentOrder({
+      const orderPayload = {
         serviceSlug: service.slug,
         customerName: buyerForm.customerName.trim(),
         customerEmail: buyerForm.customerEmail.trim(),
         customerPhone: buyerForm.customerPhone.replace(/\D/g, ""),
         idempotencyKey: generateIdempotencyKey(),
         notes: `Services page checkout for ${service.name}`,
-      });
+      };
+
+      setPaymentInfo("Preparing secure checkout...");
+
+      const [orderResponse, scriptLoaded] = await Promise.all([
+        createPaymentOrder(orderPayload),
+        loadCashfreeCheckout(),
+      ]);
 
       const alreadyPaidReceipt = orderResponse?.data?.receipt;
       if (orderResponse?.data?.alreadyPaid && alreadyPaidReceipt) {
@@ -231,6 +232,10 @@ const ServicesPage = () => {
         });
         navigate("/payment/success");
         return;
+      }
+
+      if (!scriptLoaded || typeof window.Cashfree !== "function") {
+        throw new Error("Unable to load Cashfree checkout. Please try again.");
       }
 
       const checkout = orderResponse?.data?.checkout;
