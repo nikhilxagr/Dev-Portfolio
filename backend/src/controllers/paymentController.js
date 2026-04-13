@@ -225,8 +225,8 @@ const getReceiptPayload = (transaction) => ({
   amountInr: transaction.amountInr,
   currency: transaction.currency,
   paidAt: transaction.paidAt,
-  orderId: transaction.razorpayOrderId,
-  paymentId: transaction.razorpayPaymentId,
+  orderId: transaction.cashfreeOrderId,
+  paymentId: transaction.cashfreePaymentId,
   emailStatus: transaction.receiptEmailStatus,
   downloadUrl: buildDownloadUrl(transaction),
 });
@@ -324,7 +324,7 @@ export const createPaymentOrder = async (req, res, next) => {
       });
     }
 
-    if (!transaction.razorpayOrderId || !transaction.razorpaySignature) {
+    if (!transaction.cashfreeOrderId || !transaction.cashfreePaymentSessionId) {
       const gatewayOrderId = createGatewayOrderId(transaction);
       const cashfreeOrder = await createCashfreeOrder({
         order_id: gatewayOrderId,
@@ -352,8 +352,8 @@ export const createPaymentOrder = async (req, res, next) => {
         );
       }
 
-      transaction.razorpayOrderId = cashfreeOrder.order_id;
-      transaction.razorpaySignature = cashfreeOrder.payment_session_id;
+      transaction.cashfreeOrderId = cashfreeOrder.order_id;
+      transaction.cashfreePaymentSessionId = cashfreeOrder.payment_session_id;
       transaction.status = "created";
       transaction.failureReason = "";
       transaction.failedAt = null;
@@ -366,8 +366,8 @@ export const createPaymentOrder = async (req, res, next) => {
         gateway: "cashfree",
         appId: env.cashfreeAppId,
         environment: getCashfreeMode(),
-        paymentSessionId: transaction.razorpaySignature,
-        orderId: transaction.razorpayOrderId,
+        paymentSessionId: transaction.cashfreePaymentSessionId,
+        orderId: transaction.cashfreeOrderId,
         amount: transaction.amountInr,
         currency: transaction.currency,
         name: env.paymentBusinessName,
@@ -385,7 +385,7 @@ export const createPaymentOrder = async (req, res, next) => {
       },
     });
   } catch (error) {
-    if (transaction && !transaction.razorpayOrderId) {
+    if (transaction && !transaction.cashfreeOrderId) {
       transaction.status = "failed";
       transaction.failedAt = new Date();
       transaction.failureReason = error.message || "Order creation failed";
@@ -474,7 +474,7 @@ export const createSupportPaymentOrder = async (req, res, next) => {
       });
     }
 
-    if (!transaction.razorpayOrderId || !transaction.razorpaySignature) {
+    if (!transaction.cashfreeOrderId || !transaction.cashfreePaymentSessionId) {
       const gatewayOrderId = createGatewayOrderId(transaction);
       const cashfreeOrder = await createCashfreeOrder({
         order_id: gatewayOrderId,
@@ -502,8 +502,8 @@ export const createSupportPaymentOrder = async (req, res, next) => {
         );
       }
 
-      transaction.razorpayOrderId = cashfreeOrder.order_id;
-      transaction.razorpaySignature = cashfreeOrder.payment_session_id;
+      transaction.cashfreeOrderId = cashfreeOrder.order_id;
+      transaction.cashfreePaymentSessionId = cashfreeOrder.payment_session_id;
       transaction.status = "created";
       transaction.failureReason = "";
       transaction.failedAt = null;
@@ -513,7 +513,7 @@ export const createSupportPaymentOrder = async (req, res, next) => {
     logSecurityEvent("PAYMENT_SUPPORT_ORDER_CREATED", req, {
       transactionRef: transaction.id,
       amountInr: transaction.amountInr,
-      orderId: transaction.razorpayOrderId,
+      orderId: transaction.cashfreeOrderId,
       serviceSlug: transaction.serviceSlug,
     });
 
@@ -523,8 +523,8 @@ export const createSupportPaymentOrder = async (req, res, next) => {
         gateway: "cashfree",
         appId: env.cashfreeAppId,
         environment: getCashfreeMode(),
-        paymentSessionId: transaction.razorpaySignature,
-        orderId: transaction.razorpayOrderId,
+        paymentSessionId: transaction.cashfreePaymentSessionId,
+        orderId: transaction.cashfreeOrderId,
         amount: transaction.amountInr,
         currency: transaction.currency,
         name: env.paymentBusinessName,
@@ -542,7 +542,7 @@ export const createSupportPaymentOrder = async (req, res, next) => {
       },
     });
   } catch (error) {
-    if (transaction && !transaction.razorpayOrderId) {
+    if (transaction && !transaction.cashfreeOrderId) {
       transaction.status = "failed";
       transaction.failedAt = new Date();
       transaction.failureReason = error.message || "Order creation failed";
@@ -567,7 +567,7 @@ export const verifyPayment = async (req, res, next) => {
     const orderId = String(req.body.orderId || "").trim();
 
     const transaction = await PaymentTransaction.findOne({
-      razorpayOrderId: orderId,
+      cashfreeOrderId: orderId,
     });
 
     if (!transaction) {
@@ -653,11 +653,11 @@ export const verifyPayment = async (req, res, next) => {
     const isAlreadyPaid = transaction.status === "paid";
 
     transaction.status = "paid";
-    transaction.razorpayPaymentId = String(
-      successfulPayment.cf_payment_id || transaction.razorpayPaymentId || "",
+    transaction.cashfreePaymentId = String(
+      successfulPayment.cf_payment_id || transaction.cashfreePaymentId || "",
     );
-    transaction.razorpaySignature = String(
-      successfulPayment.payment_group || transaction.razorpaySignature || "",
+    transaction.cashfreePaymentSessionId = String(
+      successfulPayment.payment_group || transaction.cashfreePaymentSessionId || "",
     );
     transaction.paidAt =
       transaction.paidAt ||
@@ -678,7 +678,7 @@ export const verifyPayment = async (req, res, next) => {
 
     logSecurityEvent("PAYMENT_VERIFY_SUCCESS", req, {
       orderId,
-      paymentId: transaction.razorpayPaymentId,
+      paymentId: transaction.cashfreePaymentId,
       receiptNumber: transaction.receiptNumber,
       alreadyPaid: isAlreadyPaid,
     });
@@ -795,7 +795,7 @@ export const handleCashfreeWebhook = async (req, res, next) => {
     }
 
     const transaction = await PaymentTransaction.findOne({
-      razorpayOrderId: orderId,
+      cashfreeOrderId: orderId,
     });
 
     if (!transaction) {
@@ -828,11 +828,11 @@ export const handleCashfreeWebhook = async (req, res, next) => {
 
     if (successfulPayment) {
       transaction.status = "paid";
-      transaction.razorpayPaymentId = String(
-        successfulPayment.cf_payment_id || transaction.razorpayPaymentId || "",
+      transaction.cashfreePaymentId = String(
+        successfulPayment.cf_payment_id || transaction.cashfreePaymentId || "",
       );
-      transaction.razorpaySignature = String(
-        successfulPayment.payment_group || transaction.razorpaySignature || "",
+      transaction.cashfreePaymentSessionId = String(
+        successfulPayment.payment_group || transaction.cashfreePaymentSessionId || "",
       );
       transaction.paidAt =
         transaction.paidAt ||
@@ -1127,8 +1127,8 @@ export const getReceiptHistory = async (req, res, next) => {
       currency: transaction.currency,
       status: transaction.status,
       paidAt: transaction.paidAt,
-      orderId: transaction.razorpayOrderId,
-      paymentId: transaction.razorpayPaymentId,
+      orderId: transaction.cashfreeOrderId,
+      paymentId: transaction.cashfreePaymentId,
       downloadUrl: buildDownloadUrl(transaction),
     }));
 

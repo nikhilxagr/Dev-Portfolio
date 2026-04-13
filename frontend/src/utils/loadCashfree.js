@@ -31,7 +31,6 @@ export const loadCashfreeCheckout = () => {
     const script = document.createElement("script");
     script.src = CASHFREE_SCRIPT_SRC;
     script.async = true;
-    script.crossOrigin = "anonymous";
     script.referrerPolicy = "no-referrer";
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);

@@ -1,6 +1,7 @@
 import app from "./app.js";
 import { env } from "./config/env.js";
 import { connectDatabase, disconnectDatabase } from "./config/db.js";
+import { ensurePaymentTransactionIndexes } from "./models/PaymentTransaction.js";
 
 let server;
 let reconnectTimerId = null;
@@ -19,6 +20,11 @@ const clearReconnectTimer = () => {
   reconnectTimerId = null;
 };
 
+const connectAndPrepareDatabase = async () => {
+  await connectDatabase();
+  await ensurePaymentTransactionIndexes();
+};
+
 const scheduleReconnect = () => {
   if (reconnectTimerId) {
     return;
@@ -31,7 +37,7 @@ const scheduleReconnect = () => {
     }
 
     try {
-      await connectDatabase();
+      await connectAndPrepareDatabase();
       app.locals.dbConnected = true;
       console.log("Database reconnected");
       clearReconnectTimer();
@@ -45,9 +51,9 @@ const startServer = async () => {
   let dbConnected = false;
 
   try {
-    await connectDatabase();
+    await connectAndPrepareDatabase();
     dbConnected = true;
-    console.log("Database connected");
+    console.log("Database connected and indexes ensured");
   } catch (error) {
     if (!canStartWithoutDatabase()) {
       throw error;
