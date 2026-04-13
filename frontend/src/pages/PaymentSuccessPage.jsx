@@ -110,7 +110,7 @@ const PaymentSuccessPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Payment Confirmed"
-          title="Your Service Booking Is Confirmed"
+          title="Your Payment Is Confirmed"
           description="Payment status is verified server-side and receipt is generated once the transaction is successful."
         />
 
@@ -169,7 +169,7 @@ const PaymentSuccessPage = () => {
                     </span>
                   </p>
                   <p>
-                    <span className="text-slate-400">Service</span>
+                    <span className="text-slate-400">Payment For</span>
                     <br />
                     <span className="font-semibold text-cyan-100">
                       {receipt.serviceName}

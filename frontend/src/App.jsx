@@ -15,6 +15,7 @@ const ProjectsPage = lazy(() => import("@/pages/ProjectsPage"));
 const ProjectDetailsPage = lazy(() => import("@/pages/ProjectDetailsPage"));
 const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
 const ServicesPage = lazy(() => import("@/pages/ServicesPage"));
+const SupportPage = lazy(() => import("@/pages/SupportPage"));
 const PaymentSuccessPage = lazy(() => import("@/pages/PaymentSuccessPage"));
 const ReceiptPortalPage = lazy(() => import("@/pages/ReceiptPortalPage"));
 const RefundPolicyPage = lazy(() => import("@/pages/RefundPolicyPage"));
@@ -135,6 +136,7 @@ function App() {
                   />
                   <Route path="/blog/:slug" element={<BlogDetailsPage />} />
                   <Route path="/services" element={<ServicesPage />} />
+                  <Route path="/support" element={<SupportPage />} />
                   <Route
                     path="/payment/success"
                     element={<PaymentSuccessPage />}

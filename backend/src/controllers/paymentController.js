@@ -5,7 +5,10 @@ import ReceiptAccessCode from "../models/ReceiptAccessCode.js";
 import PaymentWebhookEvent from "../models/PaymentWebhookEvent.js";
 import ApiError from "../utils/ApiError.js";
 import { sendResponse } from "../utils/apiResponse.js";
-import { getServiceBySlug } from "../constants/servicesCatalog.js";
+import {
+  getServiceBySlug,
+  SUPPORT_PAYMENT_CONFIG,
+} from "../constants/servicesCatalog.js";
 import {
   createDownloadToken,
   createPortalToken,
@@ -127,6 +130,16 @@ const ensurePaymentConfigured = () => {
       "Payment gateway is not configured yet. Please contact support.",
     );
   }
+};
+
+const normalizeSupportAmount = (value) => {
+  const parsed = Number(value);
+
+  if (!Number.isFinite(parsed) || !Number.isInteger(parsed)) {
+    return NaN;
+  }
+
+  return parsed;
 };
 
 const getBaseUrl = (req) => `${req.protocol}://${req.get("host")}`;
@@ -348,6 +361,163 @@ export const createPaymentOrder = async (req, res, next) => {
     }
 
     sendResponse(res, 201, "Payment order created successfully", {
+      transactionRef: transaction.id,
+      checkout: {
+        gateway: "cashfree",
+        appId: env.cashfreeAppId,
+        environment: getCashfreeMode(),
+        paymentSessionId: transaction.razorpaySignature,
+        orderId: transaction.razorpayOrderId,
+        amount: transaction.amountInr,
+        currency: transaction.currency,
+        name: env.paymentBusinessName,
+        description: transaction.serviceName,
+        returnUrl: buildCashfreeReturnUrl(req),
+        notes: {
+          serviceSlug: transaction.serviceSlug,
+          transactionRef: transaction.id,
+        },
+      },
+      service: {
+        slug: transaction.serviceSlug,
+        name: transaction.serviceName,
+        amountInr: transaction.amountInr,
+      },
+    });
+  } catch (error) {
+    if (transaction && !transaction.razorpayOrderId) {
+      transaction.status = "failed";
+      transaction.failedAt = new Date();
+      transaction.failureReason = error.message || "Order creation failed";
+      await transaction.save();
+    }
+
+    next(error);
+  }
+};
+
+export const createSupportPaymentOrder = async (req, res, next) => {
+  let transaction = null;
+
+  try {
+    if (!isDatabaseReady(req)) {
+      throw new ApiError(
+        503,
+        "Payments are temporarily unavailable while database reconnects.",
+      );
+    }
+
+    ensurePaymentConfigured();
+
+    const {
+      amountInr,
+      customerName,
+      customerEmail,
+      customerPhone = "",
+      notes = "",
+      idempotencyKey,
+    } = req.body;
+
+    const normalizedEmail = normalizeEmail(customerEmail);
+    const normalizedPhone = normalizePhone(customerPhone);
+    const normalizedAmountInr = normalizeSupportAmount(amountInr);
+
+    if (
+      !Number.isInteger(normalizedAmountInr) ||
+      normalizedAmountInr < SUPPORT_PAYMENT_CONFIG.minAmountInr ||
+      normalizedAmountInr > SUPPORT_PAYMENT_CONFIG.maxAmountInr
+    ) {
+      throw new ApiError(
+        400,
+        `Support amount must be between INR ${SUPPORT_PAYMENT_CONFIG.minAmountInr} and INR ${SUPPORT_PAYMENT_CONFIG.maxAmountInr}`,
+      );
+    }
+
+    if (normalizedPhone.length !== 10) {
+      throw new ApiError(
+        400,
+        "A valid 10-digit phone number is required for checkout",
+      );
+    }
+
+    transaction = await PaymentTransaction.findOne({ idempotencyKey });
+
+    if (transaction && transaction.status === "paid") {
+      const data = {
+        alreadyPaid: true,
+        transactionRef: transaction.id,
+        receipt: transaction.receiptNumber
+          ? getReceiptPayload(transaction)
+          : null,
+      };
+      sendResponse(
+        res,
+        200,
+        "Payment already completed for this request",
+        data,
+      );
+      return;
+    }
+
+    if (!transaction) {
+      transaction = await PaymentTransaction.create({
+        idempotencyKey,
+        serviceSlug: SUPPORT_PAYMENT_CONFIG.slug,
+        serviceName: SUPPORT_PAYMENT_CONFIG.name,
+        amountInr: normalizedAmountInr,
+        amountPaise: normalizedAmountInr * 100,
+        currency: SUPPORT_PAYMENT_CONFIG.currency,
+        customerName: customerName.trim(),
+        customerEmail: normalizedEmail,
+        customerPhone: normalizedPhone,
+        notes: notes.trim(),
+      });
+    }
+
+    if (!transaction.razorpayOrderId || !transaction.razorpaySignature) {
+      const gatewayOrderId = createGatewayOrderId(transaction);
+      const cashfreeOrder = await createCashfreeOrder({
+        order_id: gatewayOrderId,
+        order_amount: Number(transaction.amountInr.toFixed(2)),
+        order_currency: transaction.currency,
+        customer_details: {
+          customer_id: `cust_${transaction._id.toString().slice(-12)}`,
+          customer_name: transaction.customerName,
+          customer_email: transaction.customerEmail,
+          customer_phone: transaction.customerPhone,
+        },
+        order_meta: {
+          return_url: buildCashfreeReturnUrl(req),
+          notify_url: buildCashfreeNotifyUrl(req),
+        },
+        order_note:
+          transaction.notes ||
+          "Support contribution via Services support section",
+      });
+
+      if (!cashfreeOrder?.order_id || !cashfreeOrder?.payment_session_id) {
+        throw new ApiError(
+          502,
+          "Unable to initialize payment session. Please try again.",
+        );
+      }
+
+      transaction.razorpayOrderId = cashfreeOrder.order_id;
+      transaction.razorpaySignature = cashfreeOrder.payment_session_id;
+      transaction.status = "created";
+      transaction.failureReason = "";
+      transaction.failedAt = null;
+      await transaction.save();
+    }
+
+    logSecurityEvent("PAYMENT_SUPPORT_ORDER_CREATED", req, {
+      transactionRef: transaction.id,
+      amountInr: transaction.amountInr,
+      orderId: transaction.razorpayOrderId,
+      serviceSlug: transaction.serviceSlug,
+    });
+
+    sendResponse(res, 201, "Support payment order created successfully", {
       transactionRef: transaction.id,
       checkout: {
         gateway: "cashfree",

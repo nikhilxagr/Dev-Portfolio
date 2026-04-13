@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
+  CheckCircle2,
   ShieldCheck,
   Layers,
   TimerReset,
   CreditCard,
+  HeartHandshake,
 } from "lucide-react";
 import SectionTitle from "@/components/ui/SectionTitle";
 import Button from "@/components/ui/Button";
@@ -18,12 +20,110 @@ import {
 import { getErrorMessage } from "@/services/api";
 import { loadCashfreeCheckout } from "@/utils/loadCashfree";
 import { createBreadcrumbSchema } from "@/utils/seo";
-import { QUICK_CONTACT, SERVICE_OFFERINGS } from "@/constants/siteData";
+import { SERVICE_OFFERINGS } from "@/constants/siteData";
 
 const categoryStyle = {
   Guidance: "border-emerald-300/45 bg-emerald-300/10 text-emerald-200",
   "Career Support": "border-cyan-300/45 bg-cyan-300/10 text-cyan-200",
   "Build and Delivery": "border-violet-300/45 bg-violet-300/10 text-violet-200",
+};
+
+const serviceCardAccent = {
+  Guidance: {
+    card: "border-emerald-300/28 hover:border-emerald-300/52 hover:shadow-[0_26px_44px_-30px_rgba(52,211,153,0.75)]",
+    glow: "bg-emerald-300/18",
+    line: "bg-emerald-300/55",
+    panel: "border-emerald-300/28 bg-emerald-300/10",
+    bullet: "text-emerald-200",
+  },
+  "Career Support": {
+    card: "border-cyan-300/28 hover:border-cyan-300/52 hover:shadow-[0_26px_44px_-30px_rgba(34,211,238,0.75)]",
+    glow: "bg-cyan-300/18",
+    line: "bg-cyan-300/55",
+    panel: "border-cyan-300/28 bg-cyan-300/10",
+    bullet: "text-cyan-200",
+  },
+  "Build and Delivery": {
+    card: "border-violet-300/28 hover:border-violet-300/52 hover:shadow-[0_26px_44px_-30px_rgba(167,139,250,0.72)]",
+    glow: "bg-violet-300/18",
+    line: "bg-violet-300/55",
+    panel: "border-violet-300/28 bg-violet-300/10",
+    bullet: "text-violet-200",
+  },
+};
+
+const defaultServiceDetails = {
+  idealFor:
+    "Individuals and teams seeking reliable delivery with clear communication.",
+  engagementModel: "Discovery call + scoped execution + transparent updates",
+  deliverables: [
+    "Clear scope and expectations",
+    "Progress updates across milestones",
+    "Actionable outcomes with handover clarity",
+  ],
+};
+
+const serviceDetailMap = {
+  "mentorship-call": {
+    idealFor:
+      "Students who need practical roadmap direction and next-step clarity.",
+    engagementModel: "One focused mentorship session + practical action notes",
+    deliverables: [
+      "Learning roadmap aligned to current level",
+      "Project direction and execution advice",
+      "Career/portfolio improvement recommendations",
+    ],
+  },
+  "resume-review-help": {
+    idealFor:
+      "Students and freshers aiming for stronger interview-ready resumes.",
+    engagementModel: "Resume audit + revision guidance + positioning feedback",
+    deliverables: [
+      "Cleaner structure and stronger readability",
+      "Impact-focused project and skills phrasing",
+      "Role-targeted improvement suggestions",
+    ],
+  },
+  "portfolio-guidance": {
+    idealFor: "Learners who want portfolio pages that look credible and clear.",
+    engagementModel: "Portfolio walkthrough + section-wise recommendations",
+    deliverables: [
+      "Homepage and project section refinement",
+      "Stronger content hierarchy and storytelling",
+      "Trust-signal and presentation improvements",
+    ],
+  },
+  "frontend-development": {
+    idealFor:
+      "Founders and students needing responsive, polished frontend delivery.",
+    engagementModel: "Design-to-build execution with iterative feedback",
+    deliverables: [
+      "Responsive pages with consistent UI language",
+      "Reusable component architecture",
+      "Usability-first interactions and handover",
+    ],
+  },
+  "backend-development": {
+    idealFor:
+      "Products needing stable APIs, validation, and clean server logic.",
+    engagementModel: "Requirement scoping + API implementation + testing",
+    deliverables: [
+      "REST endpoints with structured validation",
+      "Error-safe and maintainable backend flow",
+      "Integration-ready documentation support",
+    ],
+  },
+  "full-stack-development": {
+    idealFor:
+      "End-to-end builds requiring both frontend and backend execution.",
+    engagementModel:
+      "Product planning + full implementation + deployment guidance",
+    deliverables: [
+      "Frontend + backend delivery in one flow",
+      "Database integration and core business logic",
+      "Production-ready launch checklist support",
+    ],
+  },
 };
 
 const serviceHighlights = [
@@ -66,29 +166,33 @@ const ServicesPage = () => {
     }));
   };
 
-  const generateIdempotencyKey = () => {
+  const generateIdempotencyKey = (prefix = "svc") => {
     if (typeof window !== "undefined" && window.crypto?.randomUUID) {
       return window.crypto.randomUUID();
     }
 
-    return `svc-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   };
 
-  const validateBuyerForm = () => {
-    if (buyerForm.customerName.trim().length < 2) {
+  const validateCustomerDetails = (formValues) => {
+    if (formValues.customerName.trim().length < 2) {
       return "Please enter a valid name before checkout.";
     }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyerForm.customerEmail.trim())) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.customerEmail.trim())) {
       return "Please enter a valid email for payment confirmation.";
     }
 
-    const normalizedPhone = buyerForm.customerPhone.replace(/\D/g, "");
+    const normalizedPhone = formValues.customerPhone.replace(/\D/g, "");
     if (!/^\d{10}$/.test(normalizedPhone)) {
       return "Enter a valid 10-digit phone number for checkout.";
     }
 
     return "";
+  };
+
+  const validateBuyerForm = () => {
+    return validateCustomerDetails(buyerForm);
   };
 
   const handlePayAndBook = async (service) => {
@@ -192,6 +296,19 @@ const ServicesPage = () => {
               description="Service categories, transparent pricing, and Cashfree checkout status."
             />
 
+            <div className="flex flex-wrap gap-3">
+              <Button to="/support" className="min-w-[200px]">
+                <HeartHandshake size={16} /> Open Support Page
+              </Button>
+              <Button
+                to="/contact"
+                variant="secondary"
+                className="min-w-[200px]"
+              >
+                Discuss Custom Scope
+              </Button>
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
               {serviceHighlights.map((item) => {
                 const Icon = item.icon;
@@ -236,51 +353,127 @@ const ServicesPage = () => {
           description="Compare services by category, price, and timeline."
         />
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-2">
-          {SERVICE_OFFERINGS.map((service) => {
+        <div className="mt-8 grid gap-5 lg:grid-cols-2">
+          {SERVICE_OFFERINGS.map((service, index) => {
             const isActiveService = activeServiceSlug === service.slug;
             const isProcessing = processingSlug === service.slug;
+            const accent =
+              serviceCardAccent[service.category] || serviceCardAccent.Guidance;
+            const details =
+              serviceDetailMap[service.slug] || defaultServiceDetails;
 
             return (
               <article
                 key={service.slug}
-                className="card-surface rounded-2xl p-5"
+                className={`card-surface group relative overflow-hidden rounded-[1.7rem] border bg-gradient-to-br from-slate-950/96 via-slate-950/92 to-[#051326] p-5 transition-all duration-300 motion-safe:hover:-translate-y-1.5 ${accent.card} ${
+                  isActiveService
+                    ? "border-cyan-200/58 shadow-[0_28px_44px_-32px_rgba(34,211,238,0.76)]"
+                    : ""
+                }`}
               >
+                <div
+                  className={`pointer-events-none absolute inset-x-0 top-0 h-px ${accent.line}`}
+                />
+                <div
+                  className={`pointer-events-none absolute -right-16 -top-20 h-44 w-44 rounded-full blur-3xl transition-opacity duration-300 group-hover:opacity-100 ${accent.glow} ${
+                    isActiveService ? "opacity-100" : "opacity-55"
+                  }`}
+                />
+
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h3 className="text-2xl font-semibold text-cyan-100">
-                    {service.name}
-                  </h3>
-                  <span
-                    className={`rounded-full border px-3 py-1 text-xs ${categoryStyle[service.category] || "border-cyan-300/45 bg-cyan-300/10 text-cyan-200"}`}
-                  >
-                    {service.category}
-                  </span>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                      Service {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <h3 className="mt-1 text-2xl font-semibold leading-tight text-cyan-100 sm:text-[2rem]">
+                      {service.name}
+                    </h3>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`rounded-full border px-3 py-1 text-xs ${categoryStyle[service.category] || "border-cyan-300/45 bg-cyan-300/10 text-cyan-200"}`}
+                    >
+                      {service.category}
+                    </span>
+                  </div>
                 </div>
 
-                <p className="mt-3 font-display text-3xl text-cyan-100">
-                  {service.price}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.15em] text-slate-500">
-                  Timeline: {service.turnaround}
-                </p>
-                <p className="mt-1 text-xs uppercase tracking-[0.15em] text-emerald-200">
-                  Payable now: INR {service.amountInr}
-                </p>
+                <div className="mt-4 grid gap-3 md:grid-cols-[1.05fr_0.95fr]">
+                  <div className={`rounded-2xl border p-4 ${accent.panel}`}>
+                    <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                      Starting Price
+                    </p>
+                    <p className="mt-1 font-display text-4xl leading-none text-cyan-100">
+                      {service.price}
+                    </p>
 
-                <div className="mt-4 rounded-xl border border-emerald-300/30 bg-emerald-300/10 p-3 text-sm text-emerald-100">
+                    <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                      Payable Now
+                    </p>
+                    <p className="mt-1 text-sm font-semibold uppercase tracking-[0.13em] text-emerald-200">
+                      INR {service.amountInr}
+                    </p>
+                  </div>
+
+                  <div className="grid gap-3">
+                    <div
+                      className={`rounded-xl border px-3 py-3 ${accent.panel}`}
+                    >
+                      <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                        Timeline
+                      </p>
+                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-200">
+                        {service.turnaround}
+                      </p>
+                    </div>
+
+                    <div
+                      className={`rounded-xl border px-3 py-3 ${accent.panel}`}
+                    >
+                      <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                        Engagement Model
+                      </p>
+                      <p className="mt-1 text-xs leading-5 text-slate-200">
+                        {details.engagementModel}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-xl border border-cyan-300/25 bg-slate-900/72 p-3">
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                    Ideal For
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-slate-200">
+                    {details.idealFor}
+                  </p>
+                </div>
+
+                <div className="mt-4 rounded-xl border border-cyan-300/25 bg-slate-900/72 p-3">
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                    What You Get
+                  </p>
+                  <ul className="mt-2 space-y-2">
+                    {details.deliverables.map((item) => (
+                      <li
+                        key={`${service.slug}-${item}`}
+                        className="flex items-start gap-2 text-sm text-slate-200"
+                      >
+                        <CheckCircle2
+                          size={15}
+                          className={`mt-0.5 shrink-0 ${accent.bullet}`}
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div
+                  className={`mt-4 rounded-xl border p-3 text-sm leading-6 ${accent.panel}`}
+                >
                   {service.summary}
-                </div>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="rounded-md border border-cyan-300/25 bg-slate-900/70 px-2 py-1 text-xs text-slate-300">
-                    Detailed scope via discussion
-                  </span>
-                  <span className="rounded-md border border-cyan-300/25 bg-slate-900/70 px-2 py-1 text-xs text-slate-300">
-                    Transparent delivery updates
-                  </span>
-                  <span className="rounded-md border border-cyan-300/25 bg-slate-900/70 px-2 py-1 text-xs text-slate-300">
-                    Student-friendly collaboration
-                  </span>
                 </div>
 
                 <div className="mt-5 flex flex-wrap gap-2">
@@ -289,7 +482,6 @@ const ServicesPage = () => {
                     disabled={Boolean(
                       processingSlug && processingSlug !== service.slug,
                     )}
-                    className="flex-1 min-w-[180px]"
                     onClick={() => {
                       setPaymentError("");
                       setPaymentInfo("");
@@ -301,6 +493,7 @@ const ServicesPage = () => {
 
                       handlePayAndBook(service);
                     }}
+                    className="flex-1 min-w-[180px] shadow-[0_14px_30px_-20px_rgba(34,211,238,0.86)] transition-all duration-300 group-hover:shadow-[0_20px_34px_-20px_rgba(34,211,238,0.95)]"
                   >
                     <CreditCard size={16} />
                     {isActiveService
@@ -309,28 +502,20 @@ const ServicesPage = () => {
                         : "Proceed to Secure Checkout"
                       : "Pay and Book"}
                   </Button>
+
                   <Button
                     to="/contact"
                     variant="secondary"
-                    className="flex-1 min-w-[160px]"
+                    className="flex-1 min-w-[160px] transition-all duration-300 group-hover:border-cyan-200/65"
                   >
                     Custom Scope <ArrowRight size={16} />
-                  </Button>
-                  <Button
-                    href={QUICK_CONTACT.whatsapp}
-                    target="_blank"
-                    rel="noreferrer"
-                    variant="ghost"
-                    className="flex-1 min-w-[160px]"
-                  >
-                    WhatsApp Discussion
                   </Button>
                 </div>
 
                 {isActiveService ? (
-                  <div className="mt-4 rounded-xl border border-cyan-300/25 bg-slate-900/70 p-4">
+                  <div className="mt-4 rounded-xl border border-cyan-300/28 bg-slate-900/76 p-4">
                     <p className="text-xs uppercase tracking-[0.14em] text-cyan-200">
-                      Secure Checkout Details
+                      Step 2: Secure Checkout Details
                     </p>
                     <p className="mt-1 text-sm text-slate-300">
                       Enter your details once. Cashfree opens after this with

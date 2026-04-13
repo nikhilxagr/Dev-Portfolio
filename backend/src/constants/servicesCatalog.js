@@ -43,6 +43,14 @@ const SERVICE_CATALOG = [
   },
 ];
 
+export const SUPPORT_PAYMENT_CONFIG = Object.freeze({
+  slug: "support-me",
+  name: "Support Contribution",
+  currency: "INR",
+  minAmountInr: 1,
+  maxAmountInr: 50000,
+});
+
 const serviceMap = new Map(
   SERVICE_CATALOG.map((service) => [service.slug, service]),
 );
