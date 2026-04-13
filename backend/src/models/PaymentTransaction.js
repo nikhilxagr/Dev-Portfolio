@@ -144,8 +144,7 @@ paymentTransactionSchema.index(
     unique: true,
     partialFilterExpression: {
       cashfreeOrderId: {
-        $type: "string",
-        $ne: "",
+        $gt: "",
       },
     },
   },
@@ -156,8 +155,7 @@ paymentTransactionSchema.index(
     unique: true,
     partialFilterExpression: {
       cashfreePaymentId: {
-        $type: "string",
-        $ne: "",
+        $gt: "",
       },
     },
   },
@@ -168,8 +166,7 @@ paymentTransactionSchema.index(
     unique: true,
     partialFilterExpression: {
       receiptNumber: {
-        $type: "string",
-        $ne: "",
+        $gt: "",
       },
     },
   },
