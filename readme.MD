@@ -235,6 +235,12 @@ This repository is proprietary and released under all-rights-reserved terms.
 - Start Command: `npm start`
 - Health Check Path: `/api/health`
 
+Cold-start optimization for Render free tier:
+
+- Configure an uptime monitor (UptimeRobot or cron-job.org) to ping `https://your-backend-service.onrender.com/api/health` every 5 minutes.
+- Frontend pre-warms backend health on app/payment-page load and logs `Backend wakeup successful: Server is running.` in browser console after a successful wakeup.
+- After each fresh deploy, the first warmup request can still be slower once; subsequent requests should be faster.
+
 Set these environment variables in Render:
 
 - `NODE_ENV=production`

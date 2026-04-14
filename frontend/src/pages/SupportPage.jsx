@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CreditCard, HeartHandshake } from "lucide-react";
 import SectionTitle from "@/components/ui/SectionTitle";
@@ -6,6 +6,7 @@ import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
 import {
   createSupportPaymentOrder,
+  prewarmBackendForCheckout,
   persistLatestReceipt,
 } from "@/services/payment.service";
 import { getErrorMessage } from "@/services/api";
@@ -25,6 +26,16 @@ const SupportPage = () => {
     amountInr: String(SUPPORT_PAYMENT_CONFIG.quickAmounts[1] || 99),
     notes: "",
   });
+
+  useEffect(() => {
+    const timerId = window.setTimeout(() => {
+      prewarmBackendForCheckout().catch(() => undefined);
+    }, 350);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
+  }, []);
 
   const updateSupportForm = (field, value) => {
     setSupportForm((previous) => ({

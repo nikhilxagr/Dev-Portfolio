@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -15,6 +15,7 @@ import SeoHead from "@/components/seo/SeoHead";
 import PaymentTrustPanel from "@/components/ui/PaymentTrustPanel";
 import {
   createPaymentOrder,
+  prewarmBackendForCheckout,
   persistLatestReceipt,
 } from "@/services/payment.service";
 import { getErrorMessage } from "@/services/api";
@@ -158,6 +159,16 @@ const ServicesPage = () => {
   const [processingSlug, setProcessingSlug] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const [paymentInfo, setPaymentInfo] = useState("");
+
+  useEffect(() => {
+    const timerId = window.setTimeout(() => {
+      prewarmBackendForCheckout().catch(() => undefined);
+    }, 350);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
+  }, []);
 
   const updateBuyerForm = (field, value) => {
     setBuyerForm((previous) => ({

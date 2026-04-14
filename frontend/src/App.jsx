@@ -8,6 +8,7 @@ import BackgroundGrid from "@/components/layout/BackgroundGrid";
 import PortfolioLoader from "@/components/layout/PortfolioLoader";
 import ScrollProgressButton from "@/components/layout/ScrollProgressButton";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { prewarmBackendForCheckout } from "@/services/payment.service";
 
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
@@ -72,6 +73,22 @@ function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (isAdminRoute || showLoader) {
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      prewarmBackendForCheckout({ includeCashfreeScript: false }).catch(
+        () => undefined,
+      );
+    }, 500);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
+  }, [isAdminRoute, showLoader]);
 
   const mainStyle = isAdminRoute
     ? { paddingTop: "2rem" }
