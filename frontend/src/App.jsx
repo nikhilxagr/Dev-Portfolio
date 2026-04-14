@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Analytics } from "@vercel/analytics/react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BackgroundGrid from "@/components/layout/BackgroundGrid";
@@ -180,6 +181,7 @@ function App() {
         {!showLoader ? <ScrollProgressButton /> : null}
         {!isAdminRoute ? <Footer /> : null}
       </MotionDiv>
+      <Analytics />
     </div>
   );
 }
