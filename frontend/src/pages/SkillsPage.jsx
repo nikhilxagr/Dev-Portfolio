@@ -12,9 +12,9 @@ import { QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
 const intelligentSkillDomains = [
   {
     id: "software-developer",
-    title: "Software Developer",
+    title: "Full Stack Development",
     summary:
-      "Product-focused engineering from frontend architecture to backend delivery with maintainable code and production readiness.",
+      "Design and ship web products across React interfaces and Node.js APIs with maintainable, production-ready code.",
     Icon: Code2,
     accentClass: "via-cyan-300/50",
     skills: [
@@ -31,7 +31,7 @@ const intelligentSkillDomains = [
     id: "cyber-security",
     title: "Application Security",
     summary:
-      "Security review and defensive analysis workflows for identifying risks, prioritizing fixes, and improving resilience.",
+      "Application security workflows for identifying risks, prioritizing remediation, and improving resilience.",
     Icon: ShieldCheck,
     accentClass: "via-emerald-300/50",
     skills: [
@@ -45,18 +45,18 @@ const intelligentSkillDomains = [
   },
   {
     id: "python-engineering",
-    title: "Python Engineering",
+    title: "Python and Automation",
     summary:
-      "Python-driven problem solving for scripting, data-oriented logic, and practical automation that supports development and security tasks.",
+      "Python-based scripting and automation for development utilities, data tasks, and security support workflows.",
     Icon: Cpu,
     accentClass: "via-violet-300/45",
     skills: ["Python", "SQL", "C", "Postman"],
   },
   {
     id: "linux-systems",
-    title: "Linux and Delivery",
+    title: "Linux Operations and Delivery",
     summary:
-      "Linux-based operational workflows for deployment, collaboration, and day-to-day system-level engineering support.",
+      "Linux-first workflows for deployment, source control, and day-to-day engineering operations.",
     Icon: Terminal,
     accentClass: "via-fuchsia-300/45",
     skills: ["Linux", "Git", "GitHub", "Vercel", "Render"],
@@ -67,10 +67,10 @@ const SkillsPage = () => {
   const { isDark } = useTheme();
 
   const topSkillTags = [
-    "Software Development",
+    "Frontend and Backend Development",
     "Application Security",
-    "Python Engineering",
-    "Linux Delivery",
+    "Python Automation",
+    "Linux Operations",
   ];
 
   return (
@@ -103,23 +103,15 @@ const SkillsPage = () => {
           />
 
           <div className="relative">
-            <div className="text-center">
-              <p className="font-display text-[10px] uppercase tracking-[0.28em] text-emerald-300 sm:text-xs sm:tracking-[0.3em]">
-                Skill Architecture
-              </p>
-              <h1 className="mt-2 font-display text-3xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-                <span className="bg-gradient-to-r from-violet-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
-                  Focused Engineering and Security Stack
-                </span>
-              </h1>
-              <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-slate-300 sm:mt-4 sm:text-base">
-                A single, clearly structured skills route covering Software
-                Development, Application Security, Python Engineering, and Linux
-                Delivery workflows.
-              </p>
-            </div>
+            <SectionTitle
+              mobileCenter={false}
+              className="text-center [&_.section-title-description]:mx-auto [&_.section-title-rule]:mx-auto"
+              eyebrow="Technical Skills"
+              title="Skills and Capability Areas"
+              description="A structured overview of software development, application security, Python engineering, and Linux operations."
+            />
 
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-6">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-7">
               {topSkillTags.map((tag) => (
                 <span
                   key={tag}
@@ -135,15 +127,15 @@ const SkillsPage = () => {
 
       <section className="section-wrap section-divider pt-10">
         <SectionTitle
-          eyebrow="Intelligent Classification"
-          title="One-Time, Clearly Classified Skills"
-          description="Skills grouped once by domain."
+          eyebrow="Skill Domains"
+          title="Organized by Practical Domain"
+          description="Each domain groups core tools and capabilities used in project delivery."
         />
 
         <StaggerGrid className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-2">
           {intelligentSkillDomains.map((domain) => (
             <StaggerItem key={domain.id} className="h-full">
-              <article className="skills-mobile-card group relative h-full overflow-hidden rounded-2xl border border-cyan-300/25 bg-slate-950/70 p-4 shadow-[0_16px_36px_rgba(2,8,20,0.26)] transition duration-300 hover:-translate-y-1 hover:border-cyan-300/45 sm:p-5">
+              <article className="skills-mobile-card group relative h-full overflow-hidden rounded-2xl border border-cyan-300/25 bg-slate-950/70 p-4 shadow-[0_18px_38px_-28px_rgba(2,8,20,0.9)] transition duration-300 hover:-translate-y-1 hover:border-cyan-300/45 hover:shadow-[0_26px_52px_-32px_rgba(34,211,238,0.32)] sm:p-6">
                 <div
                   className={`pointer-events-none absolute inset-x-0 top-0 h-px animate-pulseLine bg-gradient-to-r from-transparent ${domain.accentClass} to-transparent`}
                 />
@@ -174,7 +166,7 @@ const SkillsPage = () => {
 
         <div className="mt-8 flex flex-wrap gap-2.5 sm:gap-3">
           <Button to="/projects">
-            View Skills in Projects <ArrowRight size={16} />
+            See Skills in Projects <ArrowRight size={16} />
           </Button>
           <Button
             href={QUICK_CONTACT.tryhackme}
@@ -198,7 +190,7 @@ const SkillsPage = () => {
         </div>
 
         <p className="mt-4 text-sm leading-7 text-slate-400">
-          Skills are listed once per domain to avoid duplication.
+          Each capability is listed once per domain to keep the taxonomy clear and maintainable.
         </p>
       </section>
     </>

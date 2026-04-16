@@ -134,8 +134,8 @@ const ReceiptPortalPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Receipt Portal"
-          title="Access and Download Your Receipts"
-          description="Use your payment email to request an access code, then download verified receipts with reference IDs."
+          title="Receipt Access Portal"
+          description="Request an access code and download verified receipts using your payment email."
         />
 
         <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_1fr]">

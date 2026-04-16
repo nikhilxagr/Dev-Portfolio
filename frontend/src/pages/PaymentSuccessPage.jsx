@@ -110,8 +110,8 @@ const PaymentSuccessPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Payment Confirmed"
-          title="Your Payment Is Confirmed"
-          description="Payment status is verified server-side and receipt is generated once the transaction is successful."
+          title="Payment Confirmation"
+          description="Your transaction has been verified and the receipt is ready for access and download."
         />
 
         {verificationInfo ? (

@@ -161,8 +161,8 @@ const ContactPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Contact Hub"
-          title="Contact and Project Inquiry"
-          description="Use this route for inquiries and direct contact channels."
+          title="Project Inquiry and Contact"
+          description="Use this page for project discussions, collaboration requests, and direct contact."
         />
 
         <div className="mt-8 grid gap-5 lg:grid-cols-3">

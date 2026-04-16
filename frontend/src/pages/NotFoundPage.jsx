@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from "@/components/ui/Button";
+import SectionTitle from "@/components/ui/SectionTitle";
 import SeoHead from "@/components/seo/SeoHead";
 
 const NotFoundPage = () => {
@@ -13,15 +14,13 @@ const NotFoundPage = () => {
       />
 
       <div className="card-surface max-w-xl rounded-2xl p-8 text-center">
-        <p className="font-display text-xs uppercase tracking-[0.26em] text-emerald-300">
-          404
-        </p>
-        <h1 className="mt-3 font-display text-4xl text-cyan-100">
-          Page Not Found
-        </h1>
-        <p className="mt-3 text-slate-300">
-          The page you requested does not exist or has been moved.
-        </p>
+        <SectionTitle
+          mobileCenter={false}
+          className="text-center [&>p]:mx-auto"
+          eyebrow="404"
+          title="Page Not Found"
+          description="The page you requested does not exist or has been moved."
+        />
         <div className="mt-6">
           <Button to="/">Back to Home</Button>
         </div>

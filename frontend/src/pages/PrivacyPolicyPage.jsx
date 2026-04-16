@@ -42,8 +42,8 @@ const PrivacyPolicyPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Privacy Policy"
-          title="How Information Is Collected and Used"
-          description="This page explains what data is collected, why it is collected, and how it is protected."
+          title="Data Collection and Use"
+          description="This policy outlines what information is collected, why it is processed, and how it is protected."
         />
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">

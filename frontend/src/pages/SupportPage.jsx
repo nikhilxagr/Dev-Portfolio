@@ -190,14 +190,12 @@ const SupportPage = () => {
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
-          eyebrow="Support Me"
-          title="Support My Work"
+          mobileCenter={false}
+          eyebrow="Contribution Support"
+          title="Support This Work"
+          description="If the work is useful, you can contribute any amount through secure checkout and receive an instant receipt."
           className="mx-auto max-w-3xl text-center"
         />
-        <p className="mx-auto mt-3 max-w-3xl text-center text-slate-300">
-          If my work helps you, you can contribute any amount and pay through
-          secure Cashfree checkout.
-        </p>
 
         {paymentError ? (
           <p className="mx-auto mt-4 max-w-4xl rounded-xl border border-rose-300/35 bg-rose-300/10 px-4 py-3 text-sm text-rose-200">

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
+import SectionTitle from "@/components/ui/SectionTitle";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
@@ -129,18 +130,18 @@ const ProjectDetailsPage = () => {
           <article className="space-y-5">
             <FadeInUp>
               <header className="card-surface rounded-2xl p-6">
-                <p className="text-xs uppercase tracking-[0.2em] text-emerald-200">
-                  {project.category}
-                </p>
+                <SectionTitle
+                  mobileCenter={false}
+                  eyebrow={project.category}
+                  title={project.title}
+                  description={project.description}
+                />
+
                 {project.tagline ? (
-                  <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
+                  <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500">
                     {project.tagline}
                   </p>
                 ) : null}
-                <h1 className="mt-2 font-display text-3xl text-cyan-100 sm:text-4xl">
-                  {project.title}
-                </h1>
-                <p className="mt-3 text-slate-300">{project.description}</p>
 
                 <div className="mt-5 flex flex-wrap items-center gap-4 text-slate-200">
                   {project.githubUrl ? (

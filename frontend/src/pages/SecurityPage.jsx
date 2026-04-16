@@ -56,9 +56,9 @@ const SecurityPage = () => {
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
-          eyebrow="Practicals"
+          eyebrow="Security Practicals"
           title="Security Engineering Practicals"
-          description="Hands-on lab work with focused notes on tools, methodology, and approved scope."
+          description="Documented lab exercises focused on tools, methodology, and authorized testing scope."
         />
 
         <div className="mt-8 grid gap-4 sm:gap-5 xl:grid-cols-2">
@@ -161,8 +161,8 @@ const SecurityPage = () => {
       <section className="section-wrap pt-4 sm:pt-6">
         <SectionTitle
           eyebrow="Governance and Scope"
-          title="Responsible Security Practice"
-          description="All testing is limited to lab environments, owned assets, or explicitly authorized targets."
+          title="Responsible Testing Standards"
+          description="Testing is performed only in lab environments, owned assets, or explicitly authorized targets."
         />
 
         <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-2">

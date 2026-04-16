@@ -73,10 +73,11 @@ const AboutPage = () => {
 
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
+          mobileCenter={false}
           className="text-center [&>p]:mx-auto"
           eyebrow="Professional Profile"
-          title="About Me"
-          description="Background, capabilities, and current learning focus."
+          title="Profile Overview"
+          description="Overview of my background, technical capabilities, and current learning priorities."
         />
 
         <FadeInUp className="card-surface relative mt-8 overflow-hidden rounded-[2rem] p-5 sm:p-8">

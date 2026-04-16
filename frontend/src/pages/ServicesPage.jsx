@@ -307,9 +307,9 @@ const ServicesPage = () => {
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div className="space-y-4 lg:space-y-5">
             <SectionTitle
-              eyebrow="Verified Services"
-              title="Development and Guidance Services"
-              description="Service categories, transparent pricing, and Cashfree checkout status."
+              eyebrow="Professional Services"
+              title="Development and Advisory Services"
+              description="Service tracks, clear pricing, and checkout readiness."
             />
 
             <div className="flex flex-wrap gap-3">
@@ -365,8 +365,8 @@ const ServicesPage = () => {
       <section className="section-wrap section-divider pt-10">
         <SectionTitle
           eyebrow="Service Catalog"
-          title="All Services"
-          description="Compare services by category, price, and timeline."
+          title="Service Plans"
+          description="Compare deliverables, pricing, and delivery timelines."
         />
 
         <div className="mt-8 grid gap-5 lg:grid-cols-2">

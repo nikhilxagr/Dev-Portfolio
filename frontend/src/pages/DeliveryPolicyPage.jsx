@@ -42,8 +42,8 @@ const DeliveryPolicyPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Delivery and Fulfillment"
-          title="How Services Are Delivered"
-          description="This page explains delivery channels, timelines, and fulfillment confirmations for digital services."
+          title="Delivery Process"
+          description="Delivery channels, timelines, and fulfillment confirmation for digital services."
         />
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">

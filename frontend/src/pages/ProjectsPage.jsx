@@ -122,12 +122,12 @@ const ProjectsPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Projects"
-          title="Builds, Engineering Practicals & AI Experiments"
-          description="Filter and search through my project archive by domain and technology focus."
+          title="Project Portfolio and Engineering Practicals"
+          description="Browse projects by category, technology stack, and implementation focus."
         />
 
         <p className="mt-4 max-w-3xl text-sm text-slate-400">
-          Projects are loaded from backend data with static fallback content.
+          Project data is loaded from backend sources with static fallback content.
         </p>
 
         <FadeInUp className="mt-8 rounded-2xl border border-cyan-300/20 bg-slate-950/70 p-4">

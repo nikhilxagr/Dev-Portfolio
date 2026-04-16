@@ -47,8 +47,8 @@ const RefundPolicyPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Refund Policy"
-          title="Professional and Transparent Payment Policy"
-          description="This policy keeps payments clear, verifiable, and fair for both service buyer and service provider."
+          title="Refund Terms"
+          description="Refund eligibility, review timelines, and billing support details for paid services."
         />
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">

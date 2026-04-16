@@ -132,12 +132,12 @@ const BlogPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Blog"
-          title="Notes on Code, Engineering & AI"
-          description="Posts from projects, labs, and experiments."
+          title="Engineering Notes and Technical Articles"
+          description="Articles from project builds, engineering practice, and experiments."
         />
 
         <p className="mt-4 max-w-3xl text-sm text-slate-400">
-          Includes backend posts plus external writing from Medium and LinkedIn.
+          Includes backend posts and external writing from Medium and LinkedIn.
         </p>
 
         <FadeInUp className="mt-8 rounded-2xl border border-cyan-300/20 bg-slate-950/70 p-4">

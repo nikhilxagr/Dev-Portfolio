@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
+import SectionTitle from "@/components/ui/SectionTitle";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
@@ -146,20 +147,24 @@ const BlogDetailsPage = () => {
 
           <FadeInUp>
             <header className="card-surface rounded-2xl p-6">
-              <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-                {blog.source || "Portfolio"}
-              </p>
-              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
+              <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
                 {formattedDate}
                 {readTime ? ` | ${readTime}` : ""}
               </p>
-              <h1 className="mt-2 font-display text-3xl text-cyan-100 sm:text-4xl">
-                {blog.title}
-              </h1>
-              {blog.subtitle ? (
-                <p className="mt-3 text-sm text-slate-300">{blog.subtitle}</p>
-              ) : null}
-              {blog.excerpt ? (
+
+              <SectionTitle
+                mobileCenter={false}
+                className="mt-3"
+                eyebrow={blog.source || "Portfolio"}
+                title={blog.title}
+                description={
+                  blog.subtitle ||
+                  blog.excerpt ||
+                  "Technical notes and implementation learnings from recent builds."
+                }
+              />
+
+              {blog.subtitle && blog.excerpt ? (
                 <p className="mt-3 text-sm text-slate-400">{blog.excerpt}</p>
               ) : null}
               {blog.tags?.length ? (

@@ -37,8 +37,8 @@ const CancellationPolicyPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Cancellation Policy"
-          title="Cancellation Workflow"
-          description="Cancellation handling is transparent and based on scope stage and delivery status."
+          title="Cancellation Terms"
+          description="Cancellation requests are reviewed based on project stage, delivered work, and communication status."
         />
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">

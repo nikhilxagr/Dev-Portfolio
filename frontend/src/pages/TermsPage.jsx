@@ -42,8 +42,8 @@ const TermsPage = () => {
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
           eyebrow="Terms and Conditions"
-          title="Service Terms"
-          description="By using this website or purchasing services, these terms are considered accepted."
+          title="Website and Service Terms"
+          description="These terms govern website use, project engagement, billing, and delivery obligations."
         />
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">

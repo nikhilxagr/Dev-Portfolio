@@ -497,9 +497,9 @@ const HomePage = () => {
 
           <SectionTitle
             className="relative text-center lg:text-left"
-            eyebrow="About Me"
-            title="About Me"
-            description="Background, capabilities, and current focus."
+            eyebrow="Professional Profile"
+            title="Background and Capabilities"
+            description="Background, technical capabilities, and current learning priorities."
           />
 
           <div className="relative mt-6 grid gap-4 sm:mt-8 sm:gap-5 lg:grid-cols-2">
@@ -787,8 +787,8 @@ const HomePage = () => {
       <section className="section-wrap section-divider pt-10">
         <SectionTitle
           eyebrow="Latest Blog"
-          title="Fresh Perspective"
-          description="Recent writing from Medium and LinkedIn."
+          title="Latest Articles"
+          description="Recent posts on development, engineering practice, and experiments."
         />
 
         <div className="mx-auto mt-8 grid w-full max-w-[1180px] gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-stretch">
@@ -861,8 +861,8 @@ const HomePage = () => {
       <section className="section-wrap section-divider pt-10">
         <SectionTitle
           eyebrow="Featured Projects"
-          title="Selected Work"
-          description="Featured projects with demos and source links."
+          title="Featured Projects"
+          description="Selected projects with implementation details, source code, and live demos."
         />
 
         <div className="mt-8">
