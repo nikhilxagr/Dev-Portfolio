@@ -1,11 +1,9 @@
 import { ArrowRight, Code2, Cpu, ShieldCheck, Terminal } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
-import FadeInUp from "@/components/animations/FadeInUp";
 import SectionTitle from "@/components/ui/SectionTitle";
 import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
-import { useTheme } from "@/context/ThemeContext";
 import { createBreadcrumbSchema } from "@/utils/seo";
 import { QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
 
@@ -64,15 +62,6 @@ const intelligentSkillDomains = [
 ];
 
 const SkillsPage = () => {
-  const { isDark } = useTheme();
-
-  const topSkillTags = [
-    "Frontend and Backend Development",
-    "Application Security",
-    "Python Automation",
-    "Linux Operations",
-  ];
-
   return (
     <>
       <SeoHead
@@ -93,44 +82,23 @@ const SkillsPage = () => {
       />
 
       <section className="section-wrap pt-12 sm:pt-20">
-        <FadeInUp className="skills-hero-surface relative overflow-hidden rounded-[1.5rem] border border-cyan-300/25 p-5 sm:rounded-[2rem] sm:p-8">
-          <div
-            className={`pointer-events-none absolute inset-0 ${
-              isDark
-                ? "bg-[radial-gradient(circle_at_14%_18%,rgba(34,211,238,0.16),transparent_34%),radial-gradient(circle_at_88%_84%,rgba(168,85,247,0.14),transparent_40%)]"
-                : "bg-[radial-gradient(circle_at_14%_18%,rgba(14,165,233,0.16),transparent_34%),radial-gradient(circle_at_88%_84%,rgba(16,185,129,0.12),transparent_40%)]"
-            }`}
-          />
-
-          <div className="relative">
-            <SectionTitle
-              mobileCenter={false}
-              className="text-center [&_.section-title-description]:mx-auto [&_.section-title-rule]:mx-auto"
-              eyebrow="Technical Skills"
-              title="Skills and Capability Areas"
-              description="A structured overview of software development, application security, Python engineering, and Linux operations."
-            />
-
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-7">
-              {topSkillTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-2.5 py-1 text-[11px] font-medium text-cyan-100 sm:px-3 sm:text-xs"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </FadeInUp>
+        <SectionTitle
+          eyebrow="Skills"
+          title="Technical Skills"
+          description="Core capabilities and tools used across full stack development, application security, automation, and Linux workflows."
+        />
       </section>
 
-      <section className="section-wrap section-divider pt-10">
-        <SectionTitle
-          eyebrow="Skill Domains"
-          title="Organized by Practical Domain"
-          description="Each domain groups core tools and capabilities used in project delivery."
-        />
+      <section className="section-wrap section-divider pt-8">
+        <div className="max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+            Skill Domains
+          </p>
+          <p className="mt-2 text-sm leading-7 text-slate-400">
+            Skills are grouped by practical domains used in real project
+            delivery.
+          </p>
+        </div>
 
         <StaggerGrid className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-2">
           {intelligentSkillDomains.map((domain) => (
@@ -190,7 +158,8 @@ const SkillsPage = () => {
         </div>
 
         <p className="mt-4 text-sm leading-7 text-slate-400">
-          Each capability is listed once per domain to keep the taxonomy clear and maintainable.
+          Each capability is listed once per domain to keep the taxonomy clear
+          and maintainable.
         </p>
       </section>
     </>
