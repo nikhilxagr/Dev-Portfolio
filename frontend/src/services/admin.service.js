@@ -47,3 +47,24 @@ export const markAdminContactAsRead = async (id) => {
   const { data } = await api.patch(`/admin/contacts/${id}/read`, {}, withAdminHeaders())
   return data
 }
+
+export const getAdminOverview = async (params = {}) => {
+  const { data } = await api.get('/admin/overview', {
+    ...withAdminHeaders(),
+    params,
+  })
+  return data
+}
+
+export const getAdminPaymentsHistory = async (params = {}) => {
+  const { data } = await api.get('/admin/payments', {
+    ...withAdminHeaders(),
+    params,
+  })
+  return data
+}
+
+export const getAdminSystemStatus = async () => {
+  const { data } = await api.get('/admin/system-status', withAdminHeaders())
+  return data
+}

@@ -94,6 +94,75 @@ html.light .text-glow {
   border-top: 1px solid var(--divider-color);
 }
 
+@keyframes adminFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes adminShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes adminPulseSoft {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.admin-fade-up {
+  animation: adminFadeUp 0.7s ease both;
+}
+
+.admin-fade-up-1 {
+  animation-delay: 0.1s;
+}
+
+.admin-fade-up-2 {
+  animation-delay: 0.2s;
+}
+
+.admin-fade-up-3 {
+  animation-delay: 0.3s;
+}
+
+.admin-shimmer-text {
+  background: linear-gradient(110deg, #d7f4ff, #8ef6d7, #d7f4ff);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: adminShimmer 6s ease infinite;
+}
+
+.admin-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #22d3ee;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.5);
+  animation: adminPulseSoft 2.6s ease infinite;
+}
+
+html.light .admin-shimmer-text {
+  background: linear-gradient(110deg, #0f172a, #0c4a6e, #0f172a);
+  background-size: 220% 100%;
+}
+
 html.light .bg-mesh-grid {
   opacity: 0.14;
 }
