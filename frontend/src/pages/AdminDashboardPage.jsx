@@ -659,6 +659,27 @@ const AdminDashboardPage = () => {
     navigate("/admin/login", { replace: true });
   };
 
+  const totalPayments = overview?.payments?.total || 0;
+  const paidPayments = overview?.payments?.paid || 0;
+  const paymentSuccessRate = totalPayments
+    ? (paidPayments / totalPayments) * 100
+    : null;
+  const failedPayments = overview?.payments?.failed || 0;
+  const unreadContacts = overview?.contacts?.unread || 0;
+  const newContacts = overview?.contacts?.new || 0;
+  const supportRevenue = overview?.payments?.supportRevenueInr || 0;
+
+  const opsBriefPrimary = overview
+    ? `Payments running at ${formatPercent(paymentSuccessRate)} success with ${formatCount(
+        unreadContacts,
+      )} unread contacts in queue.`
+    : "Awaiting secure sync from payments, contacts, and content services.";
+  const opsBriefSecondary = overview
+    ? `Failed payments: ${formatCount(
+        failedPayments,
+      )}. Support revenue: ${formatCurrency(supportRevenue)}.`
+    : "Once connected, this panel will highlight priorities and response volume.";
+
   const overviewCards = overview
     ? [
         {
@@ -705,13 +726,15 @@ const AdminDashboardPage = () => {
         <div className="rounded-2xl border border-cyan-300/25 bg-slate-950/85 p-5 shadow-neon sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-cyan-200/80">
+              <p className="admin-fade-up text-xs uppercase tracking-[0.2em] text-cyan-200/80">
                 Admin Dashboard
               </p>
-              <h1 className="font-display text-xl uppercase tracking-wide text-cyan-50 sm:text-2xl">
-                Operations Control Center
+              <h1 className="admin-fade-up admin-fade-up-1 font-display text-xl uppercase tracking-wide text-cyan-50 sm:text-2xl">
+                <span className="admin-shimmer-text">
+                  Operations Control Center
+                </span>
               </h1>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="admin-fade-up admin-fade-up-2 mt-1 text-sm text-slate-400">
                 Signed in as{" "}
                 <span className="text-cyan-100">
                   {adminUser?.email || "admin"}
@@ -762,6 +785,44 @@ const AdminDashboardPage = () => {
             </div>
           </div>
 
+          <div className="mt-4 grid gap-3 lg:grid-cols-[1.6fr_1fr]">
+            <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
+              <div className="flex items-center gap-2">
+                <span className="admin-pulse-dot" />
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                  Ops briefing
+                </p>
+              </div>
+              <p className="admin-fade-up admin-fade-up-1 mt-2 text-sm text-slate-200">
+                {opsBriefPrimary}
+              </p>
+              <p className="admin-fade-up admin-fade-up-2 mt-1 text-xs text-slate-400">
+                {opsBriefSecondary}
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                Live signals
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs uppercase tracking-[0.14em] text-slate-300">
+                <span className="admin-fade-up admin-fade-up-1 rounded-full border border-cyan-300/20 bg-slate-950/70 px-3 py-1">
+                  Success rate:{" "}
+                  {overview ? formatPercent(paymentSuccessRate) : "Pending"}
+                </span>
+                <span className="admin-fade-up admin-fade-up-2 rounded-full border border-cyan-300/20 bg-slate-950/70 px-3 py-1">
+                  Unread: {overview ? formatCount(unreadContacts) : "--"}
+                </span>
+                <span className="admin-fade-up admin-fade-up-3 rounded-full border border-cyan-300/20 bg-slate-950/70 px-3 py-1">
+                  Failed: {overview ? formatCount(failedPayments) : "--"}
+                </span>
+                <span className="admin-fade-up admin-fade-up-3 rounded-full border border-cyan-300/20 bg-slate-950/70 px-3 py-1">
+                  New contacts: {overview ? formatCount(newContacts) : "--"}
+                </span>
+              </div>
+            </div>
+          </div>
+
           {notice ? (
             <p className="mt-4 rounded-xl border border-emerald-300/30 bg-emerald-300/10 px-3 py-2 text-sm text-emerald-100">
               {notice}
@@ -784,6 +845,9 @@ const AdminDashboardPage = () => {
                 </h2>
                 <p className="mt-1 text-sm text-slate-400">
                   Snapshot of payments, contacts, and content performance.
+                </p>
+                <p className="admin-fade-up admin-fade-up-1 mt-2 text-xs text-slate-400">
+                  Review success rates and unread volume before daily close.
                 </p>
               </div>
             </div>
@@ -913,6 +977,9 @@ const AdminDashboardPage = () => {
                   <p className="mt-1 text-sm text-slate-400">
                     Track Cashfree transactions and support contributions in the
                     last {paymentMeta.rangeDays} days.
+                  </p>
+                  <p className="admin-fade-up admin-fade-up-1 mt-2 text-xs text-slate-400">
+                    Filter by status or service to isolate at-risk activity.
                   </p>
                 </div>
 
@@ -1045,6 +1112,9 @@ const AdminDashboardPage = () => {
                   <p className="mt-1 text-sm text-slate-400">
                     Review inbound leads and support messages.
                   </p>
+                  <p className="admin-fade-up admin-fade-up-1 mt-2 text-xs text-slate-400">
+                    Prioritize new requests to keep response SLAs on track.
+                  </p>
                 </div>
 
                 <div className="flex gap-2">
@@ -1157,6 +1227,16 @@ const AdminDashboardPage = () => {
                   onRetry={() => loadContent({ useLoader: true })}
                 />
               ) : null}
+
+              <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+                  Editorial control
+                </p>
+                <p className="admin-fade-up admin-fade-up-1 mt-2 text-sm text-slate-200">
+                  Changes publish immediately once saved. Double-check copy and
+                  visuals before pushing updates.
+                </p>
+              </div>
 
               <div className="grid gap-5 xl:grid-cols-[1.1fr_1fr]">
                 <form
@@ -1513,6 +1593,10 @@ const AdminDashboardPage = () => {
                   </h2>
                   <p className="mt-1 text-sm text-slate-400">
                     Monitor backend health and payment gateway readiness.
+                  </p>
+                  <p className="admin-fade-up admin-fade-up-1 mt-2 text-xs text-slate-400">
+                    Confirm webhook activity and receipt email readiness before
+                    live pushes.
                   </p>
                 </div>
               </div>
