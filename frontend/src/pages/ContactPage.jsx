@@ -34,6 +34,10 @@ const getContactPlatforms = (isDark) => {
       href: QUICK_CONTACT.linkedin,
       logo: "/images/brand/linkedin.svg",
     },
+    Instagram: {
+      href: "https://www.instagram.com/nikhilxagr/",
+      logo: "https://cdn.simpleicons.org/instagram/E4405F",
+    },
     Medium: {
       href: QUICK_CONTACT.medium,
       logo: `https://cdn.simpleicons.org/medium/${neutralBrand}`,

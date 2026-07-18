@@ -25,6 +25,7 @@ const SKILL_LOGO_MAP = {
   Metasploit: { slug: "metasploit", color: "2596CD" },
   Git: { slug: "git", color: "F05032" },
   GitHub: { slug: "github", useNeutral: true },
+  Instagram: { slug: "instagram", color: "E4405F" },
   Medium: { slug: "medium", color: "00AB6C" },
   Postman: { slug: "postman", color: "FF6C37" },
   WhatsApp: { slug: "whatsapp", color: "25D366" },

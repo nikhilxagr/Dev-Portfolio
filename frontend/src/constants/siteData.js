@@ -44,6 +44,7 @@ export const NAV_LINKS = [
 export const SOCIAL_LINKS = [
   { label: "GitHub", href: "https://github.com/nikhilxagr" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/nikhilxagr/" },
+  { label: "Instagram", href: "https://www.instagram.com/nikhilxagr/" },
   { label: "Medium", href: "https://medium.com/@nikhilxagr" },
   { label: "TryHackMe", href: "https://tryhackme.com/p/nikhilxagr" },
   { label: "WhatsApp", href: "https://wa.me/7897872883" },
