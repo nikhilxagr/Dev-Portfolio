@@ -282,7 +282,7 @@ const HomePage = () => {
               <p className="font-display text-xs uppercase tracking-[0.3em] text-emerald-300">
                 Welcome to my portfolio
               </p>
-              <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-cyan-100 text-glow sm:text-5xl lg:text-7xl">
+              <h1 className="mt-3 font-outfit text-4xl font-extrabold leading-tight text-cyan-100 text-glow sm:text-5xl lg:text-7xl">
                 {SITE_PROFILE.fullName}
               </h1>
               <p className="mt-4 text-sm uppercase tracking-[0.18em] text-slate-400">

@@ -32,8 +32,8 @@ export const HERO_CONTENT = {
 export const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/skills", label: "Skills" },
   { to: "/journey", label: "Journey" },
+  { to: "/skills", label: "Skills" },
   { to: "/projects", label: "Projects" },
   { to: "/security", label: "Practicals" },
   { to: "/blog", label: "Blog" },

@@ -44,6 +44,15 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [showOpportunityBanner, setShowOpportunityBanner] = useState(true);
   const { isDark, toggleTheme } = useTheme();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const nextOffset = showOpportunityBanner
@@ -82,18 +91,16 @@ const Navbar = () => {
 
   const navItemClass = ({ isActive }) =>
     clsx(
-      "rounded-xl border px-4 py-2 text-sm font-semibold transition",
+      "rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] transition-all duration-300",
       isActive
-        ? isDark
-          ? "border-cyan-300/45 bg-cyan-300/12 text-cyan-100 shadow-[0_0_0_1px_rgba(34,211,238,0.2),0_0_20px_rgba(34,211,238,0.14)]"
-          : "border-cyan-600/35 bg-cyan-500/12 text-cyan-900 shadow-[0_0_0_1px_rgba(8,145,178,0.15),0_0_18px_rgba(8,145,178,0.14)]"
+        ? "bg-lime-400 text-[#121212] shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
         : isDark
-          ? "border-transparent text-slate-300 hover:border-cyan-300/35 hover:bg-cyan-300/10 hover:text-cyan-100"
-          : "border-transparent text-slate-700 hover:border-cyan-500/35 hover:bg-cyan-500/10 hover:text-cyan-900",
+          ? "text-zinc-400/80 hover:text-white hover:bg-white/[0.06]"
+          : "text-zinc-500 hover:text-zinc-900 hover:bg-black/[0.04]",
     );
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30">
+    <header className="fixed inset-x-0 top-0 z-50">
       {showOpportunityBanner ? (
         <div
           className={clsx(
@@ -168,122 +175,86 @@ const Navbar = () => {
         </div>
       ) : null}
 
-      <div
-        className={clsx(
-          "border-b backdrop-blur-lg",
-          isDark
-            ? "border-cyan-300/15 bg-slate-950/80"
-            : "border-cyan-600/20 bg-white/75 shadow-[0_10px_24px_-20px_rgba(8,145,178,0.55)]",
-        )}
-      >
-        <div className="mx-auto grid h-20 max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 sm:px-6 lg:px-10">
-          <Link
-            to="/"
-            onClick={() => setOpen(false)}
-            className="group mr-4 inline-flex min-w-0 items-center gap-3 xl:mr-10"
-          >
-            <span
-              className={clsx(
-                "relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border",
-                isDark
-                  ? "border-cyan-300/40 bg-slate-950/80 shadow-[0_0_0_1px_rgba(34,211,238,0.22),0_0_22px_rgba(34,211,238,0.16)]"
-                  : "border-cyan-600/35 bg-white/90 shadow-[0_0_0_1px_rgba(8,145,178,0.16),0_0_18px_rgba(16,185,129,0.15)]",
-              )}
-            >
-              <span
+      <div className={clsx(
+        "w-full transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)] z-50",
+        isScrolled ? "pt-4" : "pt-0"
+      )}>
+        <div
+          className={clsx(
+            "mx-auto transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)] backdrop-blur-xl border-b",
+            isScrolled
+              ? isDark
+                ? "w-[97%] max-w-6xl rounded-full px-6 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] border-white/[0.06] bg-zinc-950/20"
+                : "w-[97%] max-w-6xl rounded-full px-6 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border-zinc-900/[0.06] bg-white/20"
+              : "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-transparent bg-transparent"
+          )}
+        >
+            <div className={clsx(
+              "flex items-center justify-between transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+              isScrolled ? "h-11" : "h-14"
+            )}>
+              <Link
+                to="/"
+                onClick={() => setOpen(false)}
+                className="group flex items-center gap-2 mr-6 xl:mr-10 shrink-0"
+              >
+                <span className="font-outfit text-[15px] font-black tracking-[0.25em] text-white uppercase transition-all duration-300 group-hover:text-lime-300 group-hover:[text-shadow:0_0_12px_rgba(163,230,53,0.65)] inline-block">
+                  NIKHIL
+                </span>
+              </Link>
+
+              <nav className="hidden items-center gap-1 xl:flex justify-center flex-1">
+                {NAV_LINKS.map((item) => (
+                  <NavLink key={item.to} to={item.to} className={navItemClass}>
+                    {item.label}
+                  </NavLink>
+                ))}
+              </nav>
+
+              <div className="hidden items-center gap-3 xl:flex shrink-0 ml-6 xl:ml-10">
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  className={clsx(
+                    "rounded-full p-2 transition",
+                    isDark
+                      ? "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
+                      : "text-zinc-600 hover:text-zinc-900 hover:bg-black/5",
+                  )}
+                  aria-label="Toggle theme"
+                  title="Toggle dark or light mode"
+                >
+                  {isDark ? <SunMedium size={16} /> : <Moon size={16} />}
+                </button>
+
+                <a
+                  href={QUICK_CONTACT.resume}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-lime-400/45 bg-zinc-950 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-lime-400 shadow-[0_0_12px_rgba(163,230,53,0.15)] hover:border-lime-400 hover:bg-lime-400 hover:text-black hover:shadow-[0_0_20px_rgba(163,230,53,0.45)] transition-all duration-300 ease-out"
+                  aria-label="Open resume"
+                >
+                  <Download size={11} />
+                  Resume
+                </a>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setOpen((value) => !value)}
                 className={clsx(
-                  "pointer-events-none absolute inset-0 rounded-xl",
+                  "rounded-full p-2 transition xl:hidden",
                   isDark
-                    ? "bg-gradient-to-br from-cyan-300/15 via-transparent to-emerald-300/12"
-                    : "bg-gradient-to-br from-cyan-500/20 via-transparent to-emerald-500/18",
+                    ? "text-zinc-300 hover:bg-white/5"
+                    : "text-zinc-700 hover:bg-black/5",
                 )}
-              />
-              <Shield
-                size={17}
-                className={clsx(
-                  "relative",
-                  isDark ? "text-cyan-200" : "text-cyan-700",
-                )}
-              />
-              <span
-                className={clsx(
-                  "absolute -right-1 -top-1 h-2 w-2 rounded-full",
-                  isDark
-                    ? "bg-emerald-300 shadow-[0_0_10px_rgba(74,222,128,0.95)]"
-                    : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.65)]",
-                )}
-              />
-            </span>
-
-            <span className="min-w-0">
-              <p className="truncate font-display text-[13px] uppercase tracking-[0.18em] text-cyan-50 transition group-hover:text-cyan-100 sm:text-sm">
-                {SITE_PROFILE.fullName}
-              </p>
-              <p className="truncate text-[10px] uppercase tracking-[0.2em] text-slate-500 transition group-hover:text-slate-300">
-                Full Stack + Security Portfolio
-              </p>
-            </span>
-          </Link>
-
-          <nav className="hidden items-center justify-self-center gap-2 xl:flex xl:translate-x-4">
-            {NAV_LINKS.map((item) => (
-              <NavLink key={item.to} to={item.to} className={navItemClass}>
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-
-          <div className="hidden items-center justify-self-end gap-3 xl:flex xl:pl-6">
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className={clsx(
-                "rounded-xl border px-3 py-2 transition",
-                isDark
-                  ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/20"
-                  : "border-cyan-600/35 bg-cyan-500/10 text-cyan-800 hover:bg-cyan-500/18",
-              )}
-              aria-label="Toggle theme"
-              title="Toggle dark or light mode"
-            >
-              {isDark ? <SunMedium size={16} /> : <Moon size={16} />}
-            </button>
-
-            <a
-              href={QUICK_CONTACT.resume}
-              target="_blank"
-              rel="noreferrer"
-              className={clsx(
-                "group relative ml-1 inline-flex items-center gap-1.5 overflow-hidden rounded-xl border px-4 py-2 text-xs font-semibold tracking-[0.08em] transition-all duration-300 hover:-translate-y-0.5",
-                isDark
-                  ? "border-emerald-300/55 bg-emerald-300/22 text-emerald-50 hover:border-emerald-200/75 hover:bg-emerald-300/30 hover:shadow-[0_12px_28px_-16px_rgba(16,185,129,0.95)]"
-                  : "border-emerald-600/40 bg-emerald-500/16 text-emerald-800 hover:bg-emerald-500/24 hover:shadow-[0_12px_24px_-16px_rgba(5,150,105,0.6)]",
-              )}
-              aria-label="Open resume"
-            >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-emerald-100/35 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-              <span className="relative inline-flex items-center gap-1.5 uppercase">
-                <Download size={14} />
-                Resume
-              </span>
-            </a>
+                aria-label="Toggle menu"
+              >
+                {open ? <X size={18} /> : <Menu size={18} />}
+              </button>
+            </div>
           </div>
-
-          <button
-            type="button"
-            onClick={() => setOpen((value) => !value)}
-            className={clsx(
-              "justify-self-end rounded-lg border p-2 transition xl:hidden",
-              isDark
-                ? "border-cyan-400/40 text-cyan-100"
-                : "border-cyan-600/35 bg-white/70 text-cyan-800 hover:bg-cyan-100/70",
-            )}
-            aria-label="Toggle menu"
-          >
-            {open ? <X size={18} /> : <Menu size={18} />}
-          </button>
         </div>
-      </div>
 
       {open && (
         <div className="fixed inset-0 z-40 xl:hidden">
@@ -299,67 +270,38 @@ const Navbar = () => {
 
           <aside
             className={clsx(
-              "absolute right-0 top-0 flex h-screen w-[min(86vw,320px)] flex-col border-l p-4",
+              "absolute right-0 top-0 flex h-screen w-[min(82vw,290px)] flex-col p-6 z-50 transition-all duration-300 ease-out",
               isDark
-                ? "border-cyan-300/25 bg-gradient-to-b from-slate-950 via-[#061a2b] to-[#02121f] shadow-[0_0_0_1px_rgba(34,211,238,0.14),0_24px_60px_-18px_rgba(20,184,166,0.55)]"
-                : "border-cyan-500/25 bg-gradient-to-b from-white via-cyan-50/95 to-emerald-50/95 shadow-[0_0_0_1px_rgba(8,145,178,0.12),0_22px_48px_-18px_rgba(14,116,144,0.35)]",
+                ? "bg-zinc-950/98 backdrop-blur-xl text-white shadow-[-10px_0_40px_rgba(0,0,0,0.8)]"
+                : "bg-white/98 backdrop-blur-xl text-zinc-900 shadow-[-10px_0_30px_rgba(0,0,0,0.06)]",
             )}
             role="dialog"
             aria-modal="true"
           >
-            <div
-              className={clsx(
-                "rounded-2xl border p-3",
-                isDark
-                  ? "border-cyan-300/25 bg-slate-900/80"
-                  : "border-cyan-500/25 bg-white/88",
-              )}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p
-                    className={clsx(
-                      "truncate text-sm font-semibold",
-                      isDark ? "text-cyan-50" : "text-cyan-900",
-                    )}
-                  >
-                    {SITE_PROFILE.fullName}
-                  </p>
-                  <p
-                    className={clsx(
-                      "mt-1 text-[10px] uppercase tracking-[0.16em]",
-                      isDark ? "text-emerald-200/80" : "text-emerald-700",
-                    )}
-                  >
-                    Quick Navigation
-                  </p>
-                  <p
-                    className={clsx(
-                      "mt-1 text-[10px]",
-                      isDark ? "text-slate-500" : "text-slate-600",
-                    )}
-                  >
-                    Explore portfolio sections instantly.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className={clsx(
-                    "rounded-lg border p-1.5 transition",
-                    isDark
-                      ? "border-cyan-300/35 bg-cyan-300/12 text-cyan-100 hover:bg-cyan-300/24"
-                      : "border-cyan-500/30 bg-cyan-500/10 text-cyan-800 hover:bg-cyan-500/18",
-                  )}
-                  aria-label="Close menu"
-                >
-                  <X size={14} />
-                </button>
-              </div>
+            <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] mb-4">
+              <span className="font-outfit text-base font-black tracking-[0.25em] text-white uppercase">
+                NIKHIL
+              </span>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className={clsx(
+                  "rounded-full p-2 transition",
+                  isDark
+                    ? "text-zinc-400 hover:text-white hover:bg-white/5"
+                    : "text-zinc-600 hover:text-zinc-950 hover:bg-black/5",
+                )}
+                aria-label="Close menu"
+              >
+                <X size={18} />
+              </button>
             </div>
 
-            <div className="mt-4 space-y-2">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-3 px-2">
+              Navigation
+            </p>
+
+            <div className="space-y-1 overflow-y-auto pr-1 flex-1">
               {NAV_LINKS.map((item) => {
                 const Icon = mobileNavIconMap[item.label] || Shield;
 
@@ -370,49 +312,36 @@ const Navbar = () => {
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
                       clsx(
-                        "group flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition",
+                        "group flex items-center gap-3 rounded-full px-4 py-3 text-xs font-bold transition-all duration-300",
                         isActive
-                          ? isDark
-                            ? "border-cyan-300/55 bg-gradient-to-r from-cyan-500/85 via-emerald-400/80 to-teal-500/80 text-white shadow-[0_10px_24px_-12px_rgba(16,185,129,0.85)]"
-                            : "border-cyan-500/35 bg-gradient-to-r from-cyan-500/16 via-emerald-500/14 to-teal-500/16 text-cyan-900 shadow-[0_10px_22px_-14px_rgba(8,145,178,0.35)]"
+                          ? "bg-lime-400 text-black shadow-[0_4px_16px_rgba(163,230,53,0.35)]"
                           : isDark
-                            ? "border-cyan-300/22 bg-slate-900/70 text-slate-200 hover:border-emerald-300/45 hover:bg-emerald-300/12"
-                            : "border-cyan-500/22 bg-white/85 text-slate-700 hover:border-cyan-500/35 hover:bg-cyan-500/10",
+                            ? "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
+                            : "text-zinc-600 hover:text-zinc-950 hover:bg-black/[0.04]",
                       )
                     }
                   >
                     {({ isActive }) => (
                       <>
-                        <span
+                        <Icon
+                          size={15}
                           className={clsx(
-                            "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border",
                             isActive
-                              ? isDark
-                                ? "border-white/35 bg-white/15 text-white"
-                                : "border-cyan-600/35 bg-cyan-500/12 text-cyan-800"
+                              ? "text-black"
                               : isDark
-                                ? "border-cyan-300/30 bg-cyan-300/12 text-cyan-200"
-                                : "border-cyan-500/30 bg-cyan-500/10 text-cyan-700",
-                          )}
-                        >
-                          <Icon size={14} />
-                        </span>
-
-                        <span className="flex-1">{item.label}</span>
-
-                        <ChevronRight
-                          size={14}
-                          className={clsx(
-                            "transition-transform duration-300",
-                            isActive
-                              ? isDark
-                                ? "text-white"
-                                : "text-cyan-800"
-                              : isDark
-                                ? "text-slate-500 group-hover:translate-x-0.5 group-hover:text-cyan-200"
-                                : "text-slate-500 group-hover:translate-x-0.5 group-hover:text-cyan-700",
+                                ? "text-zinc-500 group-hover:text-zinc-300"
+                                : "text-zinc-500 group-hover:text-zinc-700",
                           )}
                         />
+                        <span className="flex-1 tracking-wide">{item.label}</span>
+                        {isActive ? (
+                          <span className="h-1.5 w-1.5 rounded-full bg-black" />
+                        ) : (
+                          <ChevronRight
+                            size={13}
+                            className="text-zinc-600 opacity-60 group-hover:translate-x-0.5 group-hover:opacity-100 transition-all"
+                          />
+                        )}
                       </>
                     )}
                   </NavLink>
@@ -420,50 +349,42 @@ const Navbar = () => {
               })}
             </div>
 
-            <div
-              className={clsx(
-                "mt-auto rounded-xl border p-2",
-                isDark
-                  ? "border-cyan-300/20 bg-slate-900/60"
-                  : "border-cyan-500/25 bg-white/88",
-              )}
-            >
+            <div className="mt-auto space-y-3 pt-6 border-t border-white/[0.06]">
               <button
                 type="button"
                 onClick={toggleTheme}
                 className={clsx(
-                  "inline-flex w-full items-center justify-center gap-3 rounded-lg border px-3 py-2 transition",
+                  "flex w-full items-center justify-between rounded-full px-4 py-3 text-xs font-bold transition",
                   isDark
-                    ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/20"
-                    : "border-cyan-500/30 bg-cyan-500/10 text-cyan-800 hover:bg-cyan-500/18",
+                    ? "text-zinc-400 hover:text-white hover:bg-white/5"
+                    : "text-zinc-600 hover:text-zinc-900 hover:bg-black/5",
                 )}
                 aria-label="Toggle theme"
               >
-                <span className="text-[11px] font-semibold uppercase tracking-[0.16em]">
-                  Theme
-                </span>
-                {isDark ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+                <span className="tracking-wide">Theme Mode</span>
+                {isDark ? (
+                  <ToggleRight size={18} className="text-lime-400" />
+                ) : (
+                  <ToggleLeft size={18} />
+                )}
               </button>
-            </div>
 
-            <a
-              href={QUICK_CONTACT.resume}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => setOpen(false)}
-              className={clsx(
-                "group relative mt-3 inline-flex w-full items-center justify-center overflow-hidden rounded-xl border px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5",
-                isDark
-                  ? "border-emerald-300/55 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-[0_14px_30px_-16px_rgba(16,185,129,0.9)] hover:shadow-[0_18px_34px_-16px_rgba(20,184,166,0.92)]"
-                  : "border-emerald-600/40 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white shadow-[0_12px_24px_-14px_rgba(5,150,105,0.45)] hover:shadow-[0_16px_28px_-14px_rgba(13,148,136,0.55)]",
-              )}
-              aria-label="Open resume"
-            >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-              <span className="relative text-xs font-semibold uppercase tracking-[0.14em]">
-                RESUME
-              </span>
-            </a>
+              <a
+                href={QUICK_CONTACT.resume}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-2 rounded-full bg-lime-400 py-3.5 text-xs font-black uppercase tracking-wider text-[#121212] shadow-[0_4px_16px_rgba(163,230,53,0.3)] hover:opacity-90 transition-all duration-300"
+                aria-label="View Resume"
+              >
+                <Download size={14} />
+                View Resume
+              </a>
+
+              <p className="text-[10px] text-center text-zinc-500 font-medium pt-2">
+                Made with 💚 by Nikhil
+              </p>
+            </div>
           </aside>
         </div>
       )}

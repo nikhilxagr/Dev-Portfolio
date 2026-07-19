@@ -124,17 +124,19 @@ function App() {
               initial={
                 prefersReducedMotion
                   ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 8 }
+                  : { opacity: 0, y: 10, scale: 0.99 }
               }
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={
                 prefersReducedMotion
                   ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: -6 }
+                  : { opacity: 0, y: -8, scale: 0.99 }
               }
               transition={{
-                duration: prefersReducedMotion ? 0.04 : 0.2,
-                ease: [0.22, 1, 0.36, 1],
+                type: "spring",
+                stiffness: 380,
+                damping: 30,
+                mass: 0.6,
               }}
             >
               <Suspense fallback={<RouteFallback />}>

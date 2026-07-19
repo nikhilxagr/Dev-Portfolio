@@ -22,6 +22,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Images,
+  SlidersHorizontal,
+  ChevronDown,
 } from "lucide-react";
 import SeoHead from "@/components/seo/SeoHead";
 import { createBreadcrumbSchema } from "@/utils/seo";
@@ -97,6 +99,25 @@ const journeyData = [
     icon: Shield,
     accent: "from-emerald-400 to-teal-600",
     tag: "Security",
+    details: {
+      university: "TryHackMe & Self-Learning",
+      course: "Hands-on Cyber Security Labs",
+      status: "Ongoing",
+      expectedGraduation: "N/A",
+      journeyTitle: "TryHackMe Journey Update",
+      overview: "Continuously developing and sharpening hands-on cyber security skills across both offensive and defensive disciplines, progressing from a student to a highly competent security professional. Solved 354 completed rooms with 24 badges earned, achieving a Lab Solve Rank of Top 1% (Global Rank: 10,818).",
+      objectives: "To continuously develop and sharpen hands-on cyber security skills across both offensive and defensive disciplines, progressing from a student to a highly competent security professional.",
+      outcomes: "Global Solve Rank: Top 1% (Global Rank: 10,818). Solved 354 completed rooms with 24 badges earned.",
+      areasOfStudy: [
+        "Core Fundamentals: Advanced networking theory, Linux terminal operations, and Windows file system/administration basics.",
+        "Web Exploitation: Understanding the full architecture of how websites work, DNS/HTTP protocols, and how to identify web vulnerabilities.",
+        "Offensive Security: Hands-on ethical hacking methodologies, penetration testing principles, and legal exploitation strategies.",
+        "Defensive Security: Incident response, Threat Intelligence, Security Operations Center (SOC) fundamentals, Digital Forensics (DFIR), Malware Analysis, and SIEM management."
+      ],
+      skills: ["Cybersecurity", "Offensive Security", "Defensive Security", "Web Exploitation", "Incident Response", "Malware Analysis", "Threat Intelligence", "Digital Forensics"],
+      technologies: ["Kali Linux", "Nmap", "Wireshark", "Burp Suite", "Metasploit", "Splunk", "CyberChef"],
+      gallery: ["/images/journey/tryhackme.png"]
+    }
   },
   {
     id: "cisco-ethical-hacker-2025",
@@ -106,7 +127,7 @@ const journeyData = [
     title: "Cisco Certified Ethical Hacker",
     subtitle: "Certification",
     organization: "Cisco",
-    duration: "2025",
+    duration: "2025-09",
     location: "Remote",
     description:
       "Earned Cisco Ethical Hacker certification covering network vulnerabilities, exploitation techniques, and responsible disclosure.",
@@ -179,25 +200,63 @@ const journeyData = [
     }
   },
   {
-    id: "launch-pad-startup-screening-2025",
-    year: 2025,
+    id: "launch-pad-startup-screening-2026",
+    year: 2026,
     category: "Startup Events",
     mode: "Offline",
     title: "Launch Pad Startup Screening",
     subtitle: "Startup Program",
     organization: "BBD University",
-    duration: "2025",
+    duration: "2026-01",
     location: "Lucknow, Uttar Pradesh",
     description:
-      "Selected for the Launch Pad Startup Screening Program — pitched an innovative tech product idea to industry mentors and venture scouts.",
+      "Selected for the Launch Pad Startup Screening Program at BBD University — pitched Task Nexus, a platform connecting gig workers with clients, to industry mentors and venture scouts.",
     imageUrl: "/journey/startup.webp",
     imageFit: "contain-dark",
+    gallery: [
+      "/journey/startup.webp",
+      "/images/journey/launch1.jpg",
+      "/images/journey/launch2.jpg",
+      "/images/journey/launch3.jpg",
+      "/images/journey/launch4.jpg",
+      "/images/journey/launch5.jpg",
+      "/images/journey/launch6.jpg",
+    ],
     hasCertificate: true,
-    certificateUrl: "/certificates/startup-screening.pdf",
-    detailsUrl: "#",
+    certificateUrl: "/journey/startup.webp",
     icon: Rocket,
     accent: "from-lime-400 to-green-600",
     tag: "Startup",
+    details: {
+      university: "BBD University, SOCA",
+      course: "Launch Pad Startup Screening",
+      status: "Completed",
+      expectedGraduation: "January 2026",
+      journeyTitle: "Task Nexus — Gig Economy Middleman Platform",
+      overview:
+        "Participated in BBD University's Launch Pad Startup Screening program held on 30th January 2026 at CA Block, SOCA. Pitched Task Nexus — a digital marketplace bridging the gap between gig workers and clients by providing a transparent, skill-verified, and escrow-protected task assignment platform.",
+      objectives:
+        "Design and present a scalable startup idea that solves a real-world employment gap in the gig economy. Demonstrate market research, technical feasibility, and a monetization model to industry mentors and venture scouts.",
+      outcomes:
+        "Successfully cleared the initial screening round, received mentor feedback on business model refinement, and earned a Certificate of Participation from the School of Computer Applications, BBD University.",
+      areasOfStudy: [
+        "Startup Ideation: Identifying market gaps in the gig economy and defining a problem-solution fit",
+        "Business Model: Subscription tiers, escrow payment flow, and platform commission structure",
+        "Product Design: User journey mapping for gig workers and clients on Task Nexus",
+        "Pitching Skills: Communicating the value proposition clearly within a limited time to non-technical judges",
+        "Market Research: Competitor analysis (Fiverr, Upwork) and differentiation strategy",
+      ],
+      skills: ["Startup Pitching", "Business Model Design", "Market Research", "Product Thinking", "Communication", "Entrepreneurship"],
+      technologies: ["Figma (UI Prototype)", "Google Slides", "Market Analysis Tools"],
+      gallery: [
+        "/journey/startup.webp",
+        "/images/journey/launch1.jpg",
+        "/images/journey/launch3.jpg",
+        "/images/journey/launch4.jpg",
+        "/images/journey/launch5.jpg",
+        "/images/journey/launch6.jpg",
+      ],
+    },
   },
 
   {
@@ -216,6 +275,7 @@ const journeyData = [
     imageFit: "cover",
     gallery: [
       "/images/journey/techx1.jpeg",
+      "/images/journey/Techx7.jpg",
       "/images/journey/techx2.jpeg",
       "/images/journey/techx3.jpeg",
       "/images/journey/techx4.jpeg",
@@ -223,11 +283,41 @@ const journeyData = [
       "/images/journey/techx6.jpeg",
     ],
     hasCertificate: true,
-    certificateUrl: "/certificates/techx26.pdf",
-    detailsUrl: "#",
+    certificateUrl: "https://drive.google.com/file/d/1cFR77Gv6aDqL4qnpzfpa2vo1soz931Xk/view?usp=sharing",
     icon: Code2,
     accent: "from-cyan-400 to-blue-600",
     tag: "Hackathon",
+    details: {
+      university: "BBD University",
+      course: "TechX26 Hackathon — 24-Hour Build Sprint",
+      status: "Completed",
+      expectedGraduation: "February 2026",
+      journeyTitle: "SmartMess — Hostel Mess Management Platform",
+      overview:
+        "Participated in TechX26, a 24-hour hackathon at BBD University. Built SmartMess — a full-stack web application that digitizes and streamlines hostel mess operations including meal tracking, attendance, feedback collection, and administrative reporting for hostel managers.",
+      objectives:
+        "Design and deploy a fully functional product within 24 hours that solves a real campus problem. Demonstrate technical depth, teamwork, and a working demo in front of a panel of industry judges and faculty.",
+      outcomes:
+        "Successfully presented a working prototype of SmartMess with live demo. Gained hands-on experience building under pressure, managing deployment pipelines rapidly, and communicating product value to a judging panel.",
+      areasOfStudy: [
+        "Full-Stack Development: Rapid API and frontend development with React and Node.js",
+        "Database Design: Relational data modeling for meal plans, attendance, and user roles",
+        "UI/UX Under Pressure: Designing intuitive admin and student dashboards within time constraints",
+        "Team Collaboration: Git-based coordination and task division in a live hackathon environment",
+        "Product Demo: Articulating technical implementation and business value to non-technical judges",
+      ],
+      skills: ["React", "Node.js", "MongoDB", "REST APIs", "UI/UX Design", "Team Collaboration", "Product Demo", "Problem Solving"],
+      technologies: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS", "Git"],
+      gallery: [
+        "/images/journey/techx1.jpeg",
+        "/images/journey/Techx7.jpg",
+        "/images/journey/techx2.jpeg",
+        "/images/journey/techx3.jpeg",
+        "/images/journey/techx4.jpeg",
+        "/images/journey/techx5.jpeg",
+        "/images/journey/techx6.jpeg",
+      ],
+    },
   },
   {
     id: "hackwithsmile-ctf-2026",
@@ -243,9 +333,17 @@ const journeyData = [
       "Participated in the HackWithSmile 2026 Cybersecurity Conference and competed in the live Capture The Flag (CTF) security challenge.",
     imageUrl: "/journey/hackwithsmile-ctf-cert.png",
     imageFit: "contain-dark",
+    gallery: [
+      "/journey/hackwithsmile-ctf-cert.png",
+      "/images/journey/HWS6.JPG",
+      "/images/journey/HWS1.jpeg",
+      "/images/journey/HWS2.jpg",
+      "/images/journey/HWS3.jpeg",
+      "/images/journey/HWS4.jpg",
+      "/images/journey/HWS5.jpg",
+    ],
     hasCertificate: true,
     certificateUrl: "https://drive.google.com/file/d/1OKngJ7O7qKgcvxfsZpIj_LuOuS__RULB/view?usp=sharing",
-    detailsUrl: "",
     icon: Trophy,
     accent: "from-purple-400 to-indigo-600",
     tag: "CTF Challenge",
@@ -265,7 +363,15 @@ const journeyData = [
       ],
       skills: ["Capture The Flag", "Analytical Thinking", "Cryptography", "Network Forensics", "Vulnerability Exploitation"],
       technologies: ["Kali Linux", "CyberChef", "Wireshark", "Burp Suite"],
-      gallery: ["/journey/hackwithsmile-ctf-cert.png"]
+      gallery: [
+        "/journey/hackwithsmile-ctf-cert.png",
+        "/images/journey/HWS6.JPG",
+        "/images/journey/HWS1.jpeg",
+        "/images/journey/HWS2.jpg",
+        "/images/journey/HWS3.jpeg",
+        "/images/journey/HWS4.jpg",
+        "/images/journey/HWS5.jpg",
+      ],
     }
   },
   {
@@ -284,7 +390,6 @@ const journeyData = [
     imageFit: "contain-dark",
     hasCertificate: true,
     certificateUrl: "https://drive.google.com/file/d/1xrqqWEp5qSzGH6TrQZAcRI7VfhLNh8dR/view?usp=sharing",
-    detailsUrl: "",
     icon: Award,
     accent: "from-teal-400 to-cyan-600",
     tag: "Masterclass",
@@ -308,42 +413,76 @@ const journeyData = [
     }
   },
   {
-    id: "android-nova-2026",
+    id: "top-1-percent-tryhackme-2026",
     year: 2026,
-    category: "Hackathons",
-    mode: "Offline",
-    title: "Android Nova 2.0 Participation",
-    subtitle: "Tech Event & Collaboration",
-    organization: "Android Lucknow & CIC",
-    duration: "2026",
-    location: "LPCPS, Lucknow",
+    category: "Achievements",
+    mode: "Online",
+    title: "Top 1% on TryHackMe",
+    subtitle: "Achievement",
+    organization: "TryHackMe",
+    duration: "2026-03",
+    location: "Remote",
     description:
-      "Actively participated in Android Nova 2.0, organized by Android Lucknow in collaboration with Cyber Intelligence Community (CIC).",
-    imageUrl: "/journey/android-nova-cert.jpg",
+      "Achieved Top 1% global ranking on TryHackMe with a 310+ day learning streak, completing rooms in pentesting, web security, and digital forensics.",
+    imageUrl: "/images/journey/top1-thm.png",
     imageFit: "contain-dark",
-    hasCertificate: true,
-    certificateUrl: "https://drive.google.com/file/d/1d__UiL6FYPGlbWf1zHwrFyURRqzkjRM6/view?usp=sharing",
-    detailsUrl: "",
+    hasCertificate: false,
+    certificateUrl: "",
+    detailsUrl: "https://tryhackme.com/",
+    icon: Star,
+    accent: "from-yellow-400 to-amber-600",
+    tag: "Achievement",
+  },
+  {
+    id: "product-builders-day-2026",
+    year: 2026,
+    category: "Workshops",
+    mode: "Offline",
+    title: "Learning Beyond Code at Product Builder's Day",
+    subtitle: "Workshops",
+    organization: "Google Developer Groups Lucknow",
+    duration: "March 28, 2026",
+    location: "Integral University, Lucknow, Uttar Pradesh",
+    description:
+      "A refreshing break from regular coding, focused on builder mindset, entrepreneurship, networking, and AI-powered systems.",
+    imageUrl: "/images/journey/Product1.jpeg",
+    imageFit: "cover",
+    gallery: [
+      "/images/journey/Product1.jpeg",
+      "/images/journey/Product2.jpeg",
+      "/images/journey/Product3.jpeg",
+      "/images/journey/Product4.jpeg",
+      "/images/journey/Product5.jpeg",
+    ],
+    hasCertificate: false,
+    certificateUrl: "",
     icon: Rocket,
-    accent: "from-lime-400 to-green-600",
-    tag: "Participation",
+    accent: "from-amber-400 to-orange-600",
+    tag: "Workshops",
     details: {
-      university: "LPCPS, Lucknow",
-      course: "Android Nova 2.0",
+      university: "Google Developer Groups Lucknow",
+      course: "Product Builder's Day",
       status: "Completed",
-      expectedGraduation: "2026",
-      journeyTitle: "Android Nova 2.0 Collaborative Event",
-      overview: "Participated in workshops and collaboration sprints during the Android Nova 2.0 developer gathering, learning mobile development and app security.",
-      objectives: "Engage with mobile development experts and implement Android app development best practices.",
-      outcomes: "Earned certificate of participation from Android Lucknow and Cyber Intelligence Community.",
+      expectedGraduation: "March 28, 2026",
+      journeyTitle: "Product Builder's Day at Integral University",
+      overview: "A refreshing break from regular coding, focused on builder mindset, entrepreneurship, networking, and AI-powered systems.",
+      objectives: "Focus on shifting mindset from developer to builder, learning entrepreneurship skills, and deploying AI-powered applications.",
+      outcomes: "Acquired hands-on exposure to Gemini Code Assist, established relationships with local developers, and learned practical business planning workflows.",
       areasOfStudy: [
-        "Android Ecosystem: Overview of mobile application frameworks and SDKs",
-        "App Security: Overview of reverse engineering and vulnerability scanning on mobile platforms",
-        "Collaborative Dev: Brainstorming ideas and designing responsive Android user interfaces"
+        "Developer-to-builder and founder mindset insights",
+        "Practical networking strategies for student developers",
+        "Future direction of AI-powered applications",
+        "Real-world implementation workshop with Gemini Code Assist"
       ],
-      skills: ["Android Development", "App Design", "Mobile Security", "Collaboration"],
-      technologies: ["Android SDK", "Java/Kotlin", "XML", "Git"],
-      gallery: ["/journey/android-nova-cert.jpg"]
+      skills: ["Generative AI", "Gemini Code Assist", "Networking", "Entrepreneurship", "System Design"],
+      technologies: ["Gemini API", "React", "Google Cloud Platform"],
+      gallery: [
+        "/images/journey/Product1.jpeg",
+        "/images/journey/Product2.jpeg",
+        "/images/journey/Product3.jpeg",
+        "/images/journey/Product4.jpeg",
+        "/images/journey/Product5.jpeg",
+      ]
     }
   },
   {
@@ -368,27 +507,6 @@ const journeyData = [
     tag: "Research",
   },
   {
-    id: "assocham-samarth-2026",
-    year: 2026,
-    category: "Internships",
-    mode: "Offline",
-    title: "ASSOCHAM SAMARTH 2.0 Internship",
-    subtitle: "Industry Internship",
-    organization: "ASSOCHAM UP-UK",
-    duration: "2026-06",
-    location: "Lucknow, Uttar Pradesh",
-    description:
-      "Selected for AICTE-supported SAMARTH 2.0 Industry Exposure Internship — gained real-world industry experience under ASSOCHAM guidance.",
-    imageUrl: "/images/journey/samarth-internship-cert.jpeg",
-    imageFit: "contain-dark",
-    hasCertificate: false,
-    certificateUrl: "",
-    detailsUrl: "https://www.assocham.org/",
-    icon: Briefcase,
-    accent: "from-teal-400 to-cyan-600",
-    tag: "Internship",
-  },
-  {
     id: "openai-ai-foundations-2026",
     year: 2026,
     category: "Certifications",
@@ -404,7 +522,6 @@ const journeyData = [
     imageFit: "contain-dark",
     hasCertificate: true,
     certificateUrl: "https://drive.google.com/file/d/1bZPYeVsI4lhTePoSWyH2DsibkQ2UiDVu/view?usp=sharing",
-    detailsUrl: "",
     icon: Cpu,
     accent: "from-emerald-400 to-green-600",
     tag: "AI Foundations",
@@ -429,48 +546,147 @@ const journeyData = [
     }
   },
   {
-    id: "top-1-percent-tryhackme-2026",
+    id: "assocham-samarth-2026",
     year: 2026,
-    category: "Achievements",
-    mode: "Online",
-    title: "Top 1% on TryHackMe",
-    subtitle: "Achievement",
-    organization: "TryHackMe",
-    duration: "2026",
-    location: "Remote",
+    category: "Internships",
+    mode: "Offline",
+    title: "ASSOCHAM SAMARTH 2.0 Internship",
+    subtitle: "Industry Internship",
+    organization: "ASSOCHAM UP-UK",
+    duration: "1 June - 15 July 2026",
+    location: "Lucknow, Uttar Pradesh",
     description:
-      "Achieved Top 1% global ranking on TryHackMe with a 310+ day learning streak, completing rooms in pentesting, web security, and digital forensics.",
-    imageUrl: "/images/journey/top1-thm.png",
-    imageFit: "contain-dark",
-    hasCertificate: false,
-    certificateUrl: "",
-    detailsUrl: "https://tryhackme.com/",
-    icon: Star,
-    accent: "from-yellow-400 to-amber-600",
-    tag: "Achievement",
+      "Selected for AICTE-supported SAMARTH 2.0 Industry Exposure Internship — gained real-world industry experience under ASSOCHAM guidance.",
+    imageUrl: "/images/journey/Certi1.jpeg",
+    imageFit: "cover",
+    gallery: [
+      "/images/journey/Certi1.jpeg",
+      "/images/journey/samarth-internship-cert.jpeg",
+      "/images/journey/Cert2.jpeg",
+      "/images/journey/Cert3.jpeg",
+    ],
+    hasCertificate: true,
+    certificateUrl: "/images/journey/samarth-internship-cert.jpeg",
+    icon: Briefcase,
+    accent: "from-teal-400 to-cyan-600",
+    tag: "Internship",
+    details: {
+      university: "ASSOCHAM UP-UK",
+      course: "SAMARTH 2.0 Internship",
+      status: "Completed",
+      expectedGraduation: "June 2026",
+      journeyTitle: "SAMARTH 2.0 Industry Exposure Program",
+      overview: "Selected for the AICTE-supported SAMARTH 2.0 Industry Exposure Internship. Gained direct insights into trade organization operations, industrial policy advocacy, regional business development ecosystems, and corporate compliance frameworks.",
+      objectives: "Understand how trade bodies facilitate regional business growth, connect enterprises with academic initiatives, and drive digital compliance policies.",
+      outcomes: "Completed the internship program, participated in trade organization workshops, and earned an internship completion certificate from ASSOCHAM.",
+      areasOfStudy: [
+        "Trade Body Operations: Internal functioning of trade councils and industrial coordination",
+        "Policy Advocacy: How industrial policies are formulated, reviewed, and recommended to government bodies",
+        "Enterprise Digitalization: Exposure to technology integration and compliance across regional MSMEs"
+      ],
+      skills: ["Industry Exposure", "Policy Advocacy", "Corporate Communication", "Digital Compliance", "Business Networking"],
+      technologies: ["Office Suite", "Collaboration Tools", "CRM Platforms"],
+      gallery: [
+        "/images/journey/Certi1.jpeg",
+        "/images/journey/samarth-internship-cert.jpeg",
+        "/images/journey/Cert2.jpeg",
+        "/images/journey/Cert3.jpeg",
+      ],
+    }
+  },
+  {
+    id: "android-nova-2026",
+    year: 2026,
+    category: "Hackathons",
+    mode: "Offline",
+    title: "Android Nova 2.0 Participation",
+    subtitle: "Tech Event & Collaboration",
+    organization: "Android Lucknow & CIC",
+    duration: "17 July 2026",
+    location: "LPCPS, Lucknow",
+    description:
+      "Actively participated in Android Nova 2.0, organized by Android Lucknow in collaboration with Cyber Intelligence Community (CIC).",
+    imageUrl: "/images/journey/Android2.jpeg",
+    imageFit: "cover",
+    gallery: [
+      "/images/journey/Android2.jpeg",
+      "/images/journey/Android1.png",
+      "/images/journey/Android3.jpeg",
+      "/images/journey/Android4.jpg",
+      "/images/journey/Android5.jpg",
+      "/images/journey/Android6.jpg",
+    ],
+    hasCertificate: true,
+    certificateUrl: "https://drive.google.com/file/d/1d__UiL6FYPGlbWf1zHwrFyURRqzkjRM6/view?usp=sharing",
+    icon: Rocket,
+    accent: "from-lime-400 to-green-600",
+    tag: "Participation",
+    details: {
+      university: "LPCPS, Lucknow",
+      course: "Android Nova 2.0",
+      status: "Completed",
+      expectedGraduation: "2026",
+      journeyTitle: "Android Nova 2.0 Collaborative Event",
+      overview: "Participated in workshops and collaboration sprints during the Android Nova 2.0 developer gathering, learning mobile development and app security.",
+      objectives: "Engage with mobile development experts and implement Android app development best practices.",
+      outcomes: "Earned certificate of participation from Android Lucknow and Cyber Intelligence Community.",
+      areasOfStudy: [
+        "Android Ecosystem: Overview of mobile application frameworks and SDKs",
+        "App Security: Overview of reverse engineering and vulnerability scanning on mobile platforms",
+        "Collaborative Dev: Brainstorming ideas and designing responsive Android user interfaces"
+      ],
+      skills: ["Android Development", "App Design", "Mobile Security", "Collaboration"],
+      technologies: ["Android SDK", "Java/Kotlin", "XML", "Git"],
+      gallery: [
+        "/images/journey/Android2.jpeg",
+        "/images/journey/Android1.png",
+        "/images/journey/Android3.jpeg",
+        "/images/journey/Android4.jpg",
+        "/images/journey/Android5.jpg",
+        "/images/journey/Android6.jpg",
+      ],
+    }
   },
 ];
 
 const filterGroups = [
   "All",
-  "Academic Programs",
+  "Education",
   "Internships",
-  "Certifications",
+  "Workshops",
   "Hackathons",
+  "Academic Programs",
+  "Conferences",
+  "Certifications",
   "Startup Events",
-  "Open Source",
-  "Experience",
-  "Achievements",
 ];
 
-const formatLabel = (value = "") =>
-  value
-    .split("-")
-    .filter(Boolean)
-    .map((part) =>
-      isNaN(part) ? part.charAt(0).toUpperCase() + part.slice(1) : part
-    )
-    .join(" ");
+const formatLabel = (value = "") => {
+  if (!value) return "";
+  const parts = value.split("-");
+  if (parts.length === 2) {
+    const year = parts[0];
+    const month = parts[1];
+    const months = {
+      "01": "January",
+      "02": "February",
+      "03": "March",
+      "04": "April",
+      "05": "May",
+      "06": "June",
+      "07": "July",
+      "08": "August",
+      "09": "September",
+      "10": "October",
+      "11": "November",
+      "12": "December",
+    };
+    if (months[month]) {
+      return `${months[month]} ${year}`;
+    }
+  }
+  return value;
+};
 
 /* ─────────────────────────────────────────────
    FIXED LEFT YEAR NAVIGATOR
@@ -479,7 +695,7 @@ const formatLabel = (value = "") =>
    on click, highlights active year on scroll.
 ───────────────────────────────────────────── */
 const FixedYearNav = ({ years, activeYear, onYearClick }) => (
-  <div className="fixed left-6 top-1/2 z-50 hidden -translate-y-1/2 xl:flex xl:flex-col xl:items-center">
+  <div className="fixed right-6 top-1/2 z-50 hidden -translate-y-1/2 xl:flex xl:flex-col xl:items-center">
     {/* Capsule container */}
     <div className="flex flex-col items-center gap-1 rounded-[2rem] border border-white/10 bg-zinc-950/95 px-3 py-4 shadow-[0_8px_48px_rgba(0,0,0,0.8)] backdrop-blur-xl">
       {/* Label */}
@@ -872,7 +1088,7 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
               {isExpanded ? (
                 <><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg> Hide Details</>
               ) : (
-                <><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg> Details</>
+                <><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg> View Details</>
               )}
             </button>
           )}
@@ -880,6 +1096,8 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
           {event.hasCertificate && (
             <a
               href={event.certificateUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-emerald-300 transition-all hover:border-emerald-400/60 hover:bg-emerald-400/20"
             >
               <FileBadge size={11} />
@@ -912,56 +1130,145 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
 /* ─────────────────────────────────────────────
    GRID CARD (compact)
  ───────────────────────────────────────────── */
-const GridCard = ({ event }) => {
+const GridCard = ({ event, isExpanded, onToggle }) => {
   const Icon = event.icon || Award;
+  const hasDetails = Boolean(event.details);
+  const hasGallery = event.gallery?.length > 0;
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-5% 0px -5% 0px" }}
-      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative overflow-hidden rounded-[1.4rem] border border-white/[0.07] bg-zinc-900/60 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-sm transition-all duration-500 hover:border-white/[0.14] hover:-translate-y-1"
-    >
-      <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${event.accent}`} />
-      <div className="relative h-48 overflow-hidden bg-zinc-800">
-        <img
-          src={event.imageUrl}
-          alt={event.title}
-          className={`h-full w-full transition-transform duration-700 group-hover:scale-105 ${
-            event.imageFit === "contain"
-              ? "object-contain p-4 bg-white"
-              : event.imageFit === "contain-dark"
-              ? "object-contain p-4 bg-zinc-950/80"
-              : "object-cover"
-          }`}
-          loading="lazy"
-          onError={(e) => { e.currentTarget.style.display = "none"; }}
+    <>
+      {/* Gallery lightbox portal */}
+      {lightboxOpen && hasGallery && (
+        <GalleryLightbox
+          images={event.gallery}
+          startIndex={0}
+          onClose={() => setLightboxOpen(false)}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/70 to-transparent" />
-        <span className={`absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r ${event.accent} px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-black`}>
-          <Icon size={9} />
-          {event.tag}
-        </span>
-      </div>
-      <div className="p-4">
-        <p className="mb-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-zinc-500">{event.year}</p>
-        <h3 className="text-sm font-bold leading-snug text-white">{event.title}</h3>
-        <p className={`mt-0.5 bg-gradient-to-r ${event.accent} bg-clip-text text-[10px] font-semibold uppercase tracking-wider text-transparent`}>
-          {event.organization}
-        </p>
-        <p className="mt-2 line-clamp-2 text-[11px] leading-5 text-zinc-400">{event.description}</p>
-        <div className="mt-3 flex gap-2">
-          {event.hasCertificate && (
-            <a
-              href={event.certificateUrl || "#"}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300"
-            >
-              <FileBadge size={9} /> Cert
-            </a>
+      )}
+
+      <motion.article
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-5% 0px -5% 0px" }}
+        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        className="group relative flex flex-col overflow-hidden rounded-[1.4rem] border border-white/[0.07] bg-zinc-900/60 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-sm transition-all duration-500 hover:border-white/[0.14] hover:-translate-y-1"
+      >
+        <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${event.accent} opacity-80`} />
+        
+        {/* Image wrapper */}
+        <div
+          className={`relative h-48 overflow-hidden bg-zinc-800 ${hasGallery ? "cursor-pointer" : ""}`}
+          onClick={hasGallery ? () => setLightboxOpen(true) : undefined}
+        >
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className={`h-full w-full transition-transform duration-700 group-hover:scale-105 ${
+              event.imageFit === "contain"
+                ? "object-contain p-4 bg-white"
+                : event.imageFit === "contain-dark"
+                ? "object-contain p-4 bg-zinc-950/80"
+                : "object-cover"
+            }`}
+            loading="lazy"
+            onError={(e) => { e.currentTarget.style.display = "none"; }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/70 to-transparent" />
+
+          {/* Gallery hover overlay */}
+          {hasGallery && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/50">
+              <span className="flex translate-y-2 items-center gap-1.5 rounded-full border border-lime-300 bg-black/70 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-lime-300 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                <Images size={11} />
+                View Gallery
+              </span>
+            </div>
+          )}
+
+          {/* Photo count badge */}
+          {hasGallery && (
+            <div className="absolute right-3 top-3">
+              <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-black/60 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white/90 backdrop-blur-sm">
+                <Camera size={9} className="text-lime-300" />
+                +{event.gallery.length} Photos
+              </span>
+            </div>
+          )}
+
+          <span className={`absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-gradient-to-r ${event.accent} px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-black`}>
+            <Icon size={9} />
+            {event.tag}
+          </span>
+          
+          {/* Mode badge — only show when no gallery */}
+          {!hasGallery && (
+            <div className="absolute right-3 top-3">
+              <span className="inline-flex items-center rounded-full border border-white/20 bg-black/40 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur-sm">
+                {event.mode}
+              </span>
+            </div>
           )}
         </div>
-      </div>
-    </motion.article>
+
+        {/* Content */}
+        <div className="flex-1 p-4">
+          <p className="mb-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-zinc-500">{formatLabel(event.duration)}</p>
+          <h3 className="text-sm font-bold leading-snug text-white">{event.title}</h3>
+          <p className={`mt-0.5 bg-gradient-to-r ${event.accent} bg-clip-text text-[10px] font-semibold uppercase tracking-wider text-transparent`}>
+            {event.organization}
+          </p>
+          <p className="mt-2 text-[11.5px] leading-5 text-zinc-400">{event.description}</p>
+          
+          {/* Actions */}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            {/* Details toggle button */}
+            {hasDetails && (
+              <button
+                type="button"
+                onClick={onToggle}
+                className={`inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r ${event.accent} px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-black transition-all hover:opacity-90`}
+              >
+                {isExpanded ? (
+                  <><svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg> Hide Details</>
+                ) : (
+                  <><svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg> View Details</>
+                )}
+              </button>
+            )}
+
+            {/* Certificate link */}
+            {event.hasCertificate && (
+              <a
+                href={event.certificateUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300 transition-all hover:border-emerald-400/60 hover:bg-emerald-400/20"
+              >
+                <FileBadge size={9} />
+                Certificate
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Inline details panel */}
+        <AnimatePresence>
+          {isExpanded && event.details && (
+            <motion.div
+              key="details"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              style={{ overflow: "hidden" }}
+            >
+              <DetailsPanel d={event.details} accent={event.accent} imageUrl={event.imageUrl} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.article>
+    </>
   );
 };
 
@@ -997,10 +1304,21 @@ const JourneyPage = () => {
   const [view, setView] = useState("timeline");
   const [activeYear, setActiveYear] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
+  const [showFloatingNav, setShowFloatingNav] = useState(false);
+  const [showCategoryFilters, setShowCategoryFilters] = useState(true);
   const isScrollingLocked = useRef(false);
 
   const toggleExpand = useCallback((id) => {
     setExpandedId((prev) => (prev === id ? null : id));
+  }, []);
+
+  const statsSummary = useMemo(() => {
+    const totalExperiences = journeyData.length;
+    const internships = journeyData.filter((e) => e.category === "Internships").length;
+    const workshops = journeyData.filter((e) => e.category === "Workshops" || e.category === "Startup Events").length;
+    const certifications = journeyData.filter((e) => e.category === "Certifications").length;
+    const conferences = journeyData.filter((e) => e.category === "Hackathons").length;
+    return { totalExperiences, internships, workshops, certifications, conferences };
   }, []);
 
   /* ── Derived data ── */
@@ -1008,7 +1326,10 @@ const JourneyPage = () => {
     const keyword = search.trim().toLowerCase();
     return journeyData.filter((event) => {
       const matchesCategory =
-        activeFilter === "All" || event.category === activeFilter;
+        activeFilter === "All" ||
+        event.category === activeFilter ||
+        (activeFilter === "Education" && event.category === "Academic Programs") ||
+        (activeFilter === "Conferences" && event.category === "Hackathons");
       if (!keyword) return matchesCategory;
       const searchable =
         `${event.title} ${event.organization} ${event.description} ${event.location} ${event.year} ${event.category}`.toLowerCase();
@@ -1106,14 +1427,20 @@ const JourneyPage = () => {
     }
   }, [allYears, activeYear]);
 
-  /* ── Page-top reset ── */
+  /* ── Page-top reset & Nav Visibility ── */
   useEffect(() => {
     const onScroll = () => {
       if (window.scrollY < 150 && allYears.length > 0) {
         setActiveYear(allYears[0]);
       }
+      if (window.scrollY > 300) {
+        setShowFloatingNav(true);
+      } else {
+        setShowFloatingNav(false);
+      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, [allYears]);
 
@@ -1140,7 +1467,7 @@ const JourneyPage = () => {
           FIXED LEFT YEAR NAVIGATION ISLAND
           Always centered on left of screen
       ══════════════════════════════════════ */}
-      {view === "timeline" && (
+      {view === "timeline" && (showFloatingNav || search.trim() !== "") && (
         <FixedYearNav
           years={allYears}
           activeYear={activeYear}
@@ -1158,15 +1485,15 @@ const JourneyPage = () => {
           <div className="absolute right-1/3 top-2/3 h-72 w-72 translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/5 blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-4xl px-6 text-center">
+        <div className="relative mx-auto max-w-5xl px-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-300/20 bg-lime-300/[0.06] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-lime-300">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-300/20 bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-300">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-300" />
-              Professional Journey
+              Professional Growth
             </span>
           </motion.div>
 
@@ -1174,15 +1501,12 @@ const JourneyPage = () => {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.1 }}
-            className="mt-4 font-display text-4xl font-black leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl"
+            className="mt-4 font-display text-5xl font-black leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-8xl"
           >
-            From{" "}
-            <span className="bg-gradient-to-r from-lime-300 via-emerald-300 to-cyan-300 bg-clip-text text-transparent">
-              Student
-            </span>{" "}
-            to{" "}
-            <span className="bg-gradient-to-r from-cyan-300 via-blue-300 to-violet-300 bg-clip-text text-transparent">
-              Builder
+            PROFESSIONAL
+            <br />
+            <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
+              JOURNEY
             </span>
           </motion.h1>
 
@@ -1190,32 +1514,60 @@ const JourneyPage = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.2 }}
-            className="mx-auto mt-6 max-w-2xl text-base leading-8 text-zinc-400 sm:text-lg"
+            className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-zinc-400 sm:text-base"
           >
-            A living record of education, certifications, internships,
-            hackathons, and real-world security research — built one milestone
-            at a time.
+            A timeline of my learning, internships, workshops, hackathons, certifications, and technical experiences that shaped my journey as a Full-Stack Web Developer and Cybersecurity Researcher.
           </motion.p>
 
-          {/* Stats */}
+          {/* Core Stats Capsule */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.32 }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-8"
+            transition={{ duration: 0.65, delay: 0.3 }}
+            className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-white/[0.08] bg-zinc-950/40 p-6 backdrop-blur-xl"
+          >
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:divide-x md:divide-white/[0.08]">
+              {[
+                { label: "Started Journey", value: "2024", color: "text-white" },
+                { label: "Current Year", value: "2026", color: "text-lime-300" },
+                { label: "Learning Span", value: "3 Years", color: "text-white" },
+                { label: "Active Status", value: "LEARNING & BUILDING", color: "text-amber-500" },
+              ].map(({ label, value, color }, i) => (
+                <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 mb-1">
+                    {label}
+                  </span>
+                  <span className={`text-xl font-black tracking-tight ${color}`}>
+                    {value}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Category Counters Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.4 }}
+            className="mx-auto mt-6 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-5"
           >
             {[
-              { label: "Since", value: "2024" },
-              { label: "Milestones", value: `${journeyData.length}+` },
-              { label: "Certifications", value: "4" },
-              { label: "THM Rank", value: "Top 1%" },
+              { label: "Total Milestones", value: statsSummary.totalExperiences },
+              { label: "Internships", value: statsSummary.internships },
+              { label: "Workshops & Events", value: statsSummary.workshops },
+              { label: "Certifications", value: statsSummary.certifications },
+              { label: "Hackathons & CTFs", value: statsSummary.conferences },
             ].map(({ label, value }) => (
-              <div key={label} className="flex flex-col items-center gap-0.5">
-                <span className="text-2xl font-black text-white sm:text-3xl">
-                  {value}
-                </span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+              <div
+                key={label}
+                className="flex flex-col justify-between rounded-2xl border border-white/[0.06] bg-zinc-900/30 p-4 text-left transition-all duration-300 hover:border-white/[0.12] hover:bg-zinc-900/50"
+              >
+                <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-zinc-500 leading-snug">
                   {label}
+                </span>
+                <span className="mt-4 text-3xl font-black text-white leading-none">
+                  {value}
                 </span>
               </div>
             ))}
@@ -1226,27 +1578,51 @@ const JourneyPage = () => {
       {/* ══════════════════════════════════════
           CONTROLS BAR
       ══════════════════════════════════════ */}
+      {/* ══════════════════════════════════════
+          CONTROLS BAR
+      ══════════════════════════════════════ */}
       <section className="section-wrap border-b border-white/[0.05] pb-6">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
           >
-            {/* Search */}
-            <label className="relative flex-1 sm:max-w-sm">
-              <Search
-                size={15}
-                className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-zinc-500"
-              />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search milestones…"
-                className="w-full rounded-2xl border border-white/[0.08] bg-zinc-900/80 py-2.5 pr-4 pl-10 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 transition-all focus:border-lime-300/40 focus:ring-1 focus:ring-lime-300/20"
-              />
-            </label>
+            {/* Search + Filters row */}
+            <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+              {/* Search input */}
+              <label className="relative flex-1">
+                <Search
+                  size={15}
+                  className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-zinc-500"
+                />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search by title, organization, skill, or year..."
+                  className="w-full rounded-2xl border border-white/[0.08] bg-zinc-900/80 py-2.5 pr-4 pl-10 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 transition-all focus:border-lime-300/40 focus:ring-1 focus:ring-lime-300/20"
+                />
+              </label>
+
+              {/* Filters toggle button */}
+              <button
+                type="button"
+                onClick={() => setShowCategoryFilters(!showCategoryFilters)}
+                className={`inline-flex items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 ${
+                  showCategoryFilters
+                    ? "border-lime-300 bg-lime-300/10 text-lime-300"
+                    : "border-white/[0.08] bg-zinc-900/60 text-zinc-300 hover:border-white/[0.15] hover:text-white"
+                }`}
+              >
+                <SlidersHorizontal size={13} />
+                Filters
+                <ChevronDown
+                  size={12}
+                  className={`transition-transform duration-300 ${showCategoryFilters ? "rotate-180" : ""}`}
+                />
+              </button>
+            </div>
 
             {/* View toggle */}
             <div className="inline-flex items-center gap-1 rounded-2xl border border-white/[0.08] bg-zinc-900/60 p-1">
@@ -1272,28 +1648,33 @@ const JourneyPage = () => {
           </motion.div>
 
           {/* Filter pills */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="mt-4 flex gap-2 overflow-x-auto pb-1"
-            style={{ scrollbarWidth: "none" }}
-          >
-            {filterGroups.map((item) => (
-              <button
-                key={item}
-                type="button"
-                onClick={() => setActiveFilter(item)}
-                className={`shrink-0 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] transition-all duration-300 ${
-                  activeFilter === item
-                    ? "border-lime-300 bg-lime-300 text-black shadow-[0_0_10px_rgba(163,230,53,0.2)]"
-                    : "border-white/[0.07] bg-zinc-900/60 text-zinc-400 hover:border-white/[0.15] hover:text-zinc-200"
-                }`}
+          <AnimatePresence>
+            {showCategoryFilters && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mt-4 flex gap-2 overflow-x-auto pb-1"
+                style={{ scrollbarWidth: "none", overflow: "hidden" }}
               >
-                {item}
-              </button>
-            ))}
-          </motion.div>
+                {filterGroups.map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setActiveFilter(item)}
+                    className={`shrink-0 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] transition-all duration-300 ${
+                      activeFilter === item
+                        ? "border-lime-300 bg-lime-300 text-black shadow-[0_0_10px_rgba(163,230,53,0.2)]"
+                        : "border-white/[0.07] bg-zinc-900/60 text-zinc-400 hover:border-white/[0.15] hover:text-zinc-200"
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
@@ -1353,7 +1734,12 @@ const JourneyPage = () => {
                   </div>
                 ) : (
                   filteredData.map((event) => (
-                    <GridCard key={event.id} event={event} />
+                    <GridCard
+                      key={event.id}
+                      event={event}
+                      isExpanded={expandedId === event.id}
+                      onToggle={() => toggleExpand(event.id)}
+                    />
                   ))
                 )}
               </motion.div>
