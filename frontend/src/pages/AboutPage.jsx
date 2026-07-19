@@ -11,6 +11,7 @@ import {
   SITE_PROFILE,
   STATS_METRICS,
 } from "@/constants/siteData";
+import { useTheme } from "@/context/ThemeContext";
 
 const aboutIdentityPoints = [
   `Education: ${SITE_PROFILE.education}`,
@@ -46,7 +47,24 @@ const aboutCurrentDirection = [
 ];
 
 const AboutPage = () => {
+  const { isDark } = useTheme();
   const conciseStory = ABOUT_STORY.slice(0, 3);
+
+  const githubUsername =
+    QUICK_CONTACT.github.split("/").filter(Boolean).pop() || "nikhilxagr";
+  const leetcodeUsername =
+    QUICK_CONTACT.leetcode.split("/").filter(Boolean).pop() || "nikhilxagr";
+  const tryHackMeUsername =
+    QUICK_CONTACT.tryhackme.split("/").filter(Boolean).pop() || "nikhilxagr";
+  const tryHackMeMetric = STATS_METRICS.find((item) => item.id === "tryhackme");
+
+  const githubStreakCardUrl = `https://streak-stats.demolab.com/?user=${githubUsername}&theme=${
+    isDark ? "algolia" : "default"
+  }&hide_border=true`;
+  const leetcodeCardUrl = `https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=${
+    isDark ? "dark" : "light"
+  }&ext=heatmap`;
+  const tryHackMeCardUrl = `https://tryhackme-badges.s3.amazonaws.com/${tryHackMeUsername}.png`;
 
   return (
     <>
@@ -308,6 +326,105 @@ const AboutPage = () => {
             </div>
           </FadeInUp>
         </div>
+      </section>
+
+      {/* Coding Consistency Showcase */}
+      <section className="section-wrap section-divider pt-10 pb-16 sm:pb-20">
+        <FadeInUp className="card-surface rounded-3xl p-6 sm:p-8">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-bold text-cyan-100 sm:text-4xl">
+              Coding Consistency Showcase
+            </h2>
+            <p className="mt-2 text-sm text-slate-300">Live profile cards</p>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
+                  GitHub Streak
+                </h3>
+                <a
+                  href={QUICK_CONTACT.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={githubStreakCardUrl}
+                  alt={`GitHub streak stats for ${githubUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
+
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
+                  LeetCode Stats
+                </h3>
+                <a
+                  href={QUICK_CONTACT.leetcode}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={leetcodeCardUrl}
+                  alt={`LeetCode stats for ${leetcodeUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
+
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5 md:col-span-2 xl:col-span-1">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
+                  TryHackMe Proof
+                </h3>
+                <a
+                  href={QUICK_CONTACT.tryhackme}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="mb-3 inline-flex rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-100">
+                {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={tryHackMeCardUrl}
+                  alt={`TryHackMe badge for ${tryHackMeUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
+          </div>
+        </FadeInUp>
       </section>
     </>
   );

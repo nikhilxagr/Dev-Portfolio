@@ -152,6 +152,39 @@ const servicePreviewSummaryMap = {
     "Responsive frontend delivery with clean layouts, reusable components, and user-friendly flow.",
 };
 
+const homeFeaturedJourney = [
+  {
+    id: "android-nova-2026",
+    title: "Android Nova 2.0",
+    category: "WORKSHOPS",
+    date: "July 17, 2026",
+    subtitle: "// Cyber Intelligence Community Lucknow",
+    description: "Attended Android Nova 2.0 today, and it was an amazing experience! Great to learn about Android Development, AI, and future technologies, while connecting with passionate developers and tech enthusiasts.",
+    imageUrl: "/images/journey/Android2.jpeg",
+    tags: ["Android Development", "AI", "Mobile Development"]
+  },
+  {
+    id: "assocham-samarth-2026",
+    title: "SAMARTH INTERNSHIP 2.0",
+    category: "INTERNSHIPS",
+    date: "June 1, 2026 - July 15, 2026",
+    subtitle: "// AKTU Labs & CSIR-CDRI",
+    description: "Successfully completed the Samarth 2.0 Internship, a comprehensive industrial program involving visits and technical evaluations at premier institutions like CSIR-CDRI, AKTU Labs, and others.",
+    imageUrl: "/images/journey/Certi1.jpeg",
+    tags: ["Industrial Workflows", "Research & Analysis", "System Engineering"]
+  },
+  {
+    id: "techx26-hackathon-2026",
+    title: "TechX26 Hackathon",
+    category: "HACKATHONS",
+    date: "February 2026",
+    subtitle: "// BBD University",
+    description: "Competed in TechX26 Hackathon — built SmartMess, a smart hostel mess management platform designed to streamline meal tracking, feedback, attendance, and administrative operations, under 24 hours.",
+    imageUrl: "/images/journey/techx1.jpeg",
+    tags: ["React", "Node.js", "Hackathon", "MongoDB"]
+  }
+];
+
 const HomePage = () => {
   const [featuredProjects, setFeaturedProjects] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
@@ -360,137 +393,9 @@ const HomePage = () => {
             </div>
           </div>
         </FadeInUp>
-
-        <div className="mt-10 flex items-end justify-between gap-4 sm:mt-12">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
-              Public Learning Progress
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold text-cyan-100 sm:text-3xl">
-              Consistent Improvement, Visible Metrics
-            </h2>
-          </div>
-        </div>
-
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {homePublicMetrics.map((item) => (
-            <a
-              key={item.id}
-              href={item.link}
-              target="_blank"
-              rel="noreferrer"
-              className="card-surface rounded-2xl p-5 transition hover:-translate-y-1"
-            >
-              <p className="font-display text-3xl font-bold text-cyan-100">
-                {item.value}
-              </p>
-              <p className="mt-2 text-sm font-medium text-slate-200">
-                {item.label}
-              </p>
-              <p className="mt-1 text-xs uppercase tracking-[0.15em] text-slate-500">
-                {item.detail}
-              </p>
-            </a>
-          ))}
-        </div>
-
-        <FadeInUp className="mt-10 card-surface rounded-3xl p-6 sm:mt-12 sm:p-8">
-          <div className="text-center">
-            <h2 className="font-display text-3xl font-bold text-cyan-100 sm:text-4xl">
-              Coding Consistency Showcase
-            </h2>
-            <p className="mt-2 text-sm text-slate-300">Live profile cards</p>
-          </div>
-
-          <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
-            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
-                  GitHub Streak
-                </h3>
-                <a
-                  href={QUICK_CONTACT.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
-                >
-                  Open ↗
-                </a>
-              </div>
-
-              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
-                <img
-                  src={githubStreakCardUrl}
-                  alt={`GitHub streak stats for ${githubUsername}`}
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </article>
-
-            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
-                  LeetCode Stats
-                </h3>
-                <a
-                  href={QUICK_CONTACT.leetcode}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
-                >
-                  Open ↗
-                </a>
-              </div>
-
-              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
-                <img
-                  src={leetcodeCardUrl}
-                  alt={`LeetCode stats for ${leetcodeUsername}`}
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </article>
-
-            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5 md:col-span-2 xl:col-span-1">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
-                  TryHackMe Proof
-                </h3>
-                <a
-                  href={QUICK_CONTACT.tryhackme}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
-                >
-                  Open ↗
-                </a>
-              </div>
-
-              <div className="mb-3 inline-flex rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-100">
-                {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
-              </div>
-
-              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
-                <img
-                  src={tryHackMeCardUrl}
-                  alt={`TryHackMe badge for ${tryHackMeUsername}`}
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </article>
-          </div>
-        </FadeInUp>
       </section>
 
+      {/* --- Section 2: Professional Profile (Background and Capabilities) --- */}
       <section className="section-wrap section-divider pt-8 sm:pt-10">
         <FadeInUp className={homePremiumShellClass}>
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_14%,rgba(34,211,238,0.16),transparent_36%),radial-gradient(circle_at_84%_82%,rgba(16,185,129,0.12),transparent_42%)]" />
@@ -617,6 +522,138 @@ const HomePage = () => {
             >
               Connect With Me
             </Button>
+          </div>
+        </FadeInUp>
+      </section>
+
+      {/* --- Section 3: Public Learning Progress (Consistent Improvement, Visible Metrics) --- */}
+      <section className="section-wrap section-divider pt-10">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
+              Public Learning Progress
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold text-cyan-100 sm:text-3xl">
+              Consistent Improvement, Visible Metrics
+            </h2>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {homePublicMetrics.map((item) => (
+            <a
+              key={item.id}
+              href={item.link}
+              target="_blank"
+              rel="noreferrer"
+              className="card-surface rounded-2xl p-5 transition hover:-translate-y-1"
+            >
+              <p className="font-display text-3xl font-bold text-cyan-100">
+                {item.value}
+              </p>
+              <p className="mt-2 text-sm font-medium text-slate-200">
+                {item.label}
+              </p>
+              <p className="mt-1 text-xs uppercase tracking-[0.15em] text-slate-500">
+                {item.detail}
+              </p>
+            </a>
+          ))}
+        </div>
+
+        <FadeInUp className="mt-10 card-surface rounded-3xl p-6 sm:mt-12 sm:p-8">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-bold text-cyan-100 sm:text-4xl">
+              Coding Consistency Showcase
+            </h2>
+            <p className="mt-2 text-sm text-slate-300">Live profile cards</p>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
+                  GitHub Streak
+                </h3>
+                <a
+                  href={QUICK_CONTACT.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={githubStreakCardUrl}
+                  alt={`GitHub streak stats for ${githubUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
+
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
+                  LeetCode Stats
+                </h3>
+                <a
+                  href={QUICK_CONTACT.leetcode}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={leetcodeCardUrl}
+                  alt={`LeetCode stats for ${leetcodeUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
+
+            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5 md:col-span-2 xl:col-span-1">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
+                  TryHackMe Proof
+                </h3>
+                <a
+                  href={QUICK_CONTACT.tryhackme}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                >
+                  Open ↗
+                </a>
+              </div>
+
+              <div className="mb-3 inline-flex rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-100">
+                {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
+              </div>
+
+              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+                <img
+                  src={tryHackMeCardUrl}
+                  alt={`TryHackMe badge for ${tryHackMeUsername}`}
+                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </article>
           </div>
         </FadeInUp>
       </section>
@@ -968,6 +1005,80 @@ const HomePage = () => {
               message="Featured work will appear here as soon as projects are marked as featured."
             />
           ) : null}
+        </div>
+      </section>
+
+      {/* Professional Journey Section */}
+      <section className="section-wrap section-divider pt-10 pb-16 sm:pb-20">
+        <div className="text-center">
+          <p className="font-display text-xs uppercase tracking-[0.28em] text-emerald-600 dark:text-emerald-300">
+            Professional Growth
+          </p>
+          <h2 className="mt-2 font-display text-3xl font-bold tracking-[0.1em] text-zinc-900 dark:text-cyan-100 sm:text-4xl uppercase">
+            Professional Journey
+          </h2>
+          <p className="mx-auto mt-3 max-w-3xl text-sm text-zinc-600 dark:text-slate-300 leading-relaxed">
+            Explore my experiences beyond projects and blogs, including internships, workshops, hackathons, certifications, industrial visits, and technical events.
+          </p>
+        </div>
+
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {homeFeaturedJourney.map((event) => (
+            <FadeInUp
+              key={event.id}
+              className="group flex flex-col h-full rounded-3xl border border-zinc-200 dark:border-white/[0.08] bg-white dark:bg-zinc-950/40 p-5 backdrop-blur-xl relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-lime-400/40 shadow-sm dark:shadow-none"
+            >
+              <div className="overflow-hidden rounded-xl border border-zinc-100 dark:border-white/[0.06] bg-zinc-100 dark:bg-slate-950/55">
+                <img
+                  src={event.imageUrl}
+                  alt={`${event.title} cover`}
+                  className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                />
+              </div>
+
+              <div className="mt-4 flex items-center justify-between gap-3">
+                <span className="bg-lime-400 text-black px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-sm">
+                  {event.category}
+                </span>
+                <span className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+                  {event.date}
+                </span>
+              </div>
+
+              <h3 className="mt-3 text-lg font-bold text-zinc-900 dark:text-cyan-100 uppercase tracking-tight">
+                {event.title}
+              </h3>
+              
+              <p className="mt-1 text-xs font-mono text-zinc-500 dark:text-zinc-400 uppercase">
+                {event.subtitle}
+              </p>
+
+              <p className="mt-3 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400 flex-1">
+                {event.description}
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-1.5 pt-4 border-t border-zinc-100 dark:border-white/[0.06]">
+                {event.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-md border border-zinc-200 dark:border-white/[0.06] bg-zinc-100 dark:bg-white/[0.02] px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:text-zinc-400"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </FadeInUp>
+          ))}
+        </div>
+
+        <div className="mt-10 flex justify-center">
+          <Button
+            to="/journey"
+            className="bg-lime-400 text-black text-xs font-black uppercase tracking-wider px-6 py-3.5 rounded-full shadow-[0_4px_16px_rgba(163,230,53,0.3)] hover:opacity-90 transition-all duration-300 inline-flex items-center gap-2"
+          >
+            Explore Complete Journey <ArrowRight size={14} />
+          </Button>
         </div>
       </section>
     </>

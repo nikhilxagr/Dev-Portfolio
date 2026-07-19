@@ -186,7 +186,11 @@ const Navbar = () => {
               ? isDark
                 ? "w-[97%] max-w-6xl rounded-full px-6 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] border-white/[0.06] bg-zinc-950/20"
                 : "w-[97%] max-w-6xl rounded-full px-6 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border-zinc-900/[0.06] bg-white/20"
-              : "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-transparent bg-transparent"
+              : isScrolled
+                ? "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-transparent bg-transparent"
+                : isDark
+                  ? "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-transparent bg-transparent"
+                  : "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-zinc-200/40 bg-white/60"
           )}
         >
             <div className={clsx(
@@ -198,7 +202,14 @@ const Navbar = () => {
                 onClick={() => setOpen(false)}
                 className="group flex items-center gap-2 mr-6 xl:mr-10 shrink-0"
               >
-                <span className="font-outfit text-[15px] font-black tracking-[0.25em] text-white uppercase transition-all duration-300 group-hover:text-lime-300 group-hover:[text-shadow:0_0_12px_rgba(163,230,53,0.65)] inline-block">
+                <span className={clsx(
+                  "font-outfit text-[1.35rem] font-black tracking-[0.18em] uppercase select-none",
+                  "bg-gradient-to-b from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
+                  "transition-all duration-300 ease-out",
+                  "drop-shadow-[0_2px_10px_rgba(52,211,153,0.45)]",
+                  "group-hover:-translate-y-0.5 group-hover:scale-[1.04] group-hover:drop-shadow-[0_6px_18px_rgba(52,211,153,0.7)]",
+                  "inline-block"
+                )}>
                   NIKHIL
                 </span>
               </Link>
@@ -278,8 +289,15 @@ const Navbar = () => {
             role="dialog"
             aria-modal="true"
           >
-            <div className="flex items-center justify-between pb-4 border-b border-white/[0.06] mb-4">
-              <span className="font-outfit text-base font-black tracking-[0.25em] text-white uppercase">
+            <div className={clsx(
+              "flex items-center justify-between pb-4 mb-4 border-b",
+              isDark ? "border-white/[0.06]" : "border-zinc-100"
+            )}>
+              <span className={clsx(
+                "font-outfit text-[1.5rem] font-black tracking-[0.18em] uppercase select-none",
+                "bg-gradient-to-b from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
+                "drop-shadow-[0_2px_10px_rgba(52,211,153,0.4)]"
+              )}>
                 NIKHIL
               </span>
               <button
@@ -349,7 +367,10 @@ const Navbar = () => {
               })}
             </div>
 
-            <div className="mt-auto space-y-3 pt-6 border-t border-white/[0.06]">
+            <div className={clsx(
+              "mt-auto space-y-3 pt-6 border-t",
+              isDark ? "border-white/[0.06]" : "border-zinc-100"
+            )}>
               <button
                 type="button"
                 onClick={toggleTheme}

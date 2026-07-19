@@ -886,7 +886,7 @@ const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
    DETAILS PANEL — inline expandable
 ───────────────────────────────────────────── */
 const DetailsPanel = ({ d, accent, imageUrl }) => (
-  <div className="border-t border-white/[0.07] bg-zinc-950/60 px-5 py-6">
+  <div className="border-t border-zinc-200 dark:border-white/[0.07] bg-zinc-50 dark:bg-zinc-950/60 px-5 py-6">
     {/* Meta grid */}
     <div className="mb-5 grid grid-cols-2 gap-3">
       {[
@@ -895,9 +895,9 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
         { label: "Current Status", value: d.status },
         { label: "Expected Graduation", value: d.expectedGraduation },
       ].map(({ label, value }) => (
-        <div key={label} className="rounded-xl border border-white/[0.06] bg-zinc-900/60 p-3">
-          <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.22em] text-zinc-600">{label}</p>
-          <p className="text-xs font-bold text-white">{value}</p>
+        <div key={label} className="rounded-xl border border-zinc-200 dark:border-white/[0.06] bg-white dark:bg-zinc-900/60 p-3">
+          <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.22em] text-zinc-500 dark:text-zinc-600">{label}</p>
+          <p className="text-xs font-bold text-zinc-900 dark:text-white">{value}</p>
         </div>
       ))}
     </div>
@@ -915,16 +915,16 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
     ].map(({ key, label, text }) => (
       <div key={key} className="mb-4">
         <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">{label}</p>
-        <p className="text-[0.8rem] leading-6 text-zinc-300">{text}</p>
+        <p className="text-[0.8rem] leading-6 text-zinc-600 dark:text-zinc-300">{text}</p>
       </div>
     ))}
 
     {/* Areas of Study */}
     <div className="mb-4">
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Areas of Study</p>
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Areas of Study</p>
       <ul className="space-y-1.5">
         {d.areasOfStudy.map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-300">
+          <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
             <span className={`mt-[3px] shrink-0 bg-gradient-to-r ${accent} bg-clip-text text-xs font-black text-transparent`}>→</span>
             <span>{item}</span>
           </li>
@@ -950,14 +950,14 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
       <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Skills Gained</p>
       <div className="flex flex-wrap gap-1.5">
         {d.skills.map((s) => (
-          <span key={s} className="rounded-lg border border-white/[0.07] bg-zinc-800/60 px-2.5 py-1 text-[10px] font-semibold text-zinc-300">{s}</span>
+          <span key={s} className="rounded-lg border border-zinc-200 dark:border-white/[0.07] bg-zinc-100 dark:bg-zinc-800/60 px-2.5 py-1 text-[10px] font-semibold text-zinc-700 dark:text-zinc-300">{s}</span>
         ))}
       </div>
     </div>
 
     {/* Technologies */}
     <div>
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Technologies Covered</p>
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Technologies Covered</p>
       <div className="flex flex-wrap gap-1.5">
         {d.technologies.map((t) => (
           <span key={t} className={`rounded-lg bg-gradient-to-r ${accent} px-2.5 py-1 text-[10px] font-bold text-black`}>{t}</span>
@@ -992,7 +992,7 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
         whileInView={{ opacity: 1, x: 0, y: 0 }}
         viewport={{ once: true, margin: "-5% 0px -5% 0px" }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-        className="group relative w-full max-w-2xl overflow-hidden rounded-[1.6rem] border border-white/[0.07] bg-zinc-900/70 shadow-[0_8px_40px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-all duration-500 hover:border-white/[0.15] hover:shadow-[0_20px_60px_rgba(0,0,0,0.7)]"
+        className="group relative w-full max-w-2xl overflow-hidden rounded-[1.6rem] border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/70 shadow-[0_8px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-all duration-500 hover:border-zinc-300 dark:hover:border-white/[0.15] hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.7)]"
       >
         {/* Top accent line */}
         <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${event.accent} opacity-80`} />
@@ -1057,24 +1057,24 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
 
       {/* Content */}
       <div className="p-6">
-        <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500">{event.subtitle}</p>
-        <h3 className="text-[1.25rem] font-black leading-snug text-white sm:text-[1.4rem]">{event.title}</h3>
+        <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500 dark:text-zinc-500">{event.subtitle}</p>
+        <h3 className="text-[1.25rem] font-black leading-snug text-zinc-900 dark:text-white sm:text-[1.4rem]">{event.title}</h3>
         <p className={`mt-1 bg-gradient-to-r ${event.accent} bg-clip-text text-xs font-semibold uppercase tracking-wider text-transparent`}>
           {event.organization}
         </p>
 
-        <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-zinc-500">
+        <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-zinc-500 dark:text-zinc-500">
           <span className="flex items-center gap-1.5">
-            <CalendarDays size={11} className="text-zinc-600" />
+            <CalendarDays size={11} className="text-zinc-500 dark:text-zinc-600" />
             {formatLabel(event.duration)}
           </span>
           <span className="flex items-center gap-1.5">
-            <MapPin size={11} className="text-zinc-600" />
+            <MapPin size={11} className="text-zinc-500 dark:text-zinc-600" />
             {event.location}
           </span>
         </div>
 
-        <p className="mt-3 text-[0.85rem] leading-6 text-zinc-400">{event.description}</p>
+        <p className="mt-3 text-[0.85rem] leading-6 text-zinc-600 dark:text-zinc-400">{event.description}</p>
 
         {/* Actions */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -1098,7 +1098,7 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
               href={event.certificateUrl || "#"}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-emerald-300 transition-all hover:border-emerald-400/60 hover:bg-emerald-400/20"
+              className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/30 dark:border-emerald-400/30 bg-emerald-500/10 dark:bg-emerald-400/10 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-300 transition-all hover:border-emerald-500/60 dark:hover:border-emerald-400/60 hover:bg-emerald-500/20 dark:hover:bg-emerald-400/20"
             >
               <FileBadge size={11} />
               Certificate
@@ -1152,7 +1152,7 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-5% 0px -5% 0px" }}
         transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-        className="group relative flex flex-col overflow-hidden rounded-[1.4rem] border border-white/[0.07] bg-zinc-900/60 shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-sm transition-all duration-500 hover:border-white/[0.14] hover:-translate-y-1"
+        className="group relative flex flex-col overflow-hidden rounded-[1.4rem] border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 shadow-[0_4px_24px_rgba(0,0,0,0.07)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-sm transition-all duration-500 hover:border-zinc-300 dark:hover:border-white/[0.14] hover:-translate-y-1"
       >
         <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${event.accent} opacity-80`} />
         
@@ -1214,11 +1214,11 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
         {/* Content */}
         <div className="flex-1 p-4">
           <p className="mb-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-zinc-500">{formatLabel(event.duration)}</p>
-          <h3 className="text-sm font-bold leading-snug text-white">{event.title}</h3>
+          <h3 className="text-sm font-bold leading-snug text-zinc-900 dark:text-white">{event.title}</h3>
           <p className={`mt-0.5 bg-gradient-to-r ${event.accent} bg-clip-text text-[10px] font-semibold uppercase tracking-wider text-transparent`}>
             {event.organization}
           </p>
-          <p className="mt-2 text-[11.5px] leading-5 text-zinc-400">{event.description}</p>
+          <p className="mt-2 text-[11.5px] leading-5 text-zinc-600 dark:text-zinc-400">{event.description}</p>
           
           {/* Actions */}
           <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -1243,7 +1243,7 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
                 href={event.certificateUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300 transition-all hover:border-emerald-400/60 hover:bg-emerald-400/20"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 dark:border-emerald-400/30 bg-emerald-500/10 dark:bg-emerald-400/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-300 transition-all hover:border-emerald-500/60 dark:hover:border-emerald-400/60 hover:bg-emerald-500/20 dark:hover:bg-emerald-400/20"
               >
                 <FileBadge size={9} />
                 Certificate
@@ -1478,7 +1478,7 @@ const JourneyPage = () => {
       {/* ══════════════════════════════════════
           HERO
       ══════════════════════════════════════ */}
-      <section className="relative overflow-hidden pt-32 pb-16 sm:pt-40 sm:pb-20">
+      <section className="relative overflow-hidden pt-10 pb-16 sm:pt-14 sm:pb-20 bg-white/0">
         {/* Ambient glows */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/3 top-1/3 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-400/5 blur-[120px]" />
@@ -1491,8 +1491,8 @@ const JourneyPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-300/20 bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-300">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-300" />
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
               Professional Growth
             </span>
           </motion.div>
@@ -1501,7 +1501,7 @@ const JourneyPage = () => {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.1 }}
-            className="mt-4 font-display text-5xl font-black leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl xl:text-8xl"
+            className="mt-4 font-display text-[8.2vw] sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.05] tracking-tight text-zinc-900 dark:text-white"
           >
             PROFESSIONAL
             <br />
@@ -1514,7 +1514,7 @@ const JourneyPage = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.2 }}
-            className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-zinc-400 sm:text-base"
+            className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-zinc-500 dark:text-zinc-400 sm:text-base"
           >
             A timeline of my learning, internships, workshops, hackathons, certifications, and technical experiences that shaped my journey as a Full-Stack Web Developer and Cybersecurity Researcher.
           </motion.p>
@@ -1524,17 +1524,17 @@ const JourneyPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.3 }}
-            className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-white/[0.08] bg-zinc-950/40 p-6 backdrop-blur-xl"
+            className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 backdrop-blur-xl shadow-sm dark:shadow-none"
           >
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:divide-x md:divide-white/[0.08]">
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:divide-x md:divide-zinc-200 dark:md:divide-white/[0.08]">
               {[
-                { label: "Started Journey", value: "2024", color: "text-white" },
-                { label: "Current Year", value: "2026", color: "text-lime-300" },
-                { label: "Learning Span", value: "3 Years", color: "text-white" },
-                { label: "Active Status", value: "LEARNING & BUILDING", color: "text-amber-500" },
+                { label: "Started Journey", value: "2024", color: "text-zinc-900 dark:text-white" },
+                { label: "Current Year", value: "2026", color: "text-lime-500 dark:text-lime-300" },
+                { label: "Learning Span", value: "3 Years", color: "text-zinc-900 dark:text-white" },
+                { label: "Active Status", value: "LEARNING & BUILDING", color: "text-amber-600 dark:text-amber-500" },
               ].map(({ label, value, color }, i) => (
                 <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
-                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600 mb-1">
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-600 mb-1">
                     {label}
                   </span>
                   <span className={`text-xl font-black tracking-tight ${color}`}>
@@ -1550,7 +1550,7 @@ const JourneyPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.4 }}
-            className="mx-auto mt-6 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-5"
+            className="mx-auto mt-6 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-5 [&>*]:shadow-sm dark:[&>*]:shadow-none"
           >
             {[
               { label: "Total Milestones", value: statsSummary.totalExperiences },
@@ -1561,12 +1561,12 @@ const JourneyPage = () => {
             ].map(({ label, value }) => (
               <div
                 key={label}
-                className="flex flex-col justify-between rounded-2xl border border-white/[0.06] bg-zinc-900/30 p-4 text-left transition-all duration-300 hover:border-white/[0.12] hover:bg-zinc-900/50"
+                className="flex flex-col justify-between rounded-2xl border border-zinc-200 dark:border-white/[0.06] bg-white/80 dark:bg-zinc-900/30 p-4 text-left transition-all duration-300 hover:border-zinc-300 dark:hover:border-white/[0.12] hover:bg-white dark:hover:bg-zinc-900/50 shadow-sm dark:shadow-none"
               >
                 <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-zinc-500 leading-snug">
                   {label}
                 </span>
-                <span className="mt-4 text-3xl font-black text-white leading-none">
+                <span className="mt-4 text-3xl font-black text-zinc-900 dark:text-white leading-none">
                   {value}
                 </span>
               </div>
@@ -1581,7 +1581,7 @@ const JourneyPage = () => {
       {/* ══════════════════════════════════════
           CONTROLS BAR
       ══════════════════════════════════════ */}
-      <section className="section-wrap border-b border-white/[0.05] pb-6">
+      <section className="section-wrap border-b border-zinc-200 dark:border-white/[0.05] pb-6">
         <div className="mx-auto max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -1601,7 +1601,7 @@ const JourneyPage = () => {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search by title, organization, skill, or year..."
-                  className="w-full rounded-2xl border border-white/[0.08] bg-zinc-900/80 py-2.5 pr-4 pl-10 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 transition-all focus:border-lime-300/40 focus:ring-1 focus:ring-lime-300/20"
+                  className="w-full rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/80 py-2.5 pr-4 pl-10 text-sm text-zinc-800 dark:text-zinc-100 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition-all focus:border-lime-400/60 dark:focus:border-lime-300/40 focus:ring-1 focus:ring-lime-400/20 dark:focus:ring-lime-300/20 shadow-sm dark:shadow-none"
                 />
               </label>
 
@@ -1611,8 +1611,8 @@ const JourneyPage = () => {
                 onClick={() => setShowCategoryFilters(!showCategoryFilters)}
                 className={`inline-flex items-center justify-center gap-2 rounded-2xl border px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 ${
                   showCategoryFilters
-                    ? "border-lime-300 bg-lime-300/10 text-lime-300"
-                    : "border-white/[0.08] bg-zinc-900/60 text-zinc-300 hover:border-white/[0.15] hover:text-white"
+                    ? "border-lime-500 dark:border-lime-300 bg-lime-500/10 dark:bg-lime-300/10 text-lime-600 dark:text-lime-300"
+                    : "border-zinc-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-white/[0.15] hover:text-zinc-900 dark:hover:text-white shadow-sm dark:shadow-none"
                 }`}
               >
                 <SlidersHorizontal size={13} />
@@ -1625,7 +1625,7 @@ const JourneyPage = () => {
             </div>
 
             {/* View toggle */}
-            <div className="inline-flex items-center gap-1 rounded-2xl border border-white/[0.08] bg-zinc-900/60 p-1">
+            <div className="inline-flex items-center gap-1 rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 p-1 shadow-sm dark:shadow-none">
               {[
                 { id: "timeline", label: "Timeline", Icon: GitBranch },
                 { id: "grid", label: "Grid", Icon: Grid2X2 },
@@ -1637,7 +1637,7 @@ const JourneyPage = () => {
                   className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-all duration-300 ${
                     view === id
                       ? "bg-lime-300 text-black shadow-[0_0_12px_rgba(163,230,53,0.3)]"
-                      : "text-zinc-400 hover:text-zinc-200"
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
                   }`}
                 >
                   <Icon size={13} />
