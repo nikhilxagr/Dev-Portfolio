@@ -164,21 +164,22 @@ const HeroSection = () => {
     let width = (canvas.width = canvas.offsetWidth);
     let height = (canvas.height = canvas.offsetHeight);
 
+    const isMobile = window.innerWidth < 768;
     const particles = [];
-    const particleCount = 45;
-    const connectionDistance = 110;
+    const particleCount = isMobile ? 14 : 45;
+    const connectionDistance = isMobile ? 85 : 110;
+    const sqConnectionDistance = connectionDistance * connectionDistance;
 
     class Particle {
       constructor() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.45;
-        this.vy = (Math.random() - 0.5) * 0.45;
+        this.vx = (Math.random() - 0.5) * (isMobile ? 0.3 : 0.45);
+        this.vy = (Math.random() - 0.5) * (isMobile ? 0.3 : 0.45);
         this.radius = Math.random() * 1.5 + 1;
         this.color = Math.random() > 0.4
           ? "rgba(74, 222, 128, 0.40)"   // dev green
           : "rgba(56, 189, 248, 0.45)";  // cyber blue
-
       }
 
       update() {
@@ -206,9 +207,10 @@ const HeroSection = () => {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
-          if (dist < connectionDistance) {
+          if (distSq < sqConnectionDistance) {
+            const dist = Math.sqrt(distSq);
             const alpha = (1 - dist / connectionDistance) * 0.16;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
@@ -221,15 +223,30 @@ const HeroSection = () => {
       }
     };
 
+    let isScrolling = false;
+    let scrollTimeout;
+    const handleScroll = () => {
+      if (!isMobile) return;
+      isScrolling = true;
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 120);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     const animate = () => {
-      ctx.clearRect(0, 0, width, height);
+      if (!isScrolling) {
+        ctx.clearRect(0, 0, width, height);
 
-      particles.forEach((p) => {
-        p.update();
-        p.draw();
-      });
+        particles.forEach((p) => {
+          p.update();
+          p.draw();
+        });
 
-      drawConnections();
+        drawConnections();
+      }
       animationFrameId = requestAnimationFrame(animate);
     };
 
@@ -241,10 +258,12 @@ const HeroSection = () => {
       height = canvas.height = canvas.offsetHeight;
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize, { passive: true });
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimeout);
     };
   }, []);
 

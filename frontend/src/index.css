@@ -104,7 +104,14 @@ html.light {
 }
 
 /* BASE */
-html, body, #root { min-height: 100%; }
+html, body, #root {
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
 
 body {
   margin: 0;
@@ -118,9 +125,31 @@ body {
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
 }
 
 a { color: inherit; text-decoration: none; }
+
+/* MOBILE SCROLLING PERFORMANCE & HARDWARE ACCELERATION */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Optimize backdrop-blur filter passes on mobile GPUs to ensure silky 60fps scrolling */
+  .backdrop-blur-3xl {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+  .backdrop-blur-xl {
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
+}
 
 /* TEXT GLOWS */
 /* Green glow — dev accent */
