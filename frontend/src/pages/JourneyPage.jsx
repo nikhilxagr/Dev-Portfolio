@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CalendarDays,
@@ -28,9 +28,7 @@ import {
 import SeoHead from "@/components/seo/SeoHead";
 import { createBreadcrumbSchema } from "@/utils/seo";
 
-/* ─────────────────────────────────────────────
-   DATA
-───────────────────────────────────────────── */
+// DATA
 const journeyData = [
   {
     id: "bca-bbd-2024",
@@ -688,12 +686,7 @@ const formatLabel = (value = "") => {
   return value;
 };
 
-/* ─────────────────────────────────────────────
-   FIXED LEFT YEAR NAVIGATOR
-   Always visible on the left side of the
-   viewport, vertically centered. Scrolls page
-   on click, highlights active year on scroll.
-───────────────────────────────────────────── */
+// Fixed year navigator — highlights active year on scroll
 const FixedYearNav = ({ years, activeYear, onYearClick }) => (
   <div className="fixed right-6 top-1/2 z-50 hidden -translate-y-1/2 xl:flex xl:flex-col xl:items-center">
     {/* Capsule container */}
@@ -762,9 +755,7 @@ const FixedYearNav = ({ years, activeYear, onYearClick }) => (
   </div>
 );
 
-/* ─────────────────────────────────────────────
-   GALLERY LIGHTBOX
-───────────────────────────────────────────── */
+// GALLERY LIGHTBOX
 const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
   const [current, setCurrent] = useState(startIndex);
 
@@ -882,9 +873,7 @@ const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
   );
 };
 
-/* ─────────────────────────────────────────────
-   DETAILS PANEL — inline expandable
-───────────────────────────────────────────── */
+// DETAILS PANEL — inline expandable
 const DetailsPanel = ({ d, accent, imageUrl }) => (
   <div className="border-t border-zinc-200 dark:border-white/[0.07] bg-zinc-50 dark:bg-zinc-950/60 px-5 py-6">
     {/* Meta grid */}
@@ -967,9 +956,7 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
   </div>
 );
 
-/* ─────────────────────────────────────────────
-   JOURNEY CARD
-───────────────────────────────────────────── */
+// JOURNEY CARD
 const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
   const Icon = event.icon || Award;
   const hasDetails = Boolean(event.details);
@@ -1127,9 +1114,7 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
   );
 };
 
-/* ─────────────────────────────────────────────
-   GRID CARD (compact)
- ───────────────────────────────────────────── */
+// GRID CARD (compact)
 const GridCard = ({ event, isExpanded, onToggle }) => {
   const Icon = event.icon || Award;
   const hasDetails = Boolean(event.details);
@@ -1272,10 +1257,7 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
   );
 };
 
-
-/* ─────────────────────────────────────────────
-   TIMELINE DOT
-───────────────────────────────────────────── */
+// TIMELINE DOT
 const TimelineDot = ({ isActive }) => (
   <div
     className={`relative z-10 flex h-4 w-4 items-center justify-center rounded-full border-2 transition-all duration-500 ${
@@ -1295,9 +1277,7 @@ const TimelineDot = ({ isActive }) => (
   </div>
 );
 
-/* ─────────────────────────────────────────────
-   MAIN PAGE
-───────────────────────────────────────────── */
+// MAIN PAGE
 const JourneyPage = () => {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
@@ -1321,7 +1301,7 @@ const JourneyPage = () => {
     return { totalExperiences, internships, workshops, certifications, conferences };
   }, []);
 
-  /* ── Derived data ── */
+  
   const filteredData = useMemo(() => {
     const keyword = search.trim().toLowerCase();
     return journeyData.filter((event) => {
@@ -1355,7 +1335,7 @@ const JourneyPage = () => {
       .map((year) => ({ year, items: map.get(year) }));
   }, [filteredData, allYears]);
 
-  /* ── Smooth scroll to year ── */
+  
   const scrollToYear = useCallback((year) => {
     const el = document.getElementById(`year-${year}`);
     if (!el) return;
@@ -1391,7 +1371,7 @@ const JourneyPage = () => {
     [groupedByYear, scrollToYear]
   );
 
-  /* ── IntersectionObserver scrollspy ── */
+  
   useEffect(() => {
     if (allYears.length === 0) return;
 
@@ -1420,14 +1400,14 @@ const JourneyPage = () => {
     return () => observer.disconnect();
   }, [allYears, view, filteredData]);
 
-  /* ── Init active year ── */
+  
   useEffect(() => {
     if (allYears.length > 0 && activeYear === null) {
       setActiveYear(allYears[0]);
     }
   }, [allYears, activeYear]);
 
-  /* ── Page-top reset & Nav Visibility ── */
+  
   useEffect(() => {
     const onScroll = () => {
       if (window.scrollY < 150 && allYears.length > 0) {
@@ -1444,7 +1424,7 @@ const JourneyPage = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, [allYears]);
 
-  /* ─────────────── RENDER ─────────────── */
+  
   return (
     <>
       <SeoHead
@@ -1463,10 +1443,7 @@ const JourneyPage = () => {
         ])}
       />
 
-      {/* ══════════════════════════════════════
-          FIXED LEFT YEAR NAVIGATION ISLAND
-          Always centered on left of screen
-      ══════════════════════════════════════ */}
+      
       {view === "timeline" && (showFloatingNav || search.trim() !== "") && (
         <FixedYearNav
           years={allYears}
@@ -1475,9 +1452,7 @@ const JourneyPage = () => {
         />
       )}
 
-      {/* ══════════════════════════════════════
-          HERO
-      ══════════════════════════════════════ */}
+      
       <section className="relative overflow-hidden pt-10 pb-16 sm:pt-14 sm:pb-20 bg-white/0">
         {/* Ambient glows */}
         <div className="pointer-events-none absolute inset-0">
@@ -1575,12 +1550,8 @@ const JourneyPage = () => {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          CONTROLS BAR
-      ══════════════════════════════════════ */}
-      {/* ══════════════════════════════════════
-          CONTROLS BAR
-      ══════════════════════════════════════ */}
+      
+      
       <section className="section-wrap border-b border-zinc-200 dark:border-white/[0.05] pb-6">
         <div className="mx-auto max-w-5xl">
           <motion.div
@@ -1678,9 +1649,7 @@ const JourneyPage = () => {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          MOBILE YEAR BAR (shows below xl)
-      ══════════════════════════════════════ */}
+      
       {view === "timeline" && (
         <div className="sticky top-[4.5rem] z-40 xl:hidden border-b border-white/[0.05] bg-zinc-950/95 backdrop-blur-xl">
           <div className="section-wrap py-3">
@@ -1712,13 +1681,11 @@ const JourneyPage = () => {
         </div>
       )}
 
-      {/* ══════════════════════════════════════
-          MAIN CONTENT
-      ══════════════════════════════════════ */}
+      
       <section className="section-wrap py-12 sm:py-16">
         <div className="mx-auto max-w-5xl">
           <AnimatePresence mode="wait">
-            {/* ── GRID VIEW ── */}
+            {}
             {view === "grid" ? (
               <motion.div
                 key="grid"
@@ -1744,7 +1711,7 @@ const JourneyPage = () => {
                 )}
               </motion.div>
             ) : (
-              /* ── TIMELINE VIEW ── */
+              
               <motion.div
                 key="timeline"
                 initial={{ opacity: 0 }}
@@ -1806,7 +1773,7 @@ const JourneyPage = () => {
 
                       {/* Timeline items */}
                       <div className="relative">
-                        {/* ── CENTER SPINE (always visible) ── */}
+                        {}
                         <div className="absolute inset-y-0 left-4 w-px bg-zinc-800 lg:left-1/2 lg:-translate-x-px" />
 
                         {/* Active glow spine for current year */}
@@ -1824,14 +1791,14 @@ const JourneyPage = () => {
                             const isLeft = idx % 2 === 0;
                             return (
                               <div key={event.id} className="relative">
-                                {/* ── DOT ── */}
+                                {}
                                 <div className="absolute left-4 top-8 -translate-x-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:top-10">
                                   <TimelineDot
                                     isActive={activeYear === group.year}
                                   />
                                 </div>
 
-                                {/* ── CARD ROW ── */}
+                                {}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-center lg:gap-0">
                                   {isLeft ? (
                                     <>

@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Link, NavLink } from "react-router-dom";
 import {
   ArrowRight,
   BookOpen,
   Briefcase,
+  ChevronDown,
   ChevronRight,
+  Code2,
   Download,
   Folder,
   GitBranch,
@@ -45,6 +47,19 @@ const Navbar = () => {
   const [showOpportunityBanner, setShowOpportunityBanner] = useState(true);
   const { isDark, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [resumeDropdownOpen, setResumeDropdownOpen] = useState(false);
+  const resumeDropdownRef = useRef(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (resumeDropdownRef.current && !resumeDropdownRef.current.contains(e.target)) {
+        setResumeDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -197,17 +212,31 @@ const Navbar = () => {
               "flex items-center justify-between transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
               isScrolled ? "h-11" : "h-14"
             )}>
+              {/* Hamburger Button — LEFT on mobile */}
+              <button
+                type="button"
+                onClick={() => setOpen((value) => !value)}
+                className={clsx(
+                  "rounded-full p-2 transition xl:hidden shrink-0",
+                  isDark
+                    ? "text-zinc-300 hover:bg-white/10 hover:text-sky-400"
+                    : "text-zinc-700 hover:bg-black/5 hover:text-sky-600",
+                )}
+                aria-label="Toggle menu"
+              >
+                {open ? <X size={20} /> : <Menu size={20} />}
+              </button>
+
+              {/* Logo — RIGHT on mobile, LEFT on desktop */}
               <Link
                 to="/"
                 onClick={() => setOpen(false)}
-                className="group flex items-center gap-2 mr-6 xl:mr-10 shrink-0"
+                className="group flex items-center shrink-0 xl:mr-10 xl:order-first"
               >
                 <span className={clsx(
-                  "font-outfit text-[1.35rem] font-black tracking-[0.18em] uppercase select-none",
-                  "bg-gradient-to-b from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
-                  "transition-all duration-300 ease-out",
-                  "drop-shadow-[0_2px_10px_rgba(52,211,153,0.45)]",
-                  "group-hover:-translate-y-0.5 group-hover:scale-[1.04] group-hover:drop-shadow-[0_6px_18px_rgba(52,211,153,0.7)]",
+                  "font-outfit text-[1.4rem] sm:text-[1.7rem] font-black tracking-[0.18em] uppercase select-none transition-all duration-300",
+                  "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
+                  "drop-shadow-[0_4px_22px_rgba(52,211,153,0.65)] group-hover:drop-shadow-[0_6px_30px_rgba(52,211,153,0.9)] group-hover:scale-[1.03]",
                   "inline-block"
                 )}>
                   NIKHIL
@@ -238,31 +267,71 @@ const Navbar = () => {
                   {isDark ? <SunMedium size={16} /> : <Moon size={16} />}
                 </button>
 
-                <a
-                  href={QUICK_CONTACT.resume}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-lime-400/45 bg-zinc-950 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-lime-400 shadow-[0_0_12px_rgba(163,230,53,0.15)] hover:border-lime-400 hover:bg-lime-400 hover:text-black hover:shadow-[0_0_20px_rgba(163,230,53,0.45)] transition-all duration-300 ease-out"
-                  aria-label="Open resume"
-                >
-                  <Download size={11} />
-                  Resume
-                </a>
-              </div>
+                <div ref={resumeDropdownRef} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setResumeDropdownOpen((v) => !v)}
+                    className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-400/60 bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-green-500/15 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.35)] hover:border-emerald-300 hover:bg-gradient-to-r hover:from-emerald-400 hover:to-lime-400 hover:text-slate-950 hover:shadow-[0_0_30px_rgba(52,211,153,0.65)] hover:scale-[1.04] transition-all duration-300 ease-out"
+                    aria-label="Open resume dropdown"
+                    aria-expanded={resumeDropdownOpen}
+                  >
+                    <Download size={14} />
+                    Resume
+                    <ChevronDown size={14} className={`transition-transform duration-200 ${resumeDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
 
-              <button
-                type="button"
-                onClick={() => setOpen((value) => !value)}
-                className={clsx(
-                  "rounded-full p-2 transition xl:hidden",
-                  isDark
-                    ? "text-zinc-300 hover:bg-white/5"
-                    : "text-zinc-700 hover:bg-black/5",
-                )}
-                aria-label="Toggle menu"
-              >
-                {open ? <X size={18} /> : <Menu size={18} />}
-              </button>
+                  {resumeDropdownOpen && (
+                    <div className={clsx(
+                      "absolute right-0 top-full mt-2.5 w-56 rounded-2xl border p-1.5 shadow-[0_16px_40px_rgba(0,10,2,0.7)] backdrop-blur-xl z-50",
+                      isDark
+                        ? "border-green-400/20 bg-[#030a03]/95"
+                        : "border-green-400/30 bg-white/95",
+                    )}>
+                      <a
+                        href={QUICK_CONTACT.resumeFullStack}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setResumeDropdownOpen(false)}
+                        className={clsx(
+                          "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all duration-200",
+                          isDark
+                            ? "text-slate-200 hover:bg-green-400/12 hover:text-green-300"
+                            : "text-slate-700 hover:bg-green-50 hover:text-green-700",
+                        )}
+                      >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-green-400/30 bg-green-400/10 text-green-400">
+                          <Code2 size={13} />
+                        </span>
+                        <div>
+                          <p className="font-black uppercase tracking-wide">Full-Stack Dev</p>
+                          <p className={clsx("text-[10px] font-medium", isDark ? "text-slate-500" : "text-slate-400")}>React · Node.js · MERN</p>
+                        </div>
+                      </a>
+
+                      <a
+                        href={QUICK_CONTACT.resumeSecurity}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setResumeDropdownOpen(false)}
+                        className={clsx(
+                          "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all duration-200",
+                          isDark
+                            ? "text-slate-200 hover:bg-green-400/12 hover:text-green-300"
+                            : "text-slate-700 hover:bg-green-50 hover:text-green-700",
+                        )}
+                      >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-emerald-400/30 bg-emerald-400/10 text-emerald-400">
+                          <ShieldCheck size={13} />
+                        </span>
+                        <div>
+                          <p className="font-black uppercase tracking-wide">Cyber Security</p>
+                          <p className={clsx("text-[10px] font-medium", isDark ? "text-slate-500" : "text-slate-400")}>AppSec · OWASP · PenTest</p>
+                        </div>
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -281,22 +350,22 @@ const Navbar = () => {
 
           <aside
             className={clsx(
-              "absolute right-0 top-0 flex h-screen w-[min(82vw,290px)] flex-col p-6 z-50 transition-all duration-300 ease-out",
+              "absolute left-0 top-0 flex h-screen w-[min(84vw,300px)] flex-col p-6 z-50 transition-all duration-300 ease-out border-r",
               isDark
-                ? "bg-zinc-950/98 backdrop-blur-xl text-white shadow-[-10px_0_40px_rgba(0,0,0,0.8)]"
-                : "bg-white/98 backdrop-blur-xl text-zinc-900 shadow-[-10px_0_30px_rgba(0,0,0,0.06)]",
+                ? "bg-[#050d14]/98 border-sky-400/20 backdrop-blur-2xl text-white shadow-[10px_0_50px_rgba(0,10,25,0.9)]"
+                : "bg-white/98 border-slate-200/80 backdrop-blur-2xl text-zinc-900 shadow-[10px_0_30px_rgba(0,0,0,0.08)]",
             )}
             role="dialog"
             aria-modal="true"
           >
             <div className={clsx(
               "flex items-center justify-between pb-4 mb-4 border-b",
-              isDark ? "border-white/[0.06]" : "border-zinc-100"
+              isDark ? "border-sky-400/15" : "border-slate-100"
             )}>
               <span className={clsx(
-                "font-outfit text-[1.5rem] font-black tracking-[0.18em] uppercase select-none",
-                "bg-gradient-to-b from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
-                "drop-shadow-[0_2px_10px_rgba(52,211,153,0.4)]"
+                "font-outfit text-[1.4rem] font-black tracking-[0.18em] uppercase select-none",
+                "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
+                "drop-shadow-[0_4px_18px_rgba(52,211,153,0.6)]"
               )}>
                 NIKHIL
               </span>
@@ -306,8 +375,8 @@ const Navbar = () => {
                 className={clsx(
                   "rounded-full p-2 transition",
                   isDark
-                    ? "text-zinc-400 hover:text-white hover:bg-white/5"
-                    : "text-zinc-600 hover:text-zinc-950 hover:bg-black/5",
+                    ? "text-zinc-400 hover:text-sky-400 hover:bg-sky-400/10"
+                    : "text-zinc-600 hover:text-sky-600 hover:bg-sky-50",
                 )}
                 aria-label="Close menu"
               >
@@ -315,11 +384,11 @@ const Navbar = () => {
               </button>
             </div>
 
-            <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-3 px-2">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-sky-400 font-bold mb-3 px-2">
               Navigation
             </p>
 
-            <div className="space-y-1 overflow-y-auto pr-1 flex-1">
+            <div className="space-y-1.5 overflow-y-auto pr-1 flex-1">
               {NAV_LINKS.map((item) => {
                 const Icon = mobileNavIconMap[item.label] || Shield;
 
@@ -330,34 +399,40 @@ const Navbar = () => {
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
                       clsx(
-                        "group flex items-center gap-3 rounded-full px-4 py-3 text-xs font-bold transition-all duration-300",
+                        "group flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold border transition-all duration-300",
                         isActive
-                          ? "bg-lime-400 text-black shadow-[0_4px_16px_rgba(163,230,53,0.35)]"
+                          ? isDark
+                            ? "bg-gradient-to-r from-sky-500/20 via-teal-500/20 to-green-500/20 border-sky-400/40 text-white shadow-[0_0_15px_rgba(56,189,248,0.25)]"
+                            : "bg-gradient-to-r from-sky-50 to-emerald-50 border-sky-300/50 text-slate-900 shadow-sm"
                           : isDark
-                            ? "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
-                            : "text-zinc-600 hover:text-zinc-950 hover:bg-black/[0.04]",
+                            ? "border-transparent text-zinc-400 hover:text-white hover:border-sky-500/30 hover:bg-gradient-to-r hover:from-sky-500/10 hover:via-teal-500/10 hover:to-green-500/10 hover:shadow-[0_0_20px_rgba(56,189,248,0.15)]"
+                            : "border-transparent text-zinc-600 hover:text-slate-900 hover:border-sky-300/40 hover:bg-gradient-to-r hover:from-sky-50 hover:to-emerald-50",
                       )
                     }
                   >
                     {({ isActive }) => (
                       <>
                         <Icon
-                          size={15}
+                          size={16}
                           className={clsx(
+                            "transition-colors duration-200",
                             isActive
-                              ? "text-black"
+                              ? "text-sky-400"
                               : isDark
-                                ? "text-zinc-500 group-hover:text-zinc-300"
-                                : "text-zinc-500 group-hover:text-zinc-700",
+                                ? "text-zinc-500 group-hover:text-sky-400"
+                                : "text-zinc-400 group-hover:text-sky-600",
                           )}
                         />
                         <span className="flex-1 tracking-wide">{item.label}</span>
                         {isActive ? (
-                          <span className="h-1.5 w-1.5 rounded-full bg-black" />
+                          <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
                         ) : (
                           <ChevronRight
-                            size={13}
-                            className="text-zinc-600 opacity-60 group-hover:translate-x-0.5 group-hover:opacity-100 transition-all"
+                            size={14}
+                            className={clsx(
+                              "opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all duration-200",
+                              isDark ? "text-zinc-500 group-hover:text-green-400" : "text-zinc-400 group-hover:text-green-600"
+                            )}
                           />
                         )}
                       </>
@@ -368,23 +443,23 @@ const Navbar = () => {
             </div>
 
             <div className={clsx(
-              "mt-auto space-y-3 pt-6 border-t",
-              isDark ? "border-white/[0.06]" : "border-zinc-100"
+              "mt-auto space-y-3 pt-5 border-t",
+              isDark ? "border-sky-400/15" : "border-slate-100"
             )}>
               <button
                 type="button"
                 onClick={toggleTheme}
                 className={clsx(
-                  "flex w-full items-center justify-between rounded-full px-4 py-3 text-xs font-bold transition",
+                  "flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-xs font-bold transition border",
                   isDark
-                    ? "text-zinc-400 hover:text-white hover:bg-white/5"
-                    : "text-zinc-600 hover:text-zinc-900 hover:bg-black/5",
+                    ? "border-transparent text-zinc-400 hover:text-white hover:border-sky-500/20 hover:bg-sky-500/10"
+                    : "border-transparent text-zinc-600 hover:text-zinc-900 hover:bg-slate-100",
                 )}
                 aria-label="Toggle theme"
               >
                 <span className="tracking-wide">Theme Mode</span>
                 {isDark ? (
-                  <ToggleRight size={18} className="text-lime-400" />
+                  <ToggleRight size={18} className="text-sky-400" />
                 ) : (
                   <ToggleLeft size={18} />
                 )}
@@ -395,14 +470,14 @@ const Navbar = () => {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-center gap-2 rounded-full bg-lime-400 py-3.5 text-xs font-black uppercase tracking-wider text-[#121212] shadow-[0_4px_16px_rgba(163,230,53,0.3)] hover:opacity-90 transition-all duration-300"
+                className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-400 py-3 text-xs font-black uppercase tracking-wider text-black shadow-[0_4px_18px_rgba(34,197,94,0.35)] hover:shadow-[0_6px_24px_rgba(34,197,94,0.5)] transition-all duration-300"
                 aria-label="View Resume"
               >
                 <Download size={14} />
                 View Resume
               </a>
 
-              <p className="text-[10px] text-center text-zinc-500 font-medium pt-2">
+              <p className="text-[10px] text-center text-zinc-500 font-medium pt-1">
                 Made with 💚 by Nikhil
               </p>
             </div>

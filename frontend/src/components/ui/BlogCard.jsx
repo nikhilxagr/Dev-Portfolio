@@ -45,9 +45,9 @@ const BlogCard = ({
 
   return (
     <article
-      className={`card-surface group flex h-full flex-col rounded-2xl transition hover:-translate-y-1 ${isCompact ? "p-4" : "p-5"} ${className}`}
+      className={`group flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-white/[0.08] dark:shadow-none transition hover:-translate-y-1 ${isCompact ? "p-4" : "p-5"} ${className}`}
     >
-      <div className="mb-4 overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-900/70">
+      <div className="mb-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-white/[0.08] dark:bg-[#07111e]">
         <picture>
           {localWebpImage ? (
             <source srcSet={localWebpImage} type="image/webp" />
@@ -66,17 +66,17 @@ const BlogCard = ({
         </picture>
       </div>
 
-      <p className="text-xs uppercase tracking-[0.14em] text-emerald-200">
+      <p className="text-xs uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-200 font-semibold">
         {blog.source || "Portfolio"} | {formattedDate}
         {readTime ? ` | ${readTime}` : ""}
       </p>
       <h3
-        className={`mt-2 font-semibold text-cyan-100 ${isCompact ? "line-clamp-2 min-h-[3.4rem] text-lg" : "text-xl"}`}
+        className={`mt-2 font-semibold text-slate-900 dark:text-cyan-100 ${isCompact ? "line-clamp-2 min-h-[3.4rem] text-lg" : "text-xl"}`}
       >
         {blog.title}
       </h3>
       <p
-        className={`mt-2 text-sm text-slate-300 ${isCompact ? "line-clamp-2 min-h-[3rem]" : "line-clamp-3"}`}
+        className={`mt-2 text-sm text-slate-600 dark:text-slate-300 ${isCompact ? "line-clamp-2 min-h-[3rem]" : "line-clamp-3"}`}
       >
         {blog.excerpt || blog.content}
       </p>
@@ -87,7 +87,7 @@ const BlogCard = ({
         {tags.slice(0, isCompact ? 3 : 4).map((tag) => (
           <span
             key={tag}
-            className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2 py-1 text-xs text-cyan-100"
+            className="rounded-md border border-slate-200 bg-slate-100 text-slate-700 dark:border-cyan-300/25 dark:bg-slate-900/80 dark:text-cyan-100 px-2 py-1 text-xs"
           >
             #{tag}
           </span>
@@ -96,7 +96,7 @@ const BlogCard = ({
 
       <Link
         to={`/blog/${blog.slug}`}
-        className={`inline-block text-sm font-semibold text-cyan-200 hover:text-cyan-100 ${isCompact ? "mt-auto pt-4" : "mt-5"}`}
+        className={`inline-block text-sm font-semibold text-slate-900 hover:text-green-600 dark:text-cyan-200 dark:hover:text-cyan-100 ${isCompact ? "mt-auto pt-4" : "mt-5"}`}
       >
         Read Article
       </Link>
