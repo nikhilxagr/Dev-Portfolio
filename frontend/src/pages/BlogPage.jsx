@@ -136,18 +136,18 @@ const BlogPage = () => {
           description="Articles from project builds, engineering practice, and experiments."
         />
 
-        <p className="mt-4 max-w-3xl text-sm text-slate-400">
+        <p className="mt-4 max-w-3xl text-sm font-medium text-slate-600 dark:text-slate-400">
           Includes backend posts and external writing from Medium and LinkedIn.
         </p>
 
-        <FadeInUp className="mt-8 rounded-2xl border border-cyan-300/20 bg-slate-950/70 p-4">
+        <FadeInUp className="mt-8 rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-white dark:bg-slate-950/70 p-4 shadow-sm dark:shadow-none">
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by title, content, or tags"
-            className="w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none placeholder:text-slate-500 focus:border-cyan-300"
+            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:placeholder:text-slate-500 dark:focus:border-cyan-300"
           />
-          <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500">
+          <p className="mt-3 text-xs font-bold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-500">
             Showing {displayBlogs.length} article
             {displayBlogs.length === 1 ? "" : "s"}
           </p>
@@ -181,23 +181,23 @@ const BlogPage = () => {
           ) : null}
 
           {loading && showBlogGrid ? (
-            <p className="mt-4 text-xs uppercase tracking-[0.14em] text-slate-500">
+            <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-500">
               Syncing latest articles...
             </p>
           ) : null}
 
           {!loading && featuredExternal.length > 0 ? (
-            <div className="mt-10 rounded-2xl border border-cyan-300/20 bg-slate-950/70 p-5">
-              <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+            <div className="mt-10 rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-white dark:bg-slate-950/70 p-5 shadow-sm dark:shadow-none">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800 dark:text-emerald-200">
                 Editorial Pick
               </p>
-              <h3 className="mt-1 text-lg font-semibold text-cyan-100">
+              <h3 className="mt-1 text-lg font-bold text-slate-900 dark:text-cyan-100">
                 Featured External Article
               </h3>
               {featuredExternal.map((article) => (
                 <article
                   key={article.slug}
-                  className="mt-4 rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4"
+                  className="mt-4 rounded-xl border border-slate-200 dark:border-cyan-300/20 bg-slate-50 dark:bg-slate-900/70 p-4"
                 >
                   <p className="text-xs uppercase tracking-[0.15em] text-emerald-200">
                     {article.source}

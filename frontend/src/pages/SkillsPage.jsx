@@ -103,21 +103,21 @@ const SkillsPage = () => {
         <StaggerGrid className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-2">
           {intelligentSkillDomains.map((domain) => (
             <StaggerItem key={domain.id} className="h-full">
-              <article className="skills-mobile-card group relative h-full overflow-hidden rounded-2xl border border-cyan-300/25 bg-slate-950/70 p-4 shadow-[0_18px_38px_-28px_rgba(2,8,20,0.9)] transition duration-300 hover:-translate-y-1 hover:border-cyan-300/45 hover:shadow-[0_26px_52px_-32px_rgba(34,211,238,0.32)] sm:p-6">
+              <article className="skills-mobile-card group relative h-full overflow-hidden rounded-2xl border border-slate-200 dark:border-cyan-300/25 bg-white dark:bg-slate-950/70 p-4 shadow-sm dark:shadow-[0_18px_38px_-28px_rgba(2,8,20,0.9)] transition duration-300 hover:-translate-y-1 hover:border-emerald-500 dark:hover:border-cyan-300/45 dark:hover:shadow-[0_26px_52px_-32px_rgba(34,211,238,0.32)] sm:p-6">
                 <div
                   className={`pointer-events-none absolute inset-x-0 top-0 h-px animate-pulseLine bg-gradient-to-r from-transparent ${domain.accentClass} to-transparent`}
                 />
                 <div className="pointer-events-none absolute -right-14 -top-14 h-28 w-28 rounded-full bg-cyan-300/10 blur-3xl transition duration-300 group-hover:scale-125" />
 
                 <div className="relative">
-                  <div className="skills-mobile-icon inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-300/35 bg-cyan-300/10 text-cyan-100 sm:h-10 sm:w-10">
+                  <div className="skills-mobile-icon inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-700 dark:border-cyan-300/35 dark:bg-cyan-300/10 dark:text-cyan-100 sm:h-10 sm:w-10">
                     <domain.Icon size={17} />
                   </div>
 
-                  <h3 className="skills-mobile-title mt-3 text-xl font-semibold text-cyan-100 sm:text-2xl">
+                  <h3 className="skills-mobile-title mt-3 text-xl font-bold text-slate-900 dark:text-cyan-100 sm:text-2xl">
                     {domain.title}
                   </h3>
-                  <p className="skills-mobile-summary mt-2 text-sm leading-6 text-slate-300 sm:leading-7">
+                  <p className="skills-mobile-summary mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300 sm:leading-7">
                     {domain.summary}
                   </p>
 

@@ -95,8 +95,16 @@ const Navbar = () => {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [open]);
 
@@ -342,25 +350,22 @@ const Navbar = () => {
             type="button"
             aria-label="Close menu overlay"
             onClick={() => setOpen(false)}
-            className={clsx(
-              "absolute inset-0 backdrop-blur-sm",
-              isDark ? "bg-slate-950/70" : "bg-slate-900/35",
-            )}
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           />
 
           <aside
             className={clsx(
-              "absolute left-0 top-0 flex h-screen w-[min(84vw,300px)] flex-col p-6 z-50 transition-all duration-300 ease-out border-r",
+              "absolute left-0 top-0 flex h-full max-h-screen w-[min(85vw,310px)] flex-col overflow-y-auto p-5 sm:p-6 z-50 transition-all duration-300 ease-out border-r",
               isDark
-                ? "bg-[#050d14]/98 border-sky-400/20 backdrop-blur-2xl text-white shadow-[10px_0_50px_rgba(0,10,25,0.9)]"
-                : "bg-white/98 border-slate-200/80 backdrop-blur-2xl text-zinc-900 shadow-[10px_0_30px_rgba(0,0,0,0.08)]",
+                ? "bg-[#050d14] border-sky-400/20 text-white shadow-[10px_0_50px_rgba(0,10,25,0.9)]"
+                : "bg-white border-slate-300 text-slate-900 shadow-[10px_0_40px_rgba(0,0,0,0.18)]",
             )}
             role="dialog"
             aria-modal="true"
           >
             <div className={clsx(
-              "flex items-center justify-between pb-4 mb-4 border-b",
-              isDark ? "border-sky-400/15" : "border-slate-100"
+              "flex items-center justify-between pb-4 mb-3 border-b shrink-0",
+              isDark ? "border-sky-400/15" : "border-slate-200"
             )}>
               <span className={clsx(
                 "font-outfit text-[1.4rem] font-black tracking-[0.18em] uppercase select-none",
@@ -376,7 +381,7 @@ const Navbar = () => {
                   "rounded-full p-2 transition",
                   isDark
                     ? "text-zinc-400 hover:text-sky-400 hover:bg-sky-400/10"
-                    : "text-zinc-600 hover:text-sky-600 hover:bg-sky-50",
+                    : "text-slate-600 hover:text-emerald-700 hover:bg-emerald-50",
                 )}
                 aria-label="Close menu"
               >
@@ -384,11 +389,14 @@ const Navbar = () => {
               </button>
             </div>
 
-            <p className="text-[10px] uppercase tracking-[0.2em] text-sky-400 font-bold mb-3 px-2">
+            <p className={clsx(
+              "text-[10px] uppercase tracking-[0.2em] font-bold mb-2.5 px-1 shrink-0",
+              isDark ? "text-sky-400" : "text-emerald-700"
+            )}>
               Navigation
             </p>
 
-            <div className="space-y-1.5 overflow-y-auto pr-1 flex-1">
+            <div className="space-y-1.5 overflow-y-auto pr-1 flex-1 min-h-0">
               {NAV_LINKS.map((item) => {
                 const Icon = mobileNavIconMap[item.label] || Shield;
 
@@ -399,14 +407,14 @@ const Navbar = () => {
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
                       clsx(
-                        "group flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold border transition-all duration-300",
+                        "group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold border transition-all duration-200",
                         isActive
                           ? isDark
                             ? "bg-gradient-to-r from-sky-500/20 via-teal-500/20 to-green-500/20 border-sky-400/40 text-white shadow-[0_0_15px_rgba(56,189,248,0.25)]"
-                            : "bg-gradient-to-r from-sky-50 to-emerald-50 border-sky-300/50 text-slate-900 shadow-sm"
+                            : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 shadow-sm"
                           : isDark
-                            ? "border-transparent text-zinc-400 hover:text-white hover:border-sky-500/30 hover:bg-gradient-to-r hover:from-sky-500/10 hover:via-teal-500/10 hover:to-green-500/10 hover:shadow-[0_0_20px_rgba(56,189,248,0.15)]"
-                            : "border-transparent text-zinc-600 hover:text-slate-900 hover:border-sky-300/40 hover:bg-gradient-to-r hover:from-sky-50 hover:to-emerald-50",
+                            ? "border-transparent text-zinc-400 hover:text-white hover:border-sky-500/30 hover:bg-gradient-to-r hover:from-sky-500/10 hover:via-teal-500/10 hover:to-green-500/10"
+                            : "border-transparent text-slate-800 hover:text-slate-950 hover:border-slate-300 hover:bg-slate-100",
                       )
                     }
                   >
@@ -417,21 +425,24 @@ const Navbar = () => {
                           className={clsx(
                             "transition-colors duration-200",
                             isActive
-                              ? "text-sky-400"
+                              ? isDark ? "text-sky-400" : "text-emerald-600"
                               : isDark
                                 ? "text-zinc-500 group-hover:text-sky-400"
-                                : "text-zinc-400 group-hover:text-sky-600",
+                                : "text-slate-500 group-hover:text-emerald-700",
                           )}
                         />
                         <span className="flex-1 tracking-wide">{item.label}</span>
                         {isActive ? (
-                          <span className="h-2 w-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
+                          <span className={clsx(
+                            "h-2 w-2 rounded-full",
+                            isDark ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]" : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
+                          )} />
                         ) : (
                           <ChevronRight
                             size={14}
                             className={clsx(
                               "opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all duration-200",
-                              isDark ? "text-zinc-500 group-hover:text-green-400" : "text-zinc-400 group-hover:text-green-600"
+                              isDark ? "text-zinc-500 group-hover:text-green-400" : "text-slate-400 group-hover:text-emerald-600"
                             )}
                           />
                         )}
@@ -443,8 +454,8 @@ const Navbar = () => {
             </div>
 
             <div className={clsx(
-              "mt-auto space-y-3 pt-5 border-t",
-              isDark ? "border-sky-400/15" : "border-slate-100"
+              "mt-auto space-y-2.5 pt-4 border-t shrink-0",
+              isDark ? "border-sky-400/15" : "border-slate-200"
             )}>
               <button
                 type="button"
@@ -452,16 +463,16 @@ const Navbar = () => {
                 className={clsx(
                   "flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-xs font-bold transition border",
                   isDark
-                    ? "border-transparent text-zinc-400 hover:text-white hover:border-sky-500/20 hover:bg-sky-500/10"
-                    : "border-transparent text-zinc-600 hover:text-zinc-900 hover:bg-slate-100",
+                    ? "border-sky-500/20 bg-slate-900/60 text-zinc-300 hover:text-white hover:border-sky-400/40"
+                    : "border-slate-300 bg-slate-100 text-slate-800 hover:bg-slate-200 hover:border-slate-400",
                 )}
                 aria-label="Toggle theme"
               >
                 <span className="tracking-wide">Theme Mode</span>
                 {isDark ? (
-                  <ToggleRight size={18} className="text-sky-400" />
+                  <ToggleRight size={20} className="text-sky-400" />
                 ) : (
-                  <ToggleLeft size={18} />
+                  <ToggleLeft size={20} className="text-emerald-600" />
                 )}
               </button>
 
@@ -477,7 +488,7 @@ const Navbar = () => {
                 View Resume
               </a>
 
-              <p className="text-[10px] text-center text-zinc-500 font-medium pt-1">
+              <p className="text-[10px] text-center text-slate-500 dark:text-zinc-500 font-medium pt-0.5">
                 Made with 💚 by Nikhil
               </p>
             </div>

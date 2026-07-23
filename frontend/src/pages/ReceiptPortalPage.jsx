@@ -144,13 +144,13 @@ const ReceiptPortalPage = () => {
               Step 1: Request Access Code
             </h2>
             <form onSubmit={handleRequestCode} className="mt-3 space-y-3">
-              <label className="block text-sm text-slate-200">
+              <label className="block text-sm font-bold text-slate-800 dark:text-slate-200">
                 Payment Email
                 <input
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:focus:border-cyan-300"
                 />
               </label>
               <Button type="submit" disabled={submitting} className="w-full">
@@ -159,11 +159,11 @@ const ReceiptPortalPage = () => {
               </Button>
             </form>
 
-            <h2 className="mt-6 text-lg font-semibold text-cyan-100">
+            <h2 className="mt-6 text-lg font-bold text-slate-900 dark:text-cyan-100">
               Step 2: Verify Code
             </h2>
             <form onSubmit={handleVerifyCode} className="mt-3 space-y-3">
-              <label className="block text-sm text-slate-200">
+              <label className="block text-sm font-bold text-slate-800 dark:text-slate-200">
                 6-Digit Access Code
                 <input
                   type="text"
@@ -173,7 +173,7 @@ const ReceiptPortalPage = () => {
                   onChange={(event) =>
                     setAccessCode(event.target.value.replace(/\D/g, ""))
                   }
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm tracking-[0.2em] text-slate-200 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm tracking-[0.2em] text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:focus:border-cyan-300"
                 />
               </label>
               <Button type="submit" disabled={submitting} className="w-full">

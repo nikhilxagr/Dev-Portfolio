@@ -231,12 +231,12 @@ const SupportPage = () => {
                   onChange={(event) =>
                     updateSupportForm("customerName", event.target.value)
                   }
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
                   placeholder="Your full name"
                 />
               </label>
 
-              <label className="text-xs text-slate-300">
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-300">
                 Email
                 <input
                   type="email"
@@ -244,12 +244,12 @@ const SupportPage = () => {
                   onChange={(event) =>
                     updateSupportForm("customerEmail", event.target.value)
                   }
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
                   placeholder="you@example.com"
                 />
               </label>
 
-              <label className="text-xs text-slate-300">
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-300">
                 Phone
                 <input
                   type="text"
@@ -257,12 +257,12 @@ const SupportPage = () => {
                   onChange={(event) =>
                     updateSupportForm("customerPhone", event.target.value)
                   }
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
                   placeholder="9876543210"
                 />
               </label>
 
-              <label className="text-xs text-slate-300">
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-300">
                 Amount (INR)
                 <input
                   type="text"
@@ -274,14 +274,14 @@ const SupportPage = () => {
                       event.target.value.replace(/\D/g, ""),
                     )
                   }
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
                   placeholder="99"
                 />
               </label>
             </div>
 
             <div className="mt-4">
-              <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400">
                 Quick amounts
               </p>
               <div className="mt-2 flex flex-wrap gap-2">

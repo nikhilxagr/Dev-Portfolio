@@ -354,7 +354,7 @@ const AboutPage = () => {
                 </a>
               </div>
 
-              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+              <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-cyan-300/20 bg-slate-50 dark:bg-slate-950/80 p-2">
                 <img
                   src={githubStreakCardUrl}
                   alt={`GitHub streak stats for ${githubUsername}`}
@@ -366,22 +366,22 @@ const AboutPage = () => {
               </div>
             </article>
 
-            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
+            <article className="group h-full rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-white dark:bg-slate-900/55 p-4 sm:p-5 shadow-sm dark:shadow-none">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-cyan-100 sm:text-2xl">
                   LeetCode Stats
                 </h3>
                 <a
                   href={QUICK_CONTACT.leetcode}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                  className="text-sm font-semibold text-emerald-700 dark:text-cyan-200 transition hover:text-emerald-800 dark:hover:text-cyan-100"
                 >
                   Open ↗
                 </a>
               </div>
 
-              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+              <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-cyan-300/20 bg-slate-50 dark:bg-slate-950/80 p-2">
                 <img
                   src={leetcodeCardUrl}
                   alt={`LeetCode stats for ${leetcodeUsername}`}
@@ -393,26 +393,26 @@ const AboutPage = () => {
               </div>
             </article>
 
-            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5 md:col-span-2 xl:col-span-1">
+            <article className="group h-full rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-white dark:bg-slate-900/55 p-4 sm:p-5 md:col-span-2 xl:col-span-1 shadow-sm dark:shadow-none">
               <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-cyan-100 sm:text-2xl">
                   TryHackMe Proof
                 </h3>
                 <a
                   href={QUICK_CONTACT.tryhackme}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
+                  className="text-sm font-semibold text-emerald-700 dark:text-cyan-200 transition hover:text-emerald-800 dark:hover:text-cyan-100"
                 >
                   Open ↗
                 </a>
               </div>
 
-              <div className="mb-3 inline-flex rounded-full border border-emerald-300/40 bg-emerald-300/10 px-3 py-1 text-xs font-semibold text-emerald-100">
+              <div className="mb-3 inline-flex rounded-full border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-300/40 dark:bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-100">
                 {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
               </div>
 
-              <div className="overflow-hidden rounded-xl border border-cyan-300/20 bg-slate-950/80 p-2">
+              <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-cyan-300/20 bg-slate-50 dark:bg-slate-950/80 p-2">
                 <img
                   src={tryHackMeCardUrl}
                   alt={`TryHackMe badge for ${tryHackMeUsername}`}

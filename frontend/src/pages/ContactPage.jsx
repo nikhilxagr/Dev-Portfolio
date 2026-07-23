@@ -176,60 +176,60 @@ const ContactPage = () => {
           >
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/60 to-transparent" />
 
-            <div className="mb-5 rounded-xl border border-cyan-300/25 bg-slate-900/70 p-4">
-              <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+            <div className="mb-5 rounded-xl border border-slate-200 dark:border-cyan-300/25 bg-slate-100 dark:bg-slate-900/70 p-4">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800 dark:text-emerald-200">
                 Collaboration Brief
               </p>
-              <p className="mt-2 text-sm text-slate-300">
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
                 Share your scope, timeline, and goal. You will receive a direct
                 response with next steps.
               </p>
-              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-slate-500">
+              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-500">
                 Typical response time: within 12-24 hours
               </p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="text-sm text-slate-200">
+              <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
                 Name
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:focus:border-cyan-300"
                 />
               </label>
 
-              <label className="text-sm text-slate-200">
+              <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
                 Email
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:focus:border-cyan-300"
                 />
               </label>
 
-              <label className="text-sm text-slate-200">
+              <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
                 Phone
                 <input
                   type="text"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:focus:border-cyan-300"
                 />
               </label>
 
-              <label className="text-sm text-slate-200">
+              <label className="text-sm font-bold text-slate-800 dark:text-slate-200">
                 Service
                 <select
                   name="service"
                   value={formData.service}
                   onChange={handleChange}
-                  className="mt-1 w-full rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:focus:border-cyan-300"
                 >
                   <option value="">Select a service (optional)</option>
                   {SERVICE_OFFERINGS.map((item) => (
@@ -247,10 +247,10 @@ const ContactPage = () => {
                   key={item.slug}
                   type="button"
                   onClick={() => selectService(item.name)}
-                  className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                  className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
                     formData.service === item.name
-                      ? "border-cyan-300 bg-cyan-300/15 text-cyan-100"
-                      : "border-cyan-300/20 text-slate-300 hover:border-cyan-300/55 hover:text-cyan-100"
+                      ? "border-emerald-500 bg-emerald-500/15 text-emerald-800 dark:border-cyan-300 dark:bg-cyan-300/15 dark:text-cyan-100"
+                      : "border-slate-300 bg-slate-50 text-slate-700 hover:border-emerald-500 dark:border-cyan-300/20 dark:bg-transparent dark:text-slate-300 dark:hover:border-cyan-300/55 dark:hover:text-cyan-100"
                   }`}
                 >
                   {item.name}
@@ -258,22 +258,22 @@ const ContactPage = () => {
               ))}
             </div>
 
-            <label className="mt-4 block text-sm text-slate-200">
+            <label className="mt-4 block text-sm font-bold text-slate-800 dark:text-slate-200">
               Message
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
                 rows={6}
-                className="mt-1 w-full resize-none rounded-xl border border-cyan-300/25 bg-slate-950/80 px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-300"
+                className="mt-1 w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:focus:border-cyan-300"
               />
             </label>
 
             {formError ? (
-              <p className="mt-3 text-sm text-rose-300">{formError}</p>
+              <p className="mt-3 text-sm font-bold text-rose-600 dark:text-rose-300">{formError}</p>
             ) : null}
             {formSuccess ? (
-              <p className="mt-3 text-sm text-emerald-300">{formSuccess}</p>
+              <p className="mt-3 text-sm font-bold text-emerald-700 dark:text-emerald-300">{formSuccess}</p>
             ) : null}
 
             <div className="mt-5">
@@ -285,46 +285,46 @@ const ContactPage = () => {
 
           <aside className="card-surface relative overflow-hidden rounded-3xl p-6">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/65 to-transparent" />
-            <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800 dark:text-emerald-200">
               Contact Hub
             </p>
-            <h3 className="mt-2 text-lg font-semibold text-cyan-100">
+            <h3 className="mt-2 text-lg font-bold text-slate-900 dark:text-cyan-100">
               All Contact Channels
             </h3>
-            <p className="mt-2 text-sm text-slate-300">
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
               {SITE_PROFILE.availability}
             </p>
 
-            <div className="mt-4 space-y-2 text-sm text-slate-200">
+            <div className="mt-4 space-y-2 text-sm font-medium text-slate-800 dark:text-slate-200">
               <a
                 href={`mailto:${QUICK_CONTACT.email}`}
-                className="flex items-center justify-between rounded-xl border border-cyan-300/20 bg-slate-900/65 px-3 py-2.5 transition hover:border-cyan-300/55 hover:text-cyan-100"
+                className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-emerald-500 dark:border-cyan-300/20 dark:bg-slate-900/65 dark:hover:border-cyan-300/55 dark:hover:text-cyan-100"
               >
                 <span className="inline-flex items-center gap-2">
-                  <Mail size={16} className="text-cyan-200" />
+                  <Mail size={16} className="text-emerald-600 dark:text-cyan-200" />
                   {QUICK_CONTACT.email}
                 </span>
-                <ExternalLink size={14} className="text-slate-500" />
+                <ExternalLink size={14} className="text-slate-400 dark:text-slate-500" />
               </a>
 
               <a
                 href={`tel:${QUICK_CONTACT.phone.replace(/\s+/g, "")}`}
-                className="flex items-center justify-between rounded-xl border border-cyan-300/20 bg-slate-900/65 px-3 py-2.5 transition hover:border-cyan-300/55 hover:text-cyan-100"
+                className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-emerald-500 dark:border-cyan-300/20 dark:bg-slate-900/65 dark:hover:border-cyan-300/55 dark:hover:text-cyan-100"
               >
                 <span className="inline-flex items-center gap-2">
-                  <PhoneCall size={16} className="text-cyan-200" />
+                  <PhoneCall size={16} className="text-emerald-600 dark:text-cyan-200" />
                   {QUICK_CONTACT.phone}
                 </span>
-                <ExternalLink size={14} className="text-slate-500" />
+                <ExternalLink size={14} className="text-slate-400 dark:text-slate-500" />
               </a>
 
-              <div className="flex items-center gap-2 rounded-xl border border-cyan-300/20 bg-slate-900/65 px-3 py-2.5 text-slate-300">
-                <MapPin size={16} className="text-cyan-200" />
+              <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-slate-700 dark:border-cyan-300/20 dark:bg-slate-900/65 dark:text-slate-300">
+                <MapPin size={16} className="text-emerald-600 dark:text-cyan-200" />
                 {SITE_PROFILE.location}
               </div>
             </div>
 
-            <h4 className="mt-5 text-xs uppercase tracking-[0.16em] text-slate-500">
+            <h4 className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-500">
               Official Social and Coding Profiles
             </h4>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -335,10 +335,10 @@ const ContactPage = () => {
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="group flex items-center justify-between rounded-xl border border-cyan-300/20 bg-slate-900/65 px-3 py-2.5 text-sm text-slate-200 transition hover:-translate-y-0.5 hover:border-cyan-300/60 hover:text-cyan-100"
+                    className="group flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-800 transition hover:-translate-y-0.5 hover:border-emerald-500 dark:border-cyan-300/20 dark:bg-slate-900/65 dark:text-slate-200 dark:hover:border-cyan-300/60 dark:hover:text-cyan-100"
                   >
                     <span className="inline-flex items-center gap-2">
-                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-cyan-300/20 bg-slate-950/80">
+                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white dark:border-cyan-300/20 dark:bg-slate-950/80">
                         {item.label === "LinkedIn" ? (
                           <svg
                             viewBox="0 0 24 24"
