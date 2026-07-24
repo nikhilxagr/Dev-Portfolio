@@ -3,6 +3,9 @@ import {
   ArrowRight,
   Braces,
   Code2,
+  Cpu,
+  Database,
+  Sparkles,
   ShieldCheck,
   Download,
   ChevronDown,
@@ -25,6 +28,7 @@ import {
 import { FaGithub, FaLinkedinIn, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import Button from "@/components/ui/Button";
 import SectionTitle from "@/components/ui/SectionTitle";
+import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 import ProjectCard from "@/components/ui/ProjectCard";
@@ -1057,9 +1061,6 @@ const HomePage = () => {
       {/* S3: Dual Role Identity */}
       <DualRoleIdentity />
 
-      {/* S4: Interactive Terminal */}
-      <InteractiveTerminal />
-
       {/* S5: Featured Projects */}
       <section className="section-wrap section-divider pt-10">
         {/* Section Header */}
@@ -1188,44 +1189,88 @@ const HomePage = () => {
         </FadeInUp>
       </section>
 
-      {/* S7: Skills Showcase */}
-      <section className="section-wrap section-divider pt-10">
-        <FadeInUp className="relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-xl dark:border-green-400/20 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#082218] dark:to-[#050d14] dark:shadow-none p-6 sm:p-8">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_14%,rgba(34,197,94,0.12),transparent_36%),radial-gradient(circle_at_84%_82%,rgba(16,185,129,0.08),transparent_42%)] dark:block hidden" />
-
-          <div className="relative text-center">
-            <p className="text-xs uppercase tracking-[0.28em] text-green-600 dark:text-green-400 font-bold">Skills</p>
-            <h2 className="mt-2 text-4xl font-black sm:text-5xl lg:text-6xl">
-              <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-lime-300 bg-clip-text text-transparent">
-                My Skills
-              </span>
+      {/* S7: Technical Capabilities Showcase */}
+      <section id="skills" className="section-wrap section-divider pt-12 sm:pt-16 pb-10">
+        <FadeInUp className="mx-auto max-w-5xl">
+          <div className="text-center mb-10">
+            <span className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-green-600 dark:text-green-400">
+              // Technical Capabilities
+            </span>
+            <h2 className="mt-2 font-display text-3xl font-black text-slate-900 dark:text-white sm:text-4xl lg:text-5xl tracking-tight">
+              Engineering Stack &amp; Skills
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-slate-600 dark:text-slate-300 text-sm">
-              Core technologies I use to ship reliable, secure products and keep improving as an engineer.
+            <p className="mx-auto mt-3 max-w-2xl text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+              Organized by production domain—focusing on clean architecture, resilient APIs, and security-first engineering.
             </p>
           </div>
 
-          <StaggerGrid className="relative mt-8 grid gap-4 lg:grid-cols-3">
-            {MAIN_SKILL_SHOWCASE.map((item) => {
-              const Icon = skillIconMap[item.title] || Braces;
-              const visual = skillVisualMap[item.title] || skillVisualMap["Languages & Frameworks"];
+          <StaggerGrid className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                id: "frontend",
+                title: "Frontend Engineering",
+                desc: "Reactive web interfaces built with React, Next.js, and modular design systems.",
+                Icon: Code2,
+                skills: ["React", "Next.js", "JavaScript", "TypeScript", "Tailwind CSS", "Vite"],
+              },
+              {
+                id: "backend",
+                title: "Backend & APIs",
+                desc: "RESTful API services, server controllers, and authentication structures.",
+                Icon: Cpu,
+                skills: ["Node.js", "Express.js", "Python", "Postman", "C"],
+              },
+              {
+                id: "cybersecurity",
+                title: "Cybersecurity & Defense",
+                desc: "Vulnerability analysis, application auditing, and OWASP security standards.",
+                Icon: ShieldCheck,
+                skills: ["Kali Linux", "Burp Suite", "Nmap", "Wireshark", "Metasploit", "TryHackMe"],
+              },
+              {
+                id: "databases",
+                title: "Databases & Storage",
+                desc: "Document and relational database schemas optimized for low latency.",
+                Icon: Database,
+                skills: ["MongoDB", "PostgreSQL", "Supabase", "SQL"],
+              },
+              {
+                id: "devtools",
+                title: "DevOps & Tools",
+                desc: "Version control workflows, cloud deployments, and Linux environments.",
+                Icon: Terminal,
+                skills: ["Git", "GitHub", "Linux", "Vercel", "Render", "VS Code"],
+              },
+              {
+                id: "ai-productivity",
+                title: "AI & Productivity",
+                desc: "Leveraging LLM workflows for rapid code refactoring and architecture auditing.",
+                Icon: Sparkles,
+                skills: ["ChatGPT", "GitHub Copilot"],
+              },
+            ].map((cat) => {
+              const Icon = cat.Icon;
               return (
-                <StaggerItem key={item.id} className="h-full">
-                  <article className={`group relative h-full overflow-hidden rounded-2xl border p-4 sm:p-5 transition duration-300 hover:-translate-y-1 ${visual.cardClass}`}>
-                    <div className={`pointer-events-none absolute -top-12 -right-10 h-32 w-32 rounded-full blur-3xl ${visual.orbClass}`} />
-                    <div className="relative">
-                      <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl border ${visual.iconWrapClass}`}>
-                        <Icon className={visual.iconColorClass} size={24} />
+                <StaggerItem key={cat.id} className="h-full">
+                  <article className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white/90 p-5 shadow-md transition-all duration-300 ease-out hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-xl dark:border-slate-800/90 dark:bg-[#050d14]/90 dark:shadow-none dark:hover:border-emerald-400/40">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-emerald-400">
+                          <Icon size={18} />
+                        </span>
+                        <h3 className="font-display text-base font-bold text-slate-900 dark:text-white">
+                          {cat.title}
+                        </h3>
                       </div>
-                      <h3 className={`mt-3 text-xl font-bold sm:mt-4 sm:text-2xl ${visual.titleClass}`}>{item.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300 sm:mt-3 sm:leading-7">{item.summary}</p>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {item.tags.map((tag) => (
-                          <span key={tag} className={`rounded-full border px-3 py-1 text-xs font-medium transition ${visual.tagClass}`}>
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                      <p className="mt-2.5 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        {cat.desc}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-1.5 pt-3 border-t border-slate-100 dark:border-slate-800/60">
+                      {cat.skills.map((skill) => (
+                        <SkillLogoBadge key={skill} skill={skill} className="!px-2 !py-1 !text-[11px]" />
+                      ))}
                     </div>
                   </article>
                 </StaggerItem>
@@ -1233,12 +1278,12 @@ const HomePage = () => {
             })}
           </StaggerGrid>
 
-          <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button to="/skills" className="bg-green-500 text-black hover:bg-green-400">
-              View All Skills <ArrowRight size={16} />
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button to="/skills" variant="primary">
+              View Complete Skills Taxonomy <ArrowRight size={16} />
             </Button>
-            <Button to="/security" variant="ghost" className="border-green-500/40 text-green-700 hover:bg-green-500/10 dark:border-green-400/40 dark:text-green-300 dark:hover:bg-green-400/10">
-              Security Labs
+            <Button to="/projects" variant="ghost">
+              See Skills in Projects
             </Button>
           </div>
         </FadeInUp>

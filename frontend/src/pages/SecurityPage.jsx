@@ -72,18 +72,18 @@ const SecurityPage = () => {
 
               <div className="relative">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+                  <p className="text-xs uppercase tracking-[0.16em] font-extrabold text-emerald-700 dark:text-emerald-200">
                     {item.focus}
                   </p>
-                  <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2.5 py-1 text-xs font-medium text-cyan-100">
+                  <span className="rounded-full border border-emerald-500/30 dark:border-cyan-300/25 bg-emerald-500/10 dark:bg-cyan-300/10 px-2.5 py-1 text-xs font-bold text-emerald-900 dark:text-cyan-100">
                     {item.level}
                   </span>
                 </div>
 
-                <h3 className="mt-3 text-xl font-semibold text-cyan-100 sm:text-2xl">
+                <h3 className="mt-3 text-xl font-bold text-slate-900 dark:text-cyan-100 sm:text-2xl">
                   {item.title}
                 </h3>
-                <p className="mt-3 text-sm leading-7 text-slate-300">
+                <p className="mt-3 text-sm leading-7 text-slate-700 dark:text-slate-300">
                   {item.summary}
                 </p>
 
@@ -91,18 +91,18 @@ const SecurityPage = () => {
                   {item.tools.map((tool) => (
                     <span
                       key={`${item.slug}-${tool}`}
-                      className="rounded-md border border-cyan-300/20 bg-slate-900/70 px-2.5 py-1 text-xs text-slate-300"
+                      className="rounded-lg border border-slate-300 dark:border-cyan-300/20 bg-slate-100 dark:bg-slate-900/70 px-2.5 py-1 text-xs font-bold text-slate-800 dark:text-slate-300"
                     >
                       {tool}
                     </span>
                   ))}
                 </div>
 
-                <div className="mt-4 flex flex-wrap gap-2 text-xs uppercase tracking-[0.12em]">
-                  <span className="rounded-full border border-emerald-300/35 bg-emerald-300/10 px-2.5 py-1 text-emerald-100">
+                <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold uppercase tracking-[0.12em]">
+                  <span className="rounded-full border border-emerald-600/40 dark:border-emerald-300/35 bg-emerald-600/10 dark:bg-emerald-300/10 px-2.5 py-1 text-emerald-900 dark:text-emerald-100">
                     Status: {formatStatusLabel(item.status)}
                   </span>
-                  <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-2.5 py-1 text-cyan-100">
+                  <span className="rounded-full border border-teal-600/40 dark:border-cyan-300/30 bg-teal-600/10 dark:bg-cyan-300/10 px-2.5 py-1 text-teal-900 dark:text-cyan-100">
                     Writeup: {formatStatusLabel(item.writeupStatus)}
                   </span>
                 </div>
@@ -116,10 +116,10 @@ const SecurityPage = () => {
         <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
           <article className="card-surface rounded-3xl p-5 sm:p-6">
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-300/30 bg-cyan-300/10 text-cyan-100">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-emerald-500/30 dark:border-cyan-300/30 bg-emerald-500/10 dark:bg-cyan-300/10 text-emerald-700 dark:text-cyan-100">
                 <Wrench size={17} />
               </span>
-              <h2 className="text-xl font-semibold text-cyan-100">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-cyan-100">
                 Tools Used Across Labs
               </h2>
             </div>
@@ -128,7 +128,7 @@ const SecurityPage = () => {
               {allTools.map((tool) => (
                 <span
                   key={tool}
-                  className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2.5 py-1 text-xs font-medium text-cyan-100"
+                  className="rounded-lg border border-slate-300 dark:border-cyan-300/25 bg-slate-100 dark:bg-slate-900/80 px-2.5 py-1 text-xs font-bold text-slate-800 dark:text-cyan-100"
                 >
                   {tool}
                 </span>
