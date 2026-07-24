@@ -100,15 +100,20 @@ const ProjectDetailsPage = () => {
       {!loading && !error && project ? (
         <>
           <SeoHead
-            title={project.title}
-            description={project.description || project.solutionSummary}
+            title={`${project.title} - Web Project by Nikhil Agrahari (Full Stack Developer Lucknow & Prayagraj)`}
+            description={project.description || project.solutionSummary || `Explore ${project.title}, a full stack web application built by Nikhil Agrahari, premier developer in Lucknow & Prayagraj.`}
             pathname={canonicalPath}
             image={previewImage}
-            imageAlt={`${project.title} cover`}
+            imageAlt={`${project.title} - Project by Nikhil Agrahari`}
             keywords={[
+              project.title,
+              `${project.title} Nikhil Agrahari`,
+              `${project.title} Full Stack Project`,
+              "best full stack developer in lucknow projects",
+              "best full stack developer in prayagraj projects",
               project.category,
               ...(Array.isArray(project.techStack) ? project.techStack : []),
-              "Nikhil project",
+              "Nikhil Agrahari Lucknow Prayagraj",
             ]}
             jsonLd={[
               createBreadcrumbSchema([

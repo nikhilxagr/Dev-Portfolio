@@ -59,7 +59,10 @@ const SeoHead = ({
       <meta name="robots" content={robots} />
       <meta name="author" content={SEO_DEFAULTS.author} />
       <meta name="keywords" content={keywordContent} />
-      <meta name="geo.placename" content={SEO_DEFAULTS.locationLabel} />
+      <meta name="geo.region" content="IN-UP" />
+      <meta name="geo.placename" content="Lucknow, Prayagraj, Uttar Pradesh, India" />
+      <meta name="geo.position" content="26.8467;80.9462" />
+      <meta name="ICBM" content="26.8467, 80.9462" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content={SEO_DEFAULTS.twitterHandle} />
       <meta name="twitter:creator" content={SEO_DEFAULTS.twitterHandle} />

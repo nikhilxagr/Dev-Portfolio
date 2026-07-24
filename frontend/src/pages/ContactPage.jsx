@@ -146,15 +146,16 @@ const ContactPage = () => {
   return (
     <>
       <SeoHead
-        title="Contact"
-        description="Contact Nikhil Agrahari for project inquiries, freelance collaboration, mentorship, and developer support from Lucknow."
+        title="Contact Nikhil Agrahari | Best Full Stack Developer in Lucknow & Prayagraj"
+        description="Get in touch with Nikhil Agrahari — premier Full Stack Developer & MERN Stack Engineer in Lucknow & Prayagraj. Available for web projects, freelance work, and technical collaborations."
         pathname="/contact"
         image={SITE_PROFILE.profileImage}
-        imageAlt={SITE_PROFILE.profileImageAlt}
+        imageAlt="Contact Nikhil Agrahari - Full Stack Developer Lucknow Prayagraj"
         keywords={[
-          "Contact Nikhil Lucknow",
-          "Nikhil BBD contact",
-          "Nikhil portfolio contact",
+          "contact best full stack developer in lucknow",
+          "contact best full stack developer in prayagraj",
+          "contact Nikhil Agrahari",
+          "hire developer Lucknow Prayagraj",
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", path: "/" },

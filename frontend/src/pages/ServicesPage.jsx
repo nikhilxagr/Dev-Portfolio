@@ -289,13 +289,15 @@ const ServicesPage = () => {
   return (
     <>
       <SeoHead
-        title="Services"
-        description="Services by Nikhil Agrahari including mentorship, resume review, frontend/backend development, and full stack delivery."
+        title="Hire Best Full Stack Developer in Lucknow & Prayagraj | Nikhil Agrahari Services"
+        description="Hire the Best Full Stack Developer in Lucknow & Prayagraj. Professional web app development, MERN stack solutions, custom APIs, AI integration, and security auditing."
         pathname="/services"
         keywords={[
-          "Nikhil services",
-          "Nikhil Lucknow mentorship",
-          "Nikhil portfolio services",
+          "hire full stack developer in lucknow",
+          "freelance web developer prayagraj",
+          "best full stack developer in lucknow services",
+          "best full stack developer in prayagraj services",
+          "web application development Lucknow Prayagraj",
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", path: "/" },

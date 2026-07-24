@@ -41,7 +41,11 @@ import { getProjects } from "@/services/projects.service";
 import { getBlogs } from "@/services/blogs.service";
 import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
-import { createPersonSchema, createWebSiteSchema } from "@/utils/seo";
+import {
+  createPersonSchema,
+  createProfessionalServiceSchema,
+  createWebSiteSchema,
+} from "@/utils/seo";
 import {
   BLOG_LINKS,
   HERO_CONTENT,
@@ -1036,20 +1040,30 @@ const HomePage = () => {
   return (
     <>
       <SeoHead
-        title={SITE_PROFILE.title}
-        description="Portfolio of Nikhil Agrahari — Full Stack Developer and Cybersecurity enthusiast from Lucknow. TryHackMe Top 1%, MERN stack projects, security labs, and AppSec practicals."
+        title="Nikhil Agrahari | Best Full Stack Developer in Lucknow & Prayagraj"
+        description="Nikhil Agrahari is the Best Full Stack Developer & MERN Stack Engineer in Lucknow and Prayagraj, UP. Expert in React, Node.js, AI web application development & secure software engineering."
         pathname="/"
         image={SITE_PROFILE.profileImage}
-        imageAlt={SITE_PROFILE.profileImageAlt}
+        imageAlt="Nikhil Agrahari - Best Full Stack Developer in Lucknow & Prayagraj"
         keywords={[
-          "Nikhil Lucknow",
-          "Nikhil BBD",
-          "Nikhil Portfolio",
-          "BBD University",
-          "Full stack developer Lucknow",
-          "Cyber security intern",
+          "best full stack developer in lucknow",
+          "best full stack developer in prayagraj",
+          "top full stack developer lucknow",
+          "top full stack developer prayagraj",
+          "full stack developer prayagraj",
+          "full stack web developer lucknow",
+          "best mern stack developer in lucknow",
+          "best mern stack developer in prayagraj",
+          "hire full stack developer in lucknow",
+          "freelance web developer prayagraj",
+          "nikhil agrahari full stack developer",
+          "Nikhil BBD Lucknow",
         ]}
-        jsonLd={[createPersonSchema(), createWebSiteSchema()]}
+        jsonLd={[
+          createPersonSchema(),
+          createWebSiteSchema(),
+          createProfessionalServiceSchema(),
+        ]}
       />
 
       {/* S1: Hero */}

@@ -69,16 +69,17 @@ const AboutPage = () => {
   return (
     <>
       <SeoHead
-        title="About"
-        description="About Nikhil Agrahari, BCA student at BBD University Lucknow, focused on full stack development, practical engineering workflows, and reliable product execution."
+        title="About Nikhil Agrahari | Best Full Stack Developer in Lucknow & Prayagraj"
+        description="Learn about Nikhil Agrahari, the premier Full Stack Developer & BCA Engineer based in Lucknow and Prayagraj, UP. Discover technical background, MERN stack expertise, and security skills."
         pathname="/about"
         image={SITE_PROFILE.profileImage}
-        imageAlt={SITE_PROFILE.profileImageAlt}
+        imageAlt="About Nikhil Agrahari - Best Full Stack Developer in Lucknow & Prayagraj"
         keywords={[
-          "Nikhil Lucknow",
-          "Nikhil BBD",
-          "About Nikhil Agrahari",
-          "BBD University student portfolio",
+          "best full stack developer in lucknow",
+          "best full stack developer in prayagraj",
+          "about Nikhil Agrahari",
+          "BBD University developer",
+          "MERN stack engineer Lucknow Prayagraj",
         ]}
         jsonLd={[
           createPersonSchema(),

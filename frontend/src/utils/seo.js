@@ -74,25 +74,39 @@ export const createPersonSchema = () => {
     "@context": "https://schema.org",
     "@type": "Person",
     name: PERSON_ENTITY.name,
-    alternateName: PERSON_ENTITY.alternateName,
+    alternateName: [PERSON_ENTITY.alternateName, "Nikhil Agrahari Lucknow", "Nikhil Agrahari Prayagraj"],
     jobTitle: PERSON_ENTITY.jobTitle,
     description: PERSON_ENTITY.description,
     email: PERSON_ENTITY.email,
     telephone: PERSON_ENTITY.telephone,
     url: siteUrl,
     image: toAbsoluteUrl(SEO_DEFAULTS.defaultImage),
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Lucknow" },
+      { "@type": "AdministrativeArea", name: "Prayagraj" },
+      { "@type": "AdministrativeArea", name: "Uttar Pradesh" },
+      { "@type": "Country", name: "India" },
+    ],
     knowsAbout: [
-      "Full Stack Development",
-      "Application Security",
-      "Secure Coding",
-      "MERN Stack",
-      "Node.js",
-      "React",
-      "API Design",
+      "Full Stack Web Development",
+      "MERN Stack (MongoDB, Express, React, Node.js)",
+      "Best Web Development in Lucknow",
+      "Best Web Development in Prayagraj",
+      "Application Security & AppSec",
+      "Secure Coding & Penetration Testing",
+      "AI Web Integration & Automation",
+      "RESTful API & GraphQL Design",
+      "Tailwind CSS & Modern UI/UX",
     ],
     alumniOf: {
       "@type": "CollegeOrUniversity",
       name: PERSON_ENTITY.alumniOf,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Lucknow",
+        addressRegion: "Uttar Pradesh",
+        addressCountry: "India",
+      },
     },
     address: {
       "@type": "PostalAddress",
@@ -104,6 +118,55 @@ export const createPersonSchema = () => {
   };
 };
 
+export const createProfessionalServiceSchema = () => {
+  const siteUrl = getSiteUrl();
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: "Nikhil Agrahari - Best Full Stack Developer in Lucknow & Prayagraj",
+    image: toAbsoluteUrl(SEO_DEFAULTS.defaultImage),
+    url: siteUrl,
+    telephone: PERSON_ENTITY.telephone,
+    email: PERSON_ENTITY.email,
+    priceRange: "$$",
+    description:
+      "Premier Full Stack & MERN Stack Web Development Services in Lucknow and Prayagraj. Offering high-performance web applications, custom API integration, cybersecurity auditing, and AI software engineering.",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Lucknow",
+      addressRegion: "Uttar Pradesh",
+      addressCountry: "India",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 26.8467,
+      longitude: 80.9462,
+    },
+    areaServed: [
+      { "@type": "City", name: "Lucknow" },
+      { "@type": "City", name: "Prayagraj" },
+      { "@type": "State", name: "Uttar Pradesh" },
+      { "@type": "Country", name: "India" },
+    ],
+    knowsLanguage: ["English", "Hindi"],
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: "09:00",
+      closes: "21:00",
+    },
+  };
+};
+
 export const createWebSiteSchema = () => {
   const siteUrl = getSiteUrl();
 
@@ -111,7 +174,11 @@ export const createWebSiteSchema = () => {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SEO_DEFAULTS.siteTitle,
-    alternateName: SEO_DEFAULTS.brandName,
+    alternateName: [
+      "Nikhil Agrahari Portfolio",
+      "Best Full Stack Developer Lucknow",
+      "Best Full Stack Developer Prayagraj",
+    ],
     url: siteUrl,
     inLanguage: "en-IN",
     publisher: {

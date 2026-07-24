@@ -102,13 +102,15 @@ const ProjectsPage = () => {
   return (
     <>
       <SeoHead
-        title="Projects"
-        description="Project portfolio of Nikhil Agrahari covering web development, secure engineering practical builds, and AI-focused experiments."
+        title="Full Stack Web Projects | Nikhil Agrahari - Developer in Lucknow & Prayagraj"
+        description="Explore production-ready MERN stack applications, web platforms, AI tools, and secure engineering projects built by Nikhil Agrahari in Lucknow & Prayagraj."
         pathname="/projects"
         keywords={[
-          "Nikhil portfolio projects",
-          "Nikhil Lucknow projects",
-          "full stack and engineering projects",
+          "best full stack developer in lucknow projects",
+          "best full stack developer in prayagraj projects",
+          "Nikhil Agrahari projects",
+          "MERN stack web projects Lucknow Prayagraj",
+          "Full stack web development portfolio",
         ]}
         jsonLd={[
           createBreadcrumbSchema([

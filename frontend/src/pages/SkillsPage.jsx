@@ -81,16 +81,16 @@ const SkillsPage = () => {
   return (
     <>
       <SeoHead
-        title="Technical Skills & Capabilities"
-        description="Technical capabilities of Nikhil Agrahari across full stack frontend architecture, backend REST APIs, application security, databases, and DevOps."
+        title="Full Stack & MERN Developer Technical Skills | Nikhil Agrahari (Lucknow & Prayagraj)"
+        description="Comprehensive technical capabilities of Nikhil Agrahari: React.js, Node.js, Express, MongoDB, Next.js, Web Security, AI Integration, and cloud tools."
         pathname="/skills"
         image={SITE_PROFILE.profileImage}
-        imageAlt={SITE_PROFILE.profileImageAlt}
+        imageAlt="Nikhil Agrahari - Full Stack Developer Skills in Lucknow & Prayagraj"
         keywords={[
-          "Nikhil Agrahari skills",
-          "Full stack developer technical skills",
-          "Application security practitioner skills",
-          "React Node.js MongoDB Cybersecurity",
+          "best full stack developer in lucknow skills",
+          "best full stack developer in prayagraj skills",
+          "MERN stack skills Lucknow Prayagraj",
+          "React Node.js MongoDB developer skills",
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", path: "/" },
