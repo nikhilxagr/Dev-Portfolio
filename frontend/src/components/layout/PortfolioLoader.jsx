@@ -1,184 +1,259 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SITE_PROFILE } from "@/constants/siteData";
 
 const MotionDiv = motion.div;
-const LOADER_DURATION_MS = 1800;
-const REDUCED_MOTION_DURATION_MS = 700;
-const FINISH_DELAY_MS = 280;
-const STATUS_STAGES = [
-  { threshold: 0, label: "Loading portfolio" },
-  { threshold: 45, label: "Preparing content" },
-  { threshold: 80, label: "Almost ready" },
-  { threshold: 100, label: "Ready" },
+
+// Three Core Pillar Identities
+const PILLARS = [
+  {
+    id: "fullstack",
+    number: "01",
+    role: "FULL STACK",
+    discipline: "ARCHITECT",
+    code: "NODE // REACT // CLOUD",
+    color: "#38bdf8", // Sky Blue
+    glow: "rgba(56, 189, 248, 0.4)",
+    borderColor: "rgba(56, 189, 248, 0.5)",
+  },
+  {
+    id: "security",
+    number: "02",
+    role: "CYBERSECURITY",
+    discipline: "DEFENDER",
+    code: "ZERO TRUST // APPSEC",
+    color: "#22c55e", // Emerald Green
+    glow: "rgba(34, 197, 94, 0.4)",
+    borderColor: "rgba(34, 197, 94, 0.5)",
+  },
+  {
+    id: "uiux",
+    number: "03",
+    role: "UI / UX",
+    discipline: "DESIGNER",
+    code: "DESIGN SYSTEMS // UX",
+    color: "#a855f7", // Purple/Violet
+    glow: "rgba(168, 85, 247, 0.4)",
+    borderColor: "rgba(168, 85, 247, 0.5)",
+  },
 ];
 
-const easeOutCubic = (value) => 1 - Math.pow(1 - value, 3);
+const DURATION_MS = 2200;
+const REDUCED_DURATION_MS = 800;
 
 const PortfolioLoader = ({ onComplete }) => {
   const prefersReducedMotion = useReducedMotion();
-  const [progress, setProgress] = useState(0);
-  const completionTriggeredRef = useRef(false);
+  const [activeStep, setActiveStep] = useState(0); // 0, 1, 2 for pillars, 3 for convergence
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    const duration = prefersReducedMotion
-      ? REDUCED_MOTION_DURATION_MS
-      : LOADER_DURATION_MS;
-    const startTime = window.performance.now();
-    let frameId = null;
+    const totalDuration = prefersReducedMotion ? REDUCED_DURATION_MS : DURATION_MS;
+    const stepInterval = totalDuration / 3.4;
 
-    const updateProgress = () => {
-      const currentTime = window.performance.now();
-      const elapsed = currentTime - startTime;
-      const normalized = Math.min(elapsed / duration, 1);
-      const easedProgress = easeOutCubic(normalized) * 100;
-      setProgress(easedProgress);
+    const timer1 = setTimeout(() => setActiveStep(1), stepInterval);
+    const timer2 = setTimeout(() => setActiveStep(2), stepInterval * 2);
+    const timer3 = setTimeout(() => setActiveStep(3), stepInterval * 2.8);
 
-      if (normalized < 1) {
-        frameId = window.requestAnimationFrame(updateProgress);
-      }
-    };
-
-    frameId = window.requestAnimationFrame(updateProgress);
+    const completeTimer = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(() => {
+        onComplete?.();
+      }, 400);
+    }, totalDuration);
 
     return () => {
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(completeTimer);
     };
-  }, [prefersReducedMotion]);
+  }, [onComplete, prefersReducedMotion]);
 
-  const roundedProgress = Math.min(100, Math.round(progress));
-  const currentStatus = useMemo(() => {
-    for (let index = STATUS_STAGES.length - 1; index >= 0; index -= 1) {
-      if (roundedProgress >= STATUS_STAGES[index].threshold) {
-        return STATUS_STAGES[index].label;
-      }
-    }
-
-    return STATUS_STAGES[0].label;
-  }, [roundedProgress]);
-
-  useEffect(() => {
-    if (roundedProgress < 100 || completionTriggeredRef.current) {
-      return;
-    }
-
-    completionTriggeredRef.current = true;
-
-    const finishTimeoutId = window.setTimeout(() => {
-      onComplete?.();
-    }, FINISH_DELAY_MS);
-
-    return () => {
-      window.clearTimeout(finishTimeoutId);
-    };
-  }, [onComplete, roundedProgress]);
+  const currentPillar = PILLARS[Math.min(activeStep, 2)];
 
   return (
     <MotionDiv
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#050b14]"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{
-        duration: prefersReducedMotion ? 0.12 : 0.22,
-        ease: "easeOut",
-      }}
-      aria-live="polite"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-[#03070d] text-white selection:bg-cyan-500 selection:text-black"
+      initial={{ opacity: 1 }}
+      animate={{ opacity: isExiting ? 0 : 1 }}
+      exit={{ opacity: 0, scale: 1.05 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       role="status"
-      aria-label="Loading portfolio"
+      aria-label="Initializing portfolio environment"
     >
-      <MotionDiv
-        className="relative flex w-[min(92vw,420px)] flex-col gap-5 rounded-2xl border border-cyan-300/20 bg-slate-950/88 px-6 py-7 text-center shadow-[0_14px_38px_rgba(2,8,20,0.46)]"
-        initial={{ y: prefersReducedMotion ? 0 : 8, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{
-          duration: prefersReducedMotion ? 0.1 : 0.2,
-          ease: "easeOut",
+      {/* Background Cybernetic Optics & Mesh Grid */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.06),transparent_60%)]" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: `linear-gradient(to right, #38bdf8 1px, transparent 1px), linear-gradient(to bottom, #38bdf8 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
         }}
-      >
-        <div className="relative mx-auto h-20 w-20">
+      />
+
+      {/* Top Precision Coordinates Header */}
+      <div className="absolute top-6 left-6 right-6 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500 sm:top-10 sm:left-10 sm:right-10">
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>SYSTEM // ONLINE</span>
+        </div>
+        <div className="hidden sm:block text-slate-600">
+          SECURE ENVIRONMENT V2.6
+        </div>
+        <div>
+          LUCKNOW, IN // 26.8467° N
+        </div>
+      </div>
+
+      {/* Main Center Cinematic Aperture Container */}
+      <div className="relative flex w-full max-w-lg flex-col items-center justify-center px-6">
+        
+        {/* Futuristic Optics Diamond Frame */}
+        <div className="relative flex h-32 w-32 items-center justify-center sm:h-40 sm:w-40">
+          
+          {/* Outer Rotating Laser Diamond Ring */}
           <MotionDiv
-            className="absolute inset-0 rounded-full border border-cyan-300/45"
-            style={{ willChange: "transform" }}
-            animate={{ rotate: 360 }}
+            className="absolute inset-0 rounded-2xl border"
+            style={{
+              borderColor: currentPillar.borderColor,
+              boxShadow: `0 0 30px ${currentPillar.glow}`,
+            }}
+            animate={{
+              rotate: [0, 90, 180, 270, 360],
+              scale: [0.95, 1.02, 0.95],
+            }}
             transition={{
-              duration: prefersReducedMotion ? 2 : 7.5,
-              ease: "linear",
-              repeat: Infinity,
+              rotate: { duration: 12, ease: "linear", repeat: Infinity },
+              scale: { duration: 2, ease: "easeInOut", repeat: Infinity },
             }}
           />
+
+          {/* Inner Counter-Rotating Reticle */}
           <MotionDiv
-            className="absolute inset-[13px] flex items-center justify-center rounded-full border border-cyan-200/60 bg-gradient-to-br from-cyan-400/30 via-cyan-300/20 to-emerald-300/20 shadow-[0_0_18px_rgba(34,211,238,0.28)]"
-            style={{ willChange: "opacity" }}
-            initial={{ opacity: 0.82 }}
-            animate={{ opacity: [0.82, 1, 0.82] }}
-            transition={{
-              duration: prefersReducedMotion ? 1.1 : 1.9,
-              ease: "easeInOut",
-              repeat: Infinity,
-            }}
-          >
-            <span className="font-display text-xl font-bold uppercase tracking-[0.14em] text-cyan-100">
-              NA
-            </span>
-          </MotionDiv>
-        </div>
+            className="absolute inset-3 rounded-xl border border-dashed border-white/20"
+            animate={{ rotate: [360, 0] }}
+            transition={{ duration: 16, ease: "linear", repeat: Infinity }}
+          />
 
-        <div>
-          <p className="font-display text-lg uppercase tracking-[0.16em] text-cyan-100">
-            {SITE_PROFILE.fullName}
-          </p>
-          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-emerald-200">
-            Full Stack and Security Portfolio
-          </p>
-        </div>
+          {/* Laser Corner Crosshairs */}
+          <div className="absolute -top-2 -left-2 h-4 w-4 border-t-2 border-l-2 border-cyan-400" />
+          <div className="absolute -top-2 -right-2 h-4 w-4 border-t-2 border-r-2 border-emerald-400" />
+          <div className="absolute -bottom-2 -left-2 h-4 w-4 border-b-2 border-l-2 border-purple-400" />
+          <div className="absolute -bottom-2 -right-2 h-4 w-4 border-b-2 border-r-2 border-cyan-400" />
 
-        <div className="w-full">
-          <div className="flex items-center justify-between text-xs uppercase tracking-[0.14em] text-slate-400">
-            <span>{currentStatus}</span>
-            <span className="font-display text-sm tracking-[0.16em] text-cyan-100">
-              {roundedProgress}%
-            </span>
-          </div>
-
-          <div
-            className="relative mt-2 h-2 overflow-hidden rounded-full border border-cyan-300/25 bg-slate-900/85"
-            role="progressbar"
-            aria-label="Portfolio loading progress"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={roundedProgress}
-          >
+          {/* Center Brand Moniker / Initial Prism */}
+          <AnimatePresence mode="wait">
             <MotionDiv
-              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-300 via-cyan-300 to-cyan-200"
-              style={{ willChange: "width" }}
-              initial={{ width: "0%" }}
-              animate={{ width: `${progress}%` }}
-              transition={{
-                duration: prefersReducedMotion ? 0.08 : 0.22,
-                ease: "linear",
-              }}
-            />
-          </div>
-
-          <div className="mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.13em] text-slate-500">
-            {STATUS_STAGES.map((stage) => (
-              <span
-                key={stage.threshold}
-                className={
-                  roundedProgress >= stage.threshold
-                    ? "text-emerald-200"
-                    : "text-slate-600"
-                }
-              >
-                {stage.threshold}
-              </span>
-            ))}
-          </div>
+              key={activeStep < 3 ? activeStep : "final"}
+              className="flex flex-col items-center justify-center"
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.15 }}
+              transition={{ duration: 0.25 }}
+            >
+              {activeStep < 3 ? (
+                <>
+                  <span
+                    className="font-mono text-2xl font-black tracking-wider sm:text-3xl"
+                    style={{ color: currentPillar.color }}
+                  >
+                    {currentPillar.number}
+                  </span>
+                  <span className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                    {currentPillar.discipline}
+                  </span>
+                </>
+              ) : (
+                <span className="font-display text-2xl font-black tracking-[0.2em] text-white sm:text-3xl drop-shadow-[0_0_12px_rgba(56,189,248,0.8)]">
+                  NA
+                </span>
+              )}
+            </MotionDiv>
+          </AnimatePresence>
         </div>
-      </MotionDiv>
+
+        {/* Dynamic Identity Label Reveal */}
+        <div className="mt-8 text-center min-h-[90px] flex flex-col items-center justify-center">
+          <AnimatePresence mode="wait">
+            {activeStep < 3 ? (
+              <MotionDiv
+                key={currentPillar.id}
+                className="flex flex-col items-center gap-1.5"
+                initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: currentPillar.color }}
+                  />
+                  <h2
+                    className="font-display text-xl font-black uppercase tracking-[0.2em] sm:text-2xl"
+                    style={{ color: currentPillar.color }}
+                  >
+                    {currentPillar.role}
+                  </h2>
+                </div>
+                <p className="font-mono text-xs uppercase tracking-[0.25em] text-slate-400">
+                  {currentPillar.code}
+                </p>
+              </MotionDiv>
+            ) : (
+              <MotionDiv
+                key="signature"
+                className="flex flex-col items-center gap-1.5"
+                initial={{ opacity: 0, y: 10, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
+              >
+                <h2 className="font-display text-2xl font-black uppercase tracking-[0.2em] text-white sm:text-3xl">
+                  {SITE_PROFILE.fullName}
+                </h2>
+                <p className="font-mono text-xs uppercase tracking-[0.22em] text-emerald-400">
+                  FULL STACK // CYBERSECURITY // UI/UX
+                </p>
+              </MotionDiv>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Triple Node Identity Indicator */}
+        <div className="mt-6 flex items-center gap-3">
+          {PILLARS.map((pillar, index) => {
+            const isActive = activeStep === index || activeStep === 3;
+            const isCurrent = activeStep === index;
+
+            return (
+              <div
+                key={pillar.id}
+                className="flex items-center gap-2 transition-all duration-300"
+              >
+                <div
+                  className="h-1.5 rounded-full transition-all duration-300"
+                  style={{
+                    width: isCurrent ? "28px" : "10px",
+                    backgroundColor: isActive ? pillar.color : "rgba(100, 116, 139, 0.3)",
+                    boxShadow: isCurrent ? `0 0 12px ${pillar.glow}` : "none",
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+
+      {/* Bottom Architectural Signature Footer */}
+      <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.25em] text-slate-600 sm:bottom-10 sm:left-10 sm:right-10">
+        <div>
+          ENGINEERING SECURE DIGITAL EXPERIENCES
+        </div>
+        <div className="hidden sm:block">
+          PORTFOLIO 2026+
+        </div>
+      </div>
     </MotionDiv>
   );
 };
