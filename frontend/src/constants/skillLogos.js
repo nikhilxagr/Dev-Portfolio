@@ -38,6 +38,14 @@ const SKILL_LOGO_MAP = {
   },
   LeetCode: { slug: "leetcode", color: "FFA116" },
   GeeksforGeeks: { slug: "geeksforgeeks", color: "2F8D46" },
+  TypeScript: { slug: "typescript", color: "3178C6" },
+  PostgreSQL: { slug: "postgresql", color: "4169E1" },
+  Docker: { slug: "docker", color: "2496ED" },
+  Vite: { slug: "vite", color: "646CFF" },
+  "VS Code": { slug: "visualstudiocode", color: "007ACC" },
+  OWASP: { slug: "owasp", color: "000000", useNeutral: true },
+  ChatGPT: { slug: "openai", useNeutral: true },
+  "GitHub Copilot": { slug: "githubcopilot", useNeutral: true },
 };
 
 export const getSkillLogoUrl = (skillName, isDark) => {

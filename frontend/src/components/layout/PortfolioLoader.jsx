@@ -55,10 +55,7 @@ const PortfolioLoader = ({ onComplete }) => {
     const timer3 = setTimeout(() => setActiveStep(3), stepInterval * 2.8);
 
     const completeTimer = setTimeout(() => {
-      setIsExiting(true);
-      setTimeout(() => {
-        onComplete?.();
-      }, 400);
+      onComplete?.();
     }, totalDuration);
 
     return () => {
@@ -75,9 +72,9 @@ const PortfolioLoader = ({ onComplete }) => {
     <MotionDiv
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden bg-[#03070d] text-white selection:bg-cyan-500 selection:text-black"
       initial={{ opacity: 1 }}
-      animate={{ opacity: isExiting ? 0 : 1 }}
-      exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.02 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
       role="status"
       aria-label="Initializing portfolio environment"
     >

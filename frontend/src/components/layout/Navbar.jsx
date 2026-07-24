@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Link, NavLink } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -8,20 +9,26 @@ import {
   ChevronDown,
   ChevronRight,
   Code2,
+  Cpu,
   Download,
+  FileText,
   Folder,
   GitBranch,
   Home,
   Mail,
   Menu,
   Moon,
+  Search,
   Shield,
   ShieldCheck,
   Sparkles,
+  Sun,
   SunMedium,
+  Terminal,
   ToggleLeft,
   ToggleRight,
   User,
+  Wrench,
   X,
 } from "lucide-react";
 import { NAV_LINKS, QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
@@ -34,12 +41,20 @@ const mobileNavIconMap = {
   Home,
   About: User,
   Skills: Sparkles,
-  Journey: GitBranch,
   Projects: Folder,
-  Practicals: ShieldCheck,
+  Experiments: Terminal,
+  Journey: GitBranch,
   Blog: BookOpen,
   Services: Briefcase,
   Contact: Mail,
+};
+
+const subIconMap = {
+  "Security Labs": ShieldCheck,
+  "Dev Terminal": Terminal,
+  "Data Structure Lab": Cpu,
+  "Cyber Tools": Search,
+  "Document Methodology": FileText,
 };
 
 const Navbar = () => {
@@ -50,15 +65,41 @@ const Navbar = () => {
   const [resumeDropdownOpen, setResumeDropdownOpen] = useState(false);
   const resumeDropdownRef = useRef(null);
 
+  const [experimentsOpen, setExperimentsOpen] = useState(false);
+  const [mobileExperimentsOpen, setMobileExperimentsOpen] = useState(false);
+  const experimentsRef = useRef(null);
+  const experimentsTimeoutRef = useRef(null);
+
+  const handleExperimentsMouseEnter = () => {
+    if (experimentsTimeoutRef.current) {
+      clearTimeout(experimentsTimeoutRef.current);
+    }
+    setExperimentsOpen(true);
+  };
+
+  const handleExperimentsMouseLeave = () => {
+    experimentsTimeoutRef.current = setTimeout(() => {
+      setExperimentsOpen(false);
+    }, 180);
+  };
+
   // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (resumeDropdownRef.current && !resumeDropdownRef.current.contains(e.target)) {
         setResumeDropdownOpen(false);
       }
+      if (experimentsRef.current && !experimentsRef.current.contains(e.target)) {
+        setExperimentsOpen(false);
+      }
     };
     document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      if (experimentsTimeoutRef.current) {
+        clearTimeout(experimentsTimeoutRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -252,28 +293,116 @@ const Navbar = () => {
               </Link>
 
               <nav className="hidden items-center gap-1 xl:flex justify-center flex-1">
-                {NAV_LINKS.map((item) => (
-                  <NavLink key={item.to} to={item.to} className={navItemClass}>
-                    {item.label}
-                  </NavLink>
-                ))}
+                {NAV_LINKS.map((item) => {
+                  if (item.isDropdown) {
+                    return (
+                      <div
+                        key={item.label}
+                        ref={experimentsRef}
+                        className="relative"
+                        onMouseEnter={handleExperimentsMouseEnter}
+                        onMouseLeave={handleExperimentsMouseLeave}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => setExperimentsOpen((v) => !v)}
+                          className={clsx(
+                            "inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] transition-all duration-300",
+                            location.pathname.startsWith("/experiments") || location.pathname.startsWith("/security")
+                              ? "bg-lime-400 text-[#121212] shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
+                              : isDark
+                                ? "text-zinc-400/80 hover:text-white hover:bg-white/[0.06]"
+                                : "text-zinc-500 hover:text-zinc-900 hover:bg-black/[0.04]",
+                          )}
+                        >
+                          {item.label}
+                          <ChevronDown size={13} className={`transition-transform duration-200 ${experimentsOpen ? "rotate-180" : ""}`} />
+                        </button>
+
+                        {experimentsOpen && (
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2.5 w-72 z-50">
+                            <div className={clsx(
+                              "rounded-2xl border p-2 shadow-[0_18px_45px_rgba(0,10,2,0.85)] backdrop-blur-xl transition-all duration-200 animate-fadeIn",
+                              isDark
+                                ? "border-green-400/25 bg-[#030d07]/95 text-white"
+                                : "border-green-400/30 bg-white/95 text-slate-900",
+                            )}>
+                              <div className="px-3 py-1.5 font-mono text-[10px] uppercase font-bold text-emerald-400 tracking-widest border-b border-emerald-500/20 mb-1">
+                                // EXPERIMENTAL LABS
+                              </div>
+                              {item.children.map((sub) => {
+                                const SubIcon = subIconMap[sub.label] || ShieldCheck;
+                                return (
+                                  <NavLink
+                                    key={sub.to}
+                                    to={sub.to}
+                                    onClick={() => setExperimentsOpen(false)}
+                                    className={({ isActive }) => clsx(
+                                      "flex items-start gap-3 rounded-xl p-2.5 transition-all duration-200",
+                                      isActive
+                                        ? "bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-bold"
+                                        : isDark
+                                          ? "hover:bg-white/5 hover:text-emerald-300 text-slate-300"
+                                          : "hover:bg-emerald-50 text-slate-800",
+                                    )}
+                                  >
+                                    <span className="p-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shrink-0 mt-0.5">
+                                      <SubIcon size={14} />
+                                    </span>
+                                    <div>
+                                      <p className="text-xs font-bold leading-tight">{sub.label}</p>
+                                      <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">{sub.description}</p>
+                                    </div>
+                                  </NavLink>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <NavLink key={item.to} to={item.to} className={navItemClass}>
+                      {item.label}
+                    </NavLink>
+                  );
+                })}
               </nav>
 
               <div className="hidden items-center gap-3 xl:flex shrink-0 ml-6 xl:ml-10">
-                <button
+                <motion.button
                   type="button"
                   onClick={toggleTheme}
+                  whileHover={{ scale: 1.12 }}
+                  whileTap={{ scale: 0.88, rotate: -15 }}
                   className={clsx(
-                    "rounded-full p-2 transition",
+                    "relative flex h-9 w-9 items-center justify-center rounded-full border shadow-lg backdrop-blur-xl transition-all duration-300 overflow-hidden group",
                     isDark
-                      ? "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
-                      : "text-zinc-600 hover:text-zinc-900 hover:bg-black/5",
+                      ? "border-amber-400/40 bg-amber-400/10 text-amber-300 shadow-[0_0_16px_rgba(251,191,36,0.35)] hover:border-amber-300 hover:bg-amber-400/20 hover:shadow-[0_0_24px_rgba(251,191,36,0.6)]"
+                      : "border-indigo-600/40 bg-indigo-500/10 text-indigo-700 shadow-[0_0_16px_rgba(99,102,241,0.25)] hover:border-indigo-600 hover:bg-indigo-500/20 hover:shadow-[0_0_24px_rgba(99,102,241,0.45)]"
                   )}
                   aria-label="Toggle theme"
-                  title="Toggle dark or light mode"
+                  title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 >
-                  {isDark ? <SunMedium size={16} /> : <Moon size={16} />}
-                </button>
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={isDark ? "dark" : "light"}
+                      initial={{ rotate: -90, scale: 0.3, opacity: 0 }}
+                      animate={{ rotate: 0, scale: 1, opacity: 1 }}
+                      exit={{ rotate: 90, scale: 0.3, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "backOut" }}
+                      className="flex items-center justify-center"
+                    >
+                      {isDark ? (
+                        <Sun size={17} className="text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
+                      ) : (
+                        <Moon size={17} className="text-indigo-600 drop-shadow-[0_0_6px_rgba(99,102,241,0.6)]" />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </motion.button>
 
                 <div ref={resumeDropdownRef} className="relative">
                   <button
@@ -374,19 +503,51 @@ const Navbar = () => {
               )}>
                 NIKHIL
               </span>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className={clsx(
-                  "rounded-full p-2 transition",
-                  isDark
-                    ? "text-zinc-400 hover:text-sky-400 hover:bg-sky-400/10"
-                    : "text-slate-600 hover:text-emerald-700 hover:bg-emerald-50",
-                )}
-                aria-label="Close menu"
-              >
-                <X size={18} />
-              </button>
+              <div className="flex items-center gap-2">
+                <motion.button
+                  type="button"
+                  onClick={toggleTheme}
+                  whileHover={{ scale: 1.12 }}
+                  whileTap={{ scale: 0.88, rotate: -15 }}
+                  className={clsx(
+                    "relative flex h-8 w-8 items-center justify-center rounded-full border shadow-md backdrop-blur-xl transition-all duration-300 overflow-hidden",
+                    isDark
+                      ? "border-amber-400/40 bg-amber-400/10 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.35)]"
+                      : "border-indigo-600/40 bg-indigo-500/10 text-indigo-700 shadow-[0_0_12px_rgba(99,102,241,0.25)]"
+                  )}
+                  aria-label="Toggle theme"
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={isDark ? "dark" : "light"}
+                      initial={{ rotate: -90, scale: 0.3, opacity: 0 }}
+                      animate={{ rotate: 0, scale: 1, opacity: 1 }}
+                      exit={{ rotate: 90, scale: 0.3, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "backOut" }}
+                      className="flex items-center justify-center"
+                    >
+                      {isDark ? (
+                        <Sun size={15} className="text-amber-300" />
+                      ) : (
+                        <Moon size={15} className="text-indigo-600" />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </motion.button>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className={clsx(
+                    "rounded-full p-2 transition",
+                    isDark
+                      ? "text-zinc-400 hover:text-sky-400 hover:bg-sky-400/10"
+                      : "text-slate-600 hover:text-emerald-700 hover:bg-emerald-50",
+                  )}
+                  aria-label="Close menu"
+                >
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             <p className={clsx(
@@ -399,6 +560,57 @@ const Navbar = () => {
             <div className="space-y-1.5 overflow-y-auto pr-1 flex-1 min-h-0">
               {NAV_LINKS.map((item) => {
                 const Icon = mobileNavIconMap[item.label] || Shield;
+
+                if (item.isDropdown) {
+                  return (
+                    <div key={item.label} className="space-y-1">
+                      <button
+                        type="button"
+                        onClick={() => setMobileExperimentsOpen((v) => !v)}
+                        className={clsx(
+                          "group w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold border transition-all duration-200 text-left",
+                          location.pathname.startsWith("/experiments") || location.pathname.startsWith("/security")
+                            ? isDark
+                              ? "bg-gradient-to-r from-sky-500/20 via-teal-500/20 to-green-500/20 border-sky-400/40 text-white"
+                              : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 shadow-sm"
+                            : isDark
+                              ? "border-transparent text-zinc-400 hover:text-white"
+                              : "border-transparent text-slate-800 hover:text-slate-950",
+                        )}
+                      >
+                        <Icon size={16} className={isDark ? "text-sky-400" : "text-emerald-600"} />
+                        <span className="flex-1 tracking-wide">{item.label}</span>
+                        <ChevronDown size={14} className={`transition-transform duration-200 ${mobileExperimentsOpen ? "rotate-180" : ""}`} />
+                      </button>
+
+                      {mobileExperimentsOpen && (
+                        <div className="pl-6 space-y-1 pt-1 pb-1">
+                          {item.children.map((sub) => {
+                            const SubIcon = subIconMap[sub.label] || ShieldCheck;
+                            return (
+                              <NavLink
+                                key={sub.to}
+                                to={sub.to}
+                                onClick={() => setOpen(false)}
+                                className={({ isActive }) => clsx(
+                                  "flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold border transition-all duration-200",
+                                  isActive
+                                    ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
+                                    : isDark
+                                      ? "border-transparent text-zinc-400 hover:text-white hover:bg-white/5"
+                                      : "border-transparent text-slate-700 hover:text-slate-950 hover:bg-slate-100",
+                                )}
+                              >
+                                <SubIcon size={14} className="text-emerald-400 shrink-0" />
+                                <span>{sub.label}</span>
+                              </NavLink>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
 
                 return (
                   <NavLink

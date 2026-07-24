@@ -32,10 +32,21 @@ export const HERO_CONTENT = {
 export const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/journey", label: "Journey" },
   { to: "/skills", label: "Skills" },
   { to: "/projects", label: "Projects" },
-  { to: "/security", label: "Practicals" },
+  {
+    to: "/experiments/security-labs",
+    label: "Experiments",
+    isDropdown: true,
+    children: [
+      { to: "/experiments/security-labs", label: "Security Labs", description: "Cyber security labs & writeups" },
+      { to: "/experiments/terminal", label: "Dev Terminal", description: "Interactive CLI & hacker sandbox" },
+      { to: "/experiments/dsa", label: "Data Structure Lab", description: "Algorithm & data visualizers" },
+      { to: "/experiments/tools", label: "Cyber Tools", description: "Real security utilities & breach checker" },
+      { to: "/experiments/methodology", label: "Document Methodology", description: "Pentesting & security standards" },
+    ],
+  },
+  { to: "/journey", label: "Journey" },
   { to: "/blog", label: "Blog" },
   { to: "/services", label: "Services" },
   { to: "/contact", label: "Contact" },

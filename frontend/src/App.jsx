@@ -17,6 +17,10 @@ const ProjectsPage = lazy(() => import("@/pages/ProjectsPage"));
 const JourneyPage = lazy(() => import("@/pages/JourneyPage"));
 const ProjectDetailsPage = lazy(() => import("@/pages/ProjectDetailsPage"));
 const SecurityPage = lazy(() => import("@/pages/SecurityPage"));
+const TerminalPage = lazy(() => import("@/pages/TerminalPage"));
+const CyberToolsPage = lazy(() => import("@/pages/CyberToolsPage"));
+const DsaLabPage = lazy(() => import("@/pages/DsaLabPage"));
+const MethodologyPage = lazy(() => import("@/pages/MethodologyPage"));
 const ServicesPage = lazy(() => import("@/pages/ServicesPage"));
 const SupportPage = lazy(() => import("@/pages/SupportPage"));
 const PaymentSuccessPage = lazy(() => import("@/pages/PaymentSuccessPage"));
@@ -97,7 +101,7 @@ function App() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showLoader ? (
           <PortfolioLoader
             key="portfolio-loader"
@@ -105,17 +109,8 @@ function App() {
           />
         ) : null}
       </AnimatePresence>
-      {!showLoader ? <BackgroundGrid /> : null}
-      <MotionDiv
-        className="relative z-10 flex min-h-screen flex-col"
-        initial={false}
-        animate={showLoader ? { opacity: 0, y: 6 } : { opacity: 1, y: 0 }}
-        transition={{
-          duration: prefersReducedMotion ? 0.12 : 0.42,
-          ease: "easeOut",
-          delay: showLoader ? 0 : 0.06,
-        }}
-      >
+      <BackgroundGrid />
+      <div className="relative z-10 flex min-h-screen flex-col">
         {!isAdminRoute ? <Navbar /> : null}
         <main className="flex-1" style={mainStyle}>
           <AnimatePresence initial={false}>
@@ -150,7 +145,14 @@ function App() {
                     path="/projects/:slug"
                     element={<ProjectDetailsPage />}
                   />
-                  <Route path="/security" element={<SecurityPage />} />
+                  <Route path="/experiments/security-labs" element={<SecurityPage />} />
+                  <Route path="/experiments/terminal" element={<TerminalPage />} />
+                  <Route path="/experiments/tools" element={<CyberToolsPage />} />
+                  <Route path="/experiments/dsa" element={<DsaLabPage />} />
+                  <Route path="/experiments/methodology" element={<MethodologyPage />} />
+                  <Route path="/experiments" element={<Navigate to="/experiments/security-labs" replace />} />
+                  <Route path="/security" element={<Navigate to="/experiments/security-labs" replace />} />
+                  <Route path="/terminal" element={<Navigate to="/experiments/terminal" replace />} />
                   <Route path="/blog" element={<BlogPage />} />
                   <Route
                     path="/blogs"
@@ -201,7 +203,7 @@ function App() {
         </main>
         {!showLoader ? <ScrollProgressButton /> : null}
         {!isAdminRoute ? <Footer /> : null}
-      </MotionDiv>
+      </div>
       <Analytics />
     </div>
   );

@@ -1,79 +1,96 @@
-import { ArrowRight, Code2, Cpu, ShieldCheck, Terminal } from "lucide-react";
+import { ArrowRight, Code2, Cpu, Database, ShieldCheck, Terminal, Wrench, Sparkles } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
 import SectionTitle from "@/components/ui/SectionTitle";
 import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
 import { createBreadcrumbSchema } from "@/utils/seo";
-import { QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
+import { SITE_PROFILE } from "@/constants/siteData";
 
-const intelligentSkillDomains = [
+const SKILL_CATEGORIES = [
   {
-    id: "software-developer",
-    title: "Full Stack Development",
-    summary:
-      "Design and ship web products across React interfaces and Node.js APIs with maintainable, production-ready code.",
+    id: "frontend",
+    number: "01",
+    title: "Frontend Engineering",
+    description: "Architecting reactive, high-performance interfaces with modular design systems, component state management, and responsive accessibility.",
     Icon: Code2,
-    accentClass: "via-cyan-300/50",
-    skills: [
-      "React",
-      "Next.js",
-      "JavaScript",
-      "Node.js",
-      "Express.js",
-      "Supabase",
-      "MongoDB",
-    ],
+    gradient: "from-cyan-500 via-emerald-400 to-transparent",
+    accentBorder: "group-hover:border-cyan-500/50 dark:group-hover:border-cyan-400/50",
+    skills: ["React", "Next.js", "JavaScript", "TypeScript", "Tailwind CSS", "Vite", "HTML", "CSS"],
   },
   {
-    id: "cyber-security",
-    title: "Application Security",
-    summary:
-      "Application security workflows for identifying risks, prioritizing remediation, and improving resilience.",
-    Icon: ShieldCheck,
-    accentClass: "via-emerald-300/50",
-    skills: [
-      "Kali Linux",
-      "Burp Suite",
-      "Nmap",
-      "Wireshark",
-      "Metasploit",
-      "TryHackMe",
-    ],
-  },
-  {
-    id: "python-engineering",
-    title: "Python and Automation",
-    summary:
-      "Python-based scripting and automation for development utilities, data tasks, and security support workflows.",
+    id: "backend",
+    number: "02",
+    title: "Backend Engineering",
+    description: "Designing RESTful API architectures, authentication pipelines, and server controller logic built for scale and security.",
     Icon: Cpu,
-    accentClass: "via-violet-300/45",
-    skills: ["Python", "SQL", "C", "Postman"],
+    gradient: "from-emerald-500 via-green-400 to-transparent",
+    accentBorder: "group-hover:border-emerald-500/50 dark:group-hover:border-green-400/50",
+    skills: ["Node.js", "Express.js", "Python", "Postman", "C"],
   },
   {
-    id: "linux-systems",
-    title: "Linux Operations and Delivery",
-    summary:
-      "Linux-first workflows for deployment, source control, and day-to-day engineering operations.",
-    Icon: Terminal,
-    accentClass: "via-fuchsia-300/45",
-    skills: ["Linux", "Git", "GitHub", "Vercel", "Render"],
+    id: "cybersecurity",
+    number: "03",
+    title: "Cybersecurity & Defense",
+    description: "Auditing web applications for security flaws, evaluating network resilience, and applying OWASP defense-in-depth protocols.",
+    Icon: ShieldCheck,
+    gradient: "from-green-500 via-teal-400 to-transparent",
+    accentBorder: "group-hover:border-green-500/50 dark:group-hover:border-green-400/50",
+    skills: ["Kali Linux", "Burp Suite", "Nmap", "Wireshark", "Metasploit", "OWASP", "TryHackMe"],
   },
+  {
+    id: "databases",
+    number: "04",
+    title: "Databases & Storage",
+    description: "Structuring document-oriented and relational database schemas optimized for data integrity, indexing, and low-latency queries.",
+    Icon: Database,
+    gradient: "from-teal-500 via-cyan-400 to-transparent",
+    accentBorder: "group-hover:border-teal-500/50 dark:group-hover:border-teal-400/50",
+    skills: ["MongoDB", "PostgreSQL", "Supabase", "SQL"],
+  },
+  {
+    id: "devtools",
+    number: "05",
+    title: "Developer Tools & DevOps",
+    description: "Streamlining version control, automated cloud deployments, server hosting, and Linux operating environments.",
+    Icon: Terminal,
+    gradient: "from-purple-500 via-indigo-400 to-transparent",
+    accentBorder: "group-hover:border-purple-500/50 dark:group-hover:border-purple-400/50",
+    skills: ["Git", "GitHub", "Linux", "Vercel", "Render", "VS Code"],
+  },
+  {
+    id: "ai-productivity",
+    number: "06",
+    title: "AI & Productivity",
+    description: "Leveraging modern AI tooling to accelerate development cycles, refactor complex code, and audit application logic.",
+    Icon: Wrench,
+    gradient: "from-indigo-500 via-violet-400 to-transparent",
+    accentBorder: "group-hover:border-indigo-500/50 dark:group-hover:border-indigo-400/50",
+    skills: ["ChatGPT", "GitHub Copilot"],
+  },
+];
+
+const CURRENTLY_EXPLORING = [
+  { label: "System Design & Distributed Architectures", category: "Architecture" },
+  { label: "Advanced Backend & API Security Auditing", category: "Security" },
+  { label: "LLM Orchestration & AI Workflows", category: "AI Engineering" },
+  { label: "DevSecOps & Automated CI/CD Pipelines", category: "DevOps" },
 ];
 
 const SkillsPage = () => {
   return (
     <>
       <SeoHead
-        title="Skills"
-        description="Technical skills of Nikhil Agrahari across software development, application security, Python engineering, Linux workflows, and project delivery."
+        title="Technical Skills & Capabilities"
+        description="Technical capabilities of Nikhil Agrahari across full stack frontend architecture, backend REST APIs, application security, databases, and DevOps."
         pathname="/skills"
         image={SITE_PROFILE.profileImage}
         imageAlt={SITE_PROFILE.profileImageAlt}
         keywords={[
-          "Nikhil portfolio skills",
-          "Nikhil Lucknow developer skills",
-          "Application security and full stack skills",
+          "Nikhil Agrahari skills",
+          "Full stack developer technical skills",
+          "Application security practitioner skills",
+          "React Node.js MongoDB Cybersecurity",
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", path: "/" },
@@ -81,86 +98,155 @@ const SkillsPage = () => {
         ])}
       />
 
+      {/* Page Title & Intro */}
       <section className="section-wrap pt-12 sm:pt-20">
         <SectionTitle
-          eyebrow="Skills"
-          title="Technical Skills"
-          description="Core capabilities and tools used across full stack development, application security, automation, and Linux workflows."
+          eyebrow="Technical Capabilities"
+          title="Engineering Stack & Skills"
+          description="A structured overview of how I build software—organized by engineering discipline, architectural approach, and core tools."
         />
       </section>
 
-      <section className="section-wrap section-divider pt-8">
-        <div className="max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
-            Skill Domains
-          </p>
-          <p className="mt-2 text-sm leading-7 text-slate-400">
-            Skills are grouped by practical domains used in real project
-            delivery.
+      {/* Main Skills Content */}
+      <section className="section-wrap section-divider pt-8 pb-20">
+        
+        {/* Capability-First Approach Banner */}
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white/90 p-6 sm:p-9 shadow-xl dark:border-slate-800/80 dark:bg-[#050d14]/90 backdrop-blur-xl dark:shadow-none mb-12">
+          <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-green-500/10 dark:bg-green-400/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 -left-16 h-40 w-40 rounded-full bg-cyan-500/8 dark:bg-cyan-400/8 blur-3xl" />
+
+          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl space-y-3">
+              <span className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-green-600 dark:text-green-400">
+                // Engineering Approach
+              </span>
+              <h3 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                Capabilities Over Logos
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed">
+                I view technical skills as tools to solve real engineering problems. My approach prioritizes clean modular architecture, application resilience, defense-in-depth security, and shipping software that users can rely on.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2.5 shrink-0">
+              {["Modular Architecture", "Security-First", "Clean Code"].map((pill) => (
+                <div
+                  key={pill}
+                  className="rounded-xl border border-green-500/25 bg-green-500/10 text-green-700 dark:border-green-400/25 dark:bg-green-400/10 dark:text-green-300 px-4 py-2 text-xs font-bold uppercase tracking-wider"
+                >
+                  ✓ {pill}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Currently Exploring / Advancing */}
+        <div className="mb-14">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles size={16} className="text-green-600 dark:text-green-400" />
+            <h3 className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-green-600 dark:text-green-400">
+              // Currently Exploring &amp; Advancing
+            </h3>
+          </div>
+          <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+            {CURRENTLY_EXPLORING.map((item) => (
+              <div
+                key={item.label}
+                className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/80 p-4.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-500/50 hover:shadow-md dark:border-slate-800/80 dark:bg-slate-950/60 dark:shadow-none dark:hover:border-green-400/40"
+              >
+                <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  {item.category}
+                </span>
+                <p className="mt-1.5 font-display font-bold text-slate-900 dark:text-slate-100 text-sm leading-snug">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Engineering Skill Categories Header */}
+        <div className="mb-8">
+          <h3 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+            Skill Categories
+          </h3>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            Organized by production domain with official technology badges.
           </p>
         </div>
 
-        <StaggerGrid className="mt-6 grid gap-3 sm:mt-8 sm:gap-4 md:grid-cols-2">
-          {intelligentSkillDomains.map((domain) => (
-            <StaggerItem key={domain.id} className="h-full">
-              <article className="skills-mobile-card group relative h-full overflow-hidden rounded-2xl border border-slate-200 dark:border-cyan-300/25 bg-white dark:bg-slate-950/70 p-4 shadow-sm dark:shadow-[0_18px_38px_-28px_rgba(2,8,20,0.9)] transition duration-300 hover:-translate-y-1 hover:border-emerald-500 dark:hover:border-cyan-300/45 dark:hover:shadow-[0_26px_52px_-32px_rgba(34,211,238,0.32)] sm:p-6">
-                <div
-                  className={`pointer-events-none absolute inset-x-0 top-0 h-px animate-pulseLine bg-gradient-to-r from-transparent ${domain.accentClass} to-transparent`}
-                />
-                <div className="pointer-events-none absolute -right-14 -top-14 h-28 w-28 rounded-full bg-cyan-300/10 blur-3xl transition duration-300 group-hover:scale-125" />
+        {/* Categories Grid */}
+        <StaggerGrid className="grid gap-6 md:grid-cols-2">
+          {SKILL_CATEGORIES.map((category) => {
+            const Icon = category.Icon;
 
-                <div className="relative">
-                  <div className="skills-mobile-icon inline-flex h-9 w-9 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-700 dark:border-cyan-300/35 dark:bg-cyan-300/10 dark:text-cyan-100 sm:h-10 sm:w-10">
-                    <domain.Icon size={17} />
+            return (
+              <StaggerItem key={category.id} className="h-full">
+                <article className={`group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-6 sm:p-7 shadow-md transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl dark:border-slate-800/90 dark:bg-[#050d14]/90 dark:shadow-none ${category.accentBorder}`}>
+                  
+                  {/* Top Ambient Highlight Beam */}
+                  <div className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${category.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+                  
+                  {/* Background Soft Glow */}
+                  <div className="pointer-events-none absolute -top-14 -right-14 h-36 w-36 rounded-full bg-green-500/5 blur-3xl transition-transform duration-300 group-hover:scale-150" />
+
+                  <div className="relative">
+                    {/* Category Header */}
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-green-500/25 bg-green-500/10 text-green-600 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400">
+                          <Icon size={22} />
+                        </span>
+                        <div>
+                          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                            {category.number} // DOMAIN
+                          </span>
+                          <h4 className="font-display text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                            {category.title}
+                          </h4>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <p className="mt-3.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                      {category.description}
+                    </p>
+
+                    {/* Technology Badges */}
+                    <div className="mt-6 flex flex-wrap gap-2 pt-4 border-t border-slate-100 dark:border-slate-800/60">
+                      {category.skills.map((skill) => (
+                        <SkillLogoBadge key={skill} skill={skill} />
+                      ))}
+                    </div>
                   </div>
-
-                  <h3 className="skills-mobile-title mt-3 text-xl font-bold text-slate-900 dark:text-cyan-100 sm:text-2xl">
-                    {domain.title}
-                  </h3>
-                  <p className="skills-mobile-summary mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300 sm:leading-7">
-                    {domain.summary}
-                  </p>
-
-                  <div className="skills-mobile-chip-row mt-4 flex flex-wrap gap-2">
-                    {domain.skills.map((skill) => (
-                      <SkillLogoBadge key={skill} skill={skill} />
-                    ))}
-                  </div>
-                </div>
-              </article>
-            </StaggerItem>
-          ))}
+                </article>
+              </StaggerItem>
+            );
+          })}
         </StaggerGrid>
 
-        <div className="mt-8 flex flex-wrap gap-2.5 sm:gap-3">
-          <Button to="/projects">
-            See Skills in Projects <ArrowRight size={16} />
-          </Button>
-          <Button
-            href={QUICK_CONTACT.tryhackme}
-            target="_blank"
-            rel="noreferrer"
-            variant="ghost"
-          >
-            TryHackMe
-          </Button>
-          <Button
-            href={QUICK_CONTACT.linkedin}
-            target="_blank"
-            rel="noreferrer"
-            variant="secondary"
-          >
-            LinkedIn
-          </Button>
-          <Button to="/contact" variant="ghost">
-            Contact Hub
-          </Button>
+        {/* Bottom Call to Action */}
+        <div className="mt-14 flex flex-col sm:flex-row items-center justify-between gap-5 border-t border-slate-200/80 dark:border-slate-800/80 pt-9">
+          <div>
+            <p className="font-display text-lg font-bold text-slate-900 dark:text-white">
+              Want to see these skills in real production applications?
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Explore full-stack projects, architecture breakdowns, and security labs.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button to="/projects" variant="primary">
+              View Projects <ArrowRight size={15} />
+            </Button>
+            <Button to="/security" variant="ghost">
+              Security Labs
+            </Button>
+          </div>
         </div>
 
-        <p className="mt-4 text-sm leading-7 text-slate-400">
-          Each capability is listed once per domain to keep the taxonomy clear
-          and maintainable.
-        </p>
       </section>
     </>
   );
