@@ -25,8 +25,6 @@ import {
   Sun,
   SunMedium,
   Terminal,
-  ToggleLeft,
-  ToggleRight,
   User,
   Wrench,
   X,
@@ -669,25 +667,6 @@ const Navbar = () => {
               "mt-auto space-y-2.5 pt-4 border-t shrink-0",
               isDark ? "border-sky-400/15" : "border-slate-200"
             )}>
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className={clsx(
-                  "flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-xs font-bold transition border",
-                  isDark
-                    ? "border-sky-500/20 bg-slate-900/60 text-zinc-300 hover:text-white hover:border-sky-400/40"
-                    : "border-slate-300 bg-slate-100 text-slate-800 hover:bg-slate-200 hover:border-slate-400",
-                )}
-                aria-label="Toggle theme"
-              >
-                <span className="tracking-wide">Theme Mode</span>
-                {isDark ? (
-                  <ToggleRight size={20} className="text-sky-400" />
-                ) : (
-                  <ToggleLeft size={20} className="text-emerald-600" />
-                )}
-              </button>
-
               <a
                 href={QUICK_CONTACT.resume}
                 target="_blank"

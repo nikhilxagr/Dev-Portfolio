@@ -1120,7 +1120,7 @@ const HomePage = () => {
           ) : null}
           {!loadingProjects && filteredProjects.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(260px,0.9fr)]">
-              {filteredProjects.map((project, index) => (
+              {filteredProjects.slice(0, 3).map((project, index) => (
                 <ProjectCard key={project._id || project.slug} project={project} priority={index < 2} />
               ))}
 
