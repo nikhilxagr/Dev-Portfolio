@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CalendarDays,
@@ -645,6 +645,108 @@ const journeyData = [
       ],
     }
   },
+  {
+    id: "nerds-hack-days-lucknow-2026",
+    year: 2026,
+    category: "Hackathons",
+    mode: "Offline",
+    title: "Nerds Hack Days Lucknow",
+    subtitle: "Nerds Room × Major League Hacking (MLH)",
+    organization: "PW Institute of Innovation, Lucknow",
+    duration: "2026-07-26",
+    location: "PW Institute of Innovation, Lucknow",
+    description:
+      "Participated in Nerds Hack Days Lucknow, a national hackathon organized by Nerds Room and supported by Major League Hacking (MLH). Built Kanoon-Mate, an AI-powered Legal Operating System that simplifies legal documents, provides intelligent legal guidance, and demonstrates AI-driven case tracking for citizens and lawyers.",
+    imageUrl: "/images/journey/Nerd1.jpg",
+    imageFit: "cover",
+    gallery: [
+      "/images/journey/Nerd1.jpg",
+      "/images/journey/Nerd2.jpg",
+      "/images/journey/Nerd3.jpg",
+      "/images/journey/Nerd4.jpg",
+      "/images/journey/Nerd5.jpg",
+      "/images/journey/Nerd6.jpg",
+      "/images/journey/Nerd7.jpg",
+    ],
+    hasCertificate: true,
+    certificateUrl: "https://drive.google.com/file/d/1zx1V8cE4ARLKrAYyu1ILGtZVwmpDGVbA/view?usp=sharing",
+    icon: Trophy,
+    accent: "from-emerald-400 to-teal-500",
+    tag: "Hackathon",
+    details: {
+      university: "PW Institute of Innovation, Lucknow",
+      course: "Nerds Hack Days Lucknow — AI & LegalTech Innovation Hackathon",
+      status: "Completed",
+      journeyTitle: "Kanoon-Mate — AI Legal Operating System",
+      overview:
+        "Participated in Nerds Hack Days Lucknow, where our team Bro Code designed and developed Kanoon-Mate, an AI-powered Legal Operating System focused on making legal assistance more accessible. The platform leverages AI to analyze legal documents, simplify complex legal language, detect relevant laws, assess risks, and automate legal workflows through an intelligent multi-agent architecture.",
+      problem:
+        "Millions of citizens struggle to understand legal documents, identify applicable laws, and know the next steps after receiving legal notices. At the same time, lawyers spend considerable time manually tracking hearing dates, court orders, and case progress, leading to repetitive administrative work and reduced efficiency.",
+      solution:
+        "Developed Kanoon-Mate, an AI-powered Legal Operating System that transforms complex legal processes into simple, guided workflows. The platform combines document intelligence, legal analysis, AI-generated summaries, actionable guidance, and an AI-powered case tracking workflow to assist both citizens and legal professionals.",
+      objectives:
+        "Design and build an AI-powered legal assistance platform within the hackathon timeframe that addresses real-world legal accessibility challenges, demonstrates practical AI integration, and delivers a functional prototype capable of solving meaningful problems for citizens and lawyers.",
+      outcomes:
+        "Successfully presented a working prototype of Kanoon-Mate to mentors and judges. The project received valuable feedback on product vision, workflow automation, and real-world deployment considerations. Beyond the technical implementation, the experience strengthened our understanding of AI agents, rapid product development, collaborative problem-solving, and effective technical pitching under time constraints.",
+      challenge:
+        "One of the biggest challenges was designing an intelligent legal workflow that could demonstrate automated case tracking without direct access to live court systems. We addressed this by creating a realistic prototype using mock legal data while designing the architecture to support future integration with official court data sources where permitted.",
+      keyFeatures: [
+        "AI-powered Legal Document Analysis & Summarization",
+        "Relevant Law & Section Detection",
+        "Risk Assessment & Personalized Legal Guidance",
+        "Hearing Timeline & Deadline Extraction",
+        "AI Case Tracking Workflow for Automated Updates",
+        "Smart Notifications for Citizens & Lawyers",
+        "Multi-Agent AI Workflow Architecture",
+      ],
+      areasOfStudy: [
+        "AI Agent Architecture & Workflow Design",
+        "Generative AI Integration (Gemini API)",
+        "OCR & Intelligent Document Processing",
+        "Full-Stack Development with React & Node.js",
+        "LegalTech Product Design & User Experience",
+        "Team Collaboration & Agile Development",
+        "Product Pitching & Technical Communication",
+        "Rapid Prototyping in a Hackathon Environment",
+      ],
+      skills: [
+        "Artificial Intelligence",
+        "Generative AI",
+        "React",
+        "Node.js",
+        "MongoDB",
+        "OCR",
+        "AI Workflow Design",
+        "Problem Solving",
+        "Product Pitching",
+        "Team Collaboration",
+        "Rapid Prototyping",
+        "LegalTech",
+      ],
+      technologies: [
+        "React",
+        "Node.js",
+        "Express.js",
+        "MongoDB",
+        "Tailwind CSS",
+        "Gemini API",
+        "OCR",
+        "JavaScript",
+        "Git",
+        "GitHub",
+        "Vercel",
+      ],
+      gallery: [
+        "/images/journey/Nerd1.jpg",
+        "/images/journey/Nerd2.jpg",
+        "/images/journey/Nerd3.jpg",
+        "/images/journey/Nerd4.jpg",
+        "/images/journey/Nerd5.jpg",
+        "/images/journey/Nerd6.jpg",
+        "/images/journey/Nerd7.jpg",
+      ],
+    },
+  },
 ];
 
 const filterGroups = [
@@ -662,9 +764,10 @@ const filterGroups = [
 const formatLabel = (value = "") => {
   if (!value) return "";
   const parts = value.split("-");
-  if (parts.length === 2) {
+  if (parts.length >= 2) {
     const year = parts[0];
     const month = parts[1];
+    const day = parts[2];
     const months = {
       "01": "January",
       "02": "February",
@@ -680,6 +783,9 @@ const formatLabel = (value = "") => {
       "12": "December",
     };
     if (months[month]) {
+      if (day) {
+        return `${parseInt(day, 10)} ${months[month]} ${year}`;
+      }
       return `${months[month]} ${year}`;
     }
   }
@@ -877,13 +983,13 @@ const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
 const DetailsPanel = ({ d, accent, imageUrl }) => (
   <div className="border-t border-zinc-200 dark:border-white/[0.07] bg-zinc-50 dark:bg-zinc-950/60 px-5 py-6">
     {/* Meta grid */}
-    <div className="mb-5 grid grid-cols-2 gap-3">
+    <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
       {[
-        { label: "University", value: d.university },
-        { label: "Course", value: d.course },
+        { label: "Location / Org", value: d.university },
+        { label: "Course / Event", value: d.course },
         { label: "Current Status", value: d.status },
         { label: "Expected Graduation", value: d.expectedGraduation },
-      ].map(({ label, value }) => (
+      ].filter(({ value }) => Boolean(value)).map(({ label, value }) => (
         <div key={label} className="rounded-xl border border-zinc-200 dark:border-white/[0.06] bg-white dark:bg-zinc-900/60 p-3">
           <p className="mb-1 text-[9px] font-bold uppercase tracking-[0.22em] text-zinc-500 dark:text-zinc-600">{label}</p>
           <p className="text-xs font-bold text-zinc-900 dark:text-white">{value}</p>
@@ -896,30 +1002,50 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
       {d.journeyTitle}
     </p>
 
-    {/* Sections */}
+    {/* Text Sections */}
     {[
       { key: "overview", label: "// Overview", text: d.overview },
+      { key: "problem", label: "// Problem", text: d.problem },
+      { key: "solution", label: "// Solution", text: d.solution },
       { key: "objectives", label: "// Objectives", text: d.objectives },
       { key: "outcomes", label: "// Outcomes", text: d.outcomes },
-    ].map(({ key, label, text }) => (
+      { key: "challenge", label: "// Challenge", text: d.challenge },
+    ].filter(({ text }) => Boolean(text)).map(({ key, label, text }) => (
       <div key={key} className="mb-4">
         <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">{label}</p>
         <p className="text-[0.8rem] leading-6 text-zinc-600 dark:text-zinc-300">{text}</p>
       </div>
     ))}
 
+    {/* Key Features */}
+    {d.keyFeatures?.length > 0 && (
+      <div className="mb-4">
+        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Key Features</p>
+        <ul className="space-y-1.5">
+          {d.keyFeatures.map((item, i) => (
+            <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
+              <span className={`mt-[3px] shrink-0 bg-gradient-to-r ${accent} bg-clip-text text-xs font-black text-transparent`}>→</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
     {/* Areas of Study */}
-    <div className="mb-4">
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Areas of Study</p>
-      <ul className="space-y-1.5">
-        {d.areasOfStudy.map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
-            <span className={`mt-[3px] shrink-0 bg-gradient-to-r ${accent} bg-clip-text text-xs font-black text-transparent`}>→</span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    {d.areasOfStudy?.length > 0 && (
+      <div className="mb-4">
+        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Areas of Study</p>
+        <ul className="space-y-1.5">
+          {d.areasOfStudy.map((item, i) => (
+            <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
+              <span className={`mt-[3px] shrink-0 bg-gradient-to-r ${accent} bg-clip-text text-xs font-black text-transparent`}>→</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
 
     {/* Gallery */}
     {d.gallery?.length > 0 && (

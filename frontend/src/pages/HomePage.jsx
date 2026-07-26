@@ -847,6 +847,16 @@ const homeFeaturedJourney = [
     tags: ["Android Development", "AI", "Mobile Development"],
   },
   {
+    id: "nerds-hack-days-lucknow-2026",
+    title: "Nerds Hack Days Lucknow",
+    category: "HACKATHONS",
+    date: "26 July 2026",
+    subtitle: "// PW Institute of Innovation, Lucknow",
+    description: "Built Kanoon-Mate — an AI-powered Legal Operating System for document analysis, legal guidance, and automated case tracking.",
+    imageUrl: "/images/journey/Nerd1.jpg",
+    tags: ["Generative AI", "LegalTech", "React", "Node.js", "MLH"],
+  },
+  {
     id: "assocham-samarth-2026",
     title: "SAMARTH INTERNSHIP 2.0",
     category: "INTERNSHIPS",
@@ -855,16 +865,6 @@ const homeFeaturedJourney = [
     description: "Successfully completed Samarth 2.0 Internship — a comprehensive industrial program involving technical evaluations at CSIR-CDRI, AKTU Labs, and other premier institutions.",
     imageUrl: "/images/journey/Certi1.jpeg",
     tags: ["Industrial Workflows", "Research & Analysis", "System Engineering"],
-  },
-  {
-    id: "techx26-hackathon-2026",
-    title: "TechX26 Hackathon",
-    category: "HACKATHONS",
-    date: "February 2026",
-    subtitle: "// BBD University",
-    description: "Competed in TechX26 — built SmartMess, a smart hostel mess management platform for meal tracking, feedback, and attendance under 24 hours.",
-    imageUrl: "/images/journey/techx1.jpeg",
-    tags: ["React", "Node.js", "Hackathon", "MongoDB"],
   },
 ];
 
