@@ -1,9 +1,8 @@
 import { ArrowRight, Code2, Cpu, Database, ShieldCheck, Terminal, Wrench, Sparkles } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
-import SectionTitle from "@/components/ui/SectionTitle";
 import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
-import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
+import FadeInUp from "@/components/animations/FadeInUp";
 import { createBreadcrumbSchema } from "@/utils/seo";
 import { SITE_PROFILE } from "@/constants/siteData";
 
@@ -16,7 +15,7 @@ const SKILL_CATEGORIES = [
     Icon: Code2,
     gradient: "from-cyan-500 via-emerald-400 to-transparent",
     accentBorder: "group-hover:border-cyan-500/50 dark:group-hover:border-cyan-400/50",
-    skills: ["React", "Next.js", "JavaScript", "TypeScript", "Tailwind CSS", "Vite", "HTML", "CSS"],
+    skills: ["React", "Next.js", "JavaScript", "Tailwind CSS", "Vite", "HTML", "CSS"],
   },
   {
     id: "backend",
@@ -46,7 +45,7 @@ const SKILL_CATEGORIES = [
     Icon: Database,
     gradient: "from-teal-500 via-cyan-400 to-transparent",
     accentBorder: "group-hover:border-teal-500/50 dark:group-hover:border-teal-400/50",
-    skills: ["MongoDB", "PostgreSQL", "Supabase", "SQL"],
+    skills: ["MongoDB", "Supabase", "SQL"],
   },
   {
     id: "devtools",
@@ -56,7 +55,7 @@ const SKILL_CATEGORIES = [
     Icon: Terminal,
     gradient: "from-purple-500 via-indigo-400 to-transparent",
     accentBorder: "group-hover:border-purple-500/50 dark:group-hover:border-purple-400/50",
-    skills: ["Git", "GitHub", "Linux", "Vercel", "Render", "VS Code"],
+    skills: ["Git", "GitHub", "Linux", "Vercel", "Render", "VS Code", "Antigravity"],
   },
   {
     id: "ai-productivity",
@@ -66,7 +65,7 @@ const SKILL_CATEGORIES = [
     Icon: Wrench,
     gradient: "from-indigo-500 via-violet-400 to-transparent",
     accentBorder: "group-hover:border-indigo-500/50 dark:group-hover:border-indigo-400/50",
-    skills: ["ChatGPT", "GitHub Copilot"],
+    skills: ["ChatGPT", "GitHub Copilot", "Claude", "Gemini", "Emergent", "Replit", "Cursor"],
   },
 ];
 
@@ -81,15 +80,14 @@ const SkillsPage = () => {
   return (
     <>
       <SeoHead
-        title="Full Stack & MERN Developer Technical Skills | Nikhil Agrahari (Lucknow & Prayagraj)"
+        title="Full Stack & MERN Developer Technical Skills | Nikhil Agrahari"
         description="Comprehensive technical capabilities of Nikhil Agrahari: React.js, Node.js, Express, MongoDB, Next.js, Web Security, AI Integration, and cloud tools."
         pathname="/skills"
         image={SITE_PROFILE.profileImage}
-        imageAlt="Nikhil Agrahari - Full Stack Developer Skills in Lucknow & Prayagraj"
+        imageAlt="Nikhil Agrahari - Full Stack Developer Skills"
         keywords={[
-          "best full stack developer in lucknow skills",
-          "best full stack developer in prayagraj skills",
-          "MERN stack skills Lucknow Prayagraj",
+          "Nikhil Agrahari skills",
+          "MERN stack skills",
           "React Node.js MongoDB developer skills",
         ]}
         jsonLd={createBreadcrumbSchema([
@@ -98,20 +96,23 @@ const SkillsPage = () => {
         ])}
       />
 
-      {/* Page Title & Intro */}
-      <section className="section-wrap pt-12 sm:pt-20">
-        <SectionTitle
-          eyebrow="Technical Capabilities"
-          title="Engineering Stack & Skills"
-          description="A structured overview of how I build software—organized by engineering discipline, architectural approach, and core tools."
-        />
-      </section>
-
-      {/* Main Skills Content */}
-      <section className="section-wrap section-divider pt-8 pb-20">
+      {/* Main Section with Centered Minimal Header */}
+      <section className="section-wrap pt-4 sm:pt-6 pb-20">
         
+        {/* Centered Minimal Hero Header */}
+        <FadeInUp>
+          <div className="text-center max-w-4xl mx-auto mb-10">
+            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+              TECHNICAL <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">CAPABILITIES</span>
+            </h1>
+            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              A structured overview of how I build software—organized by engineering discipline, architectural approach, and core tools.
+            </p>
+          </div>
+        </FadeInUp>
+
         {/* Capability-First Approach Banner */}
-        <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white/90 p-6 sm:p-9 shadow-xl dark:border-slate-800/80 dark:bg-[#050d14]/90 backdrop-blur-xl dark:shadow-none mb-12">
+        <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white/90 p-6 sm:p-9 shadow-xl dark:border-slate-800/80 dark:bg-[#050d14]/90 backdrop-blur-xl dark:shadow-none mb-10">
           <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-green-500/10 dark:bg-green-400/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 -left-16 h-40 w-40 rounded-full bg-cyan-500/8 dark:bg-cyan-400/8 blur-3xl" />
 
@@ -123,7 +124,7 @@ const SkillsPage = () => {
               <h3 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
                 Capabilities Over Logos
               </h3>
-              <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
                 I view technical skills as tools to solve real engineering problems. My approach prioritizes clean modular architecture, application resilience, defense-in-depth security, and shipping software that users can rely on.
               </p>
             </div>
@@ -142,7 +143,7 @@ const SkillsPage = () => {
         </div>
 
         {/* Currently Exploring / Advancing */}
-        <div className="mb-14">
+        <div className="mb-12">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles size={16} className="text-green-600 dark:text-green-400" />
             <h3 className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-green-600 dark:text-green-400">
@@ -153,7 +154,7 @@ const SkillsPage = () => {
             {CURRENTLY_EXPLORING.map((item) => (
               <div
                 key={item.label}
-                className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/80 p-4.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-500/50 hover:shadow-md dark:border-slate-800/80 dark:bg-slate-950/60 dark:shadow-none dark:hover:border-green-400/40"
+                className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/80 p-4 shadow-sm transition-all duration-300 hover:border-green-500/50 dark:border-slate-800/80 dark:bg-slate-950/60 dark:shadow-none dark:hover:border-green-400/40"
               >
                 <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   {item.category}
@@ -166,85 +167,68 @@ const SkillsPage = () => {
           </div>
         </div>
 
-        {/* Engineering Skill Categories Header */}
-        <div className="mb-8">
-          <h3 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+        {/* Skill Categories Header */}
+        <div className="mb-6">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
             Skill Categories
-          </h3>
-          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          </h2>
+          <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
             Organized by production domain with official technology badges.
           </p>
         </div>
 
-        {/* Categories Grid */}
-        <StaggerGrid className="grid gap-6 md:grid-cols-2">
+        {/* Skill Categories Grid — Renders Immediately Without Scroll Delay */}
+        <div className="grid gap-6 md:grid-cols-2">
           {SKILL_CATEGORIES.map((category) => {
             const Icon = category.Icon;
 
             return (
-              <StaggerItem key={category.id} className="h-full">
-                <article className={`group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-6 sm:p-7 shadow-md transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl dark:border-slate-800/90 dark:bg-[#050d14]/90 dark:shadow-none ${category.accentBorder}`}>
-                  
-                  {/* Top Ambient Highlight Beam */}
-                  <div className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${category.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
-                  
-                  {/* Background Soft Glow */}
-                  <div className="pointer-events-none absolute -top-14 -right-14 h-36 w-36 rounded-full bg-green-500/5 blur-3xl transition-transform duration-300 group-hover:scale-150" />
+              <article key={category.id} className={`group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-6 sm:p-7 shadow-md transition-all duration-300 ease-out dark:border-slate-800/90 dark:bg-[#050d14]/90 dark:shadow-none ${category.accentBorder}`}>
+                
+                {/* Top Ambient Highlight Beam */}
+                <div className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${category.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+                
+                {/* Background Soft Glow */}
+                <div className="pointer-events-none absolute -top-14 -right-14 h-36 w-36 rounded-full bg-green-500/5 blur-3xl transition-transform duration-300 group-hover:scale-150" />
 
-                  <div className="relative">
-                    {/* Category Header */}
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-green-500/25 bg-green-500/10 text-green-600 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400">
-                          <Icon size={22} />
+                <div className="relative">
+                  {/* Category Header */}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-green-500/25 bg-green-500/10 text-green-600 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400">
+                        <Icon size={22} />
+                      </span>
+                      <div>
+                        <h3 className="font-display text-lg font-bold tracking-tight text-slate-900 dark:text-white sm:text-xl">
+                          {category.title}
+                        </h3>
+                        <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                          Domain {category.number}
                         </span>
-                        <div>
-                          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
-                            {category.number} // DOMAIN
-                          </span>
-                          <h4 className="font-display text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-                            {category.title}
-                          </h4>
-                        </div>
                       </div>
                     </div>
+                  </div>
 
-                    {/* Description */}
-                    <p className="mt-3.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                      {category.description}
+                  {/* Description */}
+                  <p className="mt-3.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {category.description}
+                  </p>
+
+                  {/* Skill Badges List */}
+                  <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2.5">
+                      Core Stack &amp; Tools:
                     </p>
-
-                    {/* Technology Badges */}
-                    <div className="mt-6 flex flex-wrap gap-2 pt-4 border-t border-slate-100 dark:border-slate-800/60">
-                      {category.skills.map((skill) => (
-                        <SkillLogoBadge key={skill} skill={skill} />
+                    <div className="flex flex-wrap gap-2">
+                      {category.skills.map((skillName) => (
+                        <SkillLogoBadge key={skillName} skill={skillName} />
                       ))}
                     </div>
                   </div>
-                </article>
-              </StaggerItem>
+                </div>
+              </article>
             );
           })}
-        </StaggerGrid>
-
-        {/* Bottom Call to Action */}
-        <div className="mt-14 flex flex-col sm:flex-row items-center justify-between gap-5 border-t border-slate-200/80 dark:border-slate-800/80 pt-9">
-          <div>
-            <p className="font-display text-lg font-bold text-slate-900 dark:text-white">
-              Want to see these skills in real production applications?
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Explore full-stack projects, architecture breakdowns, and security labs.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button to="/projects" variant="primary">
-              View Projects <ArrowRight size={15} />
-            </Button>
-            <Button to="/security" variant="ghost">
-              Security Labs
-            </Button>
-          </div>
         </div>
 
       </section>

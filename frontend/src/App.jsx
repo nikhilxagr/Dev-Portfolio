@@ -37,6 +37,9 @@ const BlogDetailsPage = lazy(() => import("@/pages/BlogDetailsPage.jsx"));
 const ContactPage = lazy(() => import("@/pages/ContactPage.jsx"));
 const AdminLoginPage = lazy(() => import("@/pages/AdminLoginPage.jsx"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage.jsx"));
+const RecruiterDashboardPage = lazy(() => import("@/pages/RecruiterDashboardPage.jsx"));
+const ResumeDashboardPage = lazy(() => import("@/pages/ResumeDashboardPage.jsx"));
+const HowIBuildPage = lazy(() => import("@/pages/HowIBuildPage.jsx"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.jsx"));
 
 const LOADER_VISIT_KEY = "portfolio_loader_seen";
@@ -137,6 +140,10 @@ function App() {
               <Suspense fallback={<RouteFallback />}>
                 <Routes location={location}>
                   <Route path="/" element={<HomePage />} />
+                  <Route path="/dashboard" element={<RecruiterDashboardPage />} />
+                  <Route path="/dashboard/recruiter" element={<RecruiterDashboardPage />} />
+                  <Route path="/dashboard/resume" element={<ResumeDashboardPage />} />
+                  <Route path="/dashboard/how-i-build" element={<HowIBuildPage />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/skills" element={<SkillsPage />} />
                   <Route path="/projects" element={<ProjectsPage />} />

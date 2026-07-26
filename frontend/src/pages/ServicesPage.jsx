@@ -9,10 +9,10 @@ import {
   CreditCard,
   HeartHandshake,
 } from "lucide-react";
-import SectionTitle from "@/components/ui/SectionTitle";
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
 import PaymentTrustPanel from "@/components/ui/PaymentTrustPanel";
+import FadeInUp from "@/components/animations/FadeInUp";
 import {
   createPaymentOrder,
   prewarmBackendForCheckout,
@@ -24,32 +24,32 @@ import { createBreadcrumbSchema } from "@/utils/seo";
 import { SERVICE_OFFERINGS } from "@/constants/siteData";
 
 const categoryStyle = {
-  Guidance: "border-emerald-300/45 bg-emerald-300/10 text-emerald-200",
-  "Career Support": "border-cyan-300/45 bg-cyan-300/10 text-cyan-200",
-  "Build and Delivery": "border-violet-300/45 bg-violet-300/10 text-violet-200",
+  Guidance: "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+  "Career Support": "border-cyan-500/30 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300",
+  "Build and Delivery": "border-violet-500/30 bg-violet-500/10 text-violet-700 dark:text-violet-300",
 };
 
 const serviceCardAccent = {
   Guidance: {
-    card: "border-emerald-300/28 hover:border-emerald-300/52 hover:shadow-[0_26px_44px_-30px_rgba(52,211,153,0.75)]",
-    glow: "bg-emerald-300/18",
-    line: "bg-emerald-300/55",
-    panel: "border-emerald-300/28 bg-emerald-300/10",
-    bullet: "text-emerald-200",
+    card: "border-slate-200 dark:border-emerald-500/30 hover:border-emerald-400 dark:hover:border-emerald-400",
+    glow: "bg-emerald-400/10",
+    line: "bg-emerald-500/40",
+    panel: "border-slate-200 bg-slate-50/90 dark:border-emerald-500/20 dark:bg-[#020803]/80",
+    bullet: "text-emerald-600 dark:text-emerald-400",
   },
   "Career Support": {
-    card: "border-cyan-300/28 hover:border-cyan-300/52 hover:shadow-[0_26px_44px_-30px_rgba(34,211,238,0.75)]",
-    glow: "bg-cyan-300/18",
-    line: "bg-cyan-300/55",
-    panel: "border-cyan-300/28 bg-cyan-300/10",
-    bullet: "text-cyan-200",
+    card: "border-slate-200 dark:border-cyan-500/30 hover:border-cyan-400 dark:hover:border-cyan-400",
+    glow: "bg-cyan-400/10",
+    line: "bg-cyan-500/40",
+    panel: "border-slate-200 bg-slate-50/90 dark:border-cyan-500/20 dark:bg-[#020803]/80",
+    bullet: "text-cyan-600 dark:text-cyan-400",
   },
   "Build and Delivery": {
-    card: "border-violet-300/28 hover:border-violet-300/52 hover:shadow-[0_26px_44px_-30px_rgba(167,139,250,0.72)]",
-    glow: "bg-violet-300/18",
-    line: "bg-violet-300/55",
-    panel: "border-violet-300/28 bg-violet-300/10",
-    bullet: "text-violet-200",
+    card: "border-slate-200 dark:border-violet-500/30 hover:border-violet-400 dark:hover:border-violet-400",
+    glow: "bg-violet-400/10",
+    line: "bg-violet-500/40",
+    panel: "border-slate-200 bg-slate-50/90 dark:border-violet-500/20 dark:bg-[#020803]/80",
+    bullet: "text-violet-600 dark:text-violet-400",
   },
 };
 
@@ -289,15 +289,13 @@ const ServicesPage = () => {
   return (
     <>
       <SeoHead
-        title="Hire Best Full Stack Developer in Lucknow & Prayagraj | Nikhil Agrahari Services"
-        description="Hire the Best Full Stack Developer in Lucknow & Prayagraj. Professional web app development, MERN stack solutions, custom APIs, AI integration, and security auditing."
+        title="Engineering Services & Advisory | Nikhil Agrahari"
+        description="Hire Nikhil Agrahari for professional web app development, MERN stack solutions, custom APIs, AI integration, and security auditing."
         pathname="/services"
         keywords={[
-          "hire full stack developer in lucknow",
-          "freelance web developer prayagraj",
-          "best full stack developer in lucknow services",
-          "best full stack developer in prayagraj services",
-          "web application development Lucknow Prayagraj",
+          "Nikhil Agrahari services",
+          "freelance web developer",
+          "MERN stack development",
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", path: "/" },
@@ -305,23 +303,30 @@ const ServicesPage = () => {
         ])}
       />
 
-      <section className="section-wrap pt-12 sm:pt-20">
+      <section className="section-wrap pt-4 sm:pt-6 pb-20">
+        
+        {/* Centered Hero Header */}
+        <FadeInUp>
+          <div className="text-center max-w-4xl mx-auto mb-10">
+            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+              ENGINEERING &amp; <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">SERVICES</span>
+            </h1>
+            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              Service tracks, clear transparent pricing, and instant checkout readiness for mentorship and custom builds.
+            </p>
+          </div>
+        </FadeInUp>
+
         <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
           <div className="space-y-4 lg:space-y-5">
-            <SectionTitle
-              eyebrow="Professional Services"
-              title="Development and Advisory Services"
-              description="Service tracks, clear pricing, and checkout readiness."
-            />
-
             <div className="flex flex-wrap gap-3">
-              <Button to="/support" className="min-w-[200px]">
+              <Button to="/support" className="min-w-[180px]">
                 <HeartHandshake size={16} /> Open Support Page
               </Button>
               <Button
                 to="/contact"
                 variant="secondary"
-                className="min-w-[200px]"
+                className="min-w-[180px]"
               >
                 Discuss Custom Scope
               </Button>
@@ -334,13 +339,13 @@ const ServicesPage = () => {
                 return (
                   <article
                     key={item.title}
-                    className="card-surface rounded-2xl p-5"
+                    className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-md backdrop-blur-xl dark:border-emerald-500/20 dark:bg-[#030d07]/90"
                   >
-                    <Icon size={20} className="text-cyan-200" />
-                    <h2 className="mt-3 text-lg font-semibold text-cyan-100">
+                    <Icon size={20} className="text-emerald-600 dark:text-emerald-400" />
+                    <h2 className="mt-3 text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
                       {item.title}
                     </h2>
-                    <p className="mt-2 text-sm text-slate-300">
+                    <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
                       {item.summary}
                     </p>
                   </article>
@@ -353,25 +358,29 @@ const ServicesPage = () => {
         </div>
 
         {paymentError ? (
-          <p className="mt-4 rounded-xl border border-rose-300/35 bg-rose-300/10 px-4 py-3 text-sm text-rose-200">
+          <p className="mt-4 rounded-xl border border-rose-300/40 bg-rose-500/10 px-4 py-3 text-xs sm:text-sm font-bold text-rose-700 dark:text-rose-300">
             {paymentError}
           </p>
         ) : null}
         {paymentInfo ? (
-          <p className="mt-4 rounded-xl border border-emerald-300/35 bg-emerald-300/10 px-4 py-3 text-sm text-emerald-200">
+          <p className="mt-4 rounded-xl border border-emerald-300/40 bg-emerald-500/10 px-4 py-3 text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300">
             {paymentInfo}
           </p>
         ) : null}
-      </section>
 
-      <section className="section-wrap section-divider pt-10">
-        <SectionTitle
-          eyebrow="Service Catalog"
-          title="Service Plans"
-          description="Compare deliverables, pricing, and delivery timelines."
-        />
+        {/* Service Catalog Header */}
+        <div className="mt-14 mb-8 text-center">
+          <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">// SERVICE CATALOG</span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+            Service Plans &amp; Scope
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium max-w-xl mx-auto mt-1">
+            Compare deliverables, starting prices, and turn-around timelines.
+          </p>
+        </div>
 
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">
+        {/* Service Catalog Grid */}
+        <div className="grid gap-6 lg:grid-cols-2">
           {SERVICE_OFFERINGS.map((service, index) => {
             const isActiveService = activeServiceSlug === service.slug;
             const isProcessing = processingSlug === service.slug;
@@ -383,103 +392,99 @@ const ServicesPage = () => {
             return (
               <article
                 key={service.slug}
-                className={`card-surface group relative overflow-hidden rounded-[1.7rem] border bg-gradient-to-br from-slate-950/96 via-slate-950/92 to-[#051326] p-5 transition-all duration-300 motion-safe:hover:-translate-y-1.5 ${accent.card} ${
+                className={`group relative overflow-hidden rounded-3xl border bg-white/95 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] ${accent.card} ${
                   isActiveService
-                    ? "border-cyan-200/58 shadow-[0_28px_44px_-32px_rgba(34,211,238,0.76)]"
+                    ? "border-emerald-400 dark:border-emerald-400 shadow-[0_0_30px_rgba(52,211,153,0.3)]"
                     : ""
                 }`}
               >
                 <div
-                  className={`pointer-events-none absolute inset-x-0 top-0 h-px ${accent.line}`}
+                  className={`pointer-events-none absolute inset-x-0 top-0 h-[2px] ${accent.line}`}
                 />
                 <div
-                  className={`pointer-events-none absolute -right-16 -top-20 h-44 w-44 rounded-full blur-3xl transition-opacity duration-300 group-hover:opacity-100 ${accent.glow} ${
-                    isActiveService ? "opacity-100" : "opacity-55"
+                  className={`pointer-events-none absolute -right-16 -top-20 h-44 w-44 rounded-full blur-3xl transition-opacity duration-300 ${accent.glow} ${
+                    isActiveService ? "opacity-100" : "opacity-40"
                   }`}
                 />
 
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                      Service {String(index + 1).padStart(2, "0")}
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                      SERVICE {String(index + 1).padStart(2, "0")}
                     </p>
-                    <h3 className="mt-1 text-2xl font-semibold leading-tight text-cyan-100 sm:text-[2rem]">
+                    <h3 className="mt-1 text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
                       {service.name}
                     </h3>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <span
-                      className={`rounded-full border px-3 py-1 text-xs ${categoryStyle[service.category] || "border-cyan-300/45 bg-cyan-300/10 text-cyan-200"}`}
+                      className={`rounded-full border px-3 py-1 text-xs font-bold ${categoryStyle[service.category]}`}
                     >
                       {service.category}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-4 grid gap-3 md:grid-cols-[1.05fr_0.95fr]">
+                <div className="mt-5 grid gap-3 md:grid-cols-2">
                   <div className={`rounded-2xl border p-4 ${accent.panel}`}>
-                    <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                    <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       Starting Price
                     </p>
-                    <p className="mt-1 font-display text-4xl leading-none text-cyan-100">
+                    <p className="mt-1 font-outfit text-3xl font-black text-slate-900 dark:text-white">
                       {service.price}
                     </p>
 
-                    <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                    <p className="mt-3 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                       Payable Now
                     </p>
-                    <p className="mt-1 text-sm font-semibold uppercase tracking-[0.13em] text-emerald-200">
+                    <p className="mt-1 text-xs font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-300">
                       INR {service.amountInr}
                     </p>
                   </div>
 
                   <div className="grid gap-3">
-                    <div
-                      className={`rounded-xl border px-3 py-3 ${accent.panel}`}
-                    >
-                      <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                    <div className={`rounded-2xl border p-3 ${accent.panel}`}>
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                         Timeline
                       </p>
-                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-200">
+                      <p className="mt-1 text-xs font-bold text-slate-800 dark:text-slate-200">
                         {service.turnaround}
                       </p>
                     </div>
 
-                    <div
-                      className={`rounded-xl border px-3 py-3 ${accent.panel}`}
-                    >
-                      <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                    <div className={`rounded-2xl border p-3 ${accent.panel}`}>
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                         Engagement Model
                       </p>
-                      <p className="mt-1 text-xs leading-5 text-slate-200">
+                      <p className="mt-1 text-xs font-medium text-slate-800 dark:text-slate-200 leading-snug">
                         {details.engagementModel}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-xl border border-cyan-300/25 bg-slate-900/72 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
+                  <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                     Ideal For
                   </p>
-                  <p className="mt-1 text-sm leading-6 text-slate-200">
+                  <p className="mt-1 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
                     {details.idealFor}
                   </p>
                 </div>
 
-                <div className="mt-4 rounded-xl border border-cyan-300/25 bg-slate-900/72 p-3">
-                  <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
+                  <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                     What You Get
                   </p>
-                  <ul className="mt-2 space-y-2">
+                  <ul className="mt-2 space-y-1.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
                     {details.deliverables.map((item) => (
                       <li
                         key={`${service.slug}-${item}`}
-                        className="flex items-start gap-2 text-sm text-slate-200"
+                        className="flex items-start gap-2"
                       >
                         <CheckCircle2
-                          size={15}
+                          size={14}
                           className={`mt-0.5 shrink-0 ${accent.bullet}`}
                         />
                         <span>{item}</span>
@@ -488,9 +493,7 @@ const ServicesPage = () => {
                   </ul>
                 </div>
 
-                <div
-                  className={`mt-4 rounded-xl border p-3 text-sm leading-6 ${accent.panel}`}
-                >
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3.5 text-xs text-slate-700 dark:border-emerald-500/20 dark:bg-[#020803]/80 dark:text-slate-300 font-medium leading-relaxed">
                   {service.summary}
                 </div>
 
@@ -511,9 +514,9 @@ const ServicesPage = () => {
 
                       handlePayAndBook(service);
                     }}
-                    className="flex-1 min-w-[180px] shadow-[0_14px_30px_-20px_rgba(34,211,238,0.86)] transition-all duration-300 group-hover:shadow-[0_20px_34px_-20px_rgba(34,211,238,0.95)]"
+                    className="flex-1 min-w-[180px]"
                   >
-                    <CreditCard size={16} />
+                    <CreditCard size={15} />
                     {isActiveService
                       ? isProcessing
                         ? "Opening Checkout..."
@@ -524,20 +527,19 @@ const ServicesPage = () => {
                   <Button
                     to="/contact"
                     variant="secondary"
-                    className="flex-1 min-w-[160px] transition-all duration-300 group-hover:border-cyan-200/65"
+                    className="flex-1 min-w-[160px]"
                   >
-                    Custom Scope <ArrowRight size={16} />
+                    Custom Scope <ArrowRight size={15} />
                   </Button>
                 </div>
 
                 {isActiveService ? (
-                  <div className="mt-4 rounded-xl border border-cyan-300/28 bg-slate-900/76 p-4">
-                    <p className="text-xs uppercase tracking-[0.14em] text-cyan-200">
+                  <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+                    <p className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-300">
                       Step 2: Secure Checkout Details
                     </p>
-                    <p className="mt-1 text-sm text-slate-300">
-                      Enter your details once. Cashfree opens after this with
-                      secure verification.
+                    <p className="mt-1 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                      Enter your details once. Cashfree opens after this with secure verification.
                     </p>
 
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -549,7 +551,7 @@ const ServicesPage = () => {
                           onChange={(event) =>
                             updateBuyerForm("customerName", event.target.value)
                           }
-                          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
+                          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-900 outline-none focus:border-emerald-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
                           placeholder="Your full name"
                         />
                       </label>
@@ -562,7 +564,7 @@ const ServicesPage = () => {
                           onChange={(event) =>
                             updateBuyerForm("customerEmail", event.target.value)
                           }
-                          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
+                          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-900 outline-none focus:border-emerald-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
                           placeholder="you@example.com"
                         />
                       </label>
@@ -575,15 +577,14 @@ const ServicesPage = () => {
                           onChange={(event) =>
                             updateBuyerForm("customerPhone", event.target.value)
                           }
-                          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
+                          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-900 outline-none focus:border-emerald-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
                           placeholder="9876543210"
                         />
                       </label>
                     </div>
 
-                    <p className="mt-3 text-xs text-slate-600 dark:text-slate-400">
-                      By continuing, you agree to transparent service terms and
-                      the 7-day refund policy.
+                    <p className="mt-3 text-[11px] text-slate-500 dark:text-slate-400">
+                      By continuing, you agree to transparent service terms and the 7-day refund policy.
                     </p>
                   </div>
                 ) : null}

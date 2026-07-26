@@ -30,7 +30,17 @@ export const HERO_CONTENT = {
 };
 
 export const NAV_LINKS = [
-  { to: "/", label: "Home" },
+  {
+    to: "/",
+    label: "My Dashboard",
+    isDropdown: true,
+    children: [
+      { to: "/", label: "Main Dashboard", description: "Home overview & portfolio dashboard" },
+      { to: "/dashboard/recruiter", label: "Recruiter Dashboard", description: "Fast 60s summary for hiring managers" },
+      { to: "/dashboard/resume", label: "Resume Dashboard", description: "Interactive 6-section digital resume" },
+      { to: "/dashboard/how-i-build", label: "How I Build", description: "SDLC workflow & architecture diagram" },
+    ],
+  },
   { to: "/about", label: "About" },
   { to: "/skills", label: "Skills" },
   { to: "/projects", label: "Projects" },
@@ -942,4 +952,101 @@ export const LEGAL_NOTICES = {
     "This portfolio presents real learning and project delivery focused on web development and secure engineering practices.",
   practicalsEthics:
     "All security practice is limited to labs, owned systems, or explicitly authorized defensive testing contexts.",
+};
+
+export const RESUME_DATA = {
+  summary:
+    "Full-Stack Web Developer and Cyber Security Practitioner pursuing BCA at BBD University, Lucknow. Specialized in React.js, Node.js, RESTful APIs, Tailwind CSS, Python, and AppSec practicals. Demonstrated track record of building 10+ production-grade web products with clean code architecture.",
+  education: [
+    {
+      degree: "Bachelor of Computer Applications (BCA)",
+      institution: "Babu Banarasi Das University (BBDU), Lucknow, UP",
+      period: "2023 - 2026",
+      status: "In Progress (2nd Year)",
+      cgpa: "8.5+ CGPA",
+      coursework: [
+        "Data Structures & Algorithms",
+        "Object Oriented Programming (C++/Python)",
+        "Database Management Systems (SQL/MongoDB)",
+        "Web Technology & Frameworks",
+        "Operating Systems & Linux Kernel",
+        "Computer Networks & Information Security",
+      ],
+    },
+    {
+      degree: "Senior Secondary (12th State Board)",
+      institution: "Uttar Pradesh Board",
+      period: "2021 - 2023",
+      status: "Completed",
+      cgpa: "First Division (Science Stream)",
+      coursework: ["Physics", "Chemistry", "Mathematics", "Computer Applications"],
+    },
+  ],
+  experience: [
+    {
+      role: "Full-Stack Web Developer & Product Architect",
+      company: "Freelance & Independent Projects",
+      period: "2023 - Present",
+      location: "Lucknow, India",
+      description:
+        "Engineered, deployed, and maintained 10+ full-stack web applications and micro-utilities.",
+      highlights: [
+        "Architected Fast Feast food delivery app with dynamic cart state and multi-vendor menu exploration.",
+        "Built SnapURL, an enterprise-grade URL shortener with real-time analytics and QR code generator.",
+        "Developed AI-powered Code Reviewer integrating AI API prompts for static code security audit.",
+        "Designed payment checkout integration using Razorpay & Cashfree SDKs with automated webhooks.",
+      ],
+    },
+    {
+      role: "Cyber Security Practitioner & Lab Researcher",
+      company: "Self-Driven & TryHackMe Labs",
+      period: "2024 - Present",
+      location: "Lucknow, India",
+      description:
+        "Executed offensive and defensive security lab writeups, vulnerability analysis, and tool auditing.",
+      highlights: [
+        "Hardened Kali Linux penetration testing environment with customized zsh shell and toolchains.",
+        "Audited OWASP Top 10 vulnerabilities (SQLi, XSS, CSRF, IDOR) across simulated vulnerable targets.",
+        "Created interactive Dev Terminal and Security Labs showcase embedded directly into portfolio site.",
+      ],
+    },
+  ],
+  achievements: [
+    {
+      title: "Built & Deployed 10+ Production Web Products",
+      detail: "Live Netlify and Vercel deployments with custom domain configurations and SSL encryption.",
+    },
+    {
+      title: "30+ Public Open-Source Repositories",
+      detail: "Maintained structured GitHub codebase with clean modular commits and documentation.",
+    },
+    {
+      title: "TryHackMe Security Badges",
+      detail: "Completed hands-on practical labs in Network Security, Web Hacking Fundamentals, and Recon.",
+    },
+    {
+      title: "Full-Stack Portfolio Engine with Payment Integration",
+      detail: "Architected a custom MERN portfolio system with dynamic admin dashboard, checkout, and receipt generation.",
+    },
+  ],
+  certificates: [
+    {
+      name: "Full-Stack Web Development Mastery",
+      issuer: "Udemy / Online Engineering Academy",
+      date: "2024",
+      skills: ["React", "Node.js", "MongoDB", "Express"],
+    },
+    {
+      name: "Cyber Security Hacking Fundamentals",
+      issuer: "TryHackMe / Security Community",
+      date: "2024",
+      skills: ["Linux", "Nmap", "Burp Suite", "OWASP"],
+    },
+    {
+      name: "Python Programming & Automation",
+      issuer: "Python Institute / Online Certification",
+      date: "2023",
+      skills: ["Python 3", "Tkinter", "File I/O", "Data Structures"],
+    },
+  ],
 };

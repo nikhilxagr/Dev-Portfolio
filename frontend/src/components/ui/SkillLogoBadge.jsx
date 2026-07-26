@@ -3,9 +3,10 @@ import clsx from "clsx";
 import { useTheme } from "@/context/ThemeContext";
 import { getSkillLogoUrl } from "@/constants/skillLogos";
 
-const SkillLogoBadge = ({ skill, className }) => {
+const SkillLogoBadge = ({ skill, skillName, className }) => {
+  const name = skill || skillName || "";
   const { isDark } = useTheme();
-  const logoUrl = getSkillLogoUrl(skill, isDark);
+  const logoUrl = getSkillLogoUrl(name, isDark);
   const [logoFailed, setLogoFailed] = useState(false);
 
   return (
@@ -19,7 +20,7 @@ const SkillLogoBadge = ({ skill, className }) => {
         {logoUrl && !logoFailed ? (
           <img
             src={logoUrl}
-            alt={`${skill} logo`}
+            alt={`${name} logo`}
             loading="lazy"
             decoding="async"
             className="h-3.5 w-3.5 object-contain"
@@ -27,11 +28,11 @@ const SkillLogoBadge = ({ skill, className }) => {
           />
         ) : (
           <span className="font-mono text-[9px] font-bold uppercase text-green-600 dark:text-green-400">
-            {skill.slice(0, 2)}
+            {name.slice(0, 2)}
           </span>
         )}
       </span>
-      <span className="tracking-tight">{skill}</span>
+      <span className="tracking-tight">{name}</span>
     </span>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
@@ -12,11 +12,15 @@ import {
   Cpu,
   Download,
   FileText,
+  FlaskConical,
   Folder,
   GitBranch,
+  GraduationCap,
   Home,
+  LayoutDashboard,
   Mail,
   Menu,
+  Milestone,
   Moon,
   Search,
   Shield,
@@ -26,6 +30,8 @@ import {
   SunMedium,
   Terminal,
   User,
+  UserCheck,
+  Workflow,
   Wrench,
   X,
 } from "lucide-react";
@@ -36,18 +42,23 @@ const NAV_OFFSET_REM = 6;
 const OPPORTUNITY_BANNER_HEIGHT_REM = 2.25;
 
 const mobileNavIconMap = {
-  Home,
+  "My Dashboard": LayoutDashboard,
+  Home: LayoutDashboard,
   About: User,
-  Skills: Sparkles,
+  Skills: Cpu,
   Projects: Folder,
-  Experiments: Terminal,
-  Journey: GitBranch,
+  Experiments: FlaskConical,
+  Journey: Milestone,
   Blog: BookOpen,
   Services: Briefcase,
   Contact: Mail,
 };
 
 const subIconMap = {
+  "Main Dashboard": LayoutDashboard,
+  "Recruiter Dashboard": UserCheck,
+  "Resume Dashboard": FileText,
+  "How I Build": Workflow,
   "Security Labs": ShieldCheck,
   "Dev Terminal": Terminal,
   "Data Structure Lab": Cpu,
@@ -57,28 +68,49 @@ const subIconMap = {
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const [showOpportunityBanner, setShowOpportunityBanner] = useState(true);
+  const [showOpportunityBanner, setShowOpportunityBanner] = useState(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      return sessionStorage.getItem("opportunity_banner_dismissed") !== "true";
+    } catch {
+      return true;
+    }
+  });
   const { isDark, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [resumeDropdownOpen, setResumeDropdownOpen] = useState(false);
   const resumeDropdownRef = useRef(null);
 
+  const [dashboardOpen, setDashboardOpen] = useState(false);
+  const dashboardRef = useRef(null);
+  const dashboardTimeoutRef = useRef(null);
+
   const [experimentsOpen, setExperimentsOpen] = useState(false);
-  const [mobileExperimentsOpen, setMobileExperimentsOpen] = useState(false);
   const experimentsRef = useRef(null);
   const experimentsTimeoutRef = useRef(null);
 
-  const handleExperimentsMouseEnter = () => {
-    if (experimentsTimeoutRef.current) {
-      clearTimeout(experimentsTimeoutRef.current);
-    }
-    setExperimentsOpen(true);
+  const [mobileDropdowns, setMobileDropdowns] = useState({});
+
+  const location = useLocation();
+
+  const handleDashboardMouseEnter = () => {
+    if (dashboardTimeoutRef.current) clearTimeout(dashboardTimeoutRef.current);
+    setDashboardOpen(true);
+  };
+  const handleDashboardMouseLeave = () => {
+    dashboardTimeoutRef.current = setTimeout(() => setDashboardOpen(false), 180);
   };
 
+  const handleExperimentsMouseEnter = () => {
+    if (experimentsTimeoutRef.current) clearTimeout(experimentsTimeoutRef.current);
+    setExperimentsOpen(true);
+  };
   const handleExperimentsMouseLeave = () => {
-    experimentsTimeoutRef.current = setTimeout(() => {
-      setExperimentsOpen(false);
-    }, 180);
+    experimentsTimeoutRef.current = setTimeout(() => setExperimentsOpen(false), 180);
+  };
+
+  const toggleMobileDropdown = (label) => {
+    setMobileDropdowns((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
   // Close dropdown on outside click
@@ -87,6 +119,9 @@ const Navbar = () => {
       if (resumeDropdownRef.current && !resumeDropdownRef.current.contains(e.target)) {
         setResumeDropdownOpen(false);
       }
+      if (dashboardRef.current && !dashboardRef.current.contains(e.target)) {
+        setDashboardOpen(false);
+      }
       if (experimentsRef.current && !experimentsRef.current.contains(e.target)) {
         setExperimentsOpen(false);
       }
@@ -94,9 +129,8 @@ const Navbar = () => {
     document.addEventListener("mousedown", handler);
     return () => {
       document.removeEventListener("mousedown", handler);
-      if (experimentsTimeoutRef.current) {
-        clearTimeout(experimentsTimeoutRef.current);
-      }
+      if (dashboardTimeoutRef.current) clearTimeout(dashboardTimeoutRef.current);
+      if (experimentsTimeoutRef.current) clearTimeout(experimentsTimeoutRef.current);
     };
   }, []);
 
@@ -149,6 +183,11 @@ const Navbar = () => {
 
   const closeOpportunityBanner = () => {
     setShowOpportunityBanner(false);
+    try {
+      sessionStorage.setItem("opportunity_banner_dismissed", "true");
+    } catch {
+      // ignore
+    }
   };
 
   const navItemClass = ({ isActive }) =>
@@ -293,20 +332,30 @@ const Navbar = () => {
               <nav className="hidden items-center gap-1 xl:flex justify-center flex-1">
                 {NAV_LINKS.map((item) => {
                   if (item.isDropdown) {
+                    const isDashboard = item.label === "My Dashboard";
+                    const isDropdownOpen = isDashboard ? dashboardOpen : experimentsOpen;
+                    const setDropdownOpen = isDashboard ? setDashboardOpen : setExperimentsOpen;
+                    const dropdownRef = isDashboard ? dashboardRef : experimentsRef;
+                    const mouseEnterHandler = isDashboard ? handleDashboardMouseEnter : handleExperimentsMouseEnter;
+                    const mouseLeaveHandler = isDashboard ? handleDashboardMouseLeave : handleExperimentsMouseLeave;
+
+                    const isParentActive = isDashboard
+                      ? location.pathname === "/" || location.pathname.startsWith("/dashboard")
+                      : location.pathname.startsWith("/experiments") || location.pathname.startsWith("/security");
+
                     return (
                       <div
                         key={item.label}
-                        ref={experimentsRef}
+                        ref={dropdownRef}
                         className="relative"
-                        onMouseEnter={handleExperimentsMouseEnter}
-                        onMouseLeave={handleExperimentsMouseLeave}
+                        onMouseEnter={mouseEnterHandler}
+                        onMouseLeave={mouseLeaveHandler}
                       >
-                        <button
-                          type="button"
-                          onClick={() => setExperimentsOpen((v) => !v)}
+                        <NavLink
+                          to={item.to || "/"}
                           className={clsx(
                             "inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] transition-all duration-300",
-                            location.pathname.startsWith("/experiments") || location.pathname.startsWith("/security")
+                            isParentActive
                               ? "bg-lime-400 text-[#121212] shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
                               : isDark
                                 ? "text-zinc-400/80 hover:text-white hover:bg-white/[0.06]"
@@ -314,46 +363,56 @@ const Navbar = () => {
                           )}
                         >
                           {item.label}
-                          <ChevronDown size={13} className={`transition-transform duration-200 ${experimentsOpen ? "rotate-180" : ""}`} />
-                        </button>
+                          <ChevronDown size={13} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                        </NavLink>
 
-                        {experimentsOpen && (
-                          <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2.5 w-72 z-50">
+                        {isDropdownOpen && (
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2.5 w-[330px] z-50">
                             <div className={clsx(
-                              "rounded-2xl border p-2 shadow-[0_18px_45px_rgba(0,10,2,0.85)] backdrop-blur-xl transition-all duration-200 animate-fadeIn",
+                              "rounded-3xl border p-3 shadow-[0_20px_50px_rgba(0,10,2,0.85)] backdrop-blur-2xl transition-all duration-300 animate-fadeIn",
                               isDark
-                                ? "border-green-400/25 bg-[#030d07]/95 text-white"
-                                : "border-green-400/30 bg-white/95 text-slate-900",
+                                ? "border-emerald-500/30 bg-[#030d07]/95 text-white shadow-[0_16px_50px_rgba(0,10,2,0.9)]"
+                                : "border-slate-200 bg-white/95 text-slate-900 shadow-xl",
                             )}>
-                              <div className="px-3 py-1.5 font-mono text-[10px] uppercase font-bold text-emerald-400 tracking-widest border-b border-emerald-500/20 mb-1">
-                                // EXPERIMENTAL LABS
+                              <div className="px-3 py-1.5 font-mono text-[10px] uppercase font-bold text-emerald-500 dark:text-emerald-400 tracking-widest border-b border-emerald-500/20 mb-2">
+                                // {item.label.toUpperCase()}
                               </div>
-                              {item.children.map((sub) => {
-                                const SubIcon = subIconMap[sub.label] || ShieldCheck;
-                                return (
-                                  <NavLink
-                                    key={sub.to}
-                                    to={sub.to}
-                                    onClick={() => setExperimentsOpen(false)}
-                                    className={({ isActive }) => clsx(
-                                      "flex items-start gap-3 rounded-xl p-2.5 transition-all duration-200",
-                                      isActive
-                                        ? "bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-bold"
-                                        : isDark
-                                          ? "hover:bg-white/5 hover:text-emerald-300 text-slate-300"
-                                          : "hover:bg-emerald-50 text-slate-800",
-                                    )}
-                                  >
-                                    <span className="p-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shrink-0 mt-0.5">
-                                      <SubIcon size={14} />
-                                    </span>
-                                    <div>
-                                      <p className="text-xs font-bold leading-tight">{sub.label}</p>
-                                      <p className="text-[10px] text-slate-400 mt-0.5 leading-snug">{sub.description}</p>
-                                    </div>
-                                  </NavLink>
-                                );
-                              })}
+                              <div className="space-y-1">
+                                {item.children.map((sub) => {
+                                  const SubIcon = subIconMap[sub.label] || ShieldCheck;
+                                  return (
+                                    <NavLink
+                                      key={sub.to}
+                                      to={sub.to}
+                                      onClick={() => setDropdownOpen(false)}
+                                      className={({ isActive }) => clsx(
+                                        "group/sub flex items-center justify-between gap-3 rounded-2xl p-2.5 sm:p-3 transition-all duration-300 ease-out border",
+                                        isActive
+                                          ? isDark
+                                            ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300 font-extrabold shadow-[0_0_20px_rgba(52,211,153,0.25)]"
+                                            : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 font-extrabold"
+                                          : isDark
+                                            ? "border-transparent text-slate-200 hover:bg-white/[0.08] hover:border-emerald-500/30 hover:text-white"
+                                            : "border-transparent text-slate-800 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-950",
+                                      )}
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover/sub:scale-110 group-hover/sub:bg-emerald-500 group-hover/sub:text-black transition-all duration-300 shadow-sm">
+                                          <SubIcon size={16} />
+                                        </span>
+                                        <span className="text-xs sm:text-sm font-extrabold tracking-wide">
+                                          {sub.label}
+                                        </span>
+                                      </div>
+
+                                      <ChevronRight
+                                        size={15}
+                                        className="text-slate-400 dark:text-slate-500 opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 group-hover/sub:text-emerald-400 transition-all duration-200 shrink-0"
+                                      />
+                                    </NavLink>
+                                  );
+                                })}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -560,28 +619,44 @@ const Navbar = () => {
                 const Icon = mobileNavIconMap[item.label] || Shield;
 
                 if (item.isDropdown) {
+                  const isOpen = Boolean(mobileDropdowns[item.label]);
+
                   return (
                     <div key={item.label} className="space-y-1">
-                      <button
-                        type="button"
-                        onClick={() => setMobileExperimentsOpen((v) => !v)}
-                        className={clsx(
-                          "group w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold border transition-all duration-200 text-left",
-                          location.pathname.startsWith("/experiments") || location.pathname.startsWith("/security")
-                            ? isDark
-                              ? "bg-gradient-to-r from-sky-500/20 via-teal-500/20 to-green-500/20 border-sky-400/40 text-white"
-                              : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 shadow-sm"
-                            : isDark
+                      <div className="flex items-center gap-1">
+                        <NavLink
+                          to={item.to || "/"}
+                          onClick={() => setOpen(false)}
+                          className={({ isActive }) => clsx(
+                            "group flex-1 flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold border transition-all duration-200",
+                            isActive
+                              ? isDark
+                                ? "bg-gradient-to-r from-sky-500/20 via-teal-500/20 to-green-500/20 border-sky-400/40 text-white shadow-[0_0_15px_rgba(56,189,248,0.25)]"
+                                : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 shadow-sm"
+                              : isDark
+                                ? "border-transparent text-zinc-400 hover:text-white hover:border-sky-500/30"
+                                : "border-transparent text-slate-800 hover:text-slate-950 hover:border-slate-300",
+                          )}
+                        >
+                          <Icon size={16} className={isDark ? "text-sky-400" : "text-emerald-600"} />
+                          <span className="flex-1 tracking-wide">{item.label}</span>
+                        </NavLink>
+                        <button
+                          type="button"
+                          onClick={() => toggleMobileDropdown(item.label)}
+                          className={clsx(
+                            "p-2.5 rounded-xl border transition-all duration-200",
+                            isDark
                               ? "border-transparent text-zinc-400 hover:text-white"
-                              : "border-transparent text-slate-800 hover:text-slate-950",
-                        )}
-                      >
-                        <Icon size={16} className={isDark ? "text-sky-400" : "text-emerald-600"} />
-                        <span className="flex-1 tracking-wide">{item.label}</span>
-                        <ChevronDown size={14} className={`transition-transform duration-200 ${mobileExperimentsOpen ? "rotate-180" : ""}`} />
-                      </button>
+                              : "border-transparent text-slate-700 hover:text-slate-950"
+                          )}
+                          aria-label={`Toggle ${item.label} sub-menu`}
+                        >
+                          <ChevronDown size={14} className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                        </button>
+                      </div>
 
-                      {mobileExperimentsOpen && (
+                      {isOpen && (
                         <div className="pl-6 space-y-1 pt-1 pb-1">
                           {item.children.map((sub) => {
                             const SubIcon = subIconMap[sub.label] || ShieldCheck;
@@ -595,11 +670,11 @@ const Navbar = () => {
                                   isActive
                                     ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
                                     : isDark
-                                      ? "border-transparent text-zinc-400 hover:text-white hover:bg-white/5"
-                                      : "border-transparent text-slate-700 hover:text-slate-950 hover:bg-slate-100",
+                                      ? "border-transparent text-zinc-400 hover:text-white"
+                                      : "border-transparent text-slate-700 hover:text-slate-950",
                                 )}
                               >
-                                <SubIcon size={14} className="text-emerald-400 shrink-0" />
+                                <SubIcon size={14} className="text-emerald-500 shrink-0" />
                                 <span>{sub.label}</span>
                               </NavLink>
                             );

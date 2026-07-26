@@ -1,6 +1,5 @@
 import { ArrowRight, Code2, Server, ShieldCheck } from "lucide-react";
 import Button from "@/components/ui/Button";
-import SectionTitle from "@/components/ui/SectionTitle";
 import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { createBreadcrumbSchema, createPersonSchema } from "@/utils/seo";
@@ -69,17 +68,15 @@ const AboutPage = () => {
   return (
     <>
       <SeoHead
-        title="About Nikhil Agrahari | Best Full Stack Developer in Lucknow & Prayagraj"
-        description="Learn about Nikhil Agrahari, the premier Full Stack Developer & BCA Engineer based in Lucknow and Prayagraj, UP. Discover technical background, MERN stack expertise, and security skills."
+        title="About Nikhil Agrahari | Full Stack Developer & BCA Engineer"
+        description="Learn about Nikhil Agrahari, Full Stack Developer & BCA Engineer. Discover technical background, MERN stack expertise, and security skills."
         pathname="/about"
         image={SITE_PROFILE.profileImage}
-        imageAlt="About Nikhil Agrahari - Best Full Stack Developer in Lucknow & Prayagraj"
+        imageAlt="About Nikhil Agrahari"
         keywords={[
-          "best full stack developer in lucknow",
-          "best full stack developer in prayagraj",
           "about Nikhil Agrahari",
           "BBD University developer",
-          "MERN stack engineer Lucknow Prayagraj",
+          "MERN stack engineer",
         ]}
         jsonLd={[
           createPersonSchema(),
@@ -90,36 +87,45 @@ const AboutPage = () => {
         ]}
       />
 
-      <section className="section-wrap pt-12 sm:pt-20">
-        <SectionTitle
-          mobileCenter={false}
-          className="text-center [&>p]:mx-auto"
-          eyebrow="Professional Profile"
-          title="Profile Overview"
-          description="Overview of my background, technical capabilities, and current learning priorities."
-        />
+      {/* Main Section */}
+      <section className="section-wrap pt-4 sm:pt-6 pb-20">
+        
+        {/* Centered Minimal Hero Header */}
+        <FadeInUp>
+          <div className="text-center max-w-4xl mx-auto mb-8">
+            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+              PROFILE <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">OVERVIEW</span>
+            </h1>
+            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              Overview of my background, technical capabilities, and current learning priorities.
+            </p>
+          </div>
+        </FadeInUp>
 
-        <FadeInUp className="card-surface relative mt-8 overflow-hidden rounded-[2rem] p-5 sm:p-8">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_15%,rgba(34,211,238,0.16),transparent_34%),radial-gradient(circle_at_86%_84%,rgba(16,185,129,0.12),transparent_40%)]" />
+        {/* Outer Surface Container */}
+        <FadeInUp className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-5 sm:p-8 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/90 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)]">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_15%,rgba(52,211,153,0.12),transparent_34%),radial-gradient(circle_at_86%_84%,rgba(16,185,129,0.12),transparent_40%)]" />
 
-          <div className="relative grid gap-4 sm:gap-5 lg:grid-cols-2">
-            <article className="relative overflow-hidden rounded-3xl border border-cyan-300/25 bg-slate-950/55 p-5 sm:p-7">
-              <div className="pointer-events-none absolute -top-14 -right-10 h-32 w-32 rounded-full bg-cyan-300/15 blur-3xl" />
+          <div className="relative grid gap-5 lg:grid-cols-2">
+            
+            {/* Who I Am Article */}
+            <article className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/90 p-5 sm:p-7 dark:border-emerald-500/20 dark:bg-[#020803]/80">
+              <div className="pointer-events-none absolute -top-14 -right-10 h-32 w-32 rounded-full bg-emerald-500/10 dark:bg-emerald-400/10 blur-3xl" />
 
               <div className="relative">
-                <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
-                  Who I Am
+                <p className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
+                  // Who I Am
                 </p>
-                <h3 className="mt-2 text-[1.55rem] font-semibold leading-tight text-cyan-100 sm:text-3xl">
+                <h2 className="mt-2 text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
                   Student Builder with a Product Engineering Mindset
-                </h3>
+                </h2>
 
-                <div className="mt-4 space-y-3 text-[0.95rem] leading-6 text-slate-300 sm:space-y-4 sm:text-base sm:leading-7">
+                <div className="mt-4 space-y-3 text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-medium">
                   {conciseStory.map((paragraph, index) => (
                     <p
                       key={paragraph}
                       className={
-                        index === 0 ? "text-lg font-medium text-cyan-50" : ""
+                        index === 0 ? "text-sm sm:text-base font-bold text-slate-900 dark:text-white" : ""
                       }
                     >
                       {paragraph}
@@ -127,11 +133,11 @@ const AboutPage = () => {
                   ))}
                 </div>
 
-                <ul className="mt-4 space-y-2.5 sm:space-y-3">
+                <ul className="mt-5 space-y-2">
                   {aboutIdentityPoints.map((point) => (
                     <li
                       key={point}
-                      className="rounded-xl border border-cyan-300/20 bg-slate-900/75 p-3 text-sm leading-6 text-slate-300 sm:leading-7"
+                      className="rounded-xl border border-slate-200 bg-white p-3 text-xs sm:text-sm font-medium text-slate-800 dark:border-emerald-500/20 dark:bg-[#040e07] dark:text-emerald-200 shadow-sm"
                     >
                       {point}
                     </li>
@@ -140,52 +146,52 @@ const AboutPage = () => {
               </div>
             </article>
 
-            <article className="relative overflow-hidden rounded-3xl border border-cyan-300/25 bg-slate-950/55 p-5 sm:p-7">
-              <div className="pointer-events-none absolute -bottom-16 -left-14 h-36 w-36 rounded-full bg-emerald-300/12 blur-3xl" />
+            {/* What I Can Do Article */}
+            <article className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/90 p-5 sm:p-7 dark:border-emerald-500/20 dark:bg-[#020803]/80">
+              <div className="pointer-events-none absolute -bottom-16 -left-14 h-36 w-36 rounded-full bg-teal-500/10 dark:bg-teal-400/10 blur-3xl" />
 
               <div className="relative">
-                <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
-                  What I Can Do
+                <p className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
+                  // What I Can Do
                 </p>
-                <h3 className="mt-2 text-[1.55rem] font-semibold leading-tight text-cyan-100 sm:text-3xl">
+                <h2 className="mt-2 text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
                   Build, Improve, and Support with Practical Focus
-                </h3>
+                </h2>
 
-                <div className="mt-4 space-y-2.5 sm:mt-5 sm:space-y-3">
+                <div className="mt-4 space-y-3">
                   {aboutCapabilities.map((item) => {
                     const Icon = item.icon;
 
                     return (
-                      <article
+                      <div
                         key={item.title}
-                        className="rounded-xl border border-cyan-300/20 bg-slate-900/75 p-3"
+                        className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm dark:border-emerald-500/20 dark:bg-[#040e07]"
                       >
                         <div className="flex items-start gap-3">
-                          <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-cyan-300/35 bg-cyan-300/12 text-cyan-100">
+                          <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300">
                             <Icon size={17} />
                           </span>
 
                           <div>
-                            <p className="text-sm font-semibold text-cyan-100">
+                            <p className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
                               {item.title}
                             </p>
-                            <p className="mt-1 text-sm leading-6 text-slate-300 sm:leading-7">
+                            <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                               {item.summary}
                             </p>
                           </div>
                         </div>
-                      </article>
+                      </div>
                     );
                   })}
                 </div>
 
-                <div className="mt-5 rounded-2xl border border-emerald-300/25 bg-emerald-300/10 p-4">
-                  <p className="text-xs uppercase tracking-[0.14em] text-emerald-100">
+                <div className="mt-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+                  <p className="text-xs font-mono font-bold uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-300">
                     Best Fit
                   </p>
-                  <p className="mt-2 text-sm leading-6 text-slate-200 sm:leading-7">
-                    Students, founders, and small teams who need practical web
-                    product delivery and clear technical guidance.
+                  <p className="mt-1 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
+                    Students, founders, and small teams who need practical web product delivery and clear technical guidance.
                   </p>
                 </div>
               </div>
@@ -210,33 +216,36 @@ const AboutPage = () => {
           </div>
         </FadeInUp>
 
-        <div className="mt-5 grid gap-4 sm:mt-6 sm:gap-5 lg:grid-cols-[1.2fr_0.8fr]">
-          <FadeInUp delay={0.1} className="card-surface rounded-3xl p-5 sm:p-7">
-            <h3 className="text-2xl font-semibold text-cyan-100 sm:text-[1.9rem]">
+        {/* Current Direction & Profile Snapshot Grid */}
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+          
+          {/* Current Direction Card */}
+          <FadeInUp delay={0.1} className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/90">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
               Current Direction
-            </h3>
+            </h2>
 
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 space-y-2.5">
               {aboutCurrentDirection.map((point) => (
                 <p
                   key={point}
-                  className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-3 text-sm leading-6 text-slate-300 sm:leading-7"
+                  className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs sm:text-sm font-medium text-slate-800 dark:border-emerald-500/20 dark:bg-[#020803]/80 dark:text-slate-200"
                 >
                   {point}
                 </p>
               ))}
             </div>
 
-            <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-slate-900/70 p-4">
-              <p className="text-sm uppercase tracking-[0.14em] text-emerald-300">
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
+              <p className="text-xs font-mono font-bold uppercase tracking-[0.14em] text-emerald-600 dark:text-emerald-400">
                 Focus Areas
               </p>
 
-              <ul className="mt-3 grid gap-2 text-sm text-slate-300 sm:grid-cols-2">
+              <ul className="mt-3 grid gap-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 sm:grid-cols-2">
                 {FOCUS_AREAS.map((item) => (
                   <li
                     key={item}
-                    className="rounded-lg border border-cyan-300/15 bg-slate-950/55 px-3 py-2"
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-800 dark:border-emerald-500/15 dark:bg-[#040e07] dark:text-slate-200 shadow-sm"
                   >
                     {item}
                   </li>
@@ -245,13 +254,11 @@ const AboutPage = () => {
             </div>
           </FadeInUp>
 
-          <FadeInUp
-            delay={0.14}
-            className="card-surface rounded-3xl p-5 sm:p-6"
-          >
+          {/* Profile Snapshot Card */}
+          <FadeInUp delay={0.14} className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/90">
             {SITE_PROFILE.profileImage ? (
-              <div className="mb-6 flex justify-center">
-                <div className="h-56 w-56 overflow-hidden rounded-full border-4 border-cyan-300/35 bg-slate-900/70 shadow-[0_0_0_4px_rgba(34,211,238,0.08)]">
+              <div className="mb-5 flex justify-center">
+                <div className="h-44 w-44 sm:h-48 sm:w-48 overflow-hidden rounded-full border-4 border-emerald-500/40 bg-slate-100 shadow-lg dark:bg-slate-900">
                   <img
                     src={SITE_PROFILE.profileImage}
                     alt={SITE_PROFILE.profileImageAlt}
@@ -262,23 +269,23 @@ const AboutPage = () => {
               </div>
             ) : null}
 
-            <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">
+            <p className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
               Profile Snapshot
             </p>
-            <h3 className="mt-2 text-xl font-semibold text-cyan-100">
+            <h2 className="mt-1 text-xl font-extrabold text-slate-900 dark:text-white">
               {SITE_PROFILE.fullName}
-            </h3>
-            <p className="mt-2 text-[0.95rem] leading-6 text-slate-300 sm:text-base sm:leading-7">
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
               {SITE_PROFILE.headline}
             </p>
 
-            <div className="mt-4 space-y-2 text-sm text-slate-300 sm:text-base">
+            <div className="mt-4 space-y-1.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
               <p>
-                <span className="text-slate-500">Email:</span>{" "}
+                <strong className="text-slate-900 dark:text-white">Email:</strong>{" "}
                 {QUICK_CONTACT.email}
               </p>
               <p>
-                <span className="text-slate-500">Availability:</span>{" "}
+                <strong className="text-slate-900 dark:text-white">Availability:</strong>{" "}
                 {SITE_PROFILE.availability}
               </p>
             </div>
@@ -290,15 +297,15 @@ const AboutPage = () => {
                   href={metric.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-3"
+                  className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-emerald-500/20 dark:bg-[#020803]/80 hover:border-emerald-400 transition shadow-sm"
                 >
-                  <p className="font-display text-2xl text-cyan-100">
+                  <p className="font-outfit text-xl font-black text-emerald-600 dark:text-emerald-400">
                     {metric.value}
                   </p>
-                  <p className="mt-1 text-sm font-medium text-slate-300">
+                  <p className="mt-0.5 text-xs font-bold text-slate-900 dark:text-white">
                     {metric.label}
                   </p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.12em] text-slate-500">
+                  <p className="mt-0.5 text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">
                     {metric.detail}
                   </p>
                 </a>
@@ -327,105 +334,101 @@ const AboutPage = () => {
             </div>
           </FadeInUp>
         </div>
-      </section>
 
-      {/* Coding Consistency Showcase */}
-      <section className="section-wrap section-divider pt-10 pb-16 sm:pb-20">
-        <FadeInUp className="card-surface rounded-3xl p-6 sm:p-8">
-          <div className="text-center">
-            <h2 className="font-display text-3xl font-bold text-cyan-100 sm:text-4xl">
-              Coding Consistency Showcase
-            </h2>
-            <p className="mt-2 text-sm text-slate-300">Live profile cards</p>
-          </div>
+        {/* Coding Consistency Showcase */}
+        <div className="mt-10">
+          <FadeInUp className="rounded-3xl border border-slate-200 bg-white/90 p-6 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/90">
+            <div className="text-center mb-6">
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                Coding Consistency Showcase
+              </h2>
+              <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
+                Live GitHub, LeetCode, and TryHackMe platform statistics.
+              </p>
+            </div>
 
-          <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
-            <article className="group h-full rounded-2xl border border-cyan-300/20 bg-slate-900/55 p-4 sm:p-5">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-cyan-100 sm:text-2xl">
-                  GitHub Streak
-                </h3>
-                <a
-                  href={QUICK_CONTACT.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-medium text-cyan-200 transition hover:text-cyan-100"
-                >
-                  Open ↗
-                </a>
-              </div>
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {/* GitHub Card */}
+              <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                    GitHub Streak
+                  </h3>
+                  <a
+                    href={QUICK_CONTACT.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                  >
+                    Open ↗
+                  </a>
+                </div>
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-emerald-500/20 dark:bg-slate-950">
+                  <img
+                    src={githubStreakCardUrl}
+                    alt={`GitHub streak stats for ${githubUsername}`}
+                    className="block h-auto w-full"
+                    loading="lazy"
+                  />
+                </div>
+              </article>
 
-              <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-cyan-300/20 bg-slate-50 dark:bg-slate-950/80 p-2">
-                <img
-                  src={githubStreakCardUrl}
-                  alt={`GitHub streak stats for ${githubUsername}`}
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </article>
+              {/* LeetCode Card */}
+              <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                    LeetCode Stats
+                  </h3>
+                  <a
+                    href={QUICK_CONTACT.leetcode}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                  >
+                    Open ↗
+                  </a>
+                </div>
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-emerald-500/20 dark:bg-slate-950">
+                  <img
+                    src={leetcodeCardUrl}
+                    alt={`LeetCode stats for ${leetcodeUsername}`}
+                    className="block h-auto w-full"
+                    loading="lazy"
+                  />
+                </div>
+              </article>
 
-            <article className="group h-full rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-white dark:bg-slate-900/55 p-4 sm:p-5 shadow-sm dark:shadow-none">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-cyan-100 sm:text-2xl">
-                  LeetCode Stats
-                </h3>
-                <a
-                  href={QUICK_CONTACT.leetcode}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-semibold text-emerald-700 dark:text-cyan-200 transition hover:text-emerald-800 dark:hover:text-cyan-100"
-                >
-                  Open ↗
-                </a>
-              </div>
+              {/* TryHackMe Card */}
+              <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80 md:col-span-2 xl:col-span-1">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                    TryHackMe Badges
+                  </h3>
+                  <a
+                    href={QUICK_CONTACT.tryhackme}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
+                  >
+                    Open ↗
+                  </a>
+                </div>
+                <div className="mb-2 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                  {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
+                </div>
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-emerald-500/20 dark:bg-slate-950">
+                  <img
+                    src={tryHackMeCardUrl}
+                    alt={`TryHackMe badge for ${tryHackMeUsername}`}
+                    className="block h-auto w-full"
+                    loading="lazy"
+                  />
+                </div>
+              </article>
+            </div>
+          </FadeInUp>
+        </div>
 
-              <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-cyan-300/20 bg-slate-50 dark:bg-slate-950/80 p-2">
-                <img
-                  src={leetcodeCardUrl}
-                  alt={`LeetCode stats for ${leetcodeUsername}`}
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </article>
-
-            <article className="group h-full rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-white dark:bg-slate-900/55 p-4 sm:p-5 md:col-span-2 xl:col-span-1 shadow-sm dark:shadow-none">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-cyan-100 sm:text-2xl">
-                  TryHackMe Proof
-                </h3>
-                <a
-                  href={QUICK_CONTACT.tryhackme}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-semibold text-emerald-700 dark:text-cyan-200 transition hover:text-emerald-800 dark:hover:text-cyan-100"
-                >
-                  Open ↗
-                </a>
-              </div>
-
-              <div className="mb-3 inline-flex rounded-full border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-300/40 dark:bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-100">
-                {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
-              </div>
-
-              <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-cyan-300/20 bg-slate-50 dark:bg-slate-950/80 p-2">
-                <img
-                  src={tryHackMeCardUrl}
-                  alt={`TryHackMe badge for ${tryHackMeUsername}`}
-                  className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]"
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </article>
-          </div>
-        </FadeInUp>
       </section>
     </>
   );

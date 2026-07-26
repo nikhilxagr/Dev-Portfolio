@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import SectionTitle from "@/components/ui/SectionTitle";
+import { Search, X } from "lucide-react";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
 import BlogCard from "@/components/ui/BlogCard";
-import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
-import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
 import { getBlogs } from "@/services/blogs.service";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";
@@ -15,10 +13,7 @@ import { BLOG_LINKS } from "@/constants/siteData";
 
 const matchesBlogSearch = (blog, currentKeyword) => {
   const keyword = currentKeyword.trim().toLowerCase();
-
-  if (!keyword) {
-    return true;
-  }
+  if (!keyword) return true;
 
   const searchable = `${blog.title} ${blog.subtitle} ${blog.excerpt} ${(
     blog.tags || []
@@ -28,74 +23,47 @@ const matchesBlogSearch = (blog, currentKeyword) => {
 };
 
 const BlogPage = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState(BLOG_LINKS);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const loadBlogs = async (keyword = "") => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await getBlogs(
-        keyword.trim() ? { search: keyword.trim() } : {},
-      );
-      const apiBlogs = response.data || [];
-
-      const mergedMap = new Map();
-
-      BLOG_LINKS.forEach((staticBlog) => {
-        mergedMap.set(staticBlog.slug, staticBlog);
-      });
-
-      apiBlogs.forEach((apiBlog) => {
-        const staticBlog = BLOG_LINKS.find(
-          (item) => item.slug === apiBlog.slug,
-        );
-        const merged = mergeStaticAndApiContent(staticBlog, apiBlog);
-        mergedMap.set(merged.slug || apiBlog.slug || apiBlog._id, merged);
-      });
-
-      const combined = Array.from(mergedMap.values());
-      combined.sort((a, b) => {
-        const timeA = new Date(a.publishedAt || a.createdAt || 0).getTime();
-        const timeB = new Date(b.publishedAt || b.createdAt || 0).getTime();
-        return timeB - timeA;
-      });
-
-      setBlogs(combined);
-    } catch {
-      setError("");
-      setBlogs([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      loadBlogs(search).catch(() => undefined);
-    }, 280);
+    getBlogs()
+      .then((response) => {
+        const apiBlogs = response.data || [];
+        if (apiBlogs.length > 0) {
+          const mergedMap = new Map();
+          BLOG_LINKS.forEach((staticBlog) => {
+            mergedMap.set(staticBlog.slug, staticBlog);
+          });
+          apiBlogs.forEach((apiBlog) => {
+            const staticBlog = BLOG_LINKS.find(
+              (item) => item.slug === apiBlog.slug,
+            );
+            const merged = mergeStaticAndApiContent(staticBlog, apiBlog);
+            mergedMap.set(merged.slug || apiBlog.slug || apiBlog._id, merged);
+          });
 
-    return () => clearTimeout(timeoutId);
-  }, [search]);
+          const combined = Array.from(mergedMap.values());
+          combined.sort((a, b) => {
+            const timeA = new Date(a.publishedAt || a.createdAt || 0).getTime();
+            const timeB = new Date(b.publishedAt || b.createdAt || 0).getTime();
+            return timeB - timeA;
+          });
+          setBlogs(combined);
+        }
+      })
+      .catch(() => undefined);
+  }, []);
 
-  const fallbackBlogs = useMemo(
-    () => BLOG_LINKS.filter((blog) => matchesBlogSearch(blog, search)),
-    [search],
+  const displayBlogs = useMemo(
+    () => blogs.filter((blog) => matchesBlogSearch(blog, search)),
+    [blogs, search],
   );
-  const displayBlogs = blogs.length > 0 ? blogs : fallbackBlogs;
-  const showInitialLoader = loading && displayBlogs.length === 0;
-  const showBlogGrid = displayBlogs.length > 0;
-  const featuredExternal = useMemo(
-    () => BLOG_LINKS.filter((item) => item.featured),
-    [],
-  );
+
   const blogListSchema = useMemo(
     () =>
       createItemListSchema({
-        name: "Nikhil Blog Archive",
+        name: "Nikhil Technical Notes & Blog Archive",
         description: "Blog posts and technical notes by Nikhil Agrahari.",
         path: "/blog",
         items: displayBlogs
@@ -112,12 +80,12 @@ const BlogPage = () => {
   return (
     <>
       <SeoHead
-        title="Blog"
-        description="Technical blog by Nikhil Agrahari with notes on development, secure engineering, and practical experiments."
+        title="Technical Notes & Engineering Articles | Nikhil Agrahari"
+        description="Technical blog by Nikhil Agrahari with notes on web development, secure engineering, system design, and practical experiments."
         pathname="/blog"
         keywords={[
           "Nikhil portfolio blog",
-          "Nikhil Lucknow technical blog",
+          "Nikhil technical blog",
           "development and engineering notes",
         ]}
         jsonLd={[
@@ -129,113 +97,65 @@ const BlogPage = () => {
         ]}
       />
 
-      <section className="section-wrap pt-12 sm:pt-20">
-        <SectionTitle
-          eyebrow="Blog"
-          title="Engineering Notes and Technical Articles"
-          description="Articles from project builds, engineering practice, and experiments."
-        />
+      {/* Main Section with Centered Minimal Header */}
+      <section className="section-wrap pt-4 sm:pt-6 pb-20">
+        
+        {/* Centered Minimal Hero Header */}
+        <FadeInUp>
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Professional Heading */}
+            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+              TECHNICAL <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">ARTICLES</span>
+            </h1>
 
-        <p className="mt-4 max-w-3xl text-sm font-medium text-slate-600 dark:text-slate-400">
-          Includes backend posts and external writing from Medium and LinkedIn.
-        </p>
+            {/* Clean Subtitle */}
+            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              Articles from project builds, engineering practice, system architecture, and technical writing. Includes backend posts and external writing from Medium and LinkedIn.
+            </p>
 
-        <FadeInUp className="mt-8 rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-white dark:bg-slate-950/70 p-4 shadow-sm dark:shadow-none">
-          <input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search by title, content, or tags"
-            className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-200 dark:placeholder:text-slate-500 dark:focus:border-cyan-300"
-          />
-          <p className="mt-3 text-xs font-bold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-500">
-            Showing {displayBlogs.length} article
-            {displayBlogs.length === 1 ? "" : "s"}
-          </p>
+            {/* Centered Search Bar */}
+            <div className="mt-8 mx-auto max-w-xl relative">
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search by title, content, or tags..."
+                className="w-full rounded-2xl border border-slate-300 bg-white/80 dark:border-white/10 dark:bg-[#030d07]/80 px-11 py-3 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none backdrop-blur-md focus:border-lime-400 dark:focus:border-lime-400 shadow-lg transition-all"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
+            {/* Article Counter */}
+            <p className="mt-5 font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              // SHOWING <span className="text-lime-500 dark:text-lime-400 font-extrabold">{displayBlogs.length}</span> ARTICLES
+            </p>
+          </div>
         </FadeInUp>
 
+        {/* Blog Cards Grid — Immediate Render without Scroll Delay */}
         <div className="mt-8">
-          {showInitialLoader ? (
-            <LoadingState
-              message="Loading blog posts..."
-              cards={6}
-              variant="blog"
-            />
-          ) : null}
-          {!loading && error && !showBlogGrid ? (
-            <ErrorState message={error} onRetry={() => loadBlogs(search)} />
-          ) : null}
-          {!loading && !error && !showBlogGrid ? (
-            <EmptyState
-              title="No posts found"
-              message="Blog entries will appear here once published."
-            />
-          ) : null}
-          {!error && showBlogGrid ? (
-            <StaggerGrid className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {displayBlogs.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {displayBlogs.map((blog, index) => (
-                <StaggerItem key={blog._id || blog.slug}>
-                  <BlogCard blog={blog} priority={index < 3} />
-                </StaggerItem>
-              ))}
-            </StaggerGrid>
-          ) : null}
-
-          {loading && showBlogGrid ? (
-            <p className="mt-4 text-xs font-bold uppercase tracking-[0.14em] text-slate-600 dark:text-slate-500">
-              Syncing latest articles...
-            </p>
-          ) : null}
-
-          {!loading && featuredExternal.length > 0 ? (
-            <div className="mt-10 rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-white dark:bg-slate-950/70 p-5 shadow-sm dark:shadow-none">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-800 dark:text-emerald-200">
-                Editorial Pick
-              </p>
-              <h3 className="mt-1 text-lg font-bold text-slate-900 dark:text-cyan-100">
-                Featured External Article
-              </h3>
-              {featuredExternal.map((article) => (
-                <article
-                  key={article.slug}
-                  className="mt-4 rounded-xl border border-slate-200 dark:border-cyan-300/20 bg-slate-50 dark:bg-slate-900/70 p-4"
-                >
-                  <p className="text-xs uppercase tracking-[0.15em] text-emerald-200">
-                    {article.source}
-                  </p>
-                  <h4 className="mt-2 text-base font-semibold text-cyan-100">
-                    {article.title}
-                  </h4>
-                  <p className="mt-2 text-sm text-slate-300">
-                    {article.subtitle}
-                  </p>
-                  <p className="mt-2 text-sm text-slate-400">
-                    {article.excerpt}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {(article.tags || []).map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-md border border-cyan-300/25 px-2 py-1 text-xs text-cyan-100"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mt-4">
-                    <Button
-                      href={article.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      variant="ghost"
-                    >
-                      Read on {article.source}
-                    </Button>
-                  </div>
-                </article>
+                <BlogCard key={blog._id || blog.slug} blog={blog} priority={index < 3} />
               ))}
             </div>
-          ) : null}
+          ) : (
+            <EmptyState
+              title="No matching posts found"
+              message="Try clearing your search terms or checking back later for published articles."
+            />
+          )}
         </div>
+
       </section>
     </>
   );

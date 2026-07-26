@@ -46,6 +46,12 @@ const SKILL_LOGO_MAP = {
   OWASP: { slug: "owasp", color: "000000", useNeutral: true },
   ChatGPT: { slug: "openai", useNeutral: true },
   "GitHub Copilot": { slug: "githubcopilot", useNeutral: true },
+  Claude: { slug: "claude", color: "D97757" },
+  Gemini: { slug: "googlegemini", color: "8E75FF" },
+  Emergent: { slug: "sparkles", color: "10B981" },
+  Replit: { slug: "replit", color: "F26207" },
+  Cursor: { slug: "cursor", useNeutral: true },
+  Antigravity: { slug: "googlecloud", color: "4285F4" },
 };
 
 export const getSkillLogoUrl = (skillName, isDark) => {
