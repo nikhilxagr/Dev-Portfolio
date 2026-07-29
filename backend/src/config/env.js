@@ -167,9 +167,9 @@ export const env = {
   googleClientSecret: readOptionalVariable("GOOGLE_CLIENT_SECRET"),
   googleCallbackUrl:
     readOptionalVariable("GOOGLE_CALLBACK_URL") ||
-    "http://localhost:5000/api/user-auth/google/callback",
+    "https://nikhilxagr.vercel.app/api/user-auth/google/callback",
   frontendUrl:
-    readOptionalVariable("FRONTEND_URL") || "http://localhost:5173",
+    readOptionalVariable("FRONTEND_URL") || "https://nikhilxagr.vercel.app",
 };
 
 const hasCashfreeAppId = Boolean(env.cashfreeAppId);
