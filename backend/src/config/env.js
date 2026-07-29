@@ -163,11 +163,11 @@ export const env = {
     process.env.PAYMENT_RECEIPT_EMAIL_ENABLED,
     false,
   ),
-  googleClientId: readOptionalVariable("GOOGLE_CLIENT_ID"),
+  googleClientId: readOptionalVariable("GOOGLE_CLIENT_ID"), 
   googleClientSecret: readOptionalVariable("GOOGLE_CLIENT_SECRET"),
   googleCallbackUrl:
     readOptionalVariable("GOOGLE_CALLBACK_URL") ||
-    "https://nikhilxagr.vercel.app/api/user-auth/google/callback",
+    "http://localhost:5000/api/user-auth/google/callback",
   frontendUrl:
     readOptionalVariable("FRONTEND_URL") || "https://nikhilxagr.vercel.app",
 };

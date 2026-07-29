@@ -79,7 +79,6 @@ export const getCurrentUserProfileService = async () => {
 };
 
 export const getGoogleAuthUrl = () => {
-  const apiBase =
-    import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const apiBase = "https://nikhilxagr.vercel.app/api";
   return `${apiBase.replace(/\/+$/, "")}/user-auth/google`;
 };
