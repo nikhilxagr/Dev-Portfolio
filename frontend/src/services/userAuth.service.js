@@ -1,4 +1,4 @@
-import { api, getErrorMessage } from "@/services/api";
+import { API_BASE_URL, api, getErrorMessage } from "@/services/api";
 
 const USER_TOKEN_KEY = "portfolio_user_token";
 
@@ -79,6 +79,5 @@ export const getCurrentUserProfileService = async () => {
 };
 
 export const getGoogleAuthUrl = () => {
-  const apiBase = "https://nikhilxagr.vercel.app/api";
-  return `${apiBase.replace(/\/+$/, "")}/user-auth/google`;
+  return `${API_BASE_URL.replace(/\/+$/, "")}/user-auth/google`;
 };
