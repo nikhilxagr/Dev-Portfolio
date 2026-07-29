@@ -127,7 +127,7 @@ const ProjectDetailsPage = () => {
 
           <Link
             to="/projects"
-            className="mb-6 inline-flex items-center gap-2 text-sm text-cyan-200 hover:text-cyan-100"
+            className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-emerald-700 dark:text-cyan-200 hover:text-emerald-800 dark:hover:text-cyan-100 transition"
           >
             <ArrowLeft size={16} /> Back to Projects
           </Link>
@@ -141,7 +141,7 @@ const ProjectDetailsPage = () => {
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider"
+                        className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-extrabold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider"
                       >
                         🏷️ {tag}
                       </span>
@@ -157,24 +157,24 @@ const ProjectDetailsPage = () => {
                 />
 
                 {project.tagline ? (
-                  <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500 font-mono">
+                  <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-600 dark:text-slate-400 font-mono font-semibold">
                     {project.tagline}
                   </p>
                 ) : null}
 
                 {project.status ? (
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-300">
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-extrabold text-emerald-700 dark:text-emerald-300">
                     📌 Status: {project.status}
                   </div>
                 ) : null}
 
-                <div className="mt-5 flex flex-wrap items-center gap-4 text-slate-200">
+                <div className="mt-5 flex flex-wrap items-center gap-4 text-slate-800 dark:text-slate-200">
                   {project.githubUrl ? (
                     <a
                       href={project.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2 text-xs font-bold hover:border-emerald-400 hover:text-emerald-300 transition"
+                      className="inline-flex items-center gap-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 px-4 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 hover:border-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-300 transition shadow-xs"
                     >
                       <ExternalLink size={15} /> GitHub Repository
                     </a>
@@ -184,7 +184,7 @@ const ProjectDetailsPage = () => {
                       href={project.liveDemoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 text-black px-4 py-2 text-xs font-black uppercase tracking-wider hover:bg-emerald-400 transition"
+                      className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 text-black px-4 py-2 text-xs font-black uppercase tracking-wider hover:bg-emerald-400 transition shadow-md"
                     >
                       <ExternalLink size={15} /> Live Demo
                     </a>
@@ -194,7 +194,7 @@ const ProjectDetailsPage = () => {
             </FadeInUp>
 
             <FadeInUp delay={0.06}>
-              <div className="overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
+              <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-cyan-300/20 bg-slate-100 dark:bg-slate-900/70">
                 <picture>
                   {localWebpImage ? (
                     <source srcSet={localWebpImage} type="image/webp" />
@@ -218,10 +218,10 @@ const ProjectDetailsPage = () => {
             {project.overview ? (
               <FadeInUp delay={0.08}>
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                  <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                     📌 Overview
                   </h2>
-                  <p className="mt-3 text-slate-300 leading-relaxed text-sm">
+                  <p className="mt-3 text-slate-700 dark:text-slate-300 leading-relaxed text-sm font-medium">
                     {project.overview}
                   </p>
                 </div>
@@ -232,19 +232,19 @@ const ProjectDetailsPage = () => {
             <FadeInUp delay={0.1}>
               <div className="grid gap-4 lg:grid-cols-2">
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                  <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                     🎯 Problem
                   </h2>
-                  <p className="mt-3 text-slate-300 leading-relaxed text-sm">
+                  <p className="mt-3 text-slate-700 dark:text-slate-300 leading-relaxed text-sm font-medium">
                     {project.problemStatement ||
                       "Problem statement will be updated soon."}
                   </p>
                 </div>
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                  <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                     💡 Solution
                   </h2>
-                  <p className="mt-3 text-slate-300 leading-relaxed text-sm">
+                  <p className="mt-3 text-slate-700 dark:text-slate-300 leading-relaxed text-sm font-medium">
                     {project.solutionSummary ||
                       "Solution details will be updated soon."}
                   </p>
@@ -256,14 +256,14 @@ const ProjectDetailsPage = () => {
             {project.highlights?.length ? (
               <FadeInUp delay={0.12}>
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                  <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                     🚀 Key Features
                   </h2>
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     {project.highlights.map((item) => (
                       <div
                         key={item}
-                        className="flex items-start gap-2.5 rounded-xl border border-white/[0.06] bg-slate-900/60 p-3 text-sm text-slate-200"
+                        className="flex items-start gap-2.5 rounded-xl border border-slate-200/90 dark:border-white/[0.06] bg-slate-100/90 dark:bg-slate-900/60 p-3.5 text-sm font-semibold text-slate-800 dark:text-slate-200 shadow-xs"
                       >
                         <span className="shrink-0">{item}</span>
                       </div>
@@ -279,13 +279,13 @@ const ProjectDetailsPage = () => {
                 <div className="grid gap-4 lg:grid-cols-2">
                   {project.challenges?.length ? (
                     <div className="card-surface rounded-2xl p-6">
-                      <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                      <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                         🛠️ Challenges
                       </h2>
-                      <ul className="mt-3 space-y-2.5 text-sm text-slate-300">
+                      <ul className="mt-3 space-y-2.5 text-sm font-medium text-slate-700 dark:text-slate-300">
                         {project.challenges.map((c) => (
                           <li key={c} className="flex gap-2.5 items-start">
-                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
                             <span>{c}</span>
                           </li>
                         ))}
@@ -295,13 +295,13 @@ const ProjectDetailsPage = () => {
 
                   {project.outcomes?.length ? (
                     <div className="card-surface rounded-2xl p-6">
-                      <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                      <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                         🏆 Outcomes
                       </h2>
-                      <ul className="mt-3 space-y-2.5 text-sm text-slate-300">
+                      <ul className="mt-3 space-y-2.5 text-sm font-medium text-slate-700 dark:text-slate-300">
                         {project.outcomes.map((o) => (
                           <li key={o} className="flex gap-2.5 items-start">
-                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-emerald-500 dark:bg-emerald-400" />
                             <span>{o}</span>
                           </li>
                         ))}
@@ -315,7 +315,7 @@ const ProjectDetailsPage = () => {
             {/* Technologies Used (Grouped or Flat) */}
             <FadeInUp delay={0.16}>
               <div className="card-surface rounded-2xl p-6">
-                <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                   🧰 Technologies Used
                 </h2>
                 {project.techStackGrouped ? (
@@ -323,16 +323,16 @@ const ProjectDetailsPage = () => {
                     {Object.entries(project.techStackGrouped).map(([category, stack]) => (
                       <div
                         key={category}
-                        className="rounded-xl border border-white/[0.06] bg-slate-900/60 p-4"
+                        className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50 dark:bg-slate-900/60 p-4 shadow-xs"
                       >
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                           {category}
                         </h3>
-                        <div className="mt-2 flex flex-wrap gap-1.5">
+                        <div className="mt-2.5 flex flex-wrap gap-1.5">
                           {stack.map((item) => (
                             <span
                               key={item}
-                              className="rounded-md border border-cyan-300/20 bg-cyan-500/10 px-2 py-1 text-xs font-medium text-cyan-200"
+                              className="rounded-md border border-emerald-300/40 dark:border-cyan-300/20 bg-emerald-500/10 dark:bg-cyan-500/10 px-2.5 py-1 text-xs font-bold text-emerald-900 dark:text-cyan-200"
                             >
                               {item}
                             </span>
@@ -342,11 +342,11 @@ const ProjectDetailsPage = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="mt-4 flex flex-wrap gap-2">
                     {project.techStack?.map((tech) => (
                       <span
                         key={tech}
-                        className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2 py-1 text-xs text-cyan-100"
+                        className="rounded-lg border border-slate-300 dark:border-cyan-300/25 bg-slate-100 dark:bg-slate-900/80 px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-cyan-100 shadow-xs"
                       >
                         {tech}
                       </span>
@@ -360,20 +360,20 @@ const ProjectDetailsPage = () => {
             {project.collaboration ? (
               <FadeInUp delay={0.18}>
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                  <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                     👥 Collaboration
                   </h2>
-                  <div className="mt-3 space-y-3 text-sm text-slate-300">
+                  <div className="mt-3 space-y-3 text-sm text-slate-700 dark:text-slate-300 font-medium">
                     <p>
-                      <strong className="text-white">Team:</strong> {project.collaboration.team}
+                      <strong className="text-slate-900 dark:text-white font-extrabold">Team:</strong> {project.collaboration.team}
                     </p>
                     <div>
-                      <strong className="text-white">Members:</strong>
-                      <div className="mt-1 flex flex-wrap gap-2">
+                      <strong className="text-slate-900 dark:text-white font-extrabold">Members:</strong>
+                      <div className="mt-1.5 flex flex-wrap gap-2">
                         {project.collaboration.members.map((m) => (
                           <span
                             key={m}
-                            className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300"
+                            className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-300"
                           >
                             {m}
                           </span>
@@ -381,7 +381,7 @@ const ProjectDetailsPage = () => {
                       </div>
                     </div>
                     {project.collaboration.context && (
-                      <p className="text-xs text-slate-400 italic">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 italic">
                         {project.collaboration.context}
                       </p>
                     )}
@@ -394,14 +394,14 @@ const ProjectDetailsPage = () => {
             {project.learnings?.length ? (
               <FadeInUp delay={0.2}>
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                  <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                     🎓 Key Learnings
                   </h2>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {project.learnings.map((learning) => (
                       <span
                         key={learning}
-                        className="rounded-xl border border-purple-500/30 bg-purple-500/10 px-3 py-1.5 text-xs font-semibold text-purple-300"
+                        className="rounded-xl border border-purple-500/30 bg-purple-500/10 px-3 py-1.5 text-xs font-bold text-purple-900 dark:text-purple-300"
                       >
                         🧠 {learning}
                       </span>

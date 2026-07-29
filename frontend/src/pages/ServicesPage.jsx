@@ -21,6 +21,7 @@ import {
 import { getErrorMessage } from "@/services/api";
 import { loadCashfreeCheckout } from "@/utils/loadCashfree";
 import { createBreadcrumbSchema } from "@/utils/seo";
+import { useUserAuth } from "@/context/UserAuthContext";
 import { SERVICE_OFFERINGS } from "@/constants/siteData";
 
 const categoryStyle = {
@@ -150,6 +151,7 @@ const serviceHighlights = [
 
 const ServicesPage = () => {
   const navigate = useNavigate();
+  const { user, isLoggedIn, openSignInModal } = useUserAuth();
   const [activeServiceSlug, setActiveServiceSlug] = useState("");
   const [buyerForm, setBuyerForm] = useState({
     customerName: "",
@@ -159,6 +161,16 @@ const ServicesPage = () => {
   const [processingSlug, setProcessingSlug] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const [paymentInfo, setPaymentInfo] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setBuyerForm((prev) => ({
+        ...prev,
+        customerName: user.name || prev.customerName,
+        customerEmail: user.email || prev.customerEmail,
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     const timerId = window.setTimeout(() => {
@@ -209,6 +221,14 @@ const ServicesPage = () => {
   const handlePayAndBook = async (service) => {
     setPaymentError("");
     setPaymentInfo("");
+
+    if (!isLoggedIn) {
+      openSignInModal({
+        title: "Sign In Required",
+        subtitle: `Please sign in with Google or Email to enroll in ${service.name}.`,
+      });
+      return;
+    }
 
     const validationError = validateBuyerForm();
     if (validationError) {
@@ -544,27 +564,37 @@ const ServicesPage = () => {
 
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
                       <label className="text-xs font-bold text-slate-800 dark:text-slate-300">
-                        Full Name
+                        Full Name {isLoggedIn && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">🔒</span>}
                         <input
                           type="text"
+                          readOnly={isLoggedIn}
                           value={buyerForm.customerName}
                           onChange={(event) =>
-                            updateBuyerForm("customerName", event.target.value)
+                            !isLoggedIn && updateBuyerForm("customerName", event.target.value)
                           }
-                          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-900 outline-none focus:border-emerald-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                          className={`mt-1 w-full rounded-xl border px-3 py-2 text-xs font-medium outline-none transition ${
+                            isLoggedIn
+                              ? "border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 cursor-not-allowed font-semibold"
+                              : "border-slate-300 bg-white text-slate-900 focus:border-emerald-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                          }`}
                           placeholder="Your full name"
                         />
                       </label>
 
                       <label className="text-xs font-bold text-slate-800 dark:text-slate-300">
-                        Email
+                        Email {isLoggedIn && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">(Account Email 🔒)</span>}
                         <input
                           type="email"
+                          readOnly={isLoggedIn}
                           value={buyerForm.customerEmail}
                           onChange={(event) =>
-                            updateBuyerForm("customerEmail", event.target.value)
+                            !isLoggedIn && updateBuyerForm("customerEmail", event.target.value)
                           }
-                          className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-900 outline-none focus:border-emerald-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                          className={`mt-1 w-full rounded-xl border px-3 py-2 text-xs font-medium outline-none transition ${
+                            isLoggedIn
+                              ? "border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 cursor-not-allowed font-semibold"
+                              : "border-slate-300 bg-white text-slate-900 focus:border-emerald-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                          }`}
                           placeholder="you@example.com"
                         />
                       </label>

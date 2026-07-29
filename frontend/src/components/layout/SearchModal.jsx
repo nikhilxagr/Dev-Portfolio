@@ -78,7 +78,6 @@ const score = (item, rawQuery) => {
 const buildIndex = () => {
   const items = [];
 
-
   const pageIconMap = {
     Home: FileText,
     About: User,
@@ -249,76 +248,44 @@ const buildIndex = () => {
       label: "BCA at BBD University",
       description: "Bachelor of Computer Applications · 2024–2027",
       badge: "Education",
-      extra: "bca babu banarasi das university degree education college",
+      extra: "bca bbd university degree computer applications computer science",
+    },
+    {
+      id: "journey-class12",
+      domId: "class-12th-cbse-2024",
+      label: "Class 12th CBSE",
+      description: "St. John's School · Physics, Chemistry, Math",
+      badge: "Education",
+      extra: "class 12 cbse st johns school science pcm",
     },
     {
       id: "journey-cisco",
       domId: "cisco-ethical-hacker-2025",
-      label: "Cisco Ethical Hacker Certification",
-      description: "Cisco Networking Academy · Ethical Hacking",
+      label: "Cisco Certified Ethical Hacker",
+      description: "Certified Ethical Hacker · Cisco Networking Academy",
       badge: "Cert",
-      extra: "cisco ethical hacker certification networking academy",
+      extra: "cisco ethical hacker certification cybersecurity certified",
     },
     {
-      id: "journey-tryhackme-advent",
-      domId: "tryhackme-advent-cyber-2025",
-      label: "TryHackMe Advent of Cyber",
-      description: "Cybersecurity advent challenge 2025",
-      badge: "Security",
-      extra: "tryhackme advent cyber 2025 security challenge",
+      id: "journey-mongodb",
+      domId: "mongodb-associate-developer-2025",
+      label: "MongoDB Associate Developer",
+      description: "Database modeling, aggregation, indexing & security",
+      badge: "Cert",
+      extra: "mongodb associate developer database certification nosql",
     },
     {
-      id: "journey-top1",
-      domId: "top-1-percent-tryhackme-2026",
-      label: "TryHackMe Top 1% Ranking",
-      description: "Achieved top 1% global rank on TryHackMe",
-      badge: "Achievement",
-      extra: "tryhackme top 1 percent rank global security achievement",
-    },
-    {
-      id: "journey-hackerone",
-      domId: "hackerone-security-researcher-2026",
-      label: "HackerOne Security Researcher",
-      description: "Registered security researcher on HackerOne",
-      badge: "Security",
-      extra: "hackerone bug bounty researcher security",
-    },
-    {
-      id: "journey-openai",
-      domId: "openai-ai-foundations-2026",
-      label: "OpenAI AI Foundations",
-      description: "OpenAI — AI Foundations certification",
-      badge: "AI",
-      extra: "openai ai foundations certification artificial intelligence",
-    },
-    {
-      id: "journey-assocham",
-      domId: "assocham-samarth-2026",
-      label: "ASSOCHAM Samarth Program",
-      description: "Industry event & networking program",
-      badge: "Event",
-      extra: "assocham samarth program industry networking",
-    },
-    {
-      id: "journey-wscubetech",
-      domId: "wscubetech-masterclass-2026",
-      label: "WsCubeTech Masterclass",
-      description: "Technical masterclass on web development",
-      badge: "Workshop",
-      extra: "wscubetech masterclass web development workshop",
-    },
-    {
-      id: "journey-started-cyber",
-      domId: "started-cybersecurity-journey-2025",
-      label: "Started Cybersecurity Journey",
-      description: "TryHackMe & self-learning — 2025",
-      badge: "Security",
-      extra: "cybersecurity journey started tryhackme self learning 2025",
+      id: "journey-postman",
+      domId: "postman-api-fundamentals-student-expert-2025",
+      label: "Postman API Student Expert",
+      description: "API testing, automation, and documentation expert",
+      badge: "Cert",
+      extra: "postman api student expert testing backend automation",
     },
   ];
 
   hackathons.forEach((h) => {
-    const kw = tokenise(`${h.label} ${h.description} hackathon journey ${h.extra}`);
+    const kw = tokenise(`${h.label} ${h.description} ${h.extra}`);
     items.push({
       id: h.id,
       type: "hackathon",
@@ -339,15 +306,6 @@ const ALL_ITEMS = buildIndex();
 
 const FEATURED = [
   {
-    id: "feat-nerds",
-    label: "Nerds Hack Days — Kanoon-Mate",
-    description: "Latest hackathon · July 2026 · AI Legal OS",
-    to: "/journey#nerds-hack-days-lucknow-2026",
-    icon: GitBranch,
-    type: "hackathon",
-    badge: "Latest",
-  },
-  {
     id: "feat-kanoon",
     label: "Kanoon-Mate Project",
     description: "AI Legal Operating System built at Nerds Hack Days",
@@ -355,6 +313,33 @@ const FEATURED = [
     icon: Code2,
     type: "project",
     badge: "AI",
+  },
+  {
+    id: "feat-fastfeast",
+    label: "Fast Feast",
+    description: "Full-stack food delivery app with online payments",
+    to: "/projects/fast-feast",
+    icon: Code2,
+    type: "project",
+    badge: "Web Dev",
+  },
+  {
+    id: "feat-snapurl",
+    label: "SnapURL",
+    description: "High-performance URL shortener with analytics",
+    to: "/projects/snapurl",
+    icon: Code2,
+    type: "project",
+    badge: "Full Stack",
+  },
+  {
+    id: "feat-nerds",
+    label: "Nerds Hack Days — Kanoon-Mate",
+    description: "Latest hackathon · July 2026 · AI Legal OS",
+    to: "/journey#nerds-hack-days-lucknow-2026",
+    icon: GitBranch,
+    type: "hackathon",
+    badge: "Latest",
   },
   {
     id: "feat-security",
@@ -374,15 +359,17 @@ const FEATURED = [
     type: "blog",
     badge: "Blog",
   },
-  {
-    id: "feat-contact",
-    label: "Contact Me",
-    description: "Get in touch — internships, freelance, collaborations",
-    to: "/contact",
-    icon: Mail,
-    type: "page",
-    badge: "Page",
-  },
+];
+
+const SEARCH_CHIPS = [
+  { icon: "⚖️", label: "Kanoon-Mate", to: "/projects/kanoon-mate" },
+  { icon: "🍔", label: "Fast Feast", to: "/projects/fast-feast" },
+  { icon: "⚡", label: "SnapURL", to: "/projects/snapurl" },
+  { icon: "🤖", label: "Code Reviewer", to: "/projects/ai-powered-code-reviewer" },
+  { icon: "🏆", label: "Nerds Hackathon", to: "/journey#nerds-hack-days-lucknow-2026" },
+  { icon: "🛡️", label: "Security Labs", to: "/experiments/security-labs" },
+  { icon: "💻", label: "React", query: "React" },
+  { icon: "🟢", label: "Node.js", query: "Node.js" },
 ];
 
 const TYPE_LABELS = {
@@ -397,16 +384,15 @@ const TYPE_LABELS = {
 const TYPE_ORDER = ["page", "hackathon", "project", "blog", "experiment", "skill"];
 
 const TYPE_COLORS = {
-  page:       { dark: "text-sky-400   bg-sky-400/10   border-sky-400/20",         light: "text-sky-700   bg-sky-100   border-sky-200" },
-  experiment: { dark: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20", light: "text-emerald-700 bg-emerald-50 border-emerald-200" },
-  project:    { dark: "text-violet-400 bg-violet-400/10 border-violet-400/20",   light: "text-violet-700 bg-violet-50 border-violet-200" },
-  skill:      { dark: "text-amber-400  bg-amber-400/10  border-amber-400/20",     light: "text-amber-700  bg-amber-100  border-amber-200" },
-  blog:       { dark: "text-rose-400   bg-rose-400/10   border-rose-400/20",     light: "text-rose-700   bg-rose-100   border-rose-200" },
-  hackathon:  { dark: "text-cyan-400   bg-cyan-400/10   border-cyan-400/20",     light: "text-cyan-700   bg-cyan-100   border-cyan-200" },
+  page:       { dark: "text-sky-400 bg-sky-400/10 border-sky-400/30",         light: "text-sky-800 bg-sky-100 border-sky-300 font-bold" },
+  experiment: { dark: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30", light: "text-emerald-800 bg-emerald-100 border-emerald-300 font-bold" },
+  project:    { dark: "text-purple-400 bg-purple-400/10 border-purple-400/30",   light: "text-purple-800 bg-purple-100 border-purple-300 font-bold" },
+  skill:      { dark: "text-amber-400 bg-amber-400/10 border-amber-400/30",     light: "text-amber-900 bg-amber-100 border-amber-300 font-bold" },
+  blog:       { dark: "text-rose-400 bg-rose-400/10 border-rose-400/30",     light: "text-rose-800 bg-rose-100 border-rose-300 font-bold" },
+  hackathon:  { dark: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30",     light: "text-teal-800 bg-teal-100 border-teal-300 font-bold" },
 };
 
 const SearchModal = ({ isOpen, onClose }) => {
-
   const { isDark } = useTheme();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
@@ -463,7 +449,6 @@ const SearchModal = ({ isOpen, onClose }) => {
     (item) => {
       onClose();
       const to = item.to;
-      // Navigate — hash routes work with react-router navigate
       navigate(to);
     },
     [navigate, onClose],
@@ -513,28 +498,34 @@ const SearchModal = ({ isOpen, onClose }) => {
         data-idx={idx}
         onClick={() => handleSelect(item)}
         className={clsx(
-          "group w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left transition-all duration-150",
+          "group w-full flex items-center gap-3 rounded-2xl px-3.5 py-3 text-left transition-all duration-150 active:scale-[0.99] border",
           isActive
             ? isDark
-              ? "bg-cyan-500/10 border border-cyan-500/25"
-              : "bg-emerald-50 border border-emerald-200"
-            : "border border-transparent hover:border-slate-200/60 dark:hover:border-white/[0.06]",
+              ? "bg-cyan-500/15 border-cyan-400/40 text-white shadow-[0_0_20px_rgba(6,182,212,0.15)]"
+              : "bg-emerald-500/10 border-emerald-500/40 text-emerald-950 shadow-sm"
+            : isDark
+              ? "border-transparent hover:bg-white/[0.06] hover:border-white/10"
+              : "border-transparent hover:bg-slate-100/90 hover:border-slate-300/80",
         )}
         onMouseEnter={() => setActiveIdx(idx)}
       >
         <span
           className={clsx(
-            "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border",
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border transition-transform group-hover:scale-105",
             colorStr,
           )}
         >
-          <Icon size={15} />
+          <Icon size={16} />
         </span>
         <div className="min-w-0 flex-1">
           <p
             className={clsx(
-              "text-sm font-semibold truncate",
-              isDark ? "text-slate-200" : "text-slate-900",
+              "text-xs sm:text-sm font-bold truncate transition-colors",
+              isActive
+                ? isDark ? "text-white" : "text-emerald-950"
+                : isDark
+                  ? "text-slate-200 group-hover:text-white"
+                  : "text-slate-800 group-hover:text-slate-950",
             )}
           >
             {item.label}
@@ -542,8 +533,12 @@ const SearchModal = ({ isOpen, onClose }) => {
           {item.description && (
             <p
               className={clsx(
-                "text-xs truncate mt-0.5",
-                isDark ? "text-slate-500" : "text-slate-500",
+                "text-[11px] sm:text-xs truncate mt-0.5 font-medium transition-colors",
+                isActive
+                  ? isDark ? "text-cyan-200/90" : "text-emerald-800/90"
+                  : isDark
+                    ? "text-slate-400 group-hover:text-slate-300"
+                    : "text-slate-600 group-hover:text-slate-700",
               )}
             >
               {item.description}
@@ -553,7 +548,7 @@ const SearchModal = ({ isOpen, onClose }) => {
         {item.badge && (
           <span
             className={clsx(
-              "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase border",
+              "shrink-0 rounded-full px-2.5 py-0.5 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider border",
               colorStr,
             )}
           >
@@ -561,9 +556,9 @@ const SearchModal = ({ isOpen, onClose }) => {
           </span>
         )}
         <ArrowRight
-          size={14}
+          size={15}
           className={clsx(
-            "shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150",
+            "shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 hidden sm:block",
             isDark ? "text-cyan-400" : "text-emerald-600",
           )}
         />
@@ -581,33 +576,40 @@ const SearchModal = ({ isOpen, onClose }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-md"
+            className={clsx(
+              "fixed inset-0 z-[9998] backdrop-blur-md transition-colors",
+              isDark ? "bg-black/75" : "bg-slate-900/40",
+            )}
             onClick={onClose}
           />
 
-          {/* Panel */}
+          {/* Panel — Full screen on mobile, floating card on sm+ */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
+            initial={{ opacity: 0, scale: 0.97, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            transition={{ type: "spring", stiffness: 340, damping: 28, mass: 0.6 }}
+            exit={{ opacity: 0, scale: 0.97, y: -10 }}
+            transition={{ type: "spring", stiffness: 350, damping: 28, mass: 0.5 }}
             className={clsx(
-              "fixed left-1/2 top-[10vh] z-[9999] w-[95vw] max-w-2xl -translate-x-1/2 rounded-3xl border shadow-2xl overflow-hidden",
+              "fixed z-[9999] flex flex-col overflow-hidden border shadow-2xl transition-colors duration-200",
+              // Mobile: full screen
+              "inset-0",
+              // sm+: floating centered panel
+              "sm:inset-auto sm:left-1/2 sm:top-[8vh] sm:-translate-x-1/2 sm:w-[95vw] sm:max-w-2xl sm:rounded-3xl sm:max-h-[80vh]",
               isDark
-                ? "bg-[#05111e]/98 border-cyan-500/25 shadow-[0_30px_80px_rgba(0,0,0,0.8)]"
-                : "bg-white/98 border-slate-200 shadow-[0_30px_80px_rgba(0,0,0,0.15)]",
+                ? "bg-[#07131e] border-cyan-500/30 text-slate-100 shadow-[0_25px_70px_rgba(0,0,0,0.9)]"
+                : "bg-white border-slate-300 text-slate-900 shadow-[0_25px_70px_rgba(0,0,0,0.18)]",
             )}
           >
             {/* Search Input Row */}
             <div
               className={clsx(
-                "flex items-center gap-3 px-5 py-4 border-b",
-                isDark ? "border-cyan-500/15" : "border-slate-200",
+                "flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-3.5 sm:py-4 border-b shrink-0 transition-colors",
+                isDark ? "border-cyan-500/20 bg-slate-950/40" : "border-slate-200 bg-slate-50/90",
               )}
             >
               <Search
-                size={18}
-                className={isDark ? "text-cyan-400 shrink-0" : "text-slate-500 shrink-0"}
+                size={19}
+                className={isDark ? "text-cyan-400 shrink-0" : "text-emerald-600 shrink-0"}
               />
               <input
                 ref={inputRef}
@@ -615,12 +617,12 @@ const SearchModal = ({ isOpen, onClose }) => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Search pages, projects, skills, blogs, hackathons..."
+                placeholder="Search projects, skills, hackathons, blogs..."
                 className={clsx(
-                  "flex-1 bg-transparent text-base font-medium outline-none placeholder:text-sm",
+                  "flex-1 bg-transparent text-sm sm:text-base font-semibold outline-none placeholder:font-normal placeholder:text-xs sm:placeholder:text-sm min-w-0 transition-colors",
                   isDark
-                    ? "text-white placeholder:text-slate-500"
-                    : "text-slate-900 placeholder:text-slate-400",
+                    ? "text-white placeholder:text-slate-400"
+                    : "text-slate-900 placeholder:text-slate-500",
                 )}
               />
               {query && (
@@ -628,38 +630,91 @@ const SearchModal = ({ isOpen, onClose }) => {
                   type="button"
                   onClick={() => setQuery("")}
                   className={clsx(
-                    "rounded-lg p-1 transition",
+                    "rounded-lg p-1 transition shrink-0",
                     isDark ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900",
                   )}
                 >
-                  <X size={15} />
+                  <X size={16} />
                 </button>
               )}
+              {/* Close button for Mobile Touch */}
+              <button
+                type="button"
+                onClick={onClose}
+                className={clsx(
+                  "flex sm:hidden h-8 w-8 items-center justify-center rounded-full border transition shrink-0",
+                  isDark
+                    ? "border-slate-700 bg-slate-800/80 text-slate-300 active:bg-slate-700"
+                    : "border-slate-300 bg-slate-200/80 text-slate-700 active:bg-slate-300",
+                )}
+                aria-label="Close search"
+              >
+                <X size={15} />
+              </button>
               <kbd
                 className={clsx(
-                  "hidden sm:inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-mono",
-                  isDark ? "border-slate-700 text-slate-500" : "border-slate-200 text-slate-400",
+                  "hidden sm:inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-mono font-bold shrink-0",
+                  isDark ? "border-slate-700 text-slate-400 bg-slate-900" : "border-slate-300 text-slate-600 bg-slate-100",
                 )}
               >
                 ESC
               </kbd>
             </div>
 
+            {/* Quick Suggestion Chips */}
+            <div
+              className={clsx(
+                "flex items-center gap-1.5 overflow-x-auto px-3.5 sm:px-5 py-2.5 border-b shrink-0 no-scrollbar scroll-smooth transition-colors",
+                isDark ? "border-cyan-500/15 bg-slate-950/60" : "border-slate-200 bg-slate-100/70",
+              )}
+            >
+              <span
+                className={clsx(
+                  "text-[10px] uppercase font-mono font-bold tracking-wider shrink-0 mr-1",
+                  isDark ? "text-cyan-400" : "text-emerald-800",
+                )}
+              >
+                Top Matches:
+              </span>
+              {SEARCH_CHIPS.map((chip) => (
+                <button
+                  key={chip.label}
+                  type="button"
+                  onClick={() => {
+                    if (chip.to) {
+                      handleSelect(chip);
+                    } else if (chip.query) {
+                      setQuery(chip.query);
+                    }
+                  }}
+                  className={clsx(
+                    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold border shrink-0 transition-all duration-150 active:scale-95 shadow-sm",
+                    isDark
+                      ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400"
+                      : "border-emerald-300 bg-white text-emerald-900 hover:bg-emerald-50 hover:border-emerald-400",
+                  )}
+                >
+                  <span>{chip.icon}</span>
+                  <span>{chip.label}</span>
+                </button>
+              ))}
+            </div>
+
             {/* Results List */}
             <div
               ref={listRef}
-              className="max-h-[62vh] overflow-y-auto overscroll-contain px-3 py-3"
+              className="flex-1 overflow-y-auto overscroll-contain px-3.5 py-3 space-y-1.5 touch-pan-y"
             >
               {/* Featured / Quick Access */}
               {!query.trim() && (
                 <>
                   <p
                     className={clsx(
-                      "mb-2 px-2 text-[11px] font-bold uppercase tracking-widest font-mono",
-                      isDark ? "text-slate-500" : "text-slate-400",
+                      "mb-2 px-2 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest font-mono",
+                      isDark ? "text-cyan-400/70" : "text-emerald-700",
                     )}
                   >
-                    // Featured & Quick Access
+                    // Latest Projects & Featured
                   </p>
                   {FEATURED.map((item, i) => renderItem(item, i, activeIdx === i))}
                 </>
@@ -670,12 +725,12 @@ const SearchModal = ({ isOpen, onClose }) => {
                 <>
                   <p
                     className={clsx(
-                      "mb-2 px-2 text-[11px] font-mono",
-                      isDark ? "text-slate-600" : "text-slate-400",
+                      "mb-2 px-2 text-[11px] font-mono font-medium",
+                      isDark ? "text-slate-400" : "text-slate-600",
                     )}
                   >
                     {results.length} result{results.length !== 1 ? "s" : ""} for{" "}
-                    <span className={isDark ? "text-cyan-400" : "text-emerald-600"}>"{query}"</span>
+                    <span className={clsx("font-bold", isDark ? "text-cyan-400" : "text-emerald-700")}>"{query}"</span>
                   </p>
                   {TYPE_ORDER.map((type) => {
                     const section = grouped[type];
@@ -685,7 +740,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                         <p
                           className={clsx(
                             "mb-1 px-2 text-[10px] font-bold uppercase tracking-widest font-mono",
-                            isDark ? "text-slate-500" : "text-slate-400",
+                            isDark ? "text-cyan-400/70" : "text-emerald-700",
                           )}
                         >
                           // {TYPE_LABELS[type]}
@@ -701,16 +756,16 @@ const SearchModal = ({ isOpen, onClose }) => {
 
               {/* No results */}
               {query.trim() && results.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="flex flex-col items-center justify-center py-10 text-center">
                   <Sparkles
-                    size={32}
-                    className={isDark ? "text-slate-600 mb-3" : "text-slate-300 mb-3"}
+                    size={30}
+                    className={isDark ? "text-cyan-400/50 mb-2" : "text-emerald-600/50 mb-2"}
                   />
-                  <p className={clsx("text-sm font-semibold", isDark ? "text-slate-400" : "text-slate-600")}>
-                    No results for <span className="font-bold">"{query}"</span>
+                  <p className={clsx("text-sm font-bold", isDark ? "text-slate-200" : "text-slate-800")}>
+                    No results for <span className="font-extrabold">"{query}"</span>
                   </p>
-                  <p className={clsx("text-xs mt-1", isDark ? "text-slate-600" : "text-slate-400")}>
-                    Try: a project name, skill, hackathon, or blog topic.
+                  <p className={clsx("text-xs mt-1 max-w-xs font-medium", isDark ? "text-slate-400" : "text-slate-600")}>
+                    Try searching for Kanoon-Mate, Fast Feast, React, Node.js, or Nerds Hack Days.
                   </p>
                 </div>
               )}
@@ -719,11 +774,12 @@ const SearchModal = ({ isOpen, onClose }) => {
             {/* Footer Hint */}
             <div
               className={clsx(
-                "flex items-center justify-between gap-4 border-t px-5 py-3",
-                isDark ? "border-cyan-500/10" : "border-slate-100",
+                "flex items-center justify-between gap-4 border-t px-4 sm:px-5 py-2.5 sm:py-3 shrink-0 transition-colors",
+                isDark ? "border-cyan-500/20 bg-slate-950/60" : "border-slate-200 bg-slate-50",
               )}
             >
-              <div className="flex items-center gap-3">
+              {/* Desktop Shortcut Hints */}
+              <div className="hidden sm:flex items-center gap-3">
                 {[
                   { keys: ["↑", "↓"], label: "navigate" },
                   { keys: ["↵"], label: "select" },
@@ -734,20 +790,28 @@ const SearchModal = ({ isOpen, onClose }) => {
                       <kbd
                         key={k}
                         className={clsx(
-                          "rounded px-1.5 py-0.5 text-[10px] font-mono border",
-                          isDark ? "border-slate-700 text-slate-500 bg-slate-800/60" : "border-slate-200 text-slate-400",
+                          "rounded px-1.5 py-0.5 text-[10px] font-mono font-bold border",
+                          isDark
+                            ? "border-slate-700 text-slate-300 bg-slate-900"
+                            : "border-slate-300 text-slate-700 bg-white shadow-xs",
                         )}
                       >
                         {k}
                       </kbd>
                     ))}
-                    <span className={clsx("text-[11px]", isDark ? "text-slate-600" : "text-slate-400")}>
+                    <span className={clsx("text-[11px] font-semibold", isDark ? "text-slate-400" : "text-slate-600")}>
                       {label}
                     </span>
                   </div>
                 ))}
               </div>
-              <span className={clsx("text-[11px] font-mono", isDark ? "text-slate-600" : "text-slate-400")}>
+
+              {/* Mobile Touch Hint */}
+              <p className={clsx("sm:hidden text-[11px] font-mono font-semibold", isDark ? "text-slate-400" : "text-slate-600")}>
+                Tap any result to view details
+              </p>
+
+              <span className={clsx("text-[11px] font-mono font-bold hidden sm:inline-block", isDark ? "text-slate-400" : "text-slate-600")}>
                 Ctrl K
               </span>
             </div>

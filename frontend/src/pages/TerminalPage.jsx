@@ -5,53 +5,107 @@ import FadeInUp from "@/components/animations/FadeInUp";
 import { createBreadcrumbSchema } from "@/utils/seo";
 
 const TERMINAL_COMMANDS = {
-  help: `Available commands:
+  help: `Available CLI Commands:
   • help       - List all available commands & shortcuts
-  • bio        - Developer profile, identity & mindset
-  • skills     - Technical capabilities, stack & architecture
-  • projects   - Featured full-stack & security projects
-  • tools      - Real interactive cyber security diagnostics
+  • about      - Complete developer bio, education & story
+  • bio        - Developer profile, education & background
+  • skills     - Full stack engineering & security tech stack
+  • projects   - Real signature projects & live apps
+  • tools      - Interactive cyber security utilities & labs
+  • journey    - Hackathons, education & milestones
+  • stats      - Problem solving & certification metrics
   • contact    - Direct contact channels & email
   • whoami     - Display user identity & privileges
-  • clear      - Clear terminal screen console
   • date       - Show current UTC system timestamp
   • socials    - View active social & professional profiles
-  • sudo       - Request root privilege elevation`,
-  
-  bio: `Nikhil Agrahari // Full Stack Developer + Cybersecurity Engineer
-Location: Lucknow, India
-Mindset: Building scalable, high-performance web products with security integrated into every architecture layer.
+  • sudo       - Request root privilege elevation
+  • clear      - Clear terminal screen console`,
+
+  about: `About Nikhil Agrahari:
+  Full-Stack Web Developer & Security-First Engineer pursuing BCA at BBD University, Lucknow.
+  Specialized in React.js, Node.js, Express, MongoDB, RESTful APIs, Tailwind CSS, Python, and AppSec practicals.
+  Demonstrated track record of building 10+ production-grade web products with clean code architecture.
+
+  Core Focus Areas:
+  • Responsive Frontend Development (React / Next.js / Tailwind)
+  • Secure Backend API Design (Node.js / Express / MongoDB)
+  • Application Security & Vulnerability Auditing (OWASP Top 10 / Burp Suite)
+  • Cloud Deployments & Continuous Delivery (Vercel / Render / Git)
+  Visit /about for full story & background.`,
+
+  bio: `Nikhil Agrahari // Full Stack Developer & Security-First Engineer
+Education: Bachelor of Computer Applications (BCA) @ BBD University, Lucknow
+Location: Lucknow, India 🇮🇳
+Headline: BCA Student | Full Stack Developer | Web Solutions Builder
+Summary: Passionate about creating modern, user-friendly web applications with clean architecture, reliable delivery, and defense-first security.
 Status: Open for Software Engineering, Full Stack & Application Security Roles.`,
 
   skills: `Technical Stack & Capabilities:
-  [Frontend]   React 18, Next.js, JavaScript (ES6+), Tailwind CSS, Vite
-  [Backend]    Node.js, Express.js, Python, RESTful APIs, Microservices
-  [Security]   OWASP Top 10, Kali Linux, Burp Suite, Nmap, Wireshark, Metasploit
-  [Databases]  MongoDB, Supabase, SQL
-  [DevOps]     Git, GitHub, Linux Administration, Vercel, Render, Antigravity`,
+  [Frontend]   React 18, Next.js, JavaScript (ES6+), TypeScript, Tailwind CSS, Vite, Framer Motion
+  [Backend]    Node.js, Express.js, Python, REST APIs, Microservices, Supabase
+  [Security]   OWASP Top 10, Kali Linux, Burp Suite, Nmap, Wireshark, Metasploit, TryHackMe
+  [Databases]  MongoDB, PostgreSQL, Supabase, SQL
+  [DevOps]     Git, GitHub, Postman, Linux Administration, Vercel, Render, VS Code
+  Visit /skills for complete skills taxonomy.`,
 
-  projects: `Featured Projects:
-  1. Secure Auth System (JWT + Rate Limiting + Helmet)
-  2. DevPortfolio v2 (React + Vite + Framer Motion)
-  3. Security Engineering Practicals & Lab Writeups
-  Visit /projects for live interactive demos.`,
+  projects: `Featured Real Projects:
+  1. Kanoon-Mate (Legal AI Assistant · Built during Nerds Hack Days Lucknow 2026)
+     Tech: React, Node.js, Express, MongoDB | Repo: github.com/nikhilxagr/Kanoon-Mate--HackethonProjects-
+  2. Fast Feast (Modern Food Delivery Web Application)
+     Tech: HTML, CSS, JavaScript | Live: fastfeast-agr.netlify.app
+  3. snapURL (MERN-Based Full-Stack URL Shortener Platform)
+     Tech: React, Express, Node.js, MongoDB | Live: snapurl-url-shortner.vercel.app
+  4. AI Powered Code Reviewer (MERN-Based AI Code Audit Platform)
+     Tech: React, Express, Node.js, MongoDB | Repo: github.com/nikhilxagr/AI-Powered-Code-Reviewer-MERN-Project
+  5. Notes App (LocalStorage Task & Notes Management Utility)
+     Tech: JavaScript, LocalStorage, HTML/CSS | Live: notes-app-agr.netlify.app
+  6. QRCode Generator (Dynamic Custom Vector QR Code Utility)
+     Tech: JavaScript, Canvas API | Live: qrcode-generator-agr.netlify.app
+  7. Weather App (OpenWeather REST API Forecast Dashboard)
+     Tech: JavaScript, OpenWeather API | Live: weatherappagr.netlify.app
+  Visit /projects for full interactive demos & source code.`,
 
-  tools: `Interactive Security Tools available at /experiments/tools:
+  tools: `Interactive Security Tools (available at /experiments/tools):
   • Have I Been Pwned Email Breach Inspector
   • Password Shannon Entropy & Strength Meter
-  • Domain Security Header Inspector`,
+  • Domain Security Header Inspector
+  • Security Engineering Labs & Writeups (/experiments/security-labs)
+  • Data Structure & Algorithm Visualizer (/experiments/dsa)`,
 
-  contact: `Contact Channels:
+  journey: `Key Milestones & Education:
+  • 2024 - 2027 : BCA Degree @ BBD University, Lucknow
+  • 2026        : Nerds Hack Days Hackathon (Built Kanoon-Mate)
+  • 2026        : Android Nova 2.0 Workshop @ Cyber Intelligence Community
+  • Certs       : Cisco Certified Ethical Hacker (2025)
+  • Certs       : MongoDB Associate Developer (2025)
+  • Certs       : Postman API Student Expert (2025)
+  Visit /journey for full interactive timeline.`,
+
+  stats: `Key Performance & Problem-Solving Metrics:
+  • LeetCode Solved : 130+ Solved (Algorithms & Data Structures)
+  • Web Products    : 10+ Production-Grade Web Applications
+  • Certifications  : 3 Industry Certs (Cisco, MongoDB, Postman)
+  • Degree          : BCA (BBD University, Lucknow)`,
+
+  contact: `Direct Contact Channels:
   Email: nikhilagrahari530@gmail.com
-  LinkedIn: linkedin.com/in/nikhilxagr
+  Phone: +91 7897872883 (WhatsApp: wa.me/7897872883)
+  LinkedIn: linkedin.com/in/nikhilxagr/
   GitHub: github.com/nikhilxagr
+  LeetCode: leetcode.com/u/nikhilxagr/
   TryHackMe: tryhackme.com/p/nikhilxagr`,
 
-  whoami: `guest@nikhil-terminal ~ privileged_visitor (Level 1 ACCESS)`,
+  whoami: `guest@nikhil-portfolio ~ privileged_visitor (Level 1 ACCESS)`,
 
-  sudo: `[SECURITY NOTICE] Access denied: Root privileges required (Level 0 - Administrator). Incident logged to security audit trail.`,
+  sudo: `[SECURITY NOTICE] Access denied: Root privileges required for kernel modification. Incident logged to security audit trail.`,
 
-  socials: `GitHub: github.com/nikhilxagr | LinkedIn: linkedin.com/in/nikhilxagr | Instagram: @nikhilxagr`,
+  socials: `Social & Professional Links:
+  • GitHub: https://github.com/nikhilxagr
+  • LinkedIn: https://www.linkedin.com/in/nikhilxagr/
+  • LeetCode: https://leetcode.com/u/nikhilxagr/
+  • TryHackMe: https://tryhackme.com/p/nikhilxagr
+  • Medium: https://medium.com/@nikhilxagr
+  • Instagram: https://www.instagram.com/nikhilxagr/`,
 };
 
 const INITIAL_LINES = [
@@ -126,7 +180,49 @@ const TerminalPage = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const current = inputVal.trim().toLowerCase();
+      const availableCmds = Array.from(
+        new Set([...Object.keys(TERMINAL_COMMANDS), "clear", "date"])
+      );
+
+      if (!current) {
+        const userLine = { type: "user", text: "$ [Tab]" };
+        const infoLine = {
+          type: "output",
+          text: `Available commands:\n  ${availableCmds.join("   ")}`,
+        };
+        setLines((prev) => [...prev, userLine, infoLine]);
+        return;
+      }
+
+      const matches = availableCmds.filter((cmd) => cmd.startsWith(current));
+
+      if (matches.length === 1) {
+        setInputVal(matches[0]);
+      } else if (matches.length > 1) {
+        const userLine = { type: "user", text: `$ ${inputVal}` };
+        const matchLine = {
+          type: "output",
+          text: `Matching commands:\n  ${matches.join("   ")}`,
+        };
+        setLines((prev) => [...prev, userLine, matchLine]);
+
+        // Find longest common prefix among matches
+        let commonPrefix = current;
+        let charIdx = current.length;
+        while (true) {
+          const char = matches[0][charIdx];
+          if (!char || !matches.every((m) => m[charIdx] === char)) break;
+          commonPrefix += char;
+          charIdx++;
+        }
+        if (commonPrefix.length > current.length) {
+          setInputVal(commonPrefix);
+        }
+      }
+    } else if (e.key === "Enter") {
       executeCmd(inputVal);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
@@ -225,7 +321,7 @@ const TerminalPage = () => {
             {/* Quick command buttons */}
             <div className="flex flex-wrap items-center gap-1.5 border-b border-emerald-500/10 bg-[#040e14] px-4 py-2 text-xs">
               <span className="font-mono text-[10px] font-bold uppercase text-slate-500 tracking-wider mr-1">Quick Run:</span>
-              {["help", "bio", "skills", "projects", "tools", "contact", "whoami"].map((cmd) => (
+              {["help", "about", "bio", "skills", "projects", "tools", "journey", "stats", "contact", "whoami"].map((cmd) => (
                 <button
                   key={cmd}
                   type="button"
@@ -269,7 +365,7 @@ const TerminalPage = () => {
                   onChange={(e) => setInputVal(e.target.value)}
                   onKeyDown={handleKeyDown}
                   className="flex-1 bg-transparent font-mono text-xs sm:text-sm font-bold text-white outline-none placeholder:text-emerald-700"
-                  placeholder="Type a command (e.g. 'help', 'bio', 'skills')..."
+                  placeholder="Type a command (e.g. 'help', 'bio', 'projects') — [Tab for auto-complete]..."
                   autoFocus
                 />
               </div>

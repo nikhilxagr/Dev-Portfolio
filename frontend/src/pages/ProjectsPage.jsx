@@ -46,20 +46,25 @@ const ProjectsPage = () => {
     getProjects()
       .then((response) => {
         if (response.data && response.data.length > 0) {
-          const merged = response.data.map((project) => {
-            const staticProject = SIGNATURE_PROJECTS.find(
-              (item) => item.slug === project.slug,
+          const mergedMap = new Map();
+          SIGNATURE_PROJECTS.forEach((item) => mergedMap.set(item.slug, item));
+          response.data.forEach((apiProj) => {
+            const staticProj = SIGNATURE_PROJECTS.find(
+              (item) => item.slug === apiProj.slug,
             );
-            return mergeStaticAndApiContent(staticProject, project);
+            const merged = mergeStaticAndApiContent(staticProj, apiProj);
+            mergedMap.set(merged.slug || apiProj.slug || apiProj._id, merged);
           });
-          setProjects(merged);
+          setProjects(Array.from(mergedMap.values()));
         }
       })
       .catch(() => undefined);
   }, []);
 
   const rawDisplayProjects = useMemo(() => {
-    return projects.filter((p) => matchesProjectFilters(p, category, search));
+    return projects
+      .filter((p) => p.slug !== "security-threat-intelligence-lab" && p.title !== "Security Threat Intelligence Lab")
+      .filter((p) => matchesProjectFilters(p, category, search));
   }, [projects, category, search]);
 
   const sortedProjects = useMemo(() => {

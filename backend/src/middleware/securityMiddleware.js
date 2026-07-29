@@ -86,6 +86,10 @@ export const applySecurityMiddleware = (app) => {
     cors({
       origin: (origin, callback) => {
         const normalizedOrigin = origin ? origin.replace(/\/+$/, "") : "";
+        const isDevLocalhost =
+          env.nodeEnv !== "production" &&
+          Boolean(normalizedOrigin) &&
+          /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(normalizedOrigin);
         const isAllowedByList =
           !normalizedOrigin || env.allowedOrigins.includes(normalizedOrigin);
         const isAllowedByRegex =
@@ -93,7 +97,7 @@ export const applySecurityMiddleware = (app) => {
           Boolean(env.allowedOriginRegex) &&
           env.allowedOriginRegex.test(normalizedOrigin);
 
-        if (isAllowedByList || isAllowedByRegex) {
+        if (isAllowedByList || isAllowedByRegex || isDevLocalhost) {
           callback(null, true);
           return;
         }

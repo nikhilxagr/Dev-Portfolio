@@ -21,6 +21,7 @@ import {
   paymentVerifyLimiter,
   webhookLimiter,
 } from "../middleware/rateLimiter.js";
+import { optionalUserAuthMiddleware } from "../middleware/userAuthMiddleware.js";
 import validateRequest from "../middleware/validateRequest.js";
 
 const router = Router();
@@ -29,6 +30,7 @@ router.get("/config-status", getPaymentConfigStatus);
 
 router.post(
   "/create-order",
+  optionalUserAuthMiddleware,
   paymentLimiter,
   [
     body("serviceSlug")
@@ -60,6 +62,7 @@ router.post(
 
 router.post(
   "/create-support-order",
+  optionalUserAuthMiddleware,
   paymentLimiter,
   [
     body("amountInr")

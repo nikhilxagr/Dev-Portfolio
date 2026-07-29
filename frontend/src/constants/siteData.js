@@ -403,7 +403,7 @@ export const SIGNATURE_PROJECTS = [
       "Problem Solving Under Time Constraints",
     ],
     status: "Completed ✅ (Built during Nerds Hack Days Lucknow 2026)",
-    githubUrl: "https://github.com/nikhilxagr/Nerds-Hack-Days-Lucknow-AI-LegalTech",
+    githubUrl: "https://github.com/nikhilxagr/Kanoon-Mate--HackethonProjects-",
     liveDemoUrl: "",
     imageUrl: "/images/projects/kanoon-mate-cover.webp",
     featured: true,

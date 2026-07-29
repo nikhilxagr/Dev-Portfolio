@@ -6,6 +6,7 @@ import blogRoutes from "./routes/blogRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import userAuthRoutes from "./routes/userAuthRoutes.js";
 import { applySecurityMiddleware } from "./middleware/securityMiddleware.js";
 import {
   generalLimiter,
@@ -95,6 +96,7 @@ app.use("/api", (req, res, next) => {
 });
 
 app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/user-auth", userAuthRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);

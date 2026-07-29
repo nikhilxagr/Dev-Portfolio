@@ -35,7 +35,11 @@ import {
   Workflow,
   Wrench,
   X,
+  LogIn,
+  LogOut,
+  Receipt,
 } from "lucide-react";
+import { useUserAuth } from "@/context/UserAuthContext";
 import { NAV_LINKS, QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -78,6 +82,9 @@ const Navbar = () => {
     }
   });
   const { isDark, toggleTheme } = useTheme();
+  const { user, logout, openSignInModal } = useUserAuth();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const openSearch = useCallback(() => setIsSearchOpen(true), []);
@@ -107,6 +114,9 @@ const Navbar = () => {
     const handler = (e) => {
       if (experimentsRef.current && !experimentsRef.current.contains(e.target)) {
         setExperimentsOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -186,12 +196,12 @@ const Navbar = () => {
 
   const navItemClass = ({ isActive }) =>
     clsx(
-      "rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] transition-all duration-300",
+      "group relative inline-flex items-center gap-1 rounded-full px-2.5 2xl:px-3.5 py-1.5 font-outfit text-xs font-bold uppercase tracking-wider 2xl:tracking-[0.12em] transition-all duration-300 select-none shrink-0",
       isActive
-        ? "bg-lime-400 text-[#121212] shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
+        ? "bg-lime-400 text-[#121212] font-black shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
         : isDark
-          ? "text-zinc-400/80 hover:text-white hover:bg-white/[0.06]"
-          : "text-zinc-500 hover:text-zinc-900 hover:bg-black/[0.04]",
+          ? "text-zinc-200/90 hover:text-white hover:bg-white/[0.07]"
+          : "text-slate-700 hover:text-slate-950 hover:bg-black/[0.05]",
     );
 
   return (
@@ -272,20 +282,18 @@ const Navbar = () => {
 
       <div className={clsx(
         "w-full transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)] z-50",
-        isScrolled ? "pt-4" : "pt-0"
+        isScrolled ? "pt-4 px-[2%]" : "pt-0"
       )}>
         <div
           className={clsx(
             "mx-auto transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)] backdrop-blur-xl border-b",
             isScrolled
               ? isDark
-                ? "w-[97%] max-w-6xl rounded-full px-6 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] border-white/[0.06] bg-zinc-950/20"
-                : "w-[97%] max-w-6xl rounded-full px-6 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border-zinc-900/[0.06] bg-white/20"
-              : isScrolled
+                ? "w-full max-w-[90rem] rounded-full px-4 2xl:px-6 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] border-white/[0.06] bg-zinc-950/20"
+                : "w-full max-w-[90rem] rounded-full px-4 2xl:px-6 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border-zinc-900/[0.06] bg-white/20"
+              : isDark
                 ? "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-transparent bg-transparent"
-                : isDark
-                  ? "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-transparent bg-transparent"
-                  : "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-zinc-200/40 bg-white/60"
+                : "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-zinc-200/40 bg-white/60"
           )}
         >
             <div className={clsx(
@@ -367,16 +375,18 @@ const Navbar = () => {
                         <NavLink
                           to={item.to || "/"}
                           className={clsx(
-                            "inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] transition-all duration-300",
+                            "group relative inline-flex items-center gap-1 rounded-full px-2.5 2xl:px-3.5 py-1.5 font-outfit text-xs font-bold uppercase tracking-wider 2xl:tracking-[0.12em] transition-all duration-300 select-none shrink-0",
                             isParentActive
-                              ? "bg-lime-400 text-[#121212] shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
+                              ? "bg-lime-400 text-[#121212] font-black shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
                               : isDark
-                                ? "text-zinc-400/80 hover:text-white hover:bg-white/[0.06]"
-                                : "text-zinc-500 hover:text-zinc-900 hover:bg-black/[0.04]",
+                                ? "text-zinc-200/90 hover:text-white hover:bg-white/[0.07]"
+                                : "text-slate-700 hover:text-slate-950 hover:bg-black/[0.05]",
                           )}
                         >
-                          {item.label}
-                          <ChevronDown size={13} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                          <span className="relative z-10 flex items-center gap-1">
+                            {item.label}
+                            <ChevronDown size={13} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                          </span>
                         </NavLink>
 
                         {isDropdownOpen && (
@@ -399,13 +409,13 @@ const Navbar = () => {
                                       to={sub.to}
                                       onClick={() => setDropdownOpen(false)}
                                       className={({ isActive }) => clsx(
-                                        "group/sub flex items-center justify-between gap-3 rounded-2xl p-2.5 sm:p-3 transition-all duration-300 ease-out border",
+                                        "group/sub flex items-center justify-between gap-3 rounded-2xl p-2.5 sm:p-3 transition-all duration-300 ease-out border font-outfit",
                                         isActive
                                           ? isDark
                                             ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300 font-extrabold shadow-[0_0_20px_rgba(52,211,153,0.25)]"
                                             : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 font-extrabold"
                                           : isDark
-                                            ? "border-transparent text-slate-200 hover:bg-white/[0.08] hover:border-emerald-500/30 hover:text-white"
+                                            ? "border-transparent text-slate-200/90 hover:bg-white/[0.08] hover:border-emerald-500/30 hover:text-white"
                                             : "border-transparent text-slate-800 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-950",
                                       )}
                                     >
@@ -435,13 +445,13 @@ const Navbar = () => {
 
                   return (
                     <NavLink key={item.to} to={item.to} className={navItemClass}>
-                      {item.label}
+                      <span className="relative z-10">{item.label}</span>
                     </NavLink>
                   );
                 })}
               </nav>
 
-              <div className="hidden items-center gap-3 xl:flex shrink-0 ml-6 xl:ml-10">
+              <div className={clsx("hidden items-center xl:flex shrink-0", isScrolled ? "gap-1.5 2xl:gap-2 ml-2" : "gap-1.5 2xl:gap-3 ml-2 2xl:ml-6")}>
                 {/* Desktop Search Button */}
                 <button
                   type="button"
@@ -449,14 +459,14 @@ const Navbar = () => {
                   aria-label="Open search (Ctrl+K)"
                   title="Search (Ctrl+K)"
                   className={clsx(
-                    "flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200",
+                    "flex items-center gap-2 rounded-full border px-2.5 2xl:px-3 py-1.5 text-xs font-medium transition-all duration-200 shrink-0",
                     isDark
                       ? "border-slate-700 bg-slate-800/60 text-slate-400 hover:border-cyan-400/40 hover:bg-cyan-400/10 hover:text-cyan-300"
                       : "border-slate-200 bg-slate-50 text-slate-500 hover:border-sky-400/40 hover:bg-sky-50 hover:text-sky-700",
                   )}
                 >
                   <Search size={13} />
-                  <span className="hidden lg:inline">Search</span>
+                  <span className="hidden 2xl:inline">Search</span>
                 </button>
                 <motion.button
                   type="button"
@@ -464,7 +474,7 @@ const Navbar = () => {
                   whileHover={{ scale: 1.12 }}
                   whileTap={{ scale: 0.88, rotate: -15 }}
                   className={clsx(
-                    "relative flex h-9 w-9 items-center justify-center rounded-full border shadow-lg backdrop-blur-xl transition-all duration-300 overflow-hidden group",
+                    "relative flex h-8 w-8 2xl:h-9 2xl:w-9 items-center justify-center rounded-full border shadow-lg backdrop-blur-xl transition-all duration-300 overflow-hidden group shrink-0",
                     isDark
                       ? "border-amber-400/40 bg-amber-400/10 text-amber-300 shadow-[0_0_16px_rgba(251,191,36,0.35)] hover:border-amber-300 hover:bg-amber-400/20 hover:shadow-[0_0_24px_rgba(251,191,36,0.6)]"
                       : "border-indigo-600/40 bg-indigo-500/10 text-indigo-700 shadow-[0_0_16px_rgba(99,102,241,0.25)] hover:border-indigo-600 hover:bg-indigo-500/20 hover:shadow-[0_0_24px_rgba(99,102,241,0.45)]"
@@ -482,13 +492,71 @@ const Navbar = () => {
                       className="flex items-center justify-center"
                     >
                       {isDark ? (
-                        <Sun size={17} className="text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
+                        <Sun size={16} className="text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
                       ) : (
-                        <Moon size={17} className="text-indigo-600 drop-shadow-[0_0_6px_rgba(99,102,241,0.6)]" />
+                        <Moon size={16} className="text-indigo-600 drop-shadow-[0_0_6px_rgba(99,102,241,0.6)]" />
                       )}
                     </motion.div>
                   </AnimatePresence>
                 </motion.button>
+
+                {/* User Auth Controls */}
+                {user ? (
+                  <div className="relative shrink-0" ref={userMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 p-1 pr-2.5 text-xs font-bold text-slate-800 dark:text-slate-100 hover:border-emerald-500 transition shadow-sm"
+                    >
+                      {user.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt={user.name}
+                          className="h-7 w-7 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-black font-black">
+                          {user.name?.[0]?.toUpperCase() || "U"}
+                        </div>
+                      )}
+                      <span className="hidden xl:inline-block max-w-[65px] 2xl:max-w-[100px] truncate">{user.name.split(" ")[0]}</span>
+                    </button>
+
+                    {userMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl z-50">
+                        <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
+                          <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user.name}</p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
+                        </div>
+                        <Link
+                          to="/receipt-portal"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
+                        >
+                          <Receipt size={14} /> My Receipts
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            logout();
+                            setUserMenuOpen(false);
+                          }}
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition"
+                        >
+                          <LogOut size={14} /> Sign Out
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => openSignInModal()}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-extrabold text-emerald-700 dark:text-emerald-300 hover:border-emerald-500 hover:bg-emerald-500/20 transition shadow-xs"
+                  >
+                    <LogIn size={14} /> Sign In
+                  </button>
+                )}
 
                 <a
                   href={QUICK_CONTACT.resumeFullStack}
@@ -717,6 +785,77 @@ const Navbar = () => {
               "mt-auto space-y-2.5 pt-4 border-t shrink-0",
               isDark ? "border-sky-400/15" : "border-slate-200"
             )}>
+              {/* User Sign-In or Profile Card on Mobile */}
+              {user ? (
+                <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3">
+                  <div className="flex items-center gap-3">
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.name}
+                        className="h-9 w-9 rounded-full object-cover border border-emerald-500/40"
+                      />
+                    ) : (
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500 text-black font-black text-xs">
+                        {user.name?.[0]?.toUpperCase() || "U"}
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user.name}</p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <div className="mt-2.5 flex items-center gap-2 pt-2 border-t border-emerald-500/20">
+                    <Link
+                      to="/receipt-portal"
+                      onClick={() => setOpen(false)}
+                      className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 text-xs font-bold text-slate-800 dark:text-slate-200"
+                    >
+                      <Receipt size={13} /> My Receipts
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setOpen(false);
+                      }}
+                      className="flex items-center justify-center gap-1 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400"
+                    >
+                      <LogOut size={13} /> Sign Out
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    openSignInModal();
+                  }}
+                  className="flex w-full items-center justify-center gap-2.5 rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 text-xs font-extrabold text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-xs"
+                >
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                    />
+                  </svg>
+                  <span>Continue with Google / Sign In</span>
+                </button>
+              )}
+
               <a
                 href={QUICK_CONTACT.resumeFullStack}
                 target="_blank"

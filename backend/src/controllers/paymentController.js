@@ -144,14 +144,22 @@ const normalizeSupportAmount = (value) => {
 
 const getBaseUrl = (req) => `${req.protocol}://${req.get("host")}`;
 
+const ensureHttpsScheme = (urlStr) => {
+  if (!urlStr) return urlStr;
+  if (getCashfreeMode() === "production" && urlStr.startsWith("http://")) {
+    return urlStr.replace(/^http:\/\//i, "https://");
+  }
+  return urlStr;
+};
+
 const buildCashfreeReturnUrl = (req) => {
   const checkoutOrigin = getAllowedCheckoutOrigin(req);
   const base = checkoutOrigin || getBaseUrl(req);
-  return `${base}/payment/success?order_id={order_id}`;
+  return ensureHttpsScheme(`${base}/payment/success?order_id={order_id}`);
 };
 
 const buildCashfreeNotifyUrl = (req) =>
-  `${getBaseUrl(req)}/api/payments/webhook`;
+  ensureHttpsScheme(`${getBaseUrl(req)}/api/payments/webhook`);
 
 const createReceiptNumber = () => {
   const timestamp = Date.now();
@@ -321,6 +329,7 @@ export const createPaymentOrder = async (req, res, next) => {
         customerEmail: normalizedEmail,
         customerPhone: normalizedPhone,
         notes: notes.trim(),
+        userId: req.user?._id || null,
       });
     }
 
@@ -471,6 +480,7 @@ export const createSupportPaymentOrder = async (req, res, next) => {
         customerEmail: normalizedEmail,
         customerPhone: normalizedPhone,
         notes: notes.trim(),
+        userId: req.user?._id || null,
       });
     }
 

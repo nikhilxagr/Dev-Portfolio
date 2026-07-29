@@ -9,6 +9,7 @@ import PortfolioLoader from "@/components/layout/PortfolioLoader";
 import ScrollProgressButton from "@/components/layout/ScrollProgressButton";
 import ScrollProgressBar from "@/components/layout/ScrollProgressBar";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import SignInModal from "@/components/auth/SignInModal";
 import { prewarmBackendForCheckout } from "@/services/payment.service";
 
 const HomePage = lazy(() => import("@/pages/HomePage.jsx"));
@@ -40,6 +41,7 @@ const ContactPage = lazy(() => import("@/pages/ContactPage.jsx"));
 const AdminLoginPage = lazy(() => import("@/pages/AdminLoginPage.jsx"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage.jsx"));
 const HowIBuildPage = lazy(() => import("@/pages/HowIBuildPage.jsx"));
+const AuthCallbackPage = lazy(() => import("@/pages/AuthCallbackPage.jsx"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.jsx"));
 
 const LOADER_VISIT_KEY = "portfolio_loader_seen";
@@ -203,6 +205,7 @@ function App() {
                     path="/admin/dashboard"
                     element={<Navigate to="/admin" replace />}
                   />
+                  <Route path="/auth/callback" element={<AuthCallbackPage />} />
                   <Route path="/home" element={<Navigate to="/" replace />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
@@ -210,6 +213,7 @@ function App() {
             </MotionDiv>
           </AnimatePresence>
         </main>
+        <SignInModal />
         {!showLoader ? <ScrollProgressButton /> : null}
         {!isAdminRoute ? <Footer /> : null}
       </div>

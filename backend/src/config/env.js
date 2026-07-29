@@ -45,7 +45,8 @@ const readOptionalVariable = (name, aliases = []) => {
   const runtimeValue = runtimeName ? process.env[runtimeName] : undefined;
   const fallbackValue = isDevelopment ? developmentFallbacks[name] : undefined;
 
-  return runtimeValue || fallbackValue || "";
+  const raw = runtimeValue || fallbackValue || "";
+  return String(raw).trim().replace(/\\+$/, "");
 };
 
 const mongoUri = readRequiredVariable("MONGODB_URI", ["DATABASE_URL"]);
@@ -162,6 +163,13 @@ export const env = {
     process.env.PAYMENT_RECEIPT_EMAIL_ENABLED,
     false,
   ),
+  googleClientId: readOptionalVariable("GOOGLE_CLIENT_ID"),
+  googleClientSecret: readOptionalVariable("GOOGLE_CLIENT_SECRET"),
+  googleCallbackUrl:
+    readOptionalVariable("GOOGLE_CALLBACK_URL") ||
+    "http://localhost:5000/api/user-auth/google/callback",
+  frontendUrl:
+    readOptionalVariable("FRONTEND_URL") || "http://localhost:5173",
 };
 
 const hasCashfreeAppId = Boolean(env.cashfreeAppId);

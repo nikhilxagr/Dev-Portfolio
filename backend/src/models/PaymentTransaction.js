@@ -47,6 +47,11 @@ const paymentTransactionSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 120,
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
     customerEmail: {
       type: String,
       required: true,

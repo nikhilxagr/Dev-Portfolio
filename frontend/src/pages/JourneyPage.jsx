@@ -798,9 +798,9 @@ const formatLabel = (value = "") => {
 const FixedYearNav = ({ years, activeYear, onYearClick }) => (
   <div className="fixed right-6 top-1/2 z-50 hidden -translate-y-1/2 xl:flex xl:flex-col xl:items-center">
     {/* Capsule container */}
-    <div className="flex flex-col items-center gap-1 rounded-[2rem] border border-white/10 bg-zinc-950/95 px-3 py-4 shadow-[0_8px_48px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+    <div className="flex flex-col items-center gap-1 rounded-[2rem] border border-slate-200 dark:border-white/10 bg-white/90 dark:bg-zinc-950/95 px-3 py-4 shadow-xl dark:shadow-[0_8px_48px_rgba(0,0,0,0.8)] backdrop-blur-xl transition-colors duration-200">
       {/* Label */}
-      <p className="mb-3 text-[8px] font-bold uppercase tracking-[0.4em] text-zinc-600">
+      <p className="mb-3 text-[8px] font-bold uppercase tracking-[0.4em] text-slate-500 dark:text-zinc-600">
         Years
       </p>
 
@@ -815,20 +815,20 @@ const FixedYearNav = ({ years, activeYear, onYearClick }) => (
               aria-label={`Go to year ${year}`}
               className={`relative flex h-12 w-12 flex-col items-center justify-center rounded-[14px] border text-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-300 ${
                 isActive
-                  ? "scale-110 border-lime-300 bg-lime-300 shadow-[0_0_24px_rgba(163,230,53,0.6),0_0_0_4px_rgba(163,230,53,0.15)]"
-                  : "border-transparent bg-zinc-900/80 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300"
+                  ? "scale-110 border-lime-400 bg-lime-400 text-black shadow-[0_0_24px_rgba(163,230,53,0.6),0_0_0_4px_rgba(163,230,53,0.15)]"
+                  : "border-slate-200 dark:border-transparent bg-slate-100 dark:bg-zinc-900/80 text-slate-600 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-800 hover:text-slate-900 dark:hover:text-zinc-200"
               }`}
             >
               <span
-                className={`text-[9px] font-semibold leading-none ${
-                  isActive ? "text-black/50" : "text-zinc-600"
+                className={`text-[9px] font-bold leading-none ${
+                  isActive ? "text-black/60" : "text-slate-500 dark:text-zinc-600"
                 }`}
               >
                 {String(year).slice(0, 2)}
               </span>
               <span
                 className={`text-[14px] font-black leading-none ${
-                  isActive ? "text-black" : ""
+                  isActive ? "text-black" : "text-slate-800 dark:text-zinc-300"
                 }`}
               >
                 {String(year).slice(2)}
@@ -837,7 +837,7 @@ const FixedYearNav = ({ years, activeYear, onYearClick }) => (
               {isActive && (
                 <motion.span
                   layoutId="navPip"
-                  className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-lime-300 shadow-[0_0_10px_rgba(163,230,53,1)]"
+                  className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-lime-400 shadow-[0_0_10px_rgba(163,230,53,1)]"
                 />
               )}
             </button>
@@ -846,7 +846,7 @@ const FixedYearNav = ({ years, activeYear, onYearClick }) => (
       </div>
 
       {/* Bottom divider + active year label */}
-      <div className="mt-3 h-px w-8 bg-zinc-800" />
+      <div className="mt-3 h-px w-8 bg-slate-200 dark:bg-zinc-800" />
       <AnimatePresence mode="wait">
         <motion.p
           key={activeYear}
@@ -854,7 +854,7 @@ const FixedYearNav = ({ years, activeYear, onYearClick }) => (
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.2 }}
-          className="mt-2 text-[8px] font-bold uppercase tracking-[0.3em] text-zinc-600"
+          className="mt-2 text-[8px] font-bold uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-600"
         >
           {activeYear}
         </motion.p>
@@ -1779,10 +1779,10 @@ const JourneyPage = () => {
                     key={item}
                     type="button"
                     onClick={() => setActiveFilter(item)}
-                    className={`shrink-0 rounded-full border px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] transition-all duration-300 ${
+                    className={`shrink-0 rounded-full border px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] transition-all duration-300 ${
                       activeFilter === item
-                        ? "border-lime-300 bg-lime-300 text-black shadow-[0_0_10px_rgba(163,230,53,0.2)]"
-                        : "border-white/[0.07] bg-zinc-900/60 text-zinc-400 hover:border-white/[0.15] hover:text-zinc-200"
+                        ? "border-lime-400 bg-lime-400 text-black font-black shadow-[0_0_12px_rgba(163,230,53,0.35)]"
+                        : "border-slate-300 dark:border-white/[0.07] bg-white/90 dark:bg-zinc-900/60 text-slate-700 dark:text-zinc-400 hover:border-slate-400 dark:hover:border-white/[0.15] hover:text-slate-950 dark:hover:text-zinc-200 shadow-xs"
                     }`}
                   >
                     {item}
@@ -1796,13 +1796,13 @@ const JourneyPage = () => {
 
       
       {view === "timeline" && (
-        <div className="sticky top-[4.5rem] z-40 xl:hidden border-b border-white/[0.05] bg-zinc-950/95 backdrop-blur-xl">
+        <div className="sticky top-[4.5rem] z-40 xl:hidden border-b border-slate-200 dark:border-white/[0.05] bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl">
           <div className="section-wrap py-3">
             <div
               className="flex items-center gap-3 overflow-x-auto"
               style={{ scrollbarWidth: "none" }}
             >
-              <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-600">
+              <span className="shrink-0 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-600">
                 Jump to
               </span>
               {allYears.map((year) => {
@@ -1813,8 +1813,8 @@ const JourneyPage = () => {
                     onClick={(e) => handleYearClick(e, year)}
                     className={`shrink-0 rounded-xl border px-5 py-1.5 text-xs font-black transition-all duration-300 ${
                       isActive
-                        ? "border-lime-300 bg-lime-300 text-black shadow-[0_0_12px_rgba(163,230,53,0.3)]"
-                        : "border-white/[0.08] bg-zinc-900/60 text-zinc-400 hover:text-zinc-200"
+                        ? "border-lime-400 bg-lime-400 text-black shadow-[0_0_12px_rgba(163,230,53,0.3)]"
+                        : "border-slate-200 dark:border-white/[0.08] bg-slate-100 dark:bg-zinc-900/60 text-slate-700 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-zinc-200"
                     }`}
                   >
                     {year}
@@ -1830,7 +1830,7 @@ const JourneyPage = () => {
       <section className="section-wrap py-12 sm:py-16">
         <div className="mx-auto max-w-5xl">
           <AnimatePresence mode="wait">
-            {}
+            
             {view === "grid" ? (
               <motion.div
                 key="grid"
@@ -1841,7 +1841,7 @@ const JourneyPage = () => {
                 className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
               >
                 {filteredData.length === 0 ? (
-                  <div className="col-span-full py-24 text-center text-sm text-zinc-500">
+                  <div className="col-span-full py-24 text-center text-sm font-semibold text-slate-500 dark:text-zinc-500">
                     No milestones match your current filter.
                   </div>
                 ) : (
@@ -1863,19 +1863,16 @@ const JourneyPage = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
+                className="space-y-20"
               >
                 {groupedByYear.length === 0 ? (
-                  <div className="py-24 text-center text-sm text-zinc-500">
+                  <div className="py-24 text-center text-sm font-semibold text-slate-500 dark:text-zinc-500">
                     No milestones match your current filter.
                   </div>
                 ) : (
-                  groupedByYear.map((group) => (
-                    <div
-                      key={group.year}
-                      id={`year-${group.year}`}
-                      className="mb-24 scroll-mt-36 last:mb-0"
-                    >
-                      {/* Year section header */}
+                  groupedByYear.map(({ year, items }) => (
+                    <div key={year} id={`year-${year}`}>
+                      
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -1885,44 +1882,44 @@ const JourneyPage = () => {
                       >
                         <div
                           className={`flex h-16 w-16 flex-col items-center justify-center rounded-2xl border transition-all duration-500 ${
-                            activeYear === group.year
-                              ? "border-lime-300 bg-lime-300 shadow-[0_0_32px_rgba(163,230,53,0.45)]"
-                              : "border-zinc-700 bg-zinc-900"
+                            activeYear === year
+                              ? "border-lime-400 bg-lime-400 text-black shadow-[0_0_32px_rgba(163,230,53,0.45)]"
+                              : "border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm"
                           }`}
                         >
                           <span
                             className={`text-[9px] font-bold uppercase tracking-widest ${
-                              activeYear === group.year
-                                ? "text-black/50"
-                                : "text-zinc-600"
+                              activeYear === year
+                                ? "text-black/60"
+                                : "text-slate-500 dark:text-zinc-600"
                             }`}
                           >
                             Year
                           </span>
                           <span
                             className={`text-xl font-black ${
-                              activeYear === group.year
+                              activeYear === year
                                 ? "text-black"
-                                : "text-zinc-200"
+                                : "text-slate-900 dark:text-zinc-200"
                             }`}
                           >
-                            {group.year}
+                            {year}
                           </span>
                         </div>
-                        <div className="h-px flex-1 bg-gradient-to-r from-zinc-700 via-zinc-800 to-transparent" />
-                        <span className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-                          {group.items.length} milestone
-                          {group.items.length !== 1 ? "s" : ""}
+                        <div className="h-px flex-1 bg-gradient-to-r from-slate-300 via-slate-200 to-transparent dark:from-zinc-700 dark:via-zinc-800" />
+                        <span className="rounded-full border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-zinc-400 shadow-xs">
+                          {items.length} milestone
+                          {items.length !== 1 ? "s" : ""}
                         </span>
                       </motion.div>
 
-                      {/* Timeline items */}
+                      
                       <div className="relative">
-                        {}
-                        <div className="absolute inset-y-0 left-4 w-px bg-zinc-800 lg:left-1/2 lg:-translate-x-px" />
+                        
+                        <div className="absolute inset-y-0 left-4 w-px bg-slate-300 dark:bg-zinc-800 lg:left-1/2 lg:-translate-x-px" />
 
-                        {/* Active glow spine for current year */}
-                        {activeYear === group.year && (
+                        
+                        {activeYear === year && (
                           <motion.div
                             className="absolute inset-y-0 left-4 w-px bg-gradient-to-b from-lime-300/90 via-emerald-400/60 to-transparent lg:left-1/2 lg:-translate-x-px"
                             initial={{ scaleY: 0, originY: 0 }}
@@ -1932,7 +1929,7 @@ const JourneyPage = () => {
                         )}
 
                         <div className="space-y-12 pl-12 lg:space-y-20 lg:pl-0">
-                          {group.items.map((event, idx) => {
+                          {items.map((event, idx) => {
                             const isLeft = idx % 2 === 0;
                             return (
                               <div key={event.id} id={event.id} className="relative scroll-mt-28">
@@ -1940,7 +1937,7 @@ const JourneyPage = () => {
                                 {}
                                 <div className="absolute left-4 top-8 -translate-x-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:top-10">
                                   <TimelineDot
-                                    isActive={activeYear === group.year}
+                                    isActive={activeYear === year}
                                   />
                                 </div>
 

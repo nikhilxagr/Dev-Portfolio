@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import {
   ArrowRight,
   Braces,
@@ -531,7 +531,7 @@ const DualRoleIdentity = () => {
               <div className="flex flex-col gap-2 lg:items-end">
                 <div className="flex flex-wrap gap-2 lg:flex-col">
                   {["BCA · BBD University", "Lucknow, India 🇮🇳", "Open to Internships", "Security-First Mindset"].map(tag => (
-                    <span key={tag} className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/25 bg-green-500/10 text-green-700 dark:border-green-400/22 dark:bg-green-400/8 dark:text-green-300 px-3 py-1.5 text-xs font-semibold">
+                    <span key={tag} className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/30 bg-green-500/10 text-green-700 dark:border-green-400/35 dark:bg-green-500/20 dark:text-green-300 px-3 py-1.5 text-xs font-semibold">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
                       {tag}
                     </span>
@@ -563,7 +563,7 @@ const DualRoleIdentity = () => {
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {["React", "Node.js", "MongoDB", "Express", "Next.js"].map(t => (
-                  <span key={t} className="rounded-md border border-green-500/20 bg-green-50 text-green-700 dark:border-green-400/22 dark:bg-green-400/8 dark:text-green-300 px-2 py-0.5 text-[10px] font-semibold">{t}</span>
+                  <span key={t} className="rounded-lg border border-green-500/30 bg-green-500/10 text-green-700 dark:border-green-400/35 dark:bg-green-500/20 dark:text-green-300 px-2.5 py-1 text-[11px] font-bold shadow-sm">{t}</span>
                 ))}
               </div>
               <ul className="mt-5 space-y-3">
@@ -596,7 +596,7 @@ const DualRoleIdentity = () => {
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {["Burp Suite", "Nmap", "Kali Linux", "OWASP", "TryHackMe"].map(t => (
-                  <span key={t} className="rounded-md border border-emerald-500/20 bg-emerald-50 text-emerald-700 dark:border-cyan-400/22 dark:bg-cyan-400/8 dark:text-cyan-300 px-2 py-0.5 text-[10px] font-semibold">{t}</span>
+                  <span key={t} className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-800 dark:border-cyan-400/35 dark:bg-cyan-500/20 dark:text-cyan-300 px-2.5 py-1 text-[11px] font-bold shadow-sm">{t}</span>
                 ))}
               </div>
               <ul className="mt-5 space-y-3">
@@ -997,7 +997,7 @@ const HomePage = () => {
       setLoadingLatestBlog(staticLatestBlogs.length === 0);
       setLatestBlogError("");
       try {
-        const response = await getBlogs({ limit: 2 });
+        const response = await getBlogs({ limit: 3 });
         const apiBlogs = response.data || [];
         const mergedMap = new Map();
         BLOG_LINKS.forEach((staticBlog) => { mergedMap.set(staticBlog.slug, staticBlog); });
@@ -1006,7 +1006,7 @@ const HomePage = () => {
           const merged = mergeStaticAndApiContent(staticBlog, apiBlog);
           mergedMap.set(merged.slug || apiBlog.slug || apiBlog._id, merged);
         });
-        setLatestBlogs(sortBlogsByDate(Array.from(mergedMap.values())).slice(0, 2));
+        setLatestBlogs(sortBlogsByDate(Array.from(mergedMap.values())).slice(0, 3));
       } catch (error) {
         setLatestBlogs(staticLatestBlogs);
         if (staticLatestBlogs.length === 0) setLatestBlogError(getErrorMessage(error, "Unable to load latest blog right now."));
@@ -1017,13 +1017,20 @@ const HomePage = () => {
     loadLatestBlog().catch(() => undefined);
   }, []);
 
-  const mergedFeaturedProjects =
-    featuredProjects.length > 0
-      ? featuredProjects.map((project) => {
-          const staticProject = SIGNATURE_PROJECTS.find((item) => item.slug === project.slug);
-          return mergeStaticAndApiContent(staticProject, project);
-        })
-      : SIGNATURE_PROJECTS.filter((item) => item.featured);
+  const mergedFeaturedProjects = useMemo(() => {
+    const mergedMap = new Map();
+    SIGNATURE_PROJECTS.filter((item) => item.featured).forEach((item) => {
+      mergedMap.set(item.slug, item);
+    });
+    if (featuredProjects.length > 0) {
+      featuredProjects.forEach((project) => {
+        const staticProject = SIGNATURE_PROJECTS.find((item) => item.slug === project.slug);
+        const merged = mergeStaticAndApiContent(staticProject, project);
+        mergedMap.set(merged.slug || project.slug || project._id, merged);
+      });
+    }
+    return Array.from(mergedMap.values());
+  }, [featuredProjects]);
 
   const filteredProjects =
     projectFilter === "All"
@@ -1241,27 +1248,6 @@ const HomePage = () => {
                 Icon: ShieldCheck,
                 skills: ["Kali Linux", "Burp Suite", "Nmap", "Wireshark", "Metasploit", "TryHackMe"],
               },
-              {
-                id: "databases",
-                title: "Databases & Storage",
-                desc: "Document and relational database schemas optimized for low latency.",
-                Icon: Database,
-                skills: ["MongoDB", "PostgreSQL", "Supabase", "SQL"],
-              },
-              {
-                id: "devtools",
-                title: "DevOps & Tools",
-                desc: "Version control workflows, cloud deployments, and Linux environments.",
-                Icon: Terminal,
-                skills: ["Git", "GitHub", "Linux", "Vercel", "Render", "VS Code"],
-              },
-              {
-                id: "ai-productivity",
-                title: "AI & Productivity",
-                desc: "Leveraging LLM workflows for rapid code refactoring and architecture auditing.",
-                Icon: Sparkles,
-                skills: ["ChatGPT", "GitHub Copilot"],
-              },
             ].map((cat) => {
               const Icon = cat.Icon;
               return (
@@ -1418,7 +1404,7 @@ const HomePage = () => {
         </FadeInUp>
 
         {/* 4-column grid: 3 blog cards + 1 View All card */}
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-[repeat(3,minmax(0,1fr))_240px]">
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {/* Blog cards with cover images */}
           {loadingLatestBlog && latestBlogs.length === 0 ? <LoadingState message="Loading latest blogs..." cards={3} variant="blog" /> : null}
           {!loadingLatestBlog && latestBlogError && latestBlogs.length === 0 ? <EmptyState title="Latest blog unavailable" message={latestBlogError} /> : null}
@@ -1501,56 +1487,54 @@ const HomePage = () => {
       </section>
 
       {/* S11: Contact CTA Banner */}
-      <section className="section-wrap section-divider pt-12 pb-16 sm:pb-20">
+      <section className="section-wrap section-divider pt-6 pb-10">
         <FadeInUp>
-          <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-xl dark:border-green-400/30 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#082218] dark:to-[#050d14] dark:shadow-none p-8 text-center sm:p-12">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,197,94,0.18),transparent_55%)] dark:block hidden" />
-            <div className="pointer-events-none absolute inset-0 rounded-3xl dark:block hidden" style={{ boxShadow: "inset 0 1px 0 rgba(74,222,128,0.12)" }} />
+          <div className="mx-auto max-w-3xl relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-50/40 p-5 text-center sm:p-6 backdrop-blur-xl dark:border-emerald-500/25 dark:bg-[#030e08]/90 dark:shadow-[0_10px_35px_rgba(0,10,5,0.5)]">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.08),transparent_60%)]" />
 
             {/* Pulsing accent dot */}
-            <div className="relative mx-auto mb-4 flex justify-center">
-              <span className="inline-flex h-2.5 w-2.5 rounded-full bg-green-500 dark:bg-green-400 cyber-pulse-dot" />
+            <div className="relative mx-auto mb-1.5 flex justify-center">
+              <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400 cyber-pulse-dot" />
             </div>
 
-            <p className="relative text-xs font-bold uppercase tracking-[0.28em] text-green-600 dark:text-green-400">Open to Opportunities</p>
-            <h2 className="relative mt-3 text-3xl font-black text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
-              Ready to Build Something<br className="hidden sm:block" />
-              <span className="text-green-600 dark:text-green-400"> Great Together?</span>
+            <p className="relative text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-600 dark:text-emerald-400">Open to Opportunities</p>
+            <h2 className="relative mt-1.5 text-xl font-extrabold text-slate-900 dark:text-white sm:text-2xl lg:text-3xl tracking-tight">
+              Ready to Build Something <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Great Together?</span>
             </h2>
-            <p className="relative mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-              Looking for internship roles in Full Stack Engineering, Application Security, or DevSecOps. Available for freelance projects and collaborations. Let's connect!
+            <p className="relative mx-auto mt-2 max-w-md text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+              Looking for internship roles in Full Stack Engineering, Application Security, or DevSecOps. Available for freelance projects and collaborations.
             </p>
 
-            <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="relative mt-4 flex flex-wrap items-center justify-center gap-2">
               <a
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3.5 text-sm font-black uppercase tracking-wider text-black transition-all duration-300 hover:-translate-y-1 hover:bg-green-400 hover:shadow-[0_8px_28px_rgba(34,197,94,0.5)]"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-black transition-all duration-300 hover:bg-emerald-400 hover:shadow-md"
               >
-                Send Message <ArrowRight size={15} />
+                Send Message <ArrowRight size={13} />
               </a>
               <a
                 href={QUICK_CONTACT.resumeFullStack}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-green-500/40 bg-green-500/10 text-green-700 hover:bg-green-500/20 dark:border-green-400/45 dark:bg-green-400/10 dark:text-green-400 dark:hover:bg-green-400/20 px-6 py-3.5 text-sm font-black uppercase tracking-wider transition-all duration-300 hover:-translate-y-1"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 hover:bg-emerald-500/20 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/20 px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300"
               >
-                <Download size={14} /> Download Resume
+                <Download size={12} /> Resume
               </a>
               <a
                 href={QUICK_CONTACT.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-800 hover:bg-slate-200 dark:border-white/12 dark:bg-white/5 dark:text-slate-300 dark:hover:border-green-400/30 dark:hover:text-green-300 px-6 py-3.5 text-sm font-black uppercase tracking-wider transition-all duration-300 hover:-translate-y-1"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-800 hover:bg-slate-200 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:border-emerald-400/30 dark:hover:text-emerald-300 px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300"
               >
-                <FaLinkedinIn size={14} /> LinkedIn
+                <FaLinkedinIn size={12} /> LinkedIn
               </a>
             </div>
 
             {/* Bottom trust row */}
-            <div className="relative mt-8 flex flex-wrap items-center justify-center gap-4">
-              <span className="security-health-badge"><Zap size={10} /> Quick Response</span>
-              <span className="security-health-badge"><Globe size={10} /> Remote Ready</span>
-              <span className="security-health-badge"><ShieldCheck size={10} /> Security-First Mindset</span>
+            <div className="relative mt-4 flex flex-wrap items-center justify-center gap-2 text-[10px]">
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 font-semibold text-emerald-700 dark:text-emerald-300"><Zap size={9} /> Quick Response</span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 font-semibold text-emerald-700 dark:text-emerald-300"><Globe size={9} /> Remote Ready</span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 font-semibold text-emerald-700 dark:text-emerald-300"><ShieldCheck size={9} /> Security-First</span>
             </div>
           </div>
         </FadeInUp>

@@ -39,7 +39,7 @@ const Footer = () => {
             </p>
 
             {/* Social Grid Cards */}
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:max-w-2xl">
+            <div className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-3 lg:max-w-2xl">
               {socialProfiles.map((item) => {
                 const logoUrl = getSkillLogoUrl(item.label, isDark);
 
@@ -49,10 +49,10 @@ const Footer = () => {
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="group flex items-center justify-between gap-3 rounded-2xl border border-slate-300 bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500 hover:bg-emerald-50 dark:border-emerald-500/20 dark:bg-emerald-950/30 dark:hover:bg-emerald-500/10 dark:hover:border-emerald-400/40"
+                    className="group flex items-center justify-between gap-2 rounded-2xl border border-slate-300 bg-white p-2.5 sm:p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500 hover:bg-emerald-50 dark:border-emerald-500/20 dark:bg-emerald-950/30 dark:hover:bg-emerald-500/10 dark:hover:border-emerald-400/40"
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 shrink-0">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 shrink-0">
                         {item.label === "LinkedIn" ? (
                           <svg
                             viewBox="0 0 24 24"
@@ -79,15 +79,15 @@ const Footer = () => {
                         )}
                       </span>
 
-                      <div>
-                        <p className="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors">
+                      <div className="min-w-0">
+                        <p className="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors truncate">
                           {item.label}
                         </p>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium">Open profile</p>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium truncate">Open profile</p>
                       </div>
                     </div>
 
-                    <ArrowUpRight size={14} className="text-slate-400 dark:text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    <ArrowUpRight size={14} className="shrink-0 text-slate-400 dark:text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                   </a>
                 );
               })}
@@ -102,19 +102,19 @@ const Footer = () => {
               <h3 className="font-display text-base font-bold text-slate-900 dark:text-white">
                 Quick Navigation
               </h3>
-              <div className="mt-4 grid gap-2 text-xs font-bold text-slate-800 dark:text-slate-300">
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2.5 text-xs font-bold text-slate-800 dark:text-slate-300">
                 {primaryLinks.map((item) => (
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="transition hover:text-emerald-700 dark:hover:text-emerald-400"
+                    className="transition hover:text-emerald-700 dark:hover:text-emerald-400 truncate"
                   >
                     {item.label}
                   </Link>
                 ))}
                 <Link
                   to="/how-i-build"
-                  className="transition hover:text-emerald-700 dark:hover:text-emerald-400"
+                  className="transition hover:text-emerald-700 dark:hover:text-emerald-400 truncate"
                 >
                   How I Build
                 </Link>
@@ -142,12 +142,12 @@ const Footer = () => {
             {/* Legal Policies */}
             <div>
               <h3 className="font-display text-base font-bold text-slate-900 dark:text-white">Policies</h3>
-              <div className="mt-4 grid gap-2 text-xs font-bold text-slate-800 dark:text-slate-300">
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2.5 text-xs font-bold text-slate-800 dark:text-slate-300">
                 {LEGAL_LINKS.map((item) => (
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="transition hover:text-emerald-700 dark:hover:text-emerald-400"
+                    className="transition hover:text-emerald-700 dark:hover:text-emerald-400 truncate"
                   >
                     {item.label}
                   </Link>

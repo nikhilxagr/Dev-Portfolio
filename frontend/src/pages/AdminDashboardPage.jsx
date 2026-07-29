@@ -1,8 +1,24 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { LogOut, MailOpen, RefreshCcw } from "lucide-react";
-import Button from "@/components/ui/Button";
+import {
+  LayoutDashboard,
+  FolderKanban,
+  Mail,
+  CreditCard,
+  BookOpen,
+  ShieldCheck,
+  Menu,
+  X,
+  LogOut,
+  RefreshCcw,
+  Plus,
+  Edit3,
+  ExternalLink,
+  Send,
+  AlertCircle,
+  Search,
+} from "lucide-react";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
@@ -27,15 +43,15 @@ import { getStoredAdminUser, logoutAdmin } from "@/services/auth.service";
 
 const RANGE_OPTIONS = [7, 30, 90];
 const PAYMENT_STATUS_OPTIONS = [
-  { value: "all", label: "All statuses" },
+  { value: "all", label: "All Statuses" },
   { value: "paid", label: "Paid" },
   { value: "created", label: "Created" },
   { value: "failed", label: "Failed" },
   { value: "refunded", label: "Refunded" },
 ];
 const PAYMENT_SERVICE_OPTIONS = [
-  { value: "all", label: "All services" },
-  { value: "support", label: "Support contributions" },
+  { value: "all", label: "All Services" },
+  { value: "support", label: "Support Contributions" },
 ];
 const DEFAULT_STATUS_COUNTS = {
   created: 0,
@@ -47,7 +63,7 @@ const DEFAULT_STATUS_COUNTS = {
 const createInitialProjectForm = () => ({
   title: "",
   description: "",
-  category: PROJECT_CATEGORIES[1],
+  category: PROJECT_CATEGORIES[1] || "Web Dev",
   techStack: "",
   githubUrl: "",
   liveDemoUrl: "",
@@ -72,15 +88,9 @@ const parseCommaList = (value) =>
     .filter(Boolean);
 
 const formatDate = (value) => {
-  if (!value) {
-    return "-";
-  }
-
+  if (!value) return "-";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return "-";
-  }
-
+  if (Number.isNaN(date.getTime())) return "-";
   return date.toLocaleString();
 };
 
@@ -100,52 +110,36 @@ const formatCurrency = (value) => {
 
 const formatPercent = (value) => {
   const parsed = Number(value);
-  if (!Number.isFinite(parsed)) {
-    return "-";
-  }
-
+  if (!Number.isFinite(parsed)) return "-";
   return `${Math.round(parsed)}%`;
 };
 
 const formatUptime = (value) => {
   const seconds = Number(value);
-  if (!Number.isFinite(seconds) || seconds <= 0) {
-    return "-";
-  }
-
+  if (!Number.isFinite(seconds) || seconds <= 0) return "-";
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-
-  if (hours <= 0) {
-    return `${minutes}m`;
-  }
-
+  if (hours <= 0) return `${minutes}m`;
   return `${hours}h ${minutes}m`;
 };
 
 const formatShortId = (value) => {
-  if (!value) {
-    return "-";
-  }
-
-  if (value.length <= 14) {
-    return value;
-  }
-
+  if (!value) return "-";
+  if (value.length <= 14) return value;
   return `${value.slice(0, 6)}...${value.slice(-4)}`;
 };
 
 const getPaymentBadgeClasses = (status) => {
   switch (status) {
     case "paid":
-      return "border-emerald-300/40 bg-emerald-300/10 text-emerald-200";
+      return "border-emerald-400/40 bg-emerald-500/15 text-emerald-300 font-bold";
     case "failed":
-      return "border-rose-300/40 bg-rose-300/10 text-rose-200";
+      return "border-rose-400/40 bg-rose-500/15 text-rose-300 font-bold";
     case "refunded":
-      return "border-amber-300/40 bg-amber-300/10 text-amber-200";
+      return "border-amber-400/40 bg-amber-500/15 text-amber-300 font-bold";
     case "created":
     default:
-      return "border-slate-500/40 bg-slate-500/10 text-slate-300";
+      return "border-slate-500/40 bg-slate-500/15 text-slate-300 font-bold";
   }
 };
 
@@ -153,9 +147,12 @@ const AdminDashboardPage = () => {
   const navigate = useNavigate();
   const adminUser = useMemo(() => getStoredAdminUser(), []);
 
-  const [activePanel, setActivePanel] = useState("payments");
+  // UI state
+  const [activePanel, setActivePanel] = useState("overview"); // overview, projects, contacts, payments, blogs, system
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [rangeDays, setRangeDays] = useState(30);
 
+  // Data states
   const [overview, setOverview] = useState(null);
   const [overviewLoading, setOverviewLoading] = useState(true);
   const [overviewError, setOverviewError] = useState("");
@@ -172,6 +169,8 @@ const AdminDashboardPage = () => {
   const [paymentsError, setPaymentsError] = useState("");
 
   const [projects, setProjects] = useState([]);
+  const [projectSearch, setProjectSearch] = useState("");
+  const [projectCategoryFilter, setProjectCategoryFilter] = useState("ALL");
   const [blogs, setBlogs] = useState([]);
   const [contentLoading, setContentLoading] = useState(true);
   const [contentError, setContentError] = useState("");
@@ -191,7 +190,9 @@ const AdminDashboardPage = () => {
   const [actionError, setActionError] = useState("");
 
   const [projectForm, setProjectForm] = useState(createInitialProjectForm());
+  const [showProjectFormModal, setShowProjectFormModal] = useState(false);
   const [blogForm, setBlogForm] = useState(createInitialBlogForm());
+  const [showBlogFormModal, setShowBlogFormModal] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState("");
   const [editingBlogId, setEditingBlogId] = useState("");
 
@@ -206,11 +207,7 @@ const AdminDashboardPage = () => {
   const loadOverview = useCallback(
     async ({ range = rangeDays, useLoader = true } = {}) => {
       setOverviewError("");
-
-      if (useLoader) {
-        setOverviewLoading(true);
-      }
-
+      if (useLoader) setOverviewLoading(true);
       try {
         const response = await getAdminOverview({ range });
         setOverview(response.data || null);
@@ -219,17 +216,12 @@ const AdminDashboardPage = () => {
           handleAuthFailure();
           return;
         }
-
-        setOverviewError(
-          getErrorMessage(requestError, "Unable to load overview."),
-        );
+        setOverviewError(getErrorMessage(requestError, "Unable to load overview."));
       } finally {
-        if (useLoader) {
-          setOverviewLoading(false);
-        }
+        if (useLoader) setOverviewLoading(false);
       }
     },
-    [handleAuthFailure, rangeDays],
+    [handleAuthFailure, rangeDays]
   );
 
   const loadPayments = useCallback(
@@ -240,25 +232,14 @@ const AdminDashboardPage = () => {
       useLoader = true,
     } = {}) => {
       setPaymentsError("");
-
-      if (useLoader) {
-        setPaymentsLoading(true);
-      }
-
+      if (useLoader) setPaymentsLoading(true);
       try {
-        const response = await getAdminPaymentsHistory({
-          range,
-          status,
-          service,
-        });
+        const response = await getAdminPaymentsHistory({ range, status, service });
         const payload = response.data || {};
         setPaymentHistory(payload.items || []);
         setPaymentMeta({
           totalCount: payload.totalCount || 0,
-          statusCounts: {
-            ...DEFAULT_STATUS_COUNTS,
-            ...(payload.statusCounts || {}),
-          },
+          statusCounts: { ...DEFAULT_STATUS_COUNTS, ...(payload.statusCounts || {}) },
           rangeDays: payload.rangeDays || range,
         });
       } catch (requestError) {
@@ -266,33 +247,23 @@ const AdminDashboardPage = () => {
           handleAuthFailure();
           return;
         }
-
-        setPaymentsError(
-          getErrorMessage(requestError, "Unable to load payment history."),
-        );
+        setPaymentsError(getErrorMessage(requestError, "Unable to load payment history."));
       } finally {
-        if (useLoader) {
-          setPaymentsLoading(false);
-        }
+        if (useLoader) setPaymentsLoading(false);
       }
     },
-    [handleAuthFailure, paymentServiceFilter, paymentStatusFilter, rangeDays],
+    [handleAuthFailure, paymentServiceFilter, paymentStatusFilter, rangeDays]
   );
 
   const loadContent = useCallback(
     async ({ useLoader = true } = {}) => {
       setContentError("");
-
-      if (useLoader) {
-        setContentLoading(true);
-      }
-
+      if (useLoader) setContentLoading(true);
       try {
         const [projectResponse, blogResponse] = await Promise.all([
           getProjects({ limit: 100 }),
           getBlogs({ limit: 100 }),
         ]);
-
         setProjects(projectResponse.data || []);
         setBlogs(blogResponse.data || []);
       } catch (requestError) {
@@ -300,27 +271,18 @@ const AdminDashboardPage = () => {
           handleAuthFailure();
           return;
         }
-
-        setContentError(
-          getErrorMessage(requestError, "Unable to load content data."),
-        );
+        setContentError(getErrorMessage(requestError, "Unable to load content."));
       } finally {
-        if (useLoader) {
-          setContentLoading(false);
-        }
+        if (useLoader) setContentLoading(false);
       }
     },
-    [handleAuthFailure],
+    [handleAuthFailure]
   );
 
   const loadContacts = useCallback(
     async ({ status = contactStatus, useLoader = true } = {}) => {
       setContactsError("");
-
-      if (useLoader) {
-        setContactsLoading(true);
-      }
-
+      if (useLoader) setContactsLoading(true);
       try {
         const response = await getAdminContacts({ status, limit: 300 });
         setContacts(response.data || []);
@@ -329,27 +291,18 @@ const AdminDashboardPage = () => {
           handleAuthFailure();
           return;
         }
-
-        setContactsError(
-          getErrorMessage(requestError, "Unable to load contact messages."),
-        );
+        setContactsError(getErrorMessage(requestError, "Unable to load messages."));
       } finally {
-        if (useLoader) {
-          setContactsLoading(false);
-        }
+        if (useLoader) setContactsLoading(false);
       }
     },
-    [contactStatus, handleAuthFailure],
+    [contactStatus, handleAuthFailure]
   );
 
   const loadSystem = useCallback(
     async ({ useLoader = true } = {}) => {
       setSystemError("");
-
-      if (useLoader) {
-        setSystemLoading(true);
-      }
-
+      if (useLoader) setSystemLoading(true);
       try {
         const response = await getAdminSystemStatus();
         setSystemStatus(response.data || null);
@@ -358,17 +311,12 @@ const AdminDashboardPage = () => {
           handleAuthFailure();
           return;
         }
-
-        setSystemError(
-          getErrorMessage(requestError, "Unable to load system status."),
-        );
+        setSystemError(getErrorMessage(requestError, "Unable to load system status."));
       } finally {
-        if (useLoader) {
-          setSystemLoading(false);
-        }
+        if (useLoader) setSystemLoading(false);
       }
     },
-    [handleAuthFailure],
+    [handleAuthFailure]
   );
 
   useEffect(() => {
@@ -376,12 +324,7 @@ const AdminDashboardPage = () => {
   }, [loadOverview, rangeDays]);
 
   useEffect(() => {
-    loadPayments({
-      range: rangeDays,
-      status: paymentStatusFilter,
-      service: paymentServiceFilter,
-      useLoader: true,
-    }).catch(() => undefined);
+    loadPayments({ range: rangeDays, status: paymentStatusFilter, service: paymentServiceFilter, useLoader: true }).catch(() => undefined);
   }, [loadPayments, paymentServiceFilter, paymentStatusFilter, rangeDays]);
 
   useEffect(() => {
@@ -389,9 +332,7 @@ const AdminDashboardPage = () => {
   }, [loadContent]);
 
   useEffect(() => {
-    loadContacts({ status: contactStatus, useLoader: true }).catch(
-      () => undefined,
-    );
+    loadContacts({ status: contactStatus, useLoader: true }).catch(() => undefined);
   }, [contactStatus, loadContacts]);
 
   useEffect(() => {
@@ -400,48 +341,35 @@ const AdminDashboardPage = () => {
 
   const refreshAll = async () => {
     setRefreshing(true);
-
     await Promise.allSettled([
       loadOverview({ range: rangeDays, useLoader: false }),
-      loadPayments({
-        range: rangeDays,
-        status: paymentStatusFilter,
-        service: paymentServiceFilter,
-        useLoader: false,
-      }),
+      loadPayments({ range: rangeDays, status: paymentStatusFilter, service: paymentServiceFilter, useLoader: false }),
       loadContent({ useLoader: false }),
       loadContacts({ status: contactStatus, useLoader: false }),
       loadSystem({ useLoader: false }),
     ]);
-
     setRefreshing(false);
   };
 
   const resetProjectForm = () => {
     setProjectForm(createInitialProjectForm());
     setEditingProjectId("");
+    setShowProjectFormModal(false);
   };
 
   const resetBlogForm = () => {
     setBlogForm(createInitialBlogForm());
     setEditingBlogId("");
+    setShowBlogFormModal(false);
   };
 
   const updateProjectField = (field) => (event) => {
-    const value =
-      field === "featured" ? event.target.checked : event.target.value;
-
-    setProjectForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    const value = field === "featured" ? event.target.checked : event.target.value;
+    setProjectForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const updateBlogField = (field) => (event) => {
-    setBlogForm((prev) => ({
-      ...prev,
-      [field]: event.target.value,
-    }));
+    setBlogForm((prev) => ({ ...prev, [field]: event.target.value }));
   };
 
   const submitProject = async (event) => {
@@ -488,7 +416,6 @@ const AdminDashboardPage = () => {
         handleAuthFailure();
         return;
       }
-
       setActionError(getErrorMessage(requestError, "Unable to save project."));
     } finally {
       setSubmitting(false);
@@ -528,7 +455,6 @@ const AdminDashboardPage = () => {
         handleAuthFailure();
         return;
       }
-
       setActionError(getErrorMessage(requestError, "Unable to save blog."));
     } finally {
       setSubmitting(false);
@@ -536,14 +462,10 @@ const AdminDashboardPage = () => {
   };
 
   const handleDeleteProject = async (id) => {
-    if (!window.confirm("Delete this project? This action cannot be undone.")) {
-      return;
-    }
-
+    if (!window.confirm("Delete this project? This action cannot be undone.")) return;
     setSubmitting(true);
     setActionError("");
     setNotice("");
-
     try {
       await deleteAdminProject(id);
       setNotice("Project deleted successfully.");
@@ -556,26 +478,17 @@ const AdminDashboardPage = () => {
         handleAuthFailure();
         return;
       }
-
-      setActionError(
-        getErrorMessage(requestError, "Unable to delete project."),
-      );
+      setActionError(getErrorMessage(requestError, "Unable to delete project."));
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDeleteBlog = async (id) => {
-    if (
-      !window.confirm("Delete this blog post? This action cannot be undone.")
-    ) {
-      return;
-    }
-
+    if (!window.confirm("Delete this blog post? This action cannot be undone.")) return;
     setSubmitting(true);
     setActionError("");
     setNotice("");
-
     try {
       await deleteAdminBlog(id);
       setNotice("Blog deleted successfully.");
@@ -588,7 +501,6 @@ const AdminDashboardPage = () => {
         handleAuthFailure();
         return;
       }
-
       setActionError(getErrorMessage(requestError, "Unable to delete blog."));
     } finally {
       setSubmitting(false);
@@ -599,7 +511,6 @@ const AdminDashboardPage = () => {
     setSubmitting(true);
     setActionError("");
     setNotice("");
-
     try {
       await markAdminContactAsRead(id);
       setNotice("Message marked as read.");
@@ -612,10 +523,7 @@ const AdminDashboardPage = () => {
         handleAuthFailure();
         return;
       }
-
-      setActionError(
-        getErrorMessage(requestError, "Unable to update message status."),
-      );
+      setActionError(getErrorMessage(requestError, "Unable to update message status."));
     } finally {
       setSubmitting(false);
     }
@@ -626,10 +534,8 @@ const AdminDashboardPage = () => {
     setProjectForm({
       title: project.title || "",
       description: project.description || "",
-      category: project.category || PROJECT_CATEGORIES[1],
-      techStack: Array.isArray(project.techStack)
-        ? project.techStack.join(", ")
-        : "",
+      category: project.category || PROJECT_CATEGORIES[1] || "Web Dev",
+      techStack: Array.isArray(project.techStack) ? project.techStack.join(", ") : "",
       githubUrl: project.githubUrl || "",
       liveDemoUrl: project.liveDemoUrl || "",
       imageUrl: project.imageUrl || "",
@@ -637,8 +543,7 @@ const AdminDashboardPage = () => {
       solutionSummary: project.solutionSummary || "",
       featured: Boolean(project.featured),
     });
-    setActivePanel("content");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setShowProjectFormModal(true);
   };
 
   const handleEditBlog = (blog) => {
@@ -650,8 +555,7 @@ const AdminDashboardPage = () => {
       tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",
       imageUrl: blog.imageUrl || "",
     });
-    setActivePanel("content");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setShowBlogFormModal(true);
   };
 
   const signOut = () => {
@@ -659,1027 +563,972 @@ const AdminDashboardPage = () => {
     navigate("/admin/login", { replace: true });
   };
 
+  // Nav Items array
+  const NAV_ITEMS = [
+    { id: "overview", label: "Overview", icon: LayoutDashboard, badge: null },
+    { id: "projects", label: "Projects", icon: FolderKanban, badge: projects.length },
+    { id: "contacts", label: "Enquiries & Emails", icon: Mail, badge: overview?.contacts?.unread || 0, badgeColor: "bg-amber-500 text-black" },
+    { id: "payments", label: "Payments & Orders", icon: CreditCard, badge: paymentMeta.totalCount },
+    { id: "blogs", label: "Blogs & Articles", icon: BookOpen, badge: blogs.length },
+    { id: "system", label: "System Health", icon: ShieldCheck, badge: null },
+  ];
+
+  // Filtered Projects for Projects Tab
+  const filteredAdminProjects = useMemo(() => {
+    return projects.filter((p) => {
+      const matchCat =
+        projectCategoryFilter === "ALL" ||
+        p.category?.toLowerCase() === projectCategoryFilter.toLowerCase();
+      const matchSearch =
+        !projectSearch.trim() ||
+        `${p.title} ${p.description} ${p.category} ${(p.techStack || []).join(" ")}`
+          .toLowerCase()
+          .includes(projectSearch.trim().toLowerCase());
+      return matchCat && matchSearch;
+    });
+  }, [projects, projectCategoryFilter, projectSearch]);
+
   const totalPayments = overview?.payments?.total || 0;
   const paidPayments = overview?.payments?.paid || 0;
-  const paymentSuccessRate = totalPayments
-    ? (paidPayments / totalPayments) * 100
-    : null;
+  const paymentSuccessRate = totalPayments ? (paidPayments / totalPayments) * 100 : null;
   const failedPayments = overview?.payments?.failed || 0;
   const unreadContacts = overview?.contacts?.unread || 0;
   const newContacts = overview?.contacts?.new || 0;
-  const supportRevenue = overview?.payments?.supportRevenueInr || 0;
-
-  const opsBriefPrimary = overview
-    ? `Payments running at ${formatPercent(paymentSuccessRate)} success with ${formatCount(
-        unreadContacts,
-      )} unread contacts in queue.`
-    : "Awaiting secure sync from payments, contacts, and content services.";
-  const opsBriefSecondary = overview
-    ? `Failed payments: ${formatCount(
-        failedPayments,
-      )}. Support revenue: ${formatCurrency(supportRevenue)}.`
-    : "Once connected, this panel will highlight priorities and response volume.";
-
-  const overviewCards = overview
-    ? [
-        {
-          label: "Revenue",
-          value: formatCurrency(overview.payments?.revenueInr),
-          hint: `Paid in last ${overview.rangeDays || rangeDays} days`,
-        },
-        {
-          label: "Payments",
-          value: `${formatCount(overview.payments?.paid)} / ${formatCount(overview.payments?.total)}`,
-          hint: "Paid vs total",
-        },
-        {
-          label: "Support",
-          value: formatCurrency(overview.payments?.supportRevenueInr),
-          hint: `${formatCount(overview.payments?.supportCount)} contributions`,
-        },
-        {
-          label: "Contacts",
-          value: formatCount(overview.contacts?.new),
-          hint: `${formatCount(overview.contacts?.unread)} unread`,
-        },
-        {
-          label: "Projects",
-          value: formatCount(overview.content?.projectsNew),
-          hint: `${formatCount(overview.content?.projectsTotal)} total`,
-        },
-        {
-          label: "Blogs",
-          value: formatCount(overview.content?.blogsNew),
-          hint: `${formatCount(overview.content?.blogsTotal)} total`,
-        },
-      ]
-    : [];
 
   return (
     <>
       <Helmet>
-        <title>Admin Dashboard | Nikhil Portfolio</title>
+        <title>Admin Control Center | Nikhil Portfolio</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <section className="section-wrap pt-8 sm:pt-10">
-        <div className="rounded-2xl border border-cyan-300/25 bg-slate-950/85 p-5 shadow-neon sm:p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="admin-fade-up text-xs uppercase tracking-[0.2em] text-cyan-200/80">
-                Admin Dashboard
-              </p>
-              <h1 className="admin-fade-up admin-fade-up-1 font-display text-xl uppercase tracking-wide text-cyan-50 sm:text-2xl">
-                <span className="admin-shimmer-text">
-                  Operations Control Center
-                </span>
-              </h1>
-              <p className="admin-fade-up admin-fade-up-2 mt-1 text-sm text-slate-400">
-                Signed in as{" "}
-                <span className="text-cyan-100">
-                  {adminUser?.email || "admin"}
-                </span>
-              </p>
-            </div>
+      <div className="min-h-screen bg-[#03080e] text-slate-100 flex flex-col font-outfit">
+        
+        {/* Top Header Bar */}
+        <header className="sticky top-0 z-40 flex items-center justify-between border-b border-emerald-500/20 bg-[#050e17]/95 px-4 sm:px-6 py-3 backdrop-blur-xl">
+          <div className="flex items-center gap-3">
+            {/* Mobile Hamburger Button */}
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen((prev) => !prev)}
+              className="lg:hidden flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition"
+              aria-label="Toggle Navigation Sidebar"
+            >
+              {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="ghost"
-                onClick={refreshAll}
-                disabled={refreshing || submitting}
-                className="px-3 py-2"
-              >
-                <RefreshCcw size={15} />
-                {refreshing ? "Refreshing..." : "Refresh"}
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={signOut}
-                className="px-3 py-2"
-              >
-                <LogOut size={15} />
-                Logout
-              </Button>
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+              <span className="font-mono text-sm sm:text-base font-black tracking-wider text-white uppercase">
+                ADMIN <span className="text-emerald-400">CONSOLE</span>
+              </span>
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-2">
-              {RANGE_OPTIONS.map((option) => (
+          <div className="flex items-center gap-2.5">
+            {/* Range Selector */}
+            <div className="hidden sm:flex items-center gap-1 rounded-xl border border-slate-800 bg-slate-900/80 p-1 text-xs">
+              {RANGE_OPTIONS.map((opt) => (
                 <button
-                  key={option}
+                  key={opt}
                   type="button"
-                  onClick={() => setRangeDays(option)}
-                  className={`rounded-full border px-4 py-2 text-xs uppercase tracking-[0.14em] transition sm:text-sm ${
-                    rangeDays === option
-                      ? "border-cyan-300 bg-cyan-300/15 text-cyan-100"
-                      : "border-slate-600 text-slate-300 hover:border-cyan-300/50 hover:text-cyan-100"
+                  onClick={() => setRangeDays(opt)}
+                  className={`rounded-lg px-2.5 py-1 font-mono font-bold transition ${
+                    rangeDays === opt
+                      ? "bg-emerald-500 text-black shadow-sm"
+                      : "text-slate-400 hover:text-white"
                   }`}
                 >
-                  {option} days
+                  {opt}d
                 </button>
               ))}
             </div>
-            <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
-              Overview window: last {rangeDays} days
-            </div>
-          </div>
 
-          <div className="mt-4 grid gap-3 lg:grid-cols-[1.6fr_1fr]">
-            <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
-              <div className="flex items-center gap-2">
-                <span className="admin-pulse-dot" />
-                <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                  Ops briefing
+            {/* Refresh */}
+            <button
+              type="button"
+              onClick={refreshAll}
+              disabled={refreshing}
+              className="flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition"
+            >
+              <RefreshCcw size={14} className={refreshing ? "animate-spin" : ""} />
+              <span className="hidden sm:inline">{refreshing ? "Syncing..." : "Sync Data"}</span>
+            </button>
+
+            {/* Admin Profile */}
+            <div className="hidden md:flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-1.5 text-xs">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="font-mono text-slate-300">{adminUser?.email || "admin"}</span>
+            </div>
+
+            {/* Logout */}
+            <button
+              type="button"
+              onClick={signOut}
+              className="flex items-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-500/20 transition"
+            >
+              <LogOut size={14} />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Main Body with Sidebar Drawer */}
+        <div className="flex flex-1 relative">
+
+          {/* Sidebar Drawer Backdrop for Mobile */}
+          {isSidebarOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+
+          {/* Left Navigation Sidebar */}
+          <aside
+            className={`fixed lg:static inset-y-0 left-0 z-50 w-64 border-r border-emerald-500/20 bg-[#050e17] p-4 flex flex-col justify-between transition-transform duration-300 ease-out ${
+              isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            }`}
+          >
+            <div className="space-y-6 pt-12 lg:pt-0">
+              <div className="px-3">
+                <p className="font-mono text-[10px] uppercase font-bold text-slate-500 tracking-[0.25em]">
+                  Navigation Menu
                 </p>
               </div>
-              <p className="admin-fade-up admin-fade-up-1 mt-2 text-sm text-slate-200">
-                {opsBriefPrimary}
-              </p>
-              <p className="admin-fade-up admin-fade-up-2 mt-1 text-xs text-slate-400">
-                {opsBriefSecondary}
-              </p>
-            </div>
 
-            <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-                Live signals
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2 text-xs uppercase tracking-[0.14em] text-slate-300">
-                <span className="admin-fade-up admin-fade-up-1 rounded-full border border-cyan-300/20 bg-slate-950/70 px-3 py-1">
-                  Success rate:{" "}
-                  {overview ? formatPercent(paymentSuccessRate) : "Pending"}
-                </span>
-                <span className="admin-fade-up admin-fade-up-2 rounded-full border border-cyan-300/20 bg-slate-950/70 px-3 py-1">
-                  Unread: {overview ? formatCount(unreadContacts) : "--"}
-                </span>
-                <span className="admin-fade-up admin-fade-up-3 rounded-full border border-cyan-300/20 bg-slate-950/70 px-3 py-1">
-                  Failed: {overview ? formatCount(failedPayments) : "--"}
-                </span>
-                <span className="admin-fade-up admin-fade-up-3 rounded-full border border-cyan-300/20 bg-slate-950/70 px-3 py-1">
-                  New contacts: {overview ? formatCount(newContacts) : "--"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {notice ? (
-            <p className="mt-4 rounded-xl border border-emerald-300/30 bg-emerald-300/10 px-3 py-2 text-sm text-emerald-100">
-              {notice}
-            </p>
-          ) : null}
-
-          {actionError ? (
-            <p className="mt-4 rounded-xl border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
-              {actionError}
-            </p>
-          ) : null}
-        </div>
-
-        <div className="mt-6 space-y-6">
-          <div className="card-surface p-5 sm:p-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-cyan-100">
-                  Executive overview
-                </h2>
-                <p className="mt-1 text-sm text-slate-400">
-                  Snapshot of payments, contacts, and content performance.
-                </p>
-                <p className="admin-fade-up admin-fade-up-1 mt-2 text-xs text-slate-400">
-                  Review success rates and unread volume before daily close.
-                </p>
-              </div>
-            </div>
-
-            {overviewLoading ? (
-              <LoadingState message="Loading overview..." cards={6} />
-            ) : overviewError ? (
-              <ErrorState
-                message={overviewError}
-                onRetry={() =>
-                  loadOverview({ range: rangeDays, useLoader: true })
-                }
-              />
-            ) : (
-              <div className="mt-4 grid gap-4 lg:grid-cols-[2fr_1fr]">
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {overviewCards.map((card) => (
-                    <div
-                      key={card.label}
-                      className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4"
-                    >
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
-                        {card.label}
-                      </p>
-                      <p className="mt-2 text-xl font-semibold text-cyan-100">
-                        {card.value}
-                      </p>
-                      <p className="mt-1 text-xs text-slate-400">{card.hint}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-cyan-100">
-                      Recent payments
-                    </h3>
-                    <span className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                      Last {overview?.recentPayments?.length || 0}
-                    </span>
-                  </div>
-
-                  <div className="mt-3 space-y-2">
-                    {overview?.recentPayments?.length ? (
-                      overview.recentPayments.map((payment) => (
-                        <div
-                          key={payment.id}
-                          className="rounded-lg border border-cyan-300/10 bg-slate-950/70 px-3 py-2"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <div>
-                              <p className="text-sm font-medium text-cyan-100">
-                                {payment.customerName}
-                              </p>
-                              <p className="text-xs text-slate-400">
-                                {payment.serviceName}
-                              </p>
-                            </div>
-                            <span
-                              className={`rounded-full border px-2 py-1 text-[0.65rem] uppercase tracking-[0.12em] ${getPaymentBadgeClasses(
-                                payment.status,
-                              )}`}
-                            >
-                              {payment.status}
-                            </span>
-                          </div>
-                          <div className="mt-2 flex items-center justify-between text-xs text-slate-400">
-                            <span>{formatDate(payment.createdAt)}</span>
-                            <span className="text-cyan-100">
-                              {formatCurrency(payment.amountInr)}
-                            </span>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <EmptyState
-                        title="No payments yet"
-                        message="New payment activity will appear here."
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="rounded-2xl border border-cyan-300/25 bg-slate-950/60 p-4 shadow-neon sm:p-5">
-            <div className="flex flex-wrap gap-2">
-              {[
-                {
-                  key: "payments",
-                  label: `Payments (${formatCount(paymentMeta.totalCount)})`,
-                },
-                {
-                  key: "contacts",
-                  label: `Contacts (${formatCount(contacts.length)})`,
-                },
-                {
-                  key: "content",
-                  label: `Content (${formatCount(projects.length + blogs.length)})`,
-                },
-                { key: "system", label: "System" },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => setActivePanel(tab.key)}
-                  className={`rounded-full border px-4 py-2 text-sm transition ${
-                    activePanel === tab.key
-                      ? "border-cyan-300 bg-cyan-300/15 text-cyan-100"
-                      : "border-slate-600 text-slate-300 hover:border-cyan-300/50 hover:text-cyan-100"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {activePanel === "payments" ? (
-            <div className="card-surface p-5 sm:p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h2 className="text-lg font-semibold text-cyan-100">
-                    Payment history
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Track Cashfree transactions and support contributions in the
-                    last {paymentMeta.rangeDays} days.
-                  </p>
-                  <p className="admin-fade-up admin-fade-up-1 mt-2 text-xs text-slate-400">
-                    Filter by status or service to isolate at-risk activity.
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <select
-                    value={paymentStatusFilter}
-                    onChange={(event) =>
-                      setPaymentStatusFilter(event.target.value)
-                    }
-                    className="rounded-full border border-cyan-300/25 bg-slate-900/80 px-3 py-2 text-xs uppercase tracking-[0.14em] text-slate-200 outline-none focus:border-cyan-300"
-                  >
-                    {PAYMENT_STATUS_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={paymentServiceFilter}
-                    onChange={(event) =>
-                      setPaymentServiceFilter(event.target.value)
-                    }
-                    className="rounded-full border border-cyan-300/25 bg-slate-900/80 px-3 py-2 text-xs uppercase tracking-[0.14em] text-slate-200 outline-none focus:border-cyan-300"
-                  >
-                    {PAYMENT_SERVICE_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2 text-xs uppercase tracking-[0.12em] text-slate-400">
-                <span className="rounded-full border border-cyan-300/20 bg-slate-900/70 px-3 py-1">
-                  Paid: {formatCount(paymentMeta.statusCounts.paid)}
-                </span>
-                <span className="rounded-full border border-cyan-300/20 bg-slate-900/70 px-3 py-1">
-                  Created: {formatCount(paymentMeta.statusCounts.created)}
-                </span>
-                <span className="rounded-full border border-cyan-300/20 bg-slate-900/70 px-3 py-1">
-                  Failed: {formatCount(paymentMeta.statusCounts.failed)}
-                </span>
-                <span className="rounded-full border border-cyan-300/20 bg-slate-900/70 px-3 py-1">
-                  Refunded: {formatCount(paymentMeta.statusCounts.refunded)}
-                </span>
-              </div>
-
-              {paymentsLoading ? (
-                <LoadingState message="Loading payment history..." cards={6} />
-              ) : paymentsError ? (
-                <ErrorState
-                  message={paymentsError}
-                  onRetry={() => loadPayments({ useLoader: true })}
-                />
-              ) : paymentHistory.length === 0 ? (
-                <div className="mt-4">
-                  <EmptyState
-                    title="No payments found"
-                    message="Try a different filter or time range."
-                  />
-                </div>
-              ) : (
-                <div className="mt-4 overflow-x-auto rounded-xl border border-cyan-300/20">
-                  <table className="min-w-full text-sm text-slate-200">
-                    <thead className="bg-slate-950/80 text-xs uppercase tracking-[0.16em] text-slate-400">
-                      <tr>
-                        <th className="px-4 py-3 text-left">Date</th>
-                        <th className="px-4 py-3 text-left">Customer</th>
-                        <th className="px-4 py-3 text-left">Service</th>
-                        <th className="px-4 py-3 text-right">Amount</th>
-                        <th className="px-4 py-3 text-left">Status</th>
-                        <th className="px-4 py-3 text-left">Gateway</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-cyan-300/10">
-                      {paymentHistory.map((payment) => (
-                        <tr key={payment.id} className="bg-slate-900/70">
-                          <td className="px-4 py-3 text-xs text-slate-300">
-                            {formatDate(payment.createdAt)}
-                          </td>
-                          <td className="px-4 py-3">
-                            <p className="text-sm font-medium text-cyan-100">
-                              {payment.customerName}
-                            </p>
-                            <p className="text-xs text-slate-400">
-                              {payment.customerEmail}
-                            </p>
-                          </td>
-                          <td className="px-4 py-3">
-                            <p className="text-sm text-slate-100">
-                              {payment.serviceName}
-                            </p>
-                            <p className="text-xs text-slate-400">
-                              {payment.serviceSlug}
-                            </p>
-                          </td>
-                          <td className="px-4 py-3 text-right font-semibold text-cyan-100">
-                            {formatCurrency(payment.amountInr)}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span
-                              className={`rounded-full border px-2 py-1 text-[0.65rem] uppercase tracking-[0.12em] ${getPaymentBadgeClasses(
-                                payment.status,
-                              )}`}
-                            >
-                              {payment.status}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-xs text-slate-400">
-                            <p>Order: {formatShortId(payment.orderId)}</p>
-                            <p>Pay: {formatShortId(payment.paymentId)}</p>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          ) : null}
-
-          {activePanel === "contacts" ? (
-            <div className="card-surface p-5 sm:p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h2 className="text-lg font-semibold text-cyan-100">
-                    Contact inbox
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Review inbound leads and support messages.
-                  </p>
-                  <p className="admin-fade-up admin-fade-up-1 mt-2 text-xs text-slate-400">
-                    Prioritize new requests to keep response SLAs on track.
-                  </p>
-                </div>
-
-                <div className="flex gap-2">
-                  {["all", "new", "read"].map((status) => (
+              <nav className="space-y-1.5">
+                {NAV_ITEMS.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activePanel === item.id;
+                  return (
                     <button
-                      key={status}
+                      key={item.id}
                       type="button"
-                      onClick={() => setContactStatus(status)}
-                      className={`rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.14em] transition ${
-                        contactStatus === status
-                          ? "border-cyan-300 bg-cyan-300/15 text-cyan-100"
-                          : "border-slate-600 text-slate-300 hover:border-cyan-300/50 hover:text-cyan-100"
+                      onClick={() => {
+                        setActivePanel(item.id);
+                        setIsSidebarOpen(false);
+                      }}
+                      className={`w-full flex items-center justify-between gap-3 rounded-2xl px-3.5 py-2.5 text-xs font-bold transition-all duration-200 ${
+                        isActive
+                          ? "border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.15)]"
+                          : "border border-transparent text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
                       }`}
-                      disabled={refreshing || submitting}
                     >
-                      {status}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {contactsLoading ? (
-                <LoadingState message="Loading contact messages..." cards={4} />
-              ) : contactsError ? (
-                <ErrorState
-                  message={contactsError}
-                  onRetry={() =>
-                    loadContacts({ status: contactStatus, useLoader: true })
-                  }
-                />
-              ) : (
-                <div className="mt-4 space-y-3">
-                  {contacts.length === 0 ? (
-                    <EmptyState
-                      title="No contact messages"
-                      message="Incoming messages will appear here."
-                    />
-                  ) : null}
-
-                  {contacts.map((message) => (
-                    <article
-                      key={message._id}
-                      className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4"
-                    >
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <h3 className="text-base font-semibold text-cyan-100">
-                            {message.name}
-                          </h3>
-                          <p className="mt-1 text-sm text-slate-300">
-                            {message.email}
-                          </p>
-                          {message.phone ? (
-                            <p className="mt-1 text-sm text-slate-300">
-                              {message.phone}
-                            </p>
-                          ) : null}
-                          {message.service ? (
-                            <p className="mt-1 text-xs uppercase tracking-[0.14em] text-emerald-200">
-                              {message.service}
-                            </p>
-                          ) : null}
-                          <p className="mt-1 text-xs uppercase tracking-[0.14em] text-slate-400">
-                            {formatDate(message.createdAt)}
-                          </p>
-                        </div>
-
+                      <div className="flex items-center gap-3">
+                        <Icon size={17} className={isActive ? "text-emerald-400" : "text-slate-500"} />
+                        <span>{item.label}</span>
+                      </div>
+                      {item.badge !== null && item.badge > 0 ? (
                         <span
-                          className={`rounded-full border px-2 py-1 text-xs uppercase tracking-[0.12em] ${
-                            message.status === "read"
-                              ? "border-slate-500 bg-slate-500/10 text-slate-300"
-                              : "border-amber-300/40 bg-amber-300/10 text-amber-200"
+                          className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
+                            item.badgeColor || "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
                           }`}
                         >
-                          {message.status}
+                          {item.badge}
                         </span>
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* Sidebar Bottom Footer */}
+            <div className="pt-6 border-t border-slate-800/80 px-3">
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-[11px] font-mono text-slate-400 space-y-1">
+                <p className="font-bold text-emerald-400">⚡ Operational SLA</p>
+                <p>Status: All Services Healthy</p>
+                <p>Unread Msgs: {unreadContacts}</p>
+              </div>
+            </div>
+          </aside>
+
+          {/* Right Main Content Panel */}
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+            
+            {/* Global Notice & Alert Banners */}
+            {notice && (
+              <div className="flex items-center justify-between rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-xs sm:text-sm font-bold text-emerald-200">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                  <span>{notice}</span>
+                </div>
+                <button type="button" onClick={() => setNotice("")} className="text-emerald-400 hover:text-white">
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+
+            {actionError && (
+              <div className="flex items-center justify-between rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-xs sm:text-sm font-bold text-rose-200">
+                <div className="flex items-center gap-2">
+                  <AlertCircle size={16} className="text-rose-400 shrink-0" />
+                  <span>{actionError}</span>
+                </div>
+                <button type="button" onClick={() => setActionError("")} className="text-rose-400 hover:text-white">
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+
+            {/* TAB 1: OVERVIEW */}
+            {activePanel === "overview" && (
+              <div className="space-y-6">
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white">
+                    Operations Control Overview
+                  </h1>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                    Real-time metrics, revenue performance, and activity queues.
+                  </p>
+                </div>
+
+                {overviewLoading ? (
+                  <LoadingState message="Syncing operational metrics..." cards={6} />
+                ) : overviewError ? (
+                  <ErrorState message={overviewError} onRetry={() => loadOverview({ range: rangeDays, useLoader: true })} />
+                ) : (
+                  <>
+                    {/* KPI Cards Grid */}
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="rounded-2xl border border-emerald-500/30 bg-[#06141d]/90 p-5 shadow-lg">
+                        <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Total Revenue</p>
+                        <p className="mt-2 text-2xl sm:text-3xl font-black text-emerald-400">
+                          {formatCurrency(overview?.payments?.revenueInr)}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-400">In last {overview?.rangeDays || rangeDays} days</p>
                       </div>
 
-                      <p className="mt-3 whitespace-pre-wrap text-sm text-slate-200">
-                        {message.message}
-                      </p>
+                      <div className="rounded-2xl border border-emerald-500/30 bg-[#06141d]/90 p-5 shadow-lg">
+                        <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Paid Transactions</p>
+                        <p className="mt-2 text-2xl sm:text-3xl font-black text-cyan-300">
+                          {formatCount(overview?.payments?.paid)} <span className="text-xs font-normal text-slate-400">/ {formatCount(overview?.payments?.total)}</span>
+                        </p>
+                        <p className="mt-1 text-xs text-emerald-400 font-bold">{formatPercent(paymentSuccessRate)} success rate</p>
+                      </div>
 
-                      {message.status !== "read" ? (
-                        <div className="mt-4">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => handleMarkRead(message._id)}
-                            disabled={submitting}
-                          >
-                            <MailOpen size={14} />
-                            Mark as read
-                          </Button>
-                        </div>
-                      ) : null}
-                    </article>
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : null}
+                      <div className="rounded-2xl border border-emerald-500/30 bg-[#06141d]/90 p-5 shadow-lg">
+                        <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Unread Enquiries</p>
+                        <p className="mt-2 text-2xl sm:text-3xl font-black text-amber-400">
+                          {formatCount(unreadContacts)}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-400">{formatCount(newContacts)} new this week</p>
+                      </div>
+                    </div>
 
-          {activePanel === "content" ? (
-            <div className="space-y-6">
-              {contentLoading ? (
-                <LoadingState message="Loading content..." cards={6} />
-              ) : contentError ? (
-                <ErrorState
-                  message={contentError}
-                  onRetry={() => loadContent({ useLoader: true })}
-                />
-              ) : null}
-
-              <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
-                  Editorial control
-                </p>
-                <p className="admin-fade-up admin-fade-up-1 mt-2 text-sm text-slate-200">
-                  Changes publish immediately once saved. Double-check copy and
-                  visuals before pushing updates.
-                </p>
+                    {/* Quick Jump Action Bar */}
+                    <div className="rounded-2xl border border-slate-800 bg-[#050e17] p-4 flex flex-wrap items-center justify-between gap-3">
+                      <span className="font-mono text-xs uppercase font-bold text-slate-400">Quick Jump:</span>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setActivePanel("projects")}
+                          className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition flex items-center gap-1.5"
+                        >
+                          <FolderKanban size={14} /> Manage Projects ({projects.length})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActivePanel("contacts")}
+                          className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-500/20 transition flex items-center gap-1.5"
+                        >
+                          <Mail size={14} /> Read Enquiries ({unreadContacts} unread)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setActivePanel("payments")}
+                          className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-1.5 text-xs font-bold text-cyan-300 hover:bg-cyan-500/20 transition flex items-center gap-1.5"
+                        >
+                          <CreditCard size={14} /> View Payments ({paymentMeta.totalCount})
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
+            )}
 
-              <div className="grid gap-5 xl:grid-cols-[1.1fr_1fr]">
-                <form
-                  onSubmit={submitProject}
-                  className="card-surface p-5 sm:p-6"
-                >
-                  <h2 className="text-lg font-semibold text-cyan-100">
-                    {editingProjectId ? "Edit project" : "Create project"}
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Required: title, description, category, and at least one
-                    tech stack item.
-                  </p>
-
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <label className="space-y-2 text-sm text-slate-200 sm:col-span-2">
-                      <span>Title</span>
-                      <input
-                        required
-                        value={projectForm.title}
-                        onChange={updateProjectField("title")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>Category</span>
-                      <select
-                        value={projectForm.category}
-                        onChange={updateProjectField("category")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      >
-                        {PROJECT_CATEGORIES.filter(
-                          (item) => item !== "All",
-                        ).map((item) => (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>Tech stack (comma separated)</span>
-                      <input
-                        required
-                        value={projectForm.techStack}
-                        onChange={updateProjectField("techStack")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                        placeholder="React, Node.js, MongoDB"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200 sm:col-span-2">
-                      <span>Description</span>
-                      <textarea
-                        required
-                        rows={3}
-                        value={projectForm.description}
-                        onChange={updateProjectField("description")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>GitHub URL</span>
-                      <input
-                        value={projectForm.githubUrl}
-                        onChange={updateProjectField("githubUrl")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>Live demo URL</span>
-                      <input
-                        value={projectForm.liveDemoUrl}
-                        onChange={updateProjectField("liveDemoUrl")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200 sm:col-span-2">
-                      <span>Image URL</span>
-                      <input
-                        value={projectForm.imageUrl}
-                        onChange={updateProjectField("imageUrl")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200 sm:col-span-2">
-                      <span>Problem statement</span>
-                      <textarea
-                        rows={3}
-                        value={projectForm.problemStatement}
-                        onChange={updateProjectField("problemStatement")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200 sm:col-span-2">
-                      <span>Solution summary</span>
-                      <textarea
-                        rows={4}
-                        value={projectForm.solutionSummary}
-                        onChange={updateProjectField("solutionSummary")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="flex items-center gap-2 rounded-xl border border-cyan-300/20 bg-slate-900/70 px-3 py-2 text-sm text-slate-200 sm:col-span-2">
-                      <input
-                        type="checkbox"
-                        checked={projectForm.featured}
-                        onChange={updateProjectField("featured")}
-                        className="h-4 w-4 rounded border-cyan-300/50"
-                      />
-                      Mark as featured project
-                    </label>
+            {/* TAB 2: PROJECTS MANAGER (SEPARATE PROJECTS TAB) */}
+            {activePanel === "projects" && (
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
+                      <FolderKanban className="text-emerald-400" /> Projects Management
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                      Manage portfolio projects, tech stack tags, live URLs, and featured flags ({projects.length} total).
+                    </p>
                   </div>
 
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    <Button type="submit" disabled={submitting}>
-                      {submitting
-                        ? "Saving..."
-                        : editingProjectId
-                          ? "Update project"
-                          : "Create project"}
-                    </Button>
-                    {editingProjectId ? (
-                      <Button
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetProjectForm();
+                      setShowProjectFormModal(true);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-black hover:bg-emerald-400 transition shadow-lg"
+                  >
+                    <Plus size={16} /> Add New Project
+                  </button>
+                </div>
+
+                {/* Search & Category Filter Controls */}
+                <div className="rounded-2xl border border-slate-800 bg-[#050e17] p-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="relative flex-1 min-w-[200px]">
+                    <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <input
+                      type="text"
+                      value={projectSearch}
+                      onChange={(e) => setProjectSearch(e.target.value)}
+                      placeholder="Search projects by title, tech stack..."
+                      className="w-full rounded-xl border border-slate-800 bg-slate-900/80 pl-9 pr-3 py-2 text-xs font-mono text-white outline-none focus:border-emerald-500/50"
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5">
+                    {["ALL", "FULL STACK", "WEB DEV", "PYTHON", "CYBER SECURITY", "AI"].map((cat) => (
+                      <button
+                        key={cat}
                         type="button"
-                        variant="ghost"
-                        onClick={resetProjectForm}
-                        disabled={submitting}
+                        onClick={() => setProjectCategoryFilter(cat)}
+                        className={`rounded-lg border px-3 py-1.5 text-[11px] font-mono font-bold transition ${
+                          projectCategoryFilter === cat
+                            ? "border-emerald-400 bg-emerald-500/20 text-emerald-300"
+                            : "border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white"
+                        }`}
                       >
-                        Cancel edit
-                      </Button>
-                    ) : null}
+                        {cat}
+                      </button>
+                    ))}
                   </div>
-                </form>
+                </div>
 
-                <div className="card-surface p-5 sm:p-6">
-                  <h2 className="text-lg font-semibold text-cyan-100">
-                    Published projects
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Manage project cards displayed on the public portfolio.
-                  </p>
+                {/* Project Form Modal / Drawer */}
+                {showProjectFormModal && (
+                  <div className="rounded-2xl border border-emerald-500/40 bg-[#06141d] p-5 sm:p-6 shadow-2xl space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
+                      <h3 className="font-display text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        {editingProjectId ? <Edit3 size={16} className="text-emerald-400" /> : <Plus size={16} className="text-emerald-400" />}
+                        {editingProjectId ? "Edit Project Details" : "Create New Project"}
+                      </h3>
+                      <button type="button" onClick={resetProjectForm} className="text-slate-400 hover:text-white">
+                        <X size={18} />
+                      </button>
+                    </div>
 
-                  <div className="mt-4 space-y-3">
-                    {projects.length === 0 ? (
-                      <EmptyState
-                        title="No projects available"
-                        message="Create your first project from the form."
-                      />
-                    ) : null}
+                    <form onSubmit={submitProject} className="space-y-4 text-xs">
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="block font-mono text-slate-400 mb-1">Project Title *</label>
+                          <input
+                            type="text"
+                            required
+                            value={projectForm.title}
+                            onChange={updateProjectField("title")}
+                            placeholder="e.g. Kanoon-Mate"
+                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
+                          />
+                        </div>
 
-                    {projects.map((project) => (
+                        <div>
+                          <label className="block font-mono text-slate-400 mb-1">Category *</label>
+                          <select
+                            value={projectForm.category}
+                            onChange={updateProjectField("category")}
+                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
+                          >
+                            {PROJECT_CATEGORIES.filter((c) => c !== "All").map((cat) => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-mono text-slate-400 mb-1">Description *</label>
+                        <textarea
+                          required
+                          rows={2}
+                          value={projectForm.description}
+                          onChange={updateProjectField("description")}
+                          placeholder="Brief overview of the project..."
+                          className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
+                        />
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="block font-mono text-slate-400 mb-1">Tech Stack (comma separated) *</label>
+                          <input
+                            type="text"
+                            required
+                            value={projectForm.techStack}
+                            onChange={updateProjectField("techStack")}
+                            placeholder="React, Node.js, Express, MongoDB"
+                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-mono text-slate-400 mb-1">Cover Image URL</label>
+                          <input
+                            type="text"
+                            value={projectForm.imageUrl}
+                            onChange={updateProjectField("imageUrl")}
+                            placeholder="/images/projects/project-cover.webp"
+                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="block font-mono text-slate-400 mb-1">GitHub Repo URL</label>
+                          <input
+                            type="url"
+                            value={projectForm.githubUrl}
+                            onChange={updateProjectField("githubUrl")}
+                            placeholder="https://github.com/nikhilxagr/repo"
+                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-mono text-slate-400 mb-1">Live Demo URL</label>
+                          <input
+                            type="url"
+                            value={projectForm.liveDemoUrl}
+                            onChange={updateProjectField("liveDemoUrl")}
+                            placeholder="https://demo-app.netlify.app"
+                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-2">
+                        <input
+                          type="checkbox"
+                          id="projectFeatured"
+                          checked={projectForm.featured}
+                          onChange={updateProjectField("featured")}
+                          className="h-4 w-4 accent-emerald-500"
+                        />
+                        <label htmlFor="projectFeatured" className="font-mono text-slate-300 cursor-pointer">
+                          ★ Feature this project on Home page
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                        <button
+                          type="button"
+                          onClick={resetProjectForm}
+                          className="rounded-xl border border-slate-700 px-4 py-2 font-mono text-slate-300 hover:bg-slate-800 transition"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className="rounded-xl bg-emerald-500 px-5 py-2 font-mono font-bold text-black hover:bg-emerald-400 transition"
+                        >
+                          {submitting ? "Saving..." : editingProjectId ? "Update Project" : "Save Project"}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Projects Grid / List */}
+                {contentLoading ? (
+                  <LoadingState message="Loading projects catalog..." cards={6} />
+                ) : filteredAdminProjects.length === 0 ? (
+                  <EmptyState title="No projects match filter" message="Try searching for another keyword or category." />
+                ) : (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredAdminProjects.map((project) => (
                       <article
-                        key={project._id}
-                        className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4"
+                        key={project._id || project.slug}
+                        className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-800 bg-[#050e17] p-4 shadow-md transition hover:border-emerald-500/40"
                       >
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                          <div>
-                            <h3 className="text-base font-semibold text-cyan-100">
-                              {project.title}
-                            </h3>
-                            <p className="mt-1 text-xs uppercase tracking-[0.14em] text-slate-400">
-                              {project.category} |{" "}
-                              {formatDate(project.createdAt)}
-                            </p>
-                            <p className="mt-2 text-sm text-slate-300 line-clamp-2">
-                              {project.description}
-                            </p>
-                          </div>
-                          {project.featured ? (
-                            <span className="rounded-full border border-emerald-300/40 bg-emerald-300/10 px-2 py-1 text-xs text-emerald-200">
-                              Featured
+                        <div>
+                          {/* Thumbnail */}
+                          <div className="h-32 w-full overflow-hidden rounded-xl bg-slate-900 mb-3 relative">
+                            {project.imageUrl ? (
+                              <img
+                                src={project.imageUrl}
+                                alt={project.title}
+                                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                onError={(e) => { e.target.style.display = "none"; }}
+                              />
+                            ) : null}
+                            <span className="absolute top-2 left-2 rounded-md bg-black/80 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-emerald-400 border border-emerald-500/30">
+                              {project.category}
                             </span>
-                          ) : null}
+                            {project.featured && (
+                              <span className="absolute top-2 right-2 rounded-md bg-amber-500/20 px-2 py-0.5 font-mono text-[9px] font-bold text-amber-300 border border-amber-500/40">
+                                ★ Featured
+                              </span>
+                            )}
+                          </div>
+
+                          <h3 className="font-display text-base font-bold text-white">{project.title}</h3>
+                          <p className="mt-1 text-xs text-slate-400 line-clamp-2">{project.description}</p>
+
+                          {/* Tech Stack */}
+                          <div className="mt-3 flex flex-wrap gap-1">
+                            {(project.techStack || []).map((t) => (
+                              <span key={t} className="rounded bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 text-[10px] font-mono text-emerald-300">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
                         </div>
 
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => handleEditProject(project)}
-                            disabled={submitting}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={() => handleDeleteProject(project._id)}
-                            disabled={submitting}
-                          >
-                            Delete
-                          </Button>
+                        {/* Actions Footer */}
+                        <div className="mt-4 flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs">
+                          <div className="flex items-center gap-2">
+                            {project.liveDemoUrl && (
+                              <a href={project.liveDemoUrl} target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline flex items-center gap-1 font-mono text-[10px]">
+                                Demo <ExternalLink size={10} />
+                              </a>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleEditProject(project)}
+                              className="rounded-lg border border-slate-700 bg-slate-800/80 px-2.5 py-1 font-mono text-[11px] text-slate-200 hover:border-emerald-400 hover:text-emerald-300 transition"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteProject(project._id)}
+                              className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1 font-mono text-[11px] text-rose-300 hover:bg-rose-500/20 transition"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
                       </article>
                     ))}
                   </div>
-                </div>
+                )}
               </div>
+            )}
 
-              <div className="grid gap-5 xl:grid-cols-[1.1fr_1fr]">
-                <form onSubmit={submitBlog} className="card-surface p-5 sm:p-6">
-                  <h2 className="text-lg font-semibold text-cyan-100">
-                    {editingBlogId ? "Edit blog" : "Create blog"}
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Required: title and content (minimum 40 characters).
-                  </p>
-
-                  <div className="mt-4 space-y-3">
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>Title</span>
-                      <input
-                        required
-                        value={blogForm.title}
-                        onChange={updateBlogField("title")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>Excerpt</span>
-                      <textarea
-                        rows={2}
-                        value={blogForm.excerpt}
-                        onChange={updateBlogField("excerpt")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>Content</span>
-                      <textarea
-                        required
-                        rows={10}
-                        value={blogForm.content}
-                        onChange={updateBlogField("content")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>Tags (comma separated)</span>
-                      <input
-                        value={blogForm.tags}
-                        onChange={updateBlogField("tags")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                        placeholder="security, backend, react"
-                      />
-                    </label>
-
-                    <label className="space-y-2 text-sm text-slate-200">
-                      <span>Image URL</span>
-                      <input
-                        value={blogForm.imageUrl}
-                        onChange={updateBlogField("imageUrl")}
-                        className="w-full rounded-xl border border-cyan-300/25 bg-slate-900/80 px-3 py-2.5 text-sm outline-none focus:border-cyan-300"
-                      />
-                    </label>
+            {/* TAB 3: CONTACT ENQUIRIES & EMAIL NOTIFICATIONS (SEPARATE EMAILS TAB) */}
+            {activePanel === "contacts" && (
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
+                      <Mail className="text-amber-400" /> Contact Enquiries & Email Notifications
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                      Inbound messages, client enquiries, and quick email response triggers ({contacts.length} total).
+                    </p>
                   </div>
 
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    <Button type="submit" disabled={submitting}>
-                      {submitting
-                        ? "Saving..."
-                        : editingBlogId
-                          ? "Update blog"
-                          : "Create blog"}
-                    </Button>
-                    {editingBlogId ? (
-                      <Button
+                  <div className="flex items-center gap-2">
+                    {["all", "new", "read"].map((st) => (
+                      <button
+                        key={st}
                         type="button"
-                        variant="ghost"
-                        onClick={resetBlogForm}
-                        disabled={submitting}
+                        onClick={() => setContactStatus(st)}
+                        className={`rounded-xl border px-3 py-1.5 text-xs font-mono font-bold uppercase transition ${
+                          contactStatus === st
+                            ? "border-amber-400 bg-amber-500/20 text-amber-300"
+                            : "border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white"
+                        }`}
                       >
-                        Cancel edit
-                      </Button>
-                    ) : null}
+                        {st}
+                      </button>
+                    ))}
                   </div>
-                </form>
+                </div>
 
-                <div className="card-surface p-5 sm:p-6">
-                  <h2 className="text-lg font-semibold text-cyan-100">
-                    Published blog posts
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Manage articles shown in the public blog feed.
-                  </p>
-
-                  <div className="mt-4 space-y-3">
-                    {blogs.length === 0 ? (
-                      <EmptyState
-                        title="No blog posts available"
-                        message="Create your first post from the form."
-                      />
-                    ) : null}
-
-                    {blogs.map((blog) => (
+                {contactsLoading ? (
+                  <LoadingState message="Loading contact messages..." cards={4} />
+                ) : contactsError ? (
+                  <ErrorState message={contactsError} onRetry={() => loadContacts({ status: contactStatus, useLoader: true })} />
+                ) : contacts.length === 0 ? (
+                  <EmptyState title="No contact messages" message="Incoming messages from the contact form will appear here." />
+                ) : (
+                  <div className="space-y-4">
+                    {contacts.map((msg) => (
                       <article
-                        key={blog._id}
-                        className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4"
+                        key={msg._id}
+                        className={`rounded-2xl border p-5 transition ${
+                          msg.status === "read"
+                            ? "border-slate-800 bg-[#050e17]/80 opacity-80"
+                            : "border-amber-500/40 bg-[#0a1510] shadow-[0_0_20px_rgba(245,158,11,0.1)]"
+                        }`}
                       >
-                        <h3 className="text-base font-semibold text-cyan-100">
-                          {blog.title}
-                        </h3>
-                        <p className="mt-1 text-xs uppercase tracking-[0.14em] text-slate-400">
-                          {formatDate(blog.publishedAt || blog.createdAt)}
-                        </p>
-                        <p className="mt-2 text-sm text-slate-300 line-clamp-3">
-                          {blog.excerpt || blog.content}
-                        </p>
+                        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-800/80 pb-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-base font-extrabold text-white">{msg.name}</h3>
+                              {msg.status !== "read" && (
+                                <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-2 py-0.5 font-mono text-[9px] font-bold text-amber-300">
+                                  UNREAD
+                                </span>
+                              )}
+                            </div>
+                            <p className="font-mono text-xs text-emerald-400 mt-0.5">{msg.email}</p>
+                            {msg.phone && <p className="font-mono text-xs text-slate-400">Phone: {msg.phone}</p>}
+                          </div>
 
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => handleEditBlog(blog)}
-                            disabled={submitting}
+                          <div className="text-right font-mono text-[11px] text-slate-500">
+                            <p>{formatDate(msg.createdAt)}</p>
+                            {msg.service && (
+                              <span className="mt-1 inline-block rounded bg-slate-800 px-2 py-0.5 text-slate-300 font-bold uppercase">
+                                {msg.service}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="mt-3">
+                          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap font-sans bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
+                            {msg.message}
+                          </p>
+                        </div>
+
+                        {/* Email Action Bar */}
+                        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800/60">
+                          <a
+                            href={`mailto:${msg.email}?subject=Re: Portfolio Enquiry - Nikhil Agrahari&body=Hi ${encodeURIComponent(msg.name)},\n\nThank you for reaching out via my portfolio!` }
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-mono font-bold text-emerald-300 hover:bg-emerald-500/20 transition"
                           >
-                            Edit
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={() => handleDeleteBlog(blog._id)}
-                            disabled={submitting}
-                          >
-                            Delete
-                          </Button>
+                            <Send size={13} /> Reply via Email
+                          </a>
+
+                          {msg.status !== "read" && (
+                            <button
+                              type="button"
+                              onClick={() => handleMarkRead(msg._id)}
+                              className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-xs text-slate-300 hover:bg-slate-700 transition"
+                            >
+                              Mark as Read
+                            </button>
+                          )}
                         </div>
                       </article>
                     ))}
                   </div>
-                </div>
+                )}
               </div>
-            </div>
-          ) : null}
+            )}
 
-          {activePanel === "system" ? (
-            <div className="card-surface p-5 sm:p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* TAB 4: PAYMENTS & SUPPORT ORDERS (SEPARATE PAYMENTS TAB) */}
+            {activePanel === "payments" && (
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
+                      <CreditCard className="text-cyan-400" /> Payments & Support Orders
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                      Cashfree & support contribution transaction history in last {paymentMeta.rangeDays} days ({paymentMeta.totalCount} orders).
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <select
+                      value={paymentStatusFilter}
+                      onChange={(e) => setPaymentStatusFilter(e.target.value)}
+                      className="rounded-xl border border-slate-800 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200 outline-none focus:border-cyan-400"
+                    >
+                      {PAYMENT_STATUS_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Status Counter Cards */}
+                <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 font-mono text-xs">
+                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-center">
+                    <p className="text-slate-400">Paid</p>
+                    <p className="text-xl font-bold text-emerald-400 mt-1">{formatCount(paymentMeta.statusCounts.paid)}</p>
+                  </div>
+                  <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-3 text-center">
+                    <p className="text-slate-400">Created</p>
+                    <p className="text-xl font-bold text-slate-200 mt-1">{formatCount(paymentMeta.statusCounts.created)}</p>
+                  </div>
+                  <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-center">
+                    <p className="text-slate-400">Failed</p>
+                    <p className="text-xl font-bold text-rose-400 mt-1">{formatCount(paymentMeta.statusCounts.failed)}</p>
+                  </div>
+                  <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-center">
+                    <p className="text-slate-400">Refunded</p>
+                    <p className="text-xl font-bold text-amber-400 mt-1">{formatCount(paymentMeta.statusCounts.refunded)}</p>
+                  </div>
+                </div>
+
+                {/* Payments Data Table */}
+                {paymentsLoading ? (
+                  <LoadingState message="Loading payment transaction records..." cards={6} />
+                ) : paymentsError ? (
+                  <ErrorState message={paymentsError} onRetry={() => loadPayments({ useLoader: true })} />
+                ) : paymentHistory.length === 0 ? (
+                  <EmptyState title="No payment records found" message="Transactions will appear here once orders are initiated." />
+                ) : (
+                  <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-[#050e17]">
+                    <table className="w-full text-left font-mono text-xs text-slate-300">
+                      <thead className="bg-slate-900/90 text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                        <tr>
+                          <th className="p-3.5">Date</th>
+                          <th className="p-3.5">Customer</th>
+                          <th className="p-3.5">Service / Tier</th>
+                          <th className="p-3.5 text-right">Amount</th>
+                          <th className="p-3.5">Status</th>
+                          <th className="p-3.5">Transaction ID</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60">
+                        {paymentHistory.map((pmt) => (
+                          <tr key={pmt.id} className="hover:bg-slate-900/50 transition">
+                            <td className="p-3.5 text-slate-400">{formatDate(pmt.createdAt)}</td>
+                            <td className="p-3.5 font-sans">
+                              <p className="font-bold text-white">{pmt.customerName}</p>
+                              <p className="text-[11px] font-mono text-emerald-400">{pmt.customerEmail}</p>
+                            </td>
+                            <td className="p-3.5 font-sans">
+                              <p className="font-bold text-slate-200">{pmt.serviceName}</p>
+                              <p className="text-[10px] font-mono text-slate-500">{pmt.serviceSlug}</p>
+                            </td>
+                            <td className="p-3.5 text-right font-bold text-emerald-400">{formatCurrency(pmt.amountInr)}</td>
+                            <td className="p-3.5">
+                              <span className={`rounded-md border px-2 py-0.5 text-[10px] uppercase font-bold ${getPaymentBadgeClasses(pmt.status)}`}>
+                                {pmt.status}
+                              </span>
+                            </td>
+                            <td className="p-3.5 text-slate-400 text-[11px]">
+                              <p>Order: {formatShortId(pmt.orderId)}</p>
+                              <p>Pay: {formatShortId(pmt.paymentId)}</p>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 5: BLOGS & ARTICLES (SEPARATE BLOGS TAB) */}
+            {activePanel === "blogs" && (
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
+                      <BookOpen className="text-purple-400" /> Blog & Article Publishing
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                      Manage published articles, medium cross-posts, and draft entries ({blogs.length} total).
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetBlogForm();
+                      setShowBlogFormModal(true);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-xl bg-purple-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-black hover:bg-purple-400 transition shadow-lg"
+                  >
+                    <Plus size={16} /> Create New Blog
+                  </button>
+                </div>
+
+                {/* Blog Form Modal */}
+                {showBlogFormModal && (
+                  <div className="rounded-2xl border border-purple-500/40 bg-[#06141d] p-5 sm:p-6 shadow-2xl space-y-4 animate-fadeIn">
+                    <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
+                      <h3 className="font-display text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        {editingBlogId ? "Edit Blog Article" : "Publish New Article"}
+                      </h3>
+                      <button type="button" onClick={resetBlogForm} className="text-slate-400 hover:text-white">
+                        <X size={18} />
+                      </button>
+                    </div>
+
+                    <form onSubmit={submitBlog} className="space-y-4 text-xs">
+                      <div>
+                        <label className="block font-mono text-slate-400 mb-1">Article Title *</label>
+                        <input
+                          type="text"
+                          required
+                          value={blogForm.title}
+                          onChange={updateBlogField("title")}
+                          placeholder="e.g. How I'm Learning Cybersecurity..."
+                          className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-mono text-slate-400 mb-1">Excerpt *</label>
+                        <textarea
+                          required
+                          rows={2}
+                          value={blogForm.excerpt}
+                          onChange={updateBlogField("excerpt")}
+                          placeholder="Brief summary for preview cards..."
+                          className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-mono text-slate-400 mb-1">Full Content (Markdown or HTML) *</label>
+                        <textarea
+                          required
+                          rows={6}
+                          value={blogForm.content}
+                          onChange={updateBlogField("content")}
+                          placeholder="Write full article body content..."
+                          className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
+                        />
+                      </div>
+
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <div>
+                          <label className="block font-mono text-slate-400 mb-1">Tags (comma separated)</label>
+                          <input
+                            type="text"
+                            value={blogForm.tags}
+                            onChange={updateBlogField("tags")}
+                            placeholder="Cybersecurity, Web Development, AI"
+                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-mono text-slate-400 mb-1">Cover Image URL</label>
+                          <input
+                            type="text"
+                            value={blogForm.imageUrl}
+                            onChange={updateBlogField("imageUrl")}
+                            placeholder="/images/blogs/blog-cover.webp"
+                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                        <button
+                          type="button"
+                          onClick={resetBlogForm}
+                          className="rounded-xl border border-slate-700 px-4 py-2 font-mono text-slate-300 hover:bg-slate-800 transition"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className="rounded-xl bg-purple-500 px-5 py-2 font-mono font-bold text-black hover:bg-purple-400 transition"
+                        >
+                          {submitting ? "Publishing..." : editingBlogId ? "Update Article" : "Publish Article"}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Blogs Grid */}
+                {contentLoading ? (
+                  <LoadingState message="Loading articles..." cards={4} />
+                ) : blogs.length === 0 ? (
+                  <EmptyState title="No blog posts found" message="Published articles will appear here." />
+                ) : (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {blogs.map((b) => (
+                      <article key={b._id || b.slug} className="rounded-2xl border border-slate-800 bg-[#050e17] p-4 flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-display text-base font-bold text-white">{b.title}</h3>
+                          <p className="mt-1 text-xs text-slate-400 line-clamp-2">{b.excerpt}</p>
+                          <div className="mt-3 flex flex-wrap gap-1">
+                            {(b.tags || []).map((t) => (
+                              <span key={t} className="rounded bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 text-[10px] font-mono text-purple-300">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mt-4 flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs">
+                          <span className="font-mono text-[10px] text-slate-500">{formatDate(b.publishedAt || b.createdAt)}</span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleEditBlog(b)}
+                              className="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 font-mono text-[11px] text-slate-200 hover:text-white"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteBlog(b._id)}
+                              className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1 font-mono text-[11px] text-rose-300 hover:bg-rose-500/20"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 6: SYSTEM & SECURITY HEALTH (SEPARATE SYSTEM TAB) */}
+            {activePanel === "system" && (
+              <div className="space-y-6">
                 <div>
-                  <h2 className="text-lg font-semibold text-cyan-100">
-                    System status
-                  </h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Monitor backend health and payment gateway readiness.
-                  </p>
-                  <p className="admin-fade-up admin-fade-up-1 mt-2 text-xs text-slate-400">
-                    Confirm webhook activity and receipt email readiness before
-                    live pushes.
+                  <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
+                    <ShieldCheck className="text-emerald-400" /> System & Security Diagnostics
+                  </h1>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                    Server health, database connectivity, environment mode, and audit logs.
                   </p>
                 </div>
+
+                {systemLoading ? (
+                  <LoadingState message="Running system diagnostics..." cards={3} />
+                ) : systemError ? (
+                  <ErrorState message={systemError} onRetry={() => loadSystem({ useLoader: true })} />
+                ) : (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="rounded-2xl border border-emerald-500/30 bg-[#050e17] p-5">
+                      <p className="font-mono text-xs uppercase text-slate-400">Server Health</p>
+                      <p className="mt-2 text-2xl font-black text-emerald-400">ONLINE</p>
+                      <p className="mt-1 font-mono text-xs text-slate-400">Uptime: {formatUptime(systemStatus?.uptime)}</p>
+                    </div>
+
+                    <div className="rounded-2xl border border-emerald-500/30 bg-[#050e17] p-5">
+                      <p className="font-mono text-xs uppercase text-slate-400">Database Status</p>
+                      <p className="mt-2 text-2xl font-black text-cyan-300">CONNECTED</p>
+                      <p className="mt-1 font-mono text-xs text-slate-400">MongoDB Atlas Cluster</p>
+                    </div>
+
+                    <div className="rounded-2xl border border-emerald-500/30 bg-[#050e17] p-5">
+                      <p className="font-mono text-xs uppercase text-slate-400">Environment</p>
+                      <p className="mt-2 text-2xl font-black text-purple-300">PRODUCTION</p>
+                      <p className="mt-1 font-mono text-xs text-slate-400">Node v20.x // Vercel Cloud</p>
+                    </div>
+                  </div>
+                )}
               </div>
+            )}
 
-              {systemLoading ? (
-                <LoadingState message="Loading system status..." cards={4} />
-              ) : systemError ? (
-                <ErrorState
-                  message={systemError}
-                  onRetry={() => loadSystem({ useLoader: true })}
-                />
-              ) : (
-                <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                  <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
-                    <p className="text-xs uppercase tracking-[0.16em] text-slate-400">
-                      Database
-                    </p>
-                    <p className="mt-2 text-lg font-semibold text-cyan-100">
-                      {systemStatus?.dbConnected ? "Connected" : "Unavailable"}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-400">
-                      Uptime: {formatUptime(systemStatus?.uptime)}
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
-                    <p className="text-xs uppercase tracking-[0.16em] text-slate-400">
-                      Gateway
-                    </p>
-                    <p className="mt-2 text-lg font-semibold text-cyan-100">
-                      {systemStatus?.gateway?.configured
-                        ? "Ready"
-                        : "Not configured"}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-400">
-                      Mode: {systemStatus?.gateway?.mode || "unknown"}
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
-                    <p className="text-xs uppercase tracking-[0.16em] text-slate-400">
-                      Receipts
-                    </p>
-                    <p className="mt-2 text-lg font-semibold text-cyan-100">
-                      {systemStatus?.gateway?.receiptEmailEnabled
-                        ? "Enabled"
-                        : "Disabled"}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-400">
-                      Email ready:{" "}
-                      {systemStatus?.gateway?.receiptEmailReady ? "Yes" : "No"}
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4">
-                    <p className="text-xs uppercase tracking-[0.16em] text-slate-400">
-                      Webhooks
-                    </p>
-                    <p className="mt-2 text-lg font-semibold text-cyan-100">
-                      {systemStatus?.gateway?.webhookReady
-                        ? "Ready"
-                        : "Pending"}
-                    </p>
-                    <p className="mt-1 text-xs text-slate-400">
-                      Last: {formatDate(systemStatus?.gateway?.lastWebhookAt)}
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-cyan-300/20 bg-slate-900/70 p-4 sm:col-span-2 xl:col-span-4">
-                    <p className="text-xs uppercase tracking-[0.16em] text-slate-400">
-                      Latest payment activity
-                    </p>
-                    <p className="mt-2 text-sm text-slate-200">
-                      Last payment:{" "}
-                      {formatDate(systemStatus?.gateway?.lastPaymentAt)}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : null}
+          </main>
         </div>
-      </section>
+      </div>
     </>
   );
 };

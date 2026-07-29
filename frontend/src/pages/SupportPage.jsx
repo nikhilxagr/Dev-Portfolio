@@ -12,10 +12,12 @@ import {
 import { getErrorMessage } from "@/services/api";
 import { loadCashfreeCheckout } from "@/utils/loadCashfree";
 import { createBreadcrumbSchema } from "@/utils/seo";
+import { useUserAuth } from "@/context/UserAuthContext";
 import { SUPPORT_PAYMENT_CONFIG } from "@/constants/siteData";
 
 const SupportPage = () => {
   const navigate = useNavigate();
+  const { user, isLoggedIn, openSignInModal } = useUserAuth();
   const [processing, setProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState("");
   const [paymentInfo, setPaymentInfo] = useState("");
@@ -26,6 +28,16 @@ const SupportPage = () => {
     amountInr: String(SUPPORT_PAYMENT_CONFIG.quickAmounts[1] || 99),
     notes: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      setSupportForm((prev) => ({
+        ...prev,
+        customerName: user.name || prev.customerName,
+        customerEmail: user.email || prev.customerEmail,
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     const timerId = window.setTimeout(() => {
@@ -91,6 +103,14 @@ const SupportPage = () => {
   const handleSupportPayment = async () => {
     setPaymentError("");
     setPaymentInfo("");
+
+    if (!isLoggedIn) {
+      openSignInModal({
+        title: "Sign In to Continue",
+        subtitle: "Please sign in with Google or Email before completing your support contribution.",
+      });
+      return;
+    }
 
     const validationError = validateSupportForm();
     if (validationError) {
@@ -223,7 +243,7 @@ const SupportPage = () => {
             </p>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <label className="text-xs text-slate-300">
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-300">
                 Full Name
                 <input
                   type="text"
@@ -231,20 +251,25 @@ const SupportPage = () => {
                   onChange={(event) =>
                     updateSupportForm("customerName", event.target.value)
                   }
-                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
+                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
                   placeholder="Your full name"
                 />
               </label>
 
               <label className="text-xs font-bold text-slate-800 dark:text-slate-300">
-                Email
+                Email {isLoggedIn && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">(Account Email 🔒)</span>}
                 <input
                   type="email"
+                  readOnly={isLoggedIn}
                   value={supportForm.customerEmail}
                   onChange={(event) =>
-                    updateSupportForm("customerEmail", event.target.value)
+                    !isLoggedIn && updateSupportForm("customerEmail", event.target.value)
                   }
-                  className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
+                  className={`mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none transition ${
+                    isLoggedIn
+                      ? "border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 cursor-not-allowed font-semibold"
+                      : "border-slate-300 bg-white text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 dark:border-cyan-300/25 dark:bg-slate-950/80 dark:text-slate-100 dark:focus:border-cyan-300"
+                  }`}
                   placeholder="you@example.com"
                 />
               </label>
