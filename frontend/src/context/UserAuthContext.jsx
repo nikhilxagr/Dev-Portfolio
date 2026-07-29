@@ -23,6 +23,7 @@ export const UserAuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [signInModalOptions, setSignInModalOptions] = useState({});
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const checkAuth = useCallback(async () => {
     const token = getStoredUserToken();
@@ -68,6 +69,18 @@ export const UserAuthProvider = ({ children }) => {
     setSignInModalOptions({});
   }, []);
 
+  const openProfileModal = useCallback(() => {
+    setIsProfileModalOpen(true);
+  }, []);
+
+  const closeProfileModal = useCallback(() => {
+    setIsProfileModalOpen(false);
+  }, []);
+
+  const updateUser = useCallback((updatedFields) => {
+    setUser((prev) => (prev ? { ...prev, ...updatedFields } : null));
+  }, []);
+
   return (
     <UserAuthContext.Provider
       value={{
@@ -81,6 +94,10 @@ export const UserAuthProvider = ({ children }) => {
         openSignInModal,
         closeSignInModal,
         signInModalOptions,
+        isProfileModalOpen,
+        openProfileModal,
+        closeProfileModal,
+        updateUser,
       }}
     >
       {children}
