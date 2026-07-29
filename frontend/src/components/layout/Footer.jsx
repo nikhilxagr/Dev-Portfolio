@@ -112,6 +112,12 @@ const Footer = () => {
                     {item.label}
                   </Link>
                 ))}
+                <Link
+                  to="/how-i-build"
+                  className="transition hover:text-emerald-700 dark:hover:text-emerald-400"
+                >
+                  How I Build
+                </Link>
               </div>
             </div>
 

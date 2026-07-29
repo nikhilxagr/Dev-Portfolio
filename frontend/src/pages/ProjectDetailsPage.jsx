@@ -135,6 +135,20 @@ const ProjectDetailsPage = () => {
           <article className="space-y-5">
             <FadeInUp>
               <header className="card-surface rounded-2xl p-6">
+                {/* Tags */}
+                {project.tags?.length ? (
+                  <div className="mb-3 flex flex-wrap gap-1.5">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider"
+                      >
+                        🏷️ {tag}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+
                 <SectionTitle
                   mobileCenter={false}
                   eyebrow={project.category}
@@ -143,9 +157,15 @@ const ProjectDetailsPage = () => {
                 />
 
                 {project.tagline ? (
-                  <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500">
+                  <p className="mt-3 text-xs uppercase tracking-[0.14em] text-slate-500 font-mono">
                     {project.tagline}
                   </p>
+                ) : null}
+
+                {project.status ? (
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-300">
+                    📌 Status: {project.status}
+                  </div>
                 ) : null}
 
                 <div className="mt-5 flex flex-wrap items-center gap-4 text-slate-200">
@@ -154,9 +174,9 @@ const ProjectDetailsPage = () => {
                       href={project.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-sm hover:text-cyan-100"
+                      className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2 text-xs font-bold hover:border-emerald-400 hover:text-emerald-300 transition"
                     >
-                      <ExternalLink size={16} /> GitHub
+                      <ExternalLink size={15} /> GitHub Repository
                     </a>
                   ) : null}
                   {project.liveDemoUrl ? (
@@ -164,9 +184,9 @@ const ProjectDetailsPage = () => {
                       href={project.liveDemoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 text-sm hover:text-cyan-100"
+                      className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 text-black px-4 py-2 text-xs font-black uppercase tracking-wider hover:bg-emerald-400 transition"
                     >
-                      <ExternalLink size={16} /> Live Demo
+                      <ExternalLink size={15} /> Live Demo
                     </a>
                   ) : null}
                 </div>
@@ -194,22 +214,37 @@ const ProjectDetailsPage = () => {
               </div>
             </FadeInUp>
 
+            {/* Overview */}
+            {project.overview ? (
+              <FadeInUp delay={0.08}>
+                <div className="card-surface rounded-2xl p-6">
+                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                    📌 Overview
+                  </h2>
+                  <p className="mt-3 text-slate-300 leading-relaxed text-sm">
+                    {project.overview}
+                  </p>
+                </div>
+              </FadeInUp>
+            ) : null}
+
+            {/* Problem & Solution */}
             <FadeInUp delay={0.1}>
               <div className="grid gap-4 lg:grid-cols-2">
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold text-cyan-100">
-                    Problem
+                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                    🎯 Problem
                   </h2>
-                  <p className="mt-3 text-slate-300">
+                  <p className="mt-3 text-slate-300 leading-relaxed text-sm">
                     {project.problemStatement ||
                       "Problem statement will be updated soon."}
                   </p>
                 </div>
                 <div className="card-surface rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold text-cyan-100">
-                    Solution
+                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                    💡 Solution
                   </h2>
-                  <p className="mt-3 text-slate-300">
+                  <p className="mt-3 text-slate-300 leading-relaxed text-sm">
                     {project.solutionSummary ||
                       "Solution details will be updated soon."}
                   </p>
@@ -217,50 +252,164 @@ const ProjectDetailsPage = () => {
               </div>
             </FadeInUp>
 
-            {project.outcome ? (
-              <div className="card-surface rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-cyan-100">Outcome</h2>
-                <p className="mt-3 text-slate-300">{project.outcome}</p>
-              </div>
-            ) : null}
-
+            {/* Key Features */}
             {project.highlights?.length ? (
-              <div className="card-surface rounded-2xl p-6">
-                <h2 className="text-xl font-semibold text-cyan-100">
-                  Key Highlights
-                </h2>
-                <ul className="mt-3 space-y-2 text-sm text-slate-300">
-                  {project.highlights.map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <FadeInUp delay={0.12}>
+                <div className="card-surface rounded-2xl p-6">
+                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                    🚀 Key Features
+                  </h2>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {project.highlights.map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-start gap-2.5 rounded-xl border border-white/[0.06] bg-slate-900/60 p-3 text-sm text-slate-200"
+                      >
+                        <span className="shrink-0">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </FadeInUp>
             ) : null}
 
-            <div className="card-surface rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-cyan-100">
-                Tech Stack
-              </h2>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {project.techStack?.length ? (
-                  project.techStack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2 py-1 text-xs text-cyan-100"
-                    >
-                      {tech}
-                    </span>
-                  ))
+            {/* Challenges & Outcomes */}
+            {project.challenges?.length || project.outcomes?.length ? (
+              <FadeInUp delay={0.14}>
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {project.challenges?.length ? (
+                    <div className="card-surface rounded-2xl p-6">
+                      <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                        🛠️ Challenges
+                      </h2>
+                      <ul className="mt-3 space-y-2.5 text-sm text-slate-300">
+                        {project.challenges.map((c) => (
+                          <li key={c} className="flex gap-2.5 items-start">
+                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+                            <span>{c}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
+                  {project.outcomes?.length ? (
+                    <div className="card-surface rounded-2xl p-6">
+                      <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                        🏆 Outcomes
+                      </h2>
+                      <ul className="mt-3 space-y-2.5 text-sm text-slate-300">
+                        {project.outcomes.map((o) => (
+                          <li key={o} className="flex gap-2.5 items-start">
+                            <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" />
+                            <span>{o}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              </FadeInUp>
+            ) : null}
+
+            {/* Technologies Used (Grouped or Flat) */}
+            <FadeInUp delay={0.16}>
+              <div className="card-surface rounded-2xl p-6">
+                <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                  🧰 Technologies Used
+                </h2>
+                {project.techStackGrouped ? (
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {Object.entries(project.techStackGrouped).map(([category, stack]) => (
+                      <div
+                        key={category}
+                        className="rounded-xl border border-white/[0.06] bg-slate-900/60 p-4"
+                      >
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                          {category}
+                        </h3>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {stack.map((item) => (
+                            <span
+                              key={item}
+                              className="rounded-md border border-cyan-300/20 bg-cyan-500/10 px-2 py-1 text-xs font-medium text-cyan-200"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
-                  <p className="text-sm text-slate-400">
-                    No tech stack tags available.
-                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {project.techStack?.map((tech) => (
+                      <span
+                        key={tech}
+                        className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2 py-1 text-xs text-cyan-100"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 )}
               </div>
-            </div>
+            </FadeInUp>
+
+            {/* Collaboration & Team */}
+            {project.collaboration ? (
+              <FadeInUp delay={0.18}>
+                <div className="card-surface rounded-2xl p-6">
+                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                    👥 Collaboration
+                  </h2>
+                  <div className="mt-3 space-y-3 text-sm text-slate-300">
+                    <p>
+                      <strong className="text-white">Team:</strong> {project.collaboration.team}
+                    </p>
+                    <div>
+                      <strong className="text-white">Members:</strong>
+                      <div className="mt-1 flex flex-wrap gap-2">
+                        {project.collaboration.members.map((m) => (
+                          <span
+                            key={m}
+                            className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300"
+                          >
+                            {m}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    {project.collaboration.context && (
+                      <p className="text-xs text-slate-400 italic">
+                        {project.collaboration.context}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </FadeInUp>
+            ) : null}
+
+            {/* Key Learnings */}
+            {project.learnings?.length ? (
+              <FadeInUp delay={0.2}>
+                <div className="card-surface rounded-2xl p-6">
+                  <h2 className="text-xl font-black text-cyan-100 flex items-center gap-2">
+                    🎓 Key Learnings
+                  </h2>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {project.learnings.map((learning) => (
+                      <span
+                        key={learning}
+                        className="rounded-xl border border-purple-500/30 bg-purple-500/10 px-3 py-1.5 text-xs font-semibold text-purple-300"
+                      >
+                        🧠 {learning}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </FadeInUp>
+            ) : null}
           </article>
         </>
       ) : null}

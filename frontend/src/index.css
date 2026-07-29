@@ -1014,3 +1014,153 @@ html.light :focus-visible {
   outline: 2px solid #0284c7 !important;
   outline-offset: 2px !important;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* PREMIUM SCROLL & ANIMATION SYSTEM                                           */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+/* GPU-acceleration hints — applied to any element that animates via Framer Motion */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+/* Promote animated elements to their own compositor layer to prevent repaints */
+.promote-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ─── Scroll smoothness ────────────────────────────────────────────────────── */
+/* Fine-grain scroll behaviour — already set but reinforced here for specificity */
+html {
+  scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Prevent content reflow flash during page transitions */
+.page-transition-wrapper {
+  contain: layout style;
+}
+
+/* ─── @keyframes for shimmer / skeleton loading ───────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.0) 0%,
+    rgba(255, 255, 255, 0.08) 40%,
+    rgba(255, 255, 255, 0.0) 80%
+  );
+  background-size: 200% auto;
+  animation: shimmer 2.4s linear infinite;
+}
+
+/* ─── @keyframes for gradient-text animate ────────────────────────────────── */
+@keyframes gradient-shift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+.animate-gradient-text {
+  background-size: 200% 200%;
+  animation: gradient-shift 5s ease infinite;
+}
+
+/* ─── @keyframes for subtle floating elements ─────────────────────────────── */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes float-medium {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-16px) rotate(2deg); }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-medium 4s ease-in-out infinite;
+}
+
+/* ─── Scroll snap (optional, for full-page sections) ─────────────────────── */
+.snap-container {
+  scroll-snap-type: y proximity;
+}
+
+.snap-section {
+  scroll-snap-align: start;
+}
+
+/* ─── Reveal animation base (CSS fallback for no-JS) ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Custom scrollbar — premium thin style ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.30);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.60);
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.25);
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.50);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.30) transparent;
+}
+
+html.light * {
+  scrollbar-color: rgba(14, 165, 233, 0.25) transparent;
+}
+
+/* ─── Page transition smoothness ─────────────────────────────────────────── */
+/* Prevent layout shift during Framer Motion AnimatePresence transitions */
+[data-framer-motion-layout] {
+  contain: layout;
+}

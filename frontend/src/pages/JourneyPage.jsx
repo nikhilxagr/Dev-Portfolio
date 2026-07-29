@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import SeoHead from "@/components/seo/SeoHead";
 import { createBreadcrumbSchema } from "@/utils/seo";
+import { useLocation } from "react-router-dom";
+
 
 // DATA
 const journeyData = [
@@ -1405,11 +1407,28 @@ const TimelineDot = ({ isActive }) => (
 
 // MAIN PAGE
 const JourneyPage = () => {
+  const { hash } = useLocation();
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [view, setView] = useState("timeline");
   const [activeYear, setActiveYear] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
+
+  // Scroll to and expand card matching URL hash
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.replace("#", "");
+    const timer = setTimeout(() => {
+
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setExpandedId(id);
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [hash]);
+
   const [showFloatingNav, setShowFloatingNav] = useState(false);
   const [showCategoryFilters, setShowCategoryFilters] = useState(true);
   const isScrollingLocked = useRef(false);
@@ -1916,7 +1935,8 @@ const JourneyPage = () => {
                           {group.items.map((event, idx) => {
                             const isLeft = idx % 2 === 0;
                             return (
-                              <div key={event.id} className="relative">
+                              <div key={event.id} id={event.id} className="relative scroll-mt-28">
+
                                 {}
                                 <div className="absolute left-4 top-8 -translate-x-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:top-10">
                                   <TimelineDot

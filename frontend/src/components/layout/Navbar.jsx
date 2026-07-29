@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import SearchModal from "@/components/layout/SearchModal";
 import {
   ArrowRight,
   BookOpen,
@@ -78,13 +79,9 @@ const Navbar = () => {
   });
   const { isDark, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [resumeDropdownOpen, setResumeDropdownOpen] = useState(false);
-  const resumeDropdownRef = useRef(null);
-
-  const [dashboardOpen, setDashboardOpen] = useState(false);
-  const dashboardRef = useRef(null);
-  const dashboardTimeoutRef = useRef(null);
-
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const openSearch = useCallback(() => setIsSearchOpen(true), []);
+  const closeSearch = useCallback(() => setIsSearchOpen(false), []);
   const [experimentsOpen, setExperimentsOpen] = useState(false);
   const experimentsRef = useRef(null);
   const experimentsTimeoutRef = useRef(null);
@@ -92,14 +89,6 @@ const Navbar = () => {
   const [mobileDropdowns, setMobileDropdowns] = useState({});
 
   const location = useLocation();
-
-  const handleDashboardMouseEnter = () => {
-    if (dashboardTimeoutRef.current) clearTimeout(dashboardTimeoutRef.current);
-    setDashboardOpen(true);
-  };
-  const handleDashboardMouseLeave = () => {
-    dashboardTimeoutRef.current = setTimeout(() => setDashboardOpen(false), 180);
-  };
 
   const handleExperimentsMouseEnter = () => {
     if (experimentsTimeoutRef.current) clearTimeout(experimentsTimeoutRef.current);
@@ -116,12 +105,6 @@ const Navbar = () => {
   // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
-      if (resumeDropdownRef.current && !resumeDropdownRef.current.contains(e.target)) {
-        setResumeDropdownOpen(false);
-      }
-      if (dashboardRef.current && !dashboardRef.current.contains(e.target)) {
-        setDashboardOpen(false);
-      }
       if (experimentsRef.current && !experimentsRef.current.contains(e.target)) {
         setExperimentsOpen(false);
       }
@@ -129,7 +112,6 @@ const Navbar = () => {
     document.addEventListener("mousedown", handler);
     return () => {
       document.removeEventListener("mousedown", handler);
-      if (dashboardTimeoutRef.current) clearTimeout(dashboardTimeoutRef.current);
       if (experimentsTimeoutRef.current) clearTimeout(experimentsTimeoutRef.current);
     };
   }, []);
@@ -140,6 +122,18 @@ const Navbar = () => {
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Ctrl+K / Cmd+K global shortcut
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setIsSearchOpen((v) => !v);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
   }, []);
 
   useEffect(() => {
@@ -295,9 +289,10 @@ const Navbar = () => {
           )}
         >
             <div className={clsx(
-              "flex items-center justify-between transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+              "relative flex items-center justify-between transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
               isScrolled ? "h-11" : "h-14"
             )}>
+
               {/* Hamburger Button — LEFT on mobile */}
               <button
                 type="button"
@@ -313,35 +308,53 @@ const Navbar = () => {
                 {open ? <X size={20} /> : <Menu size={20} />}
               </button>
 
-              {/* Logo — RIGHT on mobile, LEFT on desktop */}
-              <Link
-                to="/"
-                onClick={() => setOpen(false)}
-                className="group flex items-center shrink-0 xl:mr-10 xl:order-first"
-              >
-                <span className={clsx(
-                  "font-outfit text-[1.4rem] sm:text-[1.7rem] font-black tracking-[0.18em] uppercase select-none transition-all duration-300",
-                  "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
-                  "drop-shadow-[0_4px_22px_rgba(52,211,153,0.65)] group-hover:drop-shadow-[0_6px_30px_rgba(52,211,153,0.9)] group-hover:scale-[1.03]",
-                  "inline-block"
-                )}>
-                  NIKHIL
-                </span>
-              </Link>
+              {/* Logo — CENTERED on mobile via absolute, LEFT on desktop */}
+              <div className="absolute left-1/2 -translate-x-1/2 xl:static xl:translate-x-0 xl:mr-10 xl:order-first">
+                <Link
+                  to="/"
+                  onClick={() => setOpen(false)}
+                  className="group flex items-center shrink-0"
+                >
+                  <span className={clsx(
+                    "font-outfit text-[1.4rem] sm:text-[1.7rem] font-black tracking-[0.18em] uppercase select-none transition-all duration-300",
+                    "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
+                    "drop-shadow-[0_4px_22px_rgba(52,211,153,0.65)] group-hover:drop-shadow-[0_6px_30px_rgba(52,211,153,0.9)] group-hover:scale-[1.03]",
+                    "inline-block"
+                  )}>
+                    NIKHIL
+                  </span>
+                </Link>
+              </div>
+
+              {/* Mobile right — Search button */}
+              <div className="ml-auto flex items-center gap-1 xl:hidden">
+                <button
+                  type="button"
+                  onClick={openSearch}
+                  aria-label="Open search"
+                  className={clsx(
+                    "flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200",
+                    isDark
+                      ? "border-cyan-400/30 bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20 hover:border-cyan-400/60"
+                      : "border-sky-500/30 bg-sky-50 text-sky-600 hover:bg-sky-100 hover:border-sky-400",
+                  )}
+                >
+                  <Search size={15} />
+                </button>
+              </div>
 
               <nav className="hidden items-center gap-1 xl:flex justify-center flex-1">
                 {NAV_LINKS.map((item) => {
                   if (item.isDropdown) {
-                    const isDashboard = item.label === "My Dashboard";
-                    const isDropdownOpen = isDashboard ? dashboardOpen : experimentsOpen;
-                    const setDropdownOpen = isDashboard ? setDashboardOpen : setExperimentsOpen;
-                    const dropdownRef = isDashboard ? dashboardRef : experimentsRef;
-                    const mouseEnterHandler = isDashboard ? handleDashboardMouseEnter : handleExperimentsMouseEnter;
-                    const mouseLeaveHandler = isDashboard ? handleDashboardMouseLeave : handleExperimentsMouseLeave;
+                    const isDropdownOpen = experimentsOpen;
+                    const setDropdownOpen = setExperimentsOpen;
+                    const dropdownRef = experimentsRef;
+                    const mouseEnterHandler = handleExperimentsMouseEnter;
+                    const mouseLeaveHandler = handleExperimentsMouseLeave;
 
-                    const isParentActive = isDashboard
-                      ? location.pathname === "/" || location.pathname.startsWith("/dashboard")
-                      : location.pathname.startsWith("/experiments") || location.pathname.startsWith("/security");
+                    const isParentActive =
+                      location.pathname.startsWith("/experiments") ||
+                      location.pathname.startsWith("/security");
 
                     return (
                       <div
@@ -429,6 +442,22 @@ const Navbar = () => {
               </nav>
 
               <div className="hidden items-center gap-3 xl:flex shrink-0 ml-6 xl:ml-10">
+                {/* Desktop Search Button */}
+                <button
+                  type="button"
+                  onClick={openSearch}
+                  aria-label="Open search (Ctrl+K)"
+                  title="Search (Ctrl+K)"
+                  className={clsx(
+                    "flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200",
+                    isDark
+                      ? "border-slate-700 bg-slate-800/60 text-slate-400 hover:border-cyan-400/40 hover:bg-cyan-400/10 hover:text-cyan-300"
+                      : "border-slate-200 bg-slate-50 text-slate-500 hover:border-sky-400/40 hover:bg-sky-50 hover:text-sky-700",
+                  )}
+                >
+                  <Search size={13} />
+                  <span className="hidden lg:inline">Search</span>
+                </button>
                 <motion.button
                   type="button"
                   onClick={toggleTheme}
@@ -461,70 +490,16 @@ const Navbar = () => {
                   </AnimatePresence>
                 </motion.button>
 
-                <div ref={resumeDropdownRef} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setResumeDropdownOpen((v) => !v)}
-                    className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-400/60 bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-green-500/15 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.35)] hover:border-emerald-300 hover:bg-gradient-to-r hover:from-emerald-400 hover:to-lime-400 hover:text-slate-950 hover:shadow-[0_0_30px_rgba(52,211,153,0.65)] hover:scale-[1.04] transition-all duration-300 ease-out"
-                    aria-label="Open resume dropdown"
-                    aria-expanded={resumeDropdownOpen}
-                  >
-                    <Download size={14} />
-                    Resume
-                    <ChevronDown size={14} className={`transition-transform duration-200 ${resumeDropdownOpen ? "rotate-180" : ""}`} />
-                  </button>
-
-                  {resumeDropdownOpen && (
-                    <div className={clsx(
-                      "absolute right-0 top-full mt-2.5 w-56 rounded-2xl border p-1.5 shadow-[0_16px_40px_rgba(0,10,2,0.7)] backdrop-blur-xl z-50",
-                      isDark
-                        ? "border-green-400/20 bg-[#030a03]/95"
-                        : "border-green-400/30 bg-white/95",
-                    )}>
-                      <a
-                        href={QUICK_CONTACT.resumeFullStack}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => setResumeDropdownOpen(false)}
-                        className={clsx(
-                          "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all duration-200",
-                          isDark
-                            ? "text-slate-200 hover:bg-green-400/12 hover:text-green-300"
-                            : "text-slate-700 hover:bg-green-50 hover:text-green-700",
-                        )}
-                      >
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-green-400/30 bg-green-400/10 text-green-400">
-                          <Code2 size={13} />
-                        </span>
-                        <div>
-                          <p className="font-black uppercase tracking-wide">Full-Stack Dev</p>
-                          <p className={clsx("text-[10px] font-medium", isDark ? "text-slate-500" : "text-slate-400")}>React · Node.js · MERN</p>
-                        </div>
-                      </a>
-
-                      <a
-                        href={QUICK_CONTACT.resumeSecurity}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => setResumeDropdownOpen(false)}
-                        className={clsx(
-                          "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all duration-200",
-                          isDark
-                            ? "text-slate-200 hover:bg-green-400/12 hover:text-green-300"
-                            : "text-slate-700 hover:bg-green-50 hover:text-green-700",
-                        )}
-                      >
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-emerald-400/30 bg-emerald-400/10 text-emerald-400">
-                          <ShieldCheck size={13} />
-                        </span>
-                        <div>
-                          <p className="font-black uppercase tracking-wide">Cyber Security</p>
-                          <p className={clsx("text-[10px] font-medium", isDark ? "text-slate-500" : "text-slate-400")}>AppSec · OWASP · PenTest</p>
-                        </div>
-                      </a>
-                    </div>
-                  )}
-                </div>
+                <a
+                  href={QUICK_CONTACT.resumeFullStack}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-400/60 bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-green-500/15 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.35)] hover:border-emerald-300 hover:bg-gradient-to-r hover:from-emerald-400 hover:to-lime-400 hover:text-slate-950 hover:shadow-[0_0_30px_rgba(52,211,153,0.65)] hover:scale-[1.04] transition-all duration-300 ease-out"
+                  aria-label="Download Full Stack Resume"
+                >
+                  <Download size={14} />
+                  Resume
+                </a>
               </div>
             </div>
           </div>
@@ -743,15 +718,15 @@ const Navbar = () => {
               isDark ? "border-sky-400/15" : "border-slate-200"
             )}>
               <a
-                href={QUICK_CONTACT.resume}
+                href={QUICK_CONTACT.resumeFullStack}
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => setOpen(false)}
                 className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-400 py-3 text-xs font-black uppercase tracking-wider text-black shadow-[0_4px_18px_rgba(34,197,94,0.35)] hover:shadow-[0_6px_24px_rgba(34,197,94,0.5)] transition-all duration-300"
-                aria-label="View Resume"
+                aria-label="Download Full Stack Resume"
               >
                 <Download size={14} />
-                View Resume
+                Download Resume
               </a>
 
               <p className="text-[10px] text-center text-slate-500 dark:text-zinc-500 font-medium pt-0.5">
@@ -761,8 +736,12 @@ const Navbar = () => {
           </aside>
         </div>
       )}
+
+      {/* Global Search Modal */}
+      <SearchModal isOpen={isSearchOpen} onClose={closeSearch} />
     </header>
   );
 };
 
 export default Navbar;
+

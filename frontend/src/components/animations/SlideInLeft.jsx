@@ -3,36 +3,36 @@ import { motion } from 'framer-motion'
 const MotionDiv = motion.div
 
 /**
- * FadeInUp — upgraded with spring physics and configurable distance/direction.
+ * SlideInLeft — slides in from the left or right of the viewport.
  *
+ * @param {string}  from      - 'left' | 'right' (default 'left')
+ * @param {number}  distance  - Travel distance in px (default 50)
  * @param {number}  delay     - Stagger delay in seconds
- * @param {number}  distance  - Travel distance in px (default 28)
- * @param {string}  direction - 'up' | 'down' (default 'up')
  * @param {boolean} once      - Only animate once (default true)
  */
-const FadeInUp = ({
+const SlideInLeft = ({
   children,
+  from = 'left',
+  distance = 50,
   delay = 0,
-  distance = 28,
-  direction = 'up',
   once = true,
   className = '',
   style = {},
 }) => {
-  const yInit = direction === 'up' ? distance : -distance
+  const xInit = from === 'left' ? -distance : distance
 
   return (
     <MotionDiv
       className={className}
       style={style}
-      initial={{ opacity: 0, y: yInit }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, x: xInit }}
+      whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once, amount: 0.15 }}
       transition={{
         type: 'spring',
-        stiffness: 260,
-        damping: 28,
-        mass: 0.7,
+        stiffness: 220,
+        damping: 26,
+        mass: 0.8,
         delay,
       }}
     >
@@ -41,4 +41,4 @@ const FadeInUp = ({
   )
 }
 
-export default FadeInUp
+export default SlideInLeft

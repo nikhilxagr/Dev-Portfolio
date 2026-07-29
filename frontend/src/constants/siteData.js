@@ -30,22 +30,12 @@ export const HERO_CONTENT = {
 };
 
 export const NAV_LINKS = [
-  {
-    to: "/",
-    label: "My Dashboard",
-    isDropdown: true,
-    children: [
-      { to: "/", label: "Main Dashboard", description: "Home overview & portfolio dashboard" },
-      { to: "/dashboard/recruiter", label: "Recruiter Dashboard", description: "Fast 60s summary for hiring managers" },
-      { to: "/dashboard/resume", label: "Resume Dashboard", description: "Interactive 6-section digital resume" },
-      { to: "/dashboard/how-i-build", label: "How I Build", description: "SDLC workflow & architecture diagram" },
-    ],
-  },
+  { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/skills", label: "Skills" },
   { to: "/projects", label: "Projects" },
   {
-    to: "/experiments/security-labs",
+    to: "/experiments",
     label: "Experiments",
     isDropdown: true,
     children: [
@@ -340,6 +330,86 @@ export const PROJECT_CATEGORIES = ["All", "Web Dev", "Python", "Cyber Security",
 
 export const SIGNATURE_PROJECTS = [
   {
+    slug: "kanoon-mate",
+    title: "Kanoon-Mate",
+    subtitle: "AI-Powered Legal Operating System",
+    category: "AI",
+    tagline: "AI-Powered Legal Operating System developed during Nerds Hack Days Lucknow",
+    description:
+      "Kanoon-Mate is an AI-powered Legal Operating System developed during Nerds Hack Days Lucknow. It simplifies legal documents, detects relevant laws, provides AI-driven legal guidance, and demonstrates intelligent case tracking for citizens and lawyers.",
+    overview:
+      "Kanoon-Mate is an AI-powered Legal Operating System built during Nerds Hack Days Lucknow by Team Bro Code. The platform leverages Generative AI and intelligent workflow automation to simplify legal documents, explain legal concepts in plain language, identify applicable laws, assess legal risks, and guide users through the next steps in their legal journey. Beyond document analysis, Kanoon-Mate introduces an AI-powered case tracking workflow that demonstrates how legal updates can be intelligently managed for both citizens and legal professionals.",
+    problemStatement:
+      "Millions of citizens struggle to understand legal documents, while lawyers spend considerable time manually tracking hearing dates, court orders, and case progress.",
+    solutionSummary:
+      "Built an AI-powered Legal Operating System that combines document intelligence, AI-assisted legal guidance, workflow automation, and intelligent case tracking into a single platform.",
+    outcome:
+      "Developed a functional AI-powered LegalTech prototype within the hackathon, demonstrating AI-assisted legal document understanding and an intelligent case tracking workflow.",
+    tags: [
+      "Hackathon Project",
+      "Collaboration Project",
+    ],
+    highlights: [
+      "📄 AI Legal Document Analysis & Summarization",
+      "⚖️ Relevant Law & Section Detection",
+      "🤖 AI-Powered Legal Guidance",
+      "🚨 Risk Assessment & Next-Step Recommendations",
+      "📅 Hearing Timeline & Deadline Tracking",
+      "🔔 Smart Notifications",
+      "🧠 Multi-Agent AI Workflow",
+      "⚡ AI Case Tracking Prototype",
+    ],
+    challenges: [
+      "Designing a scalable AI workflow within a limited hackathon timeframe.",
+      "Demonstrating automated case tracking without direct access to live court systems.",
+      "Building an intuitive LegalTech experience for both citizens and lawyers.",
+      "Coordinating development, UI, AI integration, and pitching as a team under strict deadlines.",
+    ],
+    outcomes: [
+      "Developed a functional AI-powered LegalTech prototype within the hackathon.",
+      "Successfully demonstrated AI-assisted legal document understanding.",
+      "Designed an intelligent AI case tracking workflow for future scalability.",
+      "Enhanced skills in AI integration, rapid prototyping, teamwork, and product pitching.",
+    ],
+    techStackGrouped: {
+      Frontend: ["React", "Tailwind CSS"],
+      Backend: ["Node.js", "Express.js"],
+      Database: ["MongoDB"],
+      "AI & Automation": ["Gemini API", "OCR", "AI Workflow Design"],
+      Tools: ["Git", "GitHub", "Vercel", "Figma"],
+    },
+    techStack: [
+      "React",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Tailwind CSS",
+      "Gemini API",
+    ],
+    collaboration: {
+      team: "Bro Code",
+      members: ["Nikhil Agrahari", "Gaurav Kumar Yadav", "Devansh Yadav"],
+      context:
+        "Built collaboratively during Nerds Hack Days Lucknow, combining expertise in Full-Stack Development, AI integration, UI/UX, and product strategy.",
+    },
+    learnings: [
+      "Multi-Agent AI Architecture",
+      "Prompt Engineering",
+      "Rapid MVP Development",
+      "AI Workflow Design",
+      "Team Collaboration",
+      "Product Thinking",
+      "Technical Pitching",
+      "Problem Solving Under Time Constraints",
+    ],
+    status: "Completed ✅ (Built during Nerds Hack Days Lucknow 2026)",
+    githubUrl: "https://github.com/nikhilxagr/Nerds-Hack-Days-Lucknow-AI-LegalTech",
+    liveDemoUrl: "",
+    imageUrl: "/images/projects/kanoon-mate-cover.webp",
+    featured: true,
+    hasDetails: true,
+  },
+  {
     slug: "fast-feast",
     title: "Fast Feast",
     category: "Web Dev",
@@ -365,6 +435,7 @@ export const SIGNATURE_PROJECTS = [
     liveDemoUrl: "https://fastfeast-agr.netlify.app/",
     imageUrl: "/images/projects/fast-feast-cover.webp",
     featured: true,
+    hasDetails: true,
   },
   {
     slug: "snapurl",
@@ -399,6 +470,7 @@ export const SIGNATURE_PROJECTS = [
     liveDemoUrl: "https://snapurl-url-shortner.vercel.app/",
     imageUrl: "/images/projects/snapurl-cover.webp",
     featured: true,
+    hasDetails: true,
   },
   {
     slug: "ai-powered-code-reviewer",
@@ -426,6 +498,7 @@ export const SIGNATURE_PROJECTS = [
     liveDemoUrl: "",
     imageUrl: "/images/projects/ai-powered-code-reviewer-cover.webp",
     featured: true,
+    hasDetails: true,
   },
   {
     slug: "notes-app",

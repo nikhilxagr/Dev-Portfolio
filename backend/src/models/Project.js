@@ -92,7 +92,7 @@ projectSchema.pre('validate', function projectSlugHook(next) {
   next()
 })
 
-projectSchema.index({ slug: 1 }, { unique: true })
+
 projectSchema.index({ category: 1 })
 projectSchema.index({ featured: 1 })
 

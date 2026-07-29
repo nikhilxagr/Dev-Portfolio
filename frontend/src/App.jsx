@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import BackgroundGrid from "@/components/layout/BackgroundGrid";
 import PortfolioLoader from "@/components/layout/PortfolioLoader";
 import ScrollProgressButton from "@/components/layout/ScrollProgressButton";
+import ScrollProgressBar from "@/components/layout/ScrollProgressBar";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { prewarmBackendForCheckout } from "@/services/payment.service";
 
@@ -16,6 +17,7 @@ const SkillsPage = lazy(() => import("@/pages/SkillsPage.jsx"));
 const ProjectsPage = lazy(() => import("@/pages/ProjectsPage.jsx"));
 const JourneyPage = lazy(() => import("@/pages/JourneyPage.jsx"));
 const ProjectDetailsPage = lazy(() => import("@/pages/ProjectDetailsPage.jsx"));
+const ExperimentsPage = lazy(() => import("@/pages/ExperimentsPage.jsx"));
 const SecurityPage = lazy(() => import("@/pages/SecurityPage.jsx"));
 const TerminalPage = lazy(() => import("@/pages/TerminalPage.jsx"));
 const CyberToolsPage = lazy(() => import("@/pages/CyberToolsPage.jsx"));
@@ -37,8 +39,6 @@ const BlogDetailsPage = lazy(() => import("@/pages/BlogDetailsPage.jsx"));
 const ContactPage = lazy(() => import("@/pages/ContactPage.jsx"));
 const AdminLoginPage = lazy(() => import("@/pages/AdminLoginPage.jsx"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage.jsx"));
-const RecruiterDashboardPage = lazy(() => import("@/pages/RecruiterDashboardPage.jsx"));
-const ResumeDashboardPage = lazy(() => import("@/pages/ResumeDashboardPage.jsx"));
 const HowIBuildPage = lazy(() => import("@/pages/HowIBuildPage.jsx"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.jsx"));
 
@@ -104,6 +104,7 @@ function App() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden">
+      <ScrollProgressBar />
       <AnimatePresence mode="wait">
         {showLoader ? (
           <PortfolioLoader
@@ -140,10 +141,11 @@ function App() {
               <Suspense fallback={<RouteFallback />}>
                 <Routes location={location}>
                   <Route path="/" element={<HomePage />} />
-                  <Route path="/dashboard" element={<RecruiterDashboardPage />} />
-                  <Route path="/dashboard/recruiter" element={<RecruiterDashboardPage />} />
-                  <Route path="/dashboard/resume" element={<ResumeDashboardPage />} />
+                  <Route path="/how-i-build" element={<HowIBuildPage />} />
                   <Route path="/dashboard/how-i-build" element={<HowIBuildPage />} />
+                  <Route path="/dashboard" element={<Navigate to="/" replace />} />
+                  <Route path="/dashboard/recruiter" element={<Navigate to="/" replace />} />
+                  <Route path="/dashboard/resume" element={<Navigate to="/" replace />} />
                   <Route path="/about" element={<AboutPage />} />
                   <Route path="/skills" element={<SkillsPage />} />
                   <Route path="/projects" element={<ProjectsPage />} />
@@ -152,12 +154,12 @@ function App() {
                     path="/projects/:slug"
                     element={<ProjectDetailsPage />}
                   />
+                  <Route path="/experiments" element={<ExperimentsPage />} />
                   <Route path="/experiments/security-labs" element={<SecurityPage />} />
                   <Route path="/experiments/terminal" element={<TerminalPage />} />
                   <Route path="/experiments/tools" element={<CyberToolsPage />} />
                   <Route path="/experiments/dsa" element={<DsaLabPage />} />
                   <Route path="/experiments/methodology" element={<MethodologyPage />} />
-                  <Route path="/experiments" element={<Navigate to="/experiments/security-labs" replace />} />
                   <Route path="/security" element={<Navigate to="/experiments/security-labs" replace />} />
                   <Route path="/terminal" element={<Navigate to="/experiments/terminal" replace />} />
                   <Route path="/blog" element={<BlogPage />} />

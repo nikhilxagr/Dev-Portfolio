@@ -71,7 +71,7 @@ blogSchema.pre('validate', function blogSlugHook(next) {
   next()
 })
 
-blogSchema.index({ slug: 1 }, { unique: true })
+
 blogSchema.index({ tags: 1 })
 
 const Blog = mongoose.model('Blog', blogSchema)
