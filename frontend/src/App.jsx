@@ -196,6 +196,14 @@ function App() {
                     />
                     <Route path="/auth/callback" element={<AuthCallbackPage />} />
                     <Route path="/home" element={<Navigate to="/" replace />} />
+
+                    {/* Experiment sub-page aliases — navbar + ExperimentsPage links use these paths */}
+                    <Route path="/experiments/security-labs" element={<Navigate to="/security" replace />} />
+                    <Route path="/experiments/terminal" element={<Navigate to="/terminal" replace />} />
+                    <Route path="/experiments/dsa" element={<Navigate to="/dsa-lab" replace />} />
+                    <Route path="/experiments/tools" element={<Navigate to="/cyber-tools" replace />} />
+                    <Route path="/experiments/methodology" element={<Navigate to="/methodology" replace />} />
+
                     <Route path="*" element={<NotFoundPage />} />
                   </Routes>
                 </Suspense>

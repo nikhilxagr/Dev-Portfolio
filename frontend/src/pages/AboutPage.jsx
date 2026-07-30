@@ -57,12 +57,8 @@ const AboutPage = () => {
     QUICK_CONTACT.tryhackme.split("/").filter(Boolean).pop() || "nikhilxagr";
   const tryHackMeMetric = STATS_METRICS.find((item) => item.id === "tryhackme");
 
-  const githubStreakCardUrl = `https://streak-stats.demolab.com/?user=${githubUsername}&theme=${
-    isDark ? "algolia" : "default"
-  }&hide_border=true`;
-  const leetcodeCardUrl = `https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=${
-    isDark ? "dark" : "light"
-  }&ext=heatmap`;
+  const githubStreakCardUrl = `https://streak-stats.demolab.com/?user=${githubUsername}&theme=${isDark ? "algolia" : "default"}&hide_border=true`;
+  const leetcodeCardUrl = `https://leetcard.jacoblin.cool/${leetcodeUsername}?theme=${isDark ? "dark" : "light"}&ext=heatmap`;
   const tryHackMeCardUrl = `https://tryhackme-badges.s3.amazonaws.com/${tryHackMeUsername}.png`;
 
   return (
@@ -416,7 +412,7 @@ const AboutPage = () => {
                 <div className="mb-2 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
                   {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
                 </div>
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-emerald-500/20 dark:bg-slate-950">
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-emerald-500/20 dark:bg-slate-950">
                   <img
                     src={tryHackMeCardUrl}
                     alt={`TryHackMe badge for ${tryHackMeUsername}`}

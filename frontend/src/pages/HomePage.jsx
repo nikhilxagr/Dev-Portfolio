@@ -168,22 +168,27 @@ const HeroSection = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Skip canvas animation entirely on mobile to prevent scroll jank
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      canvas.style.display = "none";
+      return;
+    }
+
     let animationFrameId;
     let width = (canvas.width = canvas.offsetWidth);
     let height = (canvas.height = canvas.offsetHeight);
 
-    const isMobile = window.innerWidth < 768;
-    const particles = [];
-    const particleCount = isMobile ? 14 : 45;
-    const connectionDistance = isMobile ? 85 : 110;
+    const particleCount = 45;
+    const connectionDistance = 110;
     const sqConnectionDistance = connectionDistance * connectionDistance;
-
+    const particles = [];
     class Particle {
       constructor() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * (isMobile ? 0.3 : 0.45);
-        this.vy = (Math.random() - 0.5) * (isMobile ? 0.3 : 0.45);
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.45;
         this.radius = Math.random() * 1.5 + 1;
         this.color = Math.random() > 0.4
           ? "rgba(74, 222, 128, 0.40)"   // dev green
@@ -234,7 +239,6 @@ const HeroSection = () => {
     let isScrolling = false;
     let scrollTimeout;
     const handleScroll = () => {
-      if (!isMobile) return;
       isScrolling = true;
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
@@ -278,7 +282,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-[94vh] flex flex-col justify-center overflow-hidden section-wrap pt-12 pb-20 sm:pt-16 sm:pb-24">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-        <canvas ref={canvasRef} className="absolute inset-0 h-full w-full opacity-65" />
+        <canvas ref={canvasRef} className="absolute inset-0 h-full w-full opacity-65 hidden sm:block" />
 
         <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-[0.015]" viewBox="0 0 100 100" preserveAspectRatio="none">
           <text x="50%" y="55%" textAnchor="middle" dominantBaseline="middle" className="font-display font-black text-[28px]" fill="none" stroke="#38bdf8" strokeWidth="0.08">
@@ -288,15 +292,15 @@ const HeroSection = () => {
 
         <div
           className="hero-aurora-orb-1 absolute -top-24 -left-24 h-[500px] w-[500px] rounded-full opacity-20"
-          style={{ background: "radial-gradient(circle, rgba(56,189,248,0.45) 0%, rgba(14,165,233,0.18) 50%, transparent 72%)", filter: "blur(70px)" }}
+          style={{ background: "radial-gradient(circle, rgba(56,189,248,0.45) 0%, rgba(14,165,233,0.18) 50%, transparent 72%)", filter: "blur(45px)", willChange: "transform" }}
         />
         <div
           className="hero-aurora-orb-2 absolute top-1/3 -right-32 h-[420px] w-[420px] rounded-full opacity-18"
-          style={{ background: "radial-gradient(circle, rgba(34,197,94,0.42) 0%, rgba(74,222,128,0.15) 55%, transparent 72%)", filter: "blur(80px)" }}
+          style={{ background: "radial-gradient(circle, rgba(34,197,94,0.42) 0%, rgba(74,222,128,0.15) 55%, transparent 72%)", filter: "blur(50px)", willChange: "transform" }}
         />
         <div
           className="hero-aurora-orb-3 absolute bottom-0 left-1/3 h-[350px] w-[350px] rounded-full opacity-12"
-          style={{ background: "radial-gradient(circle, rgba(20,184,166,0.35) 0%, rgba(56,189,248,0.12) 55%, transparent 72%)", filter: "blur(90px)" }}
+          style={{ background: "radial-gradient(circle, rgba(20,184,166,0.35) 0%, rgba(56,189,248,0.12) 55%, transparent 72%)", filter: "blur(55px)", willChange: "transform" }}
         />
         <div
           className="absolute inset-0 opacity-[0.022]"
@@ -305,21 +309,24 @@ const HeroSection = () => {
             backgroundSize: "44px 44px",
           }}
         />
-        {PARTICLES.map((p, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              top: p.top, left: p.left,
-              width: p.size, height: p.size,
-              background: i % 3 === 0 ? "rgba(56,189,248,0.55)" : "rgba(74,222,128,0.50)",
-              animation: `particle-float ${p.dur}s ease-in-out ${p.delay}s infinite`,
-              boxShadow: i % 3 === 0
-                ? `0 0 ${p.size * 3}px rgba(56,189,248,0.55)`
-                : `0 0 ${p.size * 3}px rgba(74,222,128,0.55)`,
-            }}
-          />
-        ))}
+        {/* Hide floating particle dots on mobile — they trigger many layers */}
+        <div className="hidden sm:contents">
+          {PARTICLES.map((p, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                top: p.top, left: p.left,
+                width: p.size, height: p.size,
+                background: i % 3 === 0 ? "rgba(56,189,248,0.55)" : "rgba(74,222,128,0.50)",
+                animation: `particle-float ${p.dur}s ease-in-out ${p.delay}s infinite`,
+                boxShadow: i % 3 === 0
+                  ? `0 0 ${p.size * 3}px rgba(56,189,248,0.55)`
+                  : `0 0 ${p.size * 3}px rgba(74,222,128,0.55)`,
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="relative grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">

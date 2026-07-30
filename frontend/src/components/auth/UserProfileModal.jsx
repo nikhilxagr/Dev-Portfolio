@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { User, Phone, Check, X, ShieldCheck } from "lucide-react";
 import { useUserAuth } from "@/context/UserAuthContext";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const GoogleIcon = () => (
   <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
@@ -86,17 +87,7 @@ const UserProfileModal = () => {
 
           {/* Header */}
           <div className="flex items-center gap-3">
-            {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="h-14 w-14 rounded-full object-cover border-2 border-emerald-400 shadow-md"
-              />
-            ) : (
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-black font-black text-xl border-2 border-emerald-400 shadow-md">
-                {user.name?.[0]?.toUpperCase() || "U"}
-              </div>
-            )}
+            <UserAvatar user={user} className="h-14 w-14 text-xl font-black border-2 border-emerald-400 shadow-md" />
 
             <div>
               <h3 className="text-lg font-extrabold text-white flex items-center gap-1.5">

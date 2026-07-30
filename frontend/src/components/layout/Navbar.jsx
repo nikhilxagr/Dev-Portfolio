@@ -42,6 +42,7 @@ import {
 import { useUserAuth } from "@/context/UserAuthContext";
 import { NAV_LINKS, QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
 import { useTheme } from "@/context/ThemeContext";
+import UserAvatar from "@/components/ui/UserAvatar";
 
 const NAV_OFFSET_REM = 6;
 const OPPORTUNITY_BANNER_HEIGHT_REM = 2.25;
@@ -196,11 +197,11 @@ const Navbar = () => {
 
   const navItemClass = ({ isActive }) =>
     clsx(
-      "group relative inline-flex items-center gap-1 rounded-full px-2.5 2xl:px-3.5 py-1.5 font-outfit text-xs font-bold uppercase tracking-wider 2xl:tracking-[0.12em] transition-all duration-300 select-none shrink-0",
+      "group relative inline-flex items-center gap-1 rounded-full px-3 2xl:px-4 py-1.5 font-outfit text-[13.5px] 2xl:text-sm font-semibold transition-all duration-300 select-none shrink-0",
       isActive
-        ? "bg-lime-400 text-[#121212] font-black shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
+        ? "bg-lime-400 text-slate-950 font-extrabold shadow-[0_0_18px_rgba(163,230,53,0.65)]"
         : isDark
-          ? "text-zinc-200/90 hover:text-white hover:bg-white/[0.07]"
+          ? "text-zinc-200 hover:text-white hover:bg-white/[0.08]"
           : "text-slate-700 hover:text-slate-950 hover:bg-black/[0.05]",
     );
 
@@ -317,14 +318,14 @@ const Navbar = () => {
               </button>
 
               {/* Logo — CENTERED on mobile via absolute, LEFT on desktop */}
-              <div className="absolute left-1/2 -translate-x-1/2 xl:static xl:translate-x-0 xl:mr-10 xl:order-first">
+              <div className="absolute left-1/2 -translate-x-1/2 xl:static xl:translate-x-0 xl:mr-6 xl:order-first">
                 <Link
                   to="/"
-                  onClick={() => setOpen(false)}
+                  onClick={() => { setOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                   className="group flex items-center shrink-0"
                 >
                   <span className={clsx(
-                    "font-outfit text-[1.4rem] sm:text-[1.7rem] font-black tracking-[0.18em] uppercase select-none transition-all duration-300",
+                    "font-outfit text-[1.4rem] sm:text-[1.6rem] font-black tracking-[0.16em] uppercase select-none transition-all duration-300",
                     "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
                     "drop-shadow-[0_4px_22px_rgba(52,211,153,0.65)] group-hover:drop-shadow-[0_6px_30px_rgba(52,211,153,0.9)] group-hover:scale-[1.03]",
                     "inline-block"
@@ -375,11 +376,11 @@ const Navbar = () => {
                         <NavLink
                           to={item.to || "/"}
                           className={clsx(
-                            "group relative inline-flex items-center gap-1 rounded-full px-2.5 2xl:px-3.5 py-1.5 font-outfit text-xs font-bold uppercase tracking-wider 2xl:tracking-[0.12em] transition-all duration-300 select-none shrink-0",
+                            "group relative inline-flex items-center gap-1 rounded-full px-3 2xl:px-4 py-1.5 font-outfit text-[13.5px] 2xl:text-sm font-semibold transition-all duration-300 select-none shrink-0",
                             isParentActive
-                              ? "bg-lime-400 text-[#121212] font-black shadow-[0_0_20px_rgba(163,230,53,0.65),0_0_4px_rgba(163,230,53,0.4)]"
+                              ? "bg-lime-400 text-slate-950 font-extrabold shadow-[0_0_18px_rgba(163,230,53,0.65)]"
                               : isDark
-                                ? "text-zinc-200/90 hover:text-white hover:bg-white/[0.07]"
+                                ? "text-zinc-200 hover:text-white hover:bg-white/[0.08]"
                                 : "text-slate-700 hover:text-slate-950 hover:bg-black/[0.05]",
                           )}
                         >
@@ -508,17 +509,7 @@ const Navbar = () => {
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
                       className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 p-1 pr-2.5 text-xs font-bold text-slate-800 dark:text-slate-100 hover:border-emerald-500 transition shadow-sm"
                     >
-                      {user.avatar ? (
-                        <img
-                          src={user.avatar}
-                          alt={user.name}
-                          className="h-7 w-7 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-black font-black">
-                          {user.name?.[0]?.toUpperCase() || "U"}
-                        </div>
-                      )}
+                      <UserAvatar user={user} className="h-7 w-7 text-xs" />
                       <span className="hidden xl:inline-block max-w-[65px] 2xl:max-w-[100px] truncate">{user.name.split(" ")[0]}</span>
                     </button>
 
@@ -600,13 +591,19 @@ const Navbar = () => {
               "flex items-center justify-between pb-4 mb-3 border-b shrink-0",
               isDark ? "border-sky-400/15" : "border-slate-200"
             )}>
-              <span className={clsx(
-                "font-outfit text-[1.4rem] font-black tracking-[0.18em] uppercase select-none",
-                "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
-                "drop-shadow-[0_4px_18px_rgba(52,211,153,0.6)]"
-              )}>
-                NIKHIL
-              </span>
+              <Link
+                to="/"
+                onClick={() => { setOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                className="group"
+              >
+                <span className={clsx(
+                  "font-outfit text-[1.4rem] font-black tracking-[0.18em] uppercase select-none",
+                  "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
+                  "drop-shadow-[0_4px_18px_rgba(52,211,153,0.6)] group-hover:drop-shadow-[0_4px_24px_rgba(52,211,153,0.9)]"
+                )}>
+                  NIKHIL
+                </span>
+              </Link>
               <div className="flex items-center gap-2">
                 <motion.button
                   type="button"
@@ -789,21 +786,35 @@ const Navbar = () => {
               "mt-auto space-y-2.5 pt-4 border-t shrink-0",
               isDark ? "border-sky-400/15" : "border-slate-200"
             )}>
+              {/* Google Sign-In — only when not logged in */}
+              {!user && (
+                <button
+                  type="button"
+                  onClick={() => { openSignInModal(); setOpen(false); }}
+                  className={clsx(
+                    "flex w-full items-center justify-center gap-2.5 rounded-xl border py-2.5 text-xs font-bold transition-all duration-200",
+                    isDark
+                      ? "border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20"
+                      : "border-slate-200 bg-white text-slate-800 hover:bg-slate-50 hover:border-slate-300",
+                  )}
+                  aria-label="Sign in with Google"
+                >
+                  {/* Google G icon */}
+                  <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
+                    <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                    <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                    <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                    <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                  </svg>
+                  Sign in with Google
+                </button>
+              )}
+
               {/* User Profile Card on Mobile */}
               {user ? (
                 <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3">
                   <div className="flex items-center gap-3">
-                    {user.avatar ? (
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="h-9 w-9 rounded-full object-cover border border-emerald-500/40"
-                      />
-                    ) : (
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500 text-black font-black text-xs">
-                        {user.name?.[0]?.toUpperCase() || "U"}
-                      </div>
-                    )}
+                    <UserAvatar user={user} className="h-9 w-9 text-sm font-black" />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user.name}</p>
                       <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
