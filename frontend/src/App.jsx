@@ -129,7 +129,7 @@ function App() {
         <BackgroundGrid />
         <div className="relative z-10 flex min-h-screen flex-col">
           {!isAdminRoute ? <Navbar /> : null}
-          <main className="flex-1" style={mainStyle}>
+          <main className="flex-1 min-h-[85vh]" style={mainStyle}>
             <AnimatePresence initial={false}>
               <MotionDiv
                 key={location.pathname}
@@ -150,7 +150,7 @@ function App() {
                 }}
                 className="transform-gpu"
               >
-                <Suspense fallback={null}>
+                <Suspense fallback={<div className="min-h-[85vh] w-full" />}>
                   <Routes location={location}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/about" element={<AboutPage />} />

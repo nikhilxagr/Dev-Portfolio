@@ -139,7 +139,7 @@ function collectSteps(algorithm, inputArr) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Visualizer Bar Component
 // ─────────────────────────────────────────────────────────────────────────────
-const SortBar = ({ value, maxVal, isComparing, isSwapped, isSorted, isPivot, barColor, index }) => {
+const SortBar = ({ value, maxVal, isComparing, isSwapped, isSorted, isPivot, barColor }) => {
   const heightPct = Math.max(4, Math.round((value / maxVal) * 100));
   let bg = "#1e293b";
   if (isSorted) bg = "#22c55e";
@@ -157,7 +157,7 @@ const SortBar = ({ value, maxVal, isComparing, isSwapped, isSorted, isPivot, bar
           height: `${heightPct}%`,
           backgroundColor: bg,
           width: "100%",
-          borderRadius: "4px 4px 0 0",
+          borderRadius: "3px 3px 0 0",
           transition: "height 0.1s ease, background-color 0.1s ease",
           boxShadow: (isComparing || isSwapped || isPivot || isSorted)
             ? `0 0 10px ${bg}88`
@@ -165,7 +165,6 @@ const SortBar = ({ value, maxVal, isComparing, isSwapped, isSorted, isPivot, bar
         }}
         title={`${value}`}
       />
-      {/* Value label for small arrays */}
     </div>
   );
 };
@@ -224,19 +223,19 @@ const MiniVisualizer = ({ algorithm, steps, stepIdx, barColor }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const SortingVisualizer = () => {
   const [algorithm, setAlgorithm] = useState("QuickSort");
-  const [arraySize, setArraySize] = useState(24);
+  const [arraySize, setArraySize] = useState(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 16 : 24));
   const [speed, setSpeed] = useState("Normal");
-  const [inputArray, setInputArray] = useState(() => randomArray(24));
+  const [inputArray, setInputArray] = useState(() => randomArray(typeof window !== "undefined" && window.innerWidth < 640 ? 16 : 24));
   const [steps, setSteps] = useState([]);
   const [stepIdx, setStepIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [mode, setMode] = useState("single"); // "single" | "compare"
-  const intervalRef = useRef(null);
 
   // Compare mode: same steps for all 3 algos
   const [compareSteps, setCompareSteps] = useState({ QuickSort: [], MergeSort: [], HeapSort: [] });
   const [compareStepIdx, setCompareStepIdx] = useState(0);
   const [comparePlaying, setComparePlaying] = useState(false);
+  const intervalRef = useRef(null);
   const compareIntervalRef = useRef(null);
 
   // Precompute steps whenever algo or array changes (single mode)
@@ -312,37 +311,35 @@ const SortingVisualizer = () => {
     <div className="rounded-3xl border border-emerald-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
       
       {/* ── Top Header Bar ── */}
-      <div className="relative px-6 py-5 border-b border-emerald-500/15"
+      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-emerald-500/15"
         style={{ background: "linear-gradient(135deg, #050d08 0%, #030d07 60%, #030b0a 100%)" }}>
-        <div className="absolute top-0 right-0 w-64 h-32 rounded-bl-full opacity-20"
+        <div className="absolute top-0 right-0 w-64 h-32 rounded-bl-full opacity-20 pointer-events-none"
           style={{ background: `radial-gradient(circle, ${barColor}33 0%, transparent 70%)` }} />
         
-        <div className="relative flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2.5 mb-1">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10">
-                <BarChart2 className="text-emerald-400" size={18} />
-              </div>
-              <div>
-                <h2 className="font-display text-lg sm:text-xl font-black uppercase text-white tracking-widest">
-                  Sorting Visualizer
-                </h2>
-                <p className="font-mono text-[10px] text-slate-500">Interactive Step-by-Step Algorithm Execution</p>
-              </div>
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 shrink-0">
+              <BarChart2 className="text-emerald-400" size={18} />
+            </div>
+            <div>
+              <h2 className="font-display text-base sm:text-xl font-black uppercase text-white tracking-wider">
+                Sorting Visualizer
+              </h2>
+              <p className="font-mono text-[10px] text-slate-500">Interactive Step-by-Step Algorithm Execution</p>
             </div>
           </div>
 
-          {/* Mode Toggle */}
-          <div className="flex gap-2 shrink-0">
+          {/* Mode Toggle Buttons */}
+          <div className="flex gap-2 w-full sm:w-auto shrink-0">
             <button
               onClick={() => setMode("single")}
-              className={`rounded-xl border px-4 py-2 font-mono text-xs font-bold transition ${mode === "single" ? "border-emerald-400 bg-emerald-500/20 text-emerald-200 shadow-[0_0_16px_rgba(52,211,153,0.2)]" : "border-slate-700 text-slate-400 hover:text-white hover:border-slate-600"}`}
+              className={`flex-1 sm:flex-initial rounded-xl border px-3 sm:px-4 py-2 font-mono text-xs font-bold transition text-center ${mode === "single" ? "border-emerald-400 bg-emerald-500/20 text-emerald-200 shadow-[0_0_16px_rgba(52,211,153,0.2)]" : "border-slate-700 text-slate-400 hover:text-white hover:border-slate-600"}`}
             >
               ◈ Single Mode
             </button>
             <button
               onClick={startCompare}
-              className={`rounded-xl border px-4 py-2 font-mono text-xs font-bold transition ${mode === "compare" ? "border-cyan-400 bg-cyan-500/20 text-cyan-200 shadow-[0_0_16px_rgba(34,211,238,0.2)]" : "border-slate-700 text-slate-400 hover:text-white hover:border-slate-600"}`}
+              className={`flex-1 sm:flex-initial rounded-xl border px-3 sm:px-4 py-2 font-mono text-xs font-bold transition text-center ${mode === "compare" ? "border-cyan-400 bg-cyan-500/20 text-cyan-200 shadow-[0_0_16px_rgba(34,211,238,0.2)]" : "border-slate-700 text-slate-400 hover:text-white hover:border-slate-600"}`}
             >
               ⊞ Compare All 3
             </button>
@@ -350,13 +347,13 @@ const SortingVisualizer = () => {
         </div>
       </div>
 
-      <div className="p-5 sm:p-7 space-y-6">
+      <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
 
         {/* ── Algorithm Selector (Large Cards) ── */}
         {mode === "single" && (
           <div>
-            <p className="font-mono text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-3">Choose Algorithm</p>
-            <div className="grid grid-cols-3 gap-3">
+            <p className="font-mono text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-2.5">Choose Algorithm</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
               {ALGORITHMS.map((a) => {
                 const isActive = algorithm === a;
                 const c = COMPLEXITY[a];
@@ -364,7 +361,7 @@ const SortingVisualizer = () => {
                   <button
                     key={a}
                     onClick={() => setAlgorithm(a)}
-                    className={`relative flex flex-col items-start gap-1.5 rounded-2xl border p-4 text-left transition-all duration-200 ${
+                    className={`relative flex flex-col items-start gap-1.5 rounded-2xl border p-3.5 sm:p-4 text-left transition-all duration-200 ${
                       isActive
                         ? "shadow-lg"
                         : "border-slate-800 bg-slate-900/40 hover:border-slate-700 hover:bg-slate-900/60"
@@ -375,7 +372,6 @@ const SortingVisualizer = () => {
                       boxShadow: `0 0 24px ${c.color}28`,
                     } : {}}
                   >
-                    {/* Color dot */}
                     <div className="flex items-center justify-between w-full">
                       <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isActive ? c.color : "#334155" }} />
                       {isActive && (
@@ -386,7 +382,7 @@ const SortingVisualizer = () => {
                     </div>
                     <span className="text-sm sm:text-base font-black text-white">{a}</span>
                     <span className="font-mono text-[10px] text-slate-500">{c.avg} avg</span>
-                    <div className="flex gap-1 flex-wrap mt-1">
+                    <div className="flex gap-1 flex-wrap mt-0.5">
                       <span className="rounded bg-slate-800/80 border border-slate-700/50 px-1.5 py-0.5 font-mono text-[9px] text-slate-400">
                         Space: {c.space}
                       </span>
@@ -402,29 +398,32 @@ const SortingVisualizer = () => {
         )}
 
         {/* ── Controls Row ── */}
-        <div className="flex flex-wrap items-center gap-4 p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
+          
           {/* Array size */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between sm:justify-start gap-3">
             <span className="font-mono text-[11px] uppercase text-slate-500 font-bold whitespace-nowrap">Array Size</span>
-            <input
-              type="range" min={8} max={50} value={arraySize}
-              onChange={(e) => { setArraySize(+e.target.value); setInputArray(randomArray(+e.target.value)); }}
-              className="w-24 accent-emerald-400"
-            />
-            <span className="font-mono text-xs font-bold text-white w-6 text-center">{arraySize}</span>
+            <div className="flex items-center gap-2 flex-1 sm:flex-none">
+              <input
+                type="range" min={8} max={40} value={arraySize}
+                onChange={(e) => { setArraySize(+e.target.value); setInputArray(randomArray(+e.target.value)); }}
+                className="w-full sm:w-28 accent-emerald-400 cursor-pointer"
+              />
+              <span className="font-mono text-xs font-bold text-white w-6 text-center">{arraySize}</span>
+            </div>
           </div>
 
-          <div className="w-px h-5 bg-slate-800 hidden sm:block" />
+          <div className="w-px h-5 bg-slate-800 hidden md:block" />
 
           {/* Speed */}
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-500 font-bold">Speed</span>
-            <div className="flex rounded-xl border border-slate-800 overflow-hidden">
+          <div className="flex items-center justify-between sm:justify-start gap-3">
+            <span className="font-mono text-[11px] uppercase text-slate-500 font-bold whitespace-nowrap">Speed</span>
+            <div className="grid grid-cols-4 rounded-xl border border-slate-800 overflow-hidden w-full sm:w-auto text-center">
               {Object.keys(SPEEDS).map((s) => (
                 <button
                   key={s}
                   onClick={() => setSpeed(s)}
-                  className={`px-3 py-1.5 font-mono text-xs font-bold transition ${speed === s ? "bg-emerald-500 text-black" : "bg-slate-900/60 text-slate-400 hover:text-white"}`}
+                  className={`px-2.5 sm:px-3 py-1.5 font-mono text-[11px] sm:text-xs font-bold transition ${speed === s ? "bg-emerald-500 text-black" : "bg-slate-900/60 text-slate-400 hover:text-white"}`}
                 >
                   {s}
                 </button>
@@ -435,7 +434,7 @@ const SortingVisualizer = () => {
           {/* Shuffle */}
           <button
             onClick={regenerate}
-            className="ml-auto flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 font-mono text-xs font-bold text-slate-300 hover:border-emerald-500/60 hover:text-emerald-300 transition"
+            className="w-full md:w-auto ml-0 md:ml-auto flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 font-mono text-xs font-bold text-slate-300 hover:border-emerald-500/60 hover:text-emerald-300 transition"
           >
             <RotateCcw size={14} /> Shuffle Array
           </button>
@@ -445,34 +444,32 @@ const SortingVisualizer = () => {
         {mode === "single" && (
           <>
             {/* Phase + Stats Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800/60 bg-slate-950/40 px-4 py-3">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: barColor }} />
-                <p className="font-mono text-xs text-slate-300 font-medium">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-800/60 bg-slate-950/40 p-3 sm:px-4 sm:py-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: barColor }} />
+                <p className="font-mono text-xs text-slate-200 font-bold truncate">
                   {currentStep.phase || "Press Play to start visualizing"}
                 </p>
               </div>
-              <div className="flex items-center gap-4 font-mono text-[11px] text-slate-500">
-                <span>Step <span className="text-white font-bold">{stepIdx + 1}</span> / {steps.length}</span>
-                <span>•</span>
-                <span><span className="text-white font-bold">{currentStep.comparisons ?? 0}</span> comparisons</span>
-                <span>•</span>
-                <span><span className="font-bold" style={{ color: barColor }}>{progress}%</span> complete</span>
+
+              <div className="grid grid-cols-3 sm:flex items-center justify-between sm:justify-end gap-1 sm:gap-4 font-mono text-[10px] sm:text-[11px] text-slate-400 border-t border-slate-800/60 pt-2 sm:pt-0 sm:border-t-0 text-center sm:text-left">
+                <span>Step <span className="text-white font-bold">{stepIdx + 1}</span>/{steps.length}</span>
+                <span><span className="text-white font-bold">{currentStep.comparisons ?? 0}</span> comps</span>
+                <span><span className="font-bold" style={{ color: barColor }}>{progress}%</span> done</span>
               </div>
             </div>
 
             {/* Progress bar */}
-            <div className="h-1 w-full rounded-full bg-slate-900 overflow-hidden -mt-4">
+            <div className="h-1 w-full rounded-full bg-slate-900 overflow-hidden -mt-3 sm:-mt-4">
               <div
                 className="h-full rounded-full transition-all duration-100"
                 style={{ width: `${progress}%`, backgroundColor: barColor }}
               />
             </div>
 
-            {/* Bar Chart — Taller */}
+            {/* Bar Chart Canvas */}
             <div
-              className="relative flex items-end gap-[3px] sm:gap-1 overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#020b05] to-[#010804] px-3 pt-4 pb-0"
-              style={{ height: 280 }}
+              className="relative flex items-end gap-[2px] sm:gap-1 overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#020b05] to-[#010804] px-2 sm:px-3 pt-3 pb-0 h-[220px] sm:h-[280px]"
             >
               {/* Grid lines */}
               {[25, 50, 75].map((pct) => (
@@ -495,37 +492,35 @@ const SortingVisualizer = () => {
               ))}
             </div>
 
-            {/* Legend + Playback Row */}
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              {/* Legend */}
-              <div className="flex flex-wrap gap-3">
-                {[
-                  { color: barColor, label: "Comparing" },
-                  { color: "#ec4899", label: "Swapping" },
-                  { color: "#f97316", label: "Pivot" },
-                  { color: "#22c55e", label: "Sorted" },
-                  { color: "#1e3a2a", label: "Unsorted", border: true },
-                ].map((l) => (
-                  <div key={l.label} className="flex items-center gap-1.5">
-                    <div className="h-3 w-3 rounded" style={{ backgroundColor: l.color, border: l.border ? "1px solid #334155" : "none" }} />
-                    <span className="font-mono text-[10px] text-slate-400">{l.label}</span>
-                  </div>
-                ))}
-              </div>
+            {/* Legend */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-3">
+              {[
+                { color: barColor, label: "Comparing" },
+                { color: "#ec4899", label: "Swapping" },
+                { color: "#f97316", label: "Pivot" },
+                { color: "#22c55e", label: "Sorted" },
+                { color: "#1e3a2a", label: "Unsorted", border: true },
+              ].map((l) => (
+                <div key={l.label} className="flex items-center gap-1.5">
+                  <div className="h-2.5 w-2.5 rounded-sm shrink-0" style={{ backgroundColor: l.color, border: l.border ? "1px solid #334155" : "none" }} />
+                  <span className="font-mono text-[10px] text-slate-400">{l.label}</span>
+                </div>
+              ))}
             </div>
 
             {/* ── Playback Controls ── */}
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
               <button
                 onClick={() => { setStepIdx(0); setPlaying(false); }}
-                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 font-mono text-xs font-bold text-slate-300 hover:border-slate-600 hover:text-white transition"
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:border-slate-600 hover:text-white transition"
                 title="Reset"
               >
-                <RotateCcw size={14} /> Reset
+                <RotateCcw size={13} /> Reset
               </button>
+
               <button
                 onClick={() => setStepIdx((p) => Math.max(0, p - 1))}
-                className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 font-mono text-xs font-bold text-slate-300 hover:text-white transition"
+                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition"
               >
                 ◀ Prev
               </button>
@@ -533,33 +528,34 @@ const SortingVisualizer = () => {
               {/* Main play button */}
               <button
                 onClick={() => setPlaying((p) => !p)}
-                className="flex items-center gap-2 rounded-2xl px-8 py-3 font-mono text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95"
+                className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0"
                 style={{
                   backgroundColor: barColor,
                   boxShadow: `0 4px 24px ${barColor}55`,
                 }}
               >
-                {playing ? <><Pause size={18} /> Pause</> : <><Play size={18} /> Play</>}
+                {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
               </button>
 
               <button
                 onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))}
-                className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 font-mono text-xs font-bold text-slate-300 hover:text-white transition"
+                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition"
               >
                 Next ▶
               </button>
+
               <button
                 onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }}
-                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 font-mono text-xs font-bold text-slate-300 hover:border-slate-600 hover:text-white transition"
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:border-slate-600 hover:text-white transition"
                 title="Jump to End"
               >
-                <SkipForward size={14} /> End
+                <SkipForward size={13} /> End
               </button>
             </div>
 
             {/* ── Complexity Analysis Panel ── */}
             <div className="rounded-2xl border overflow-hidden" style={{ borderColor: `${barColor}35` }}>
-              <div className="px-5 py-3.5 flex items-center justify-between" style={{ background: `${barColor}12` }}>
+              <div className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5" style={{ background: `${barColor}12` }}>
                 <div className="flex items-center gap-2">
                   <Layers size={15} style={{ color: barColor }} />
                   <span className="font-mono text-xs font-black uppercase tracking-wider" style={{ color: barColor }}>
@@ -577,13 +573,13 @@ const SortingVisualizer = () => {
               </div>
 
               <div className="overflow-x-auto bg-slate-950/60">
-                <table className="w-full font-mono text-sm text-slate-300">
-                  <thead className="bg-slate-900/80 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-800">
+                <table className="w-full font-mono text-xs sm:text-sm text-slate-300 min-w-[480px]">
+                  <thead className="bg-slate-900/80 text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-800">
                     <tr>
-                      <th className="px-5 py-3 text-left">Case</th>
-                      <th className="px-5 py-3 text-left">Time Complexity</th>
-                      <th className="px-5 py-3 text-left">Space Complexity</th>
-                      <th className="px-5 py-3 text-left">Stable Sort</th>
+                      <th className="px-4 py-2.5 text-left">Case</th>
+                      <th className="px-4 py-2.5 text-left">Time Complexity</th>
+                      <th className="px-4 py-2.5 text-left">Space Complexity</th>
+                      <th className="px-4 py-2.5 text-left">Stable Sort</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/40">
@@ -593,14 +589,14 @@ const SortingVisualizer = () => {
                       { label: "Worst Case", time: COMPLEXITY[algorithm].worst, icon: "🔴" },
                     ].map((row) => (
                       <tr key={row.label} className="hover:bg-slate-900/30 transition">
-                        <td className="px-5 py-3.5 font-bold text-white text-xs">
+                        <td className="px-4 py-3 font-bold text-white text-xs">
                           <span className="mr-2">{row.icon}</span>{row.label}
                         </td>
-                        <td className="px-5 py-3.5 font-black text-sm" style={{ color: barColor }}>
+                        <td className="px-4 py-3 font-black text-xs sm:text-sm" style={{ color: barColor }}>
                           {row.time}
                         </td>
-                        <td className="px-5 py-3.5 text-xs text-slate-300">{COMPLEXITY[algorithm].space}</td>
-                        <td className="px-5 py-3.5 text-xs text-slate-300">{COMPLEXITY[algorithm].stable}</td>
+                        <td className="px-4 py-3 text-xs text-slate-300">{COMPLEXITY[algorithm].space}</td>
+                        <td className="px-4 py-3 text-xs text-slate-300">{COMPLEXITY[algorithm].stable}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -615,8 +611,8 @@ const SortingVisualizer = () => {
           <>
             {/* Progress bar */}
             <div className="flex items-center justify-between mb-1">
-              <p className="font-mono text-xs text-cyan-400 font-bold">⊞ Running all 3 algorithms on the same input array</p>
-              <span className="font-mono text-[11px] text-slate-500">
+              <p className="font-mono text-xs text-cyan-400 font-bold truncate">⊞ Running all 3 algorithms on the same array</p>
+              <span className="font-mono text-[11px] text-slate-500 shrink-0">
                 Step <span className="text-white font-bold">{compareStepIdx + 1}</span>
               </span>
             </div>
@@ -629,8 +625,8 @@ const SortingVisualizer = () => {
               />
             </div>
 
-            {/* Three mini visualizers — taller and richer */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Three mini visualizers */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               {ALGORITHMS.map((a) => (
                 <MiniVisualizer
                   key={a}
@@ -643,32 +639,32 @@ const SortingVisualizer = () => {
             </div>
 
             {/* Compare playback controls */}
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
               <button
                 onClick={() => setCompareStepIdx(0)}
-                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 font-mono text-xs font-bold text-slate-300 hover:text-white transition"
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition"
               >
-                <RotateCcw size={14} /> Reset
+                <RotateCcw size={13} /> Reset
               </button>
               <button
                 onClick={() => setCompareStepIdx((p) => Math.max(0, p - 1))}
-                className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 font-mono text-xs font-bold text-slate-300 hover:text-white transition"
+                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition"
               >
                 ◀ Prev
               </button>
               <button
                 onClick={() => setComparePlaying((p) => !p)}
-                className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-8 py-3 font-mono text-sm font-black text-black transition-all hover:scale-105 active:scale-95 shadow-lg"
+                className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl bg-cyan-500 px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all hover:scale-105 active:scale-95 shadow-lg shrink-0"
                 style={{ boxShadow: "0 4px 24px rgba(34,211,238,0.35)" }}
               >
-                {comparePlaying ? <><Pause size={18} /> Pause</> : <><Play size={18} /> Play</>}
+                {comparePlaying ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
               </button>
               <button
                 onClick={() => {
                   const max = Math.max(...ALGORITHMS.map((a) => (compareSteps[a]?.length || 1) - 1));
                   setCompareStepIdx((p) => Math.min(max, p + 1));
                 }}
-                className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 font-mono text-xs font-bold text-slate-300 hover:text-white transition"
+                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition"
               >
                 Next ▶
               </button>
@@ -677,42 +673,42 @@ const SortingVisualizer = () => {
                   const max = Math.max(...ALGORITHMS.map((a) => (compareSteps[a]?.length || 1) - 1));
                   setCompareStepIdx(max);
                 }}
-                className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 font-mono text-xs font-bold text-slate-300 hover:text-white transition"
+                className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition"
               >
-                <SkipForward size={14} /> End
+                <SkipForward size={13} /> End
               </button>
             </div>
 
             {/* Head-to-Head comparison table */}
             <div className="rounded-2xl border border-cyan-500/20 overflow-hidden">
-              <div className="px-5 py-3.5 bg-cyan-500/10 border-b border-cyan-500/20 flex items-center gap-2">
+              <div className="p-3.5 sm:p-4 bg-cyan-500/10 border-b border-cyan-500/20 flex items-center gap-2">
                 <Zap size={14} className="text-cyan-400" />
                 <span className="font-mono text-xs font-black uppercase tracking-wider text-cyan-400">
-                  Head-to-Head Complexity & Steps Comparison
+                  Head-to-Head Complexity &amp; Steps Comparison
                 </span>
               </div>
               <div className="overflow-x-auto bg-slate-950/60">
-                <table className="w-full font-mono text-sm text-slate-300">
-                  <thead className="bg-slate-900/80 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-800">
+                <table className="w-full font-mono text-xs sm:text-sm text-slate-300 min-w-[520px]">
+                  <thead className="bg-slate-900/80 text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-800">
                     <tr>
-                      <th className="px-5 py-3 text-left">Algorithm</th>
-                      <th className="px-5 py-3 text-left">Best</th>
-                      <th className="px-5 py-3 text-left">Average</th>
-                      <th className="px-5 py-3 text-left">Worst</th>
-                      <th className="px-5 py-3 text-left">Space</th>
-                      <th className="px-5 py-3 text-left">Stable</th>
-                      <th className="px-5 py-3 text-left">Total Steps</th>
+                      <th className="px-4 py-2.5 text-left">Algorithm</th>
+                      <th className="px-4 py-2.5 text-left">Best</th>
+                      <th className="px-4 py-2.5 text-left">Average</th>
+                      <th className="px-4 py-2.5 text-left">Worst</th>
+                      <th className="px-4 py-2.5 text-left">Space</th>
+                      <th className="px-4 py-2.5 text-left">Stable</th>
+                      <th className="px-4 py-2.5 text-left">Total Steps</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/40">
                     {ALGORITHMS.map((a) => (
                       <tr key={a} className="hover:bg-slate-900/30 transition">
-                        <td className="px-5 py-3.5 font-black text-base" style={{ color: COMPLEXITY[a].color }}>{a}</td>
-                        <td className="px-5 py-3.5 text-xs">{COMPLEXITY[a].best}</td>
-                        <td className="px-5 py-3.5 text-xs font-bold text-white">{COMPLEXITY[a].avg}</td>
-                        <td className="px-5 py-3.5 text-xs">{COMPLEXITY[a].worst}</td>
-                        <td className="px-5 py-3.5 text-xs">{COMPLEXITY[a].space}</td>
-                        <td className="px-5 py-3.5 text-xs">
+                        <td className="px-4 py-3 font-black text-sm sm:text-base" style={{ color: COMPLEXITY[a].color }}>{a}</td>
+                        <td className="px-4 py-3 text-xs">{COMPLEXITY[a].best}</td>
+                        <td className="px-4 py-3 text-xs font-bold text-white">{COMPLEXITY[a].avg}</td>
+                        <td className="px-4 py-3 text-xs">{COMPLEXITY[a].worst}</td>
+                        <td className="px-4 py-3 text-xs">{COMPLEXITY[a].space}</td>
+                        <td className="px-4 py-3 text-xs">
                           <span className={`rounded px-1.5 py-0.5 font-bold text-[10px] ${
                             COMPLEXITY[a].stable === "Yes"
                               ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-300"
@@ -721,7 +717,7 @@ const SortingVisualizer = () => {
                             {COMPLEXITY[a].stable === "Yes" ? "✓ Yes" : "✗ No"}
                           </span>
                         </td>
-                        <td className="px-5 py-3.5">
+                        <td className="px-4 py-3">
                           <span className="font-black text-white">{compareSteps[a]?.length ?? "—"}</span>
                           <span className="text-slate-500 text-[10px] ml-1">steps</span>
                         </td>
@@ -781,14 +777,14 @@ const DsaLabPage = () => {
 
         {/* Hero */}
         <FadeInUp>
-          <div className="text-center max-w-4xl mx-auto mb-10">
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
-              DATA STRUCTURE &{" "}
+          <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-10">
+            <h1 className="font-display text-3xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+              DATA STRUCTURE &amp;{" "}
               <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
                 ALGORITHM LAB
               </span>
             </h1>
-            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-3 text-xs sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
               Interactive step-by-step algorithm visualizers for sorting, graph traversal, and dynamic programming with full complexity analysis.
             </p>
           </div>
@@ -796,8 +792,8 @@ const DsaLabPage = () => {
 
         {/* LIVE: Sorting & Space Complexity Visualizer */}
         <FadeInUp delay={0.1}>
-          <div className="mb-6">
-            <div className="flex items-center gap-3 mb-2">
+          <div className="mb-5 sm:mb-6">
+            <div className="flex items-center gap-3 mb-1.5">
               <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                 // LIVE LAB MODULE — ACTIVE
               </span>
@@ -805,8 +801,8 @@ const DsaLabPage = () => {
                 🟢 Live
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Sorting & Space Complexity Visualizer
+            <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+              Sorting &amp; Space Complexity Visualizer
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
               QuickSort · MergeSort · HeapSort — step-by-step with memory pointer highlights and complexity analysis.
@@ -817,11 +813,11 @@ const DsaLabPage = () => {
         </FadeInUp>
 
         {/* Planned Labs */}
-        <div className="mt-16 mb-6">
+        <div className="mt-14 sm:mt-16 mb-5 sm:mb-6">
           <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
             // UPCOMING LAB MODULES
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+          <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
             Next on the Roadmap
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
@@ -829,13 +825,13 @@ const DsaLabPage = () => {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
           {UPCOMING_LABS.map((lab) => {
             const Icon = lab.icon;
             return (
               <div
                 key={lab.id}
-                className="group relative flex flex-col justify-between rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-xl backdrop-blur-xl transition-all duration-300 dark:border-emerald-500/30 dark:bg-[#030d07]/95"
+                className="group relative flex flex-col justify-between rounded-3xl border border-slate-200 bg-white/95 p-5 sm:p-6 shadow-xl backdrop-blur-xl transition-all duration-300 dark:border-emerald-500/30 dark:bg-[#030d07]/95"
               >
                 <div>
                   <div className="flex items-center justify-between gap-3 mb-4">
@@ -846,14 +842,14 @@ const DsaLabPage = () => {
                       {lab.status}
                     </span>
                   </div>
-                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
+                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-snug">
                     {lab.title}
                   </h3>
                   <p className="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                     {lab.desc}
                   </p>
                 </div>
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+                <div className="mt-5 sm:mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80">
                   <div className="flex flex-wrap gap-1.5">
                     {lab.tags.map((t) => (
                       <span

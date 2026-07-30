@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useTheme } from "@/context/ThemeContext";
 
 const VISIBILITY_SCROLL_OFFSET = 180;
 
@@ -26,6 +27,7 @@ const getScrollMetrics = () => {
 
 const ScrollProgressButton = () => {
   const location = useLocation();
+  const { isDark } = useTheme();
   const [{ progress, isVisible }, setScrollState] = useState(() => {
     const metrics = getScrollMetrics();
     return { progress: metrics.progress, isVisible: metrics.isVisible };
@@ -69,6 +71,10 @@ const ScrollProgressButton = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const ringGradient = isDark
+    ? `conic-gradient(#34d399 ${progressAngle}deg, rgba(255,255,255,0.12) ${progressAngle}deg 360deg)`
+    : `conic-gradient(#059669 ${progressAngle}deg, rgba(0,0,0,0.12) ${progressAngle}deg 360deg)`;
+
   return (
     <div
       className={`pointer-events-none fixed bottom-5 right-4 z-50 transition-all duration-300 sm:bottom-7 sm:right-6 ${
@@ -79,24 +85,32 @@ const ScrollProgressButton = () => {
         type="button"
         onClick={handleScrollToTop}
         aria-label={`Back to top. Page progress ${progressPercent}%`}
-        className="pointer-events-auto group relative h-14 w-14 overflow-hidden rounded-full border border-cyan-300/35 bg-slate-950/75 shadow-[0_16px_36px_-20px_rgba(34,211,238,0.9)] backdrop-blur focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70"
+        className={`pointer-events-auto group relative h-13 w-13 sm:h-14 sm:w-14 overflow-hidden rounded-full border backdrop-blur transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 ${
+          isDark
+            ? "border-emerald-500/30 bg-[#050d14]/90 shadow-[0_8px_25px_rgba(52,211,153,0.3)] focus-visible:ring-emerald-400"
+            : "border-emerald-500/40 bg-white/95 shadow-[0_8px_25px_rgba(16,185,129,0.25)] focus-visible:ring-emerald-600"
+        }`}
       >
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-[2px] rounded-full"
-          style={{
-            background: `conic-gradient(rgba(96,165,250,0.98) ${progressAngle}deg, rgba(148,163,184,0.26) ${progressAngle}deg 360deg)`,
-          }}
+          style={{ background: ringGradient }}
         />
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-[6px] rounded-full border border-cyan-300/20 bg-slate-900/90"
+          className={`pointer-events-none absolute inset-[5px] rounded-full border ${
+            isDark
+              ? "border-emerald-500/20 bg-[#030a05]"
+              : "border-emerald-500/30 bg-slate-50"
+          }`}
         />
 
         <span className="relative z-10 inline-flex h-full w-full items-center justify-center">
           <ArrowUp
             size={18}
-            className="text-cyan-100 transition-transform duration-300 group-hover:-translate-y-0.5"
+            className={`transition-transform duration-300 group-hover:-translate-y-0.5 ${
+              isDark ? "text-emerald-400" : "text-emerald-700 font-black"
+            }`}
           />
         </span>
       </button>

@@ -116,7 +116,6 @@ body,
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -133,6 +132,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior-y: none;
+}
+
+/* HARDWARE ACCELERATION & 60FPS SCROLL PERFORMANCE */
+.card-surface {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 a {
