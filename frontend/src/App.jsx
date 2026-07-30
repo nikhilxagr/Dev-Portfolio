@@ -77,14 +77,22 @@ function App() {
   const handleLoaderComplete = () => {
     if (typeof window !== "undefined") {
       window.localStorage.setItem(LOADER_VISIT_KEY, "1");
+      window.scrollTo(0, 0);
     }
 
     setShowLoader(false);
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
     window.scrollTo(0, 0);
-  }, [location.pathname]);
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname, showLoader]);
 
   useEffect(() => {
     if (isAdminRoute || showLoader) {

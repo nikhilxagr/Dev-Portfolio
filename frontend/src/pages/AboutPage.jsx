@@ -11,6 +11,7 @@ import {
   STATS_METRICS,
 } from "@/constants/siteData";
 import { useTheme } from "@/context/ThemeContext";
+import { GitHubStreakCard, LeetCodeStatsCard, TryHackMeBadgeCard } from "@/components/ui/StatCardImage";
 
 const aboutIdentityPoints = [
   `Education: ${SITE_PROFILE.education}`,
@@ -360,12 +361,7 @@ const AboutPage = () => {
                   </a>
                 </div>
                 <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-emerald-500/20 dark:bg-slate-950">
-                  <img
-                    src={githubStreakCardUrl}
-                    alt={`GitHub streak stats for ${githubUsername}`}
-                    className="block h-auto w-full"
-                    loading="lazy"
-                  />
+                  <GitHubStreakCard isDark={isDark} username={githubUsername} />
                 </div>
               </article>
 
@@ -385,12 +381,7 @@ const AboutPage = () => {
                   </a>
                 </div>
                 <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-emerald-500/20 dark:bg-slate-950">
-                  <img
-                    src={leetcodeCardUrl}
-                    alt={`LeetCode stats for ${leetcodeUsername}`}
-                    className="block h-auto w-full"
-                    loading="lazy"
-                  />
+                  <LeetCodeStatsCard isDark={isDark} username={leetcodeUsername} />
                 </div>
               </article>
 
@@ -413,12 +404,7 @@ const AboutPage = () => {
                   {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
                 </div>
                 <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-emerald-500/20 dark:bg-slate-950">
-                  <img
-                    src={tryHackMeCardUrl}
-                    alt={`TryHackMe badge for ${tryHackMeUsername}`}
-                    className="block h-auto w-full"
-                    loading="lazy"
-                  />
+                  <TryHackMeBadgeCard username={tryHackMeUsername} />
                 </div>
               </article>
             </div>

@@ -7,6 +7,10 @@ import App from './App.jsx'
 import { ThemeProvider } from '@/context/ThemeContext'
 import { UserAuthProvider } from '@/context/UserAuthContext'
 
+if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual';
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>

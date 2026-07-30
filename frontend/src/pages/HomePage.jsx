@@ -33,6 +33,7 @@ import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 import ProjectCard from "@/components/ui/ProjectCard";
 import BlogCard from "@/components/ui/BlogCard";
+import { GitHubStreakCard, LeetCodeStatsCard, TryHackMeBadgeCard } from "@/components/ui/StatCardImage";
 import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { StaggerGrid, StaggerItem } from "@/components/animations/StaggerGrid";
@@ -1326,7 +1327,7 @@ const HomePage = () => {
                 <a href={QUICK_CONTACT.github} target="_blank" rel="noreferrer" className="text-xs font-bold text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-colors">Open ↗</a>
               </div>
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-green-400/18 dark:bg-[#050d14] p-2">
-                <img src={githubStreakCardUrl} alt={`GitHub streak stats for ${githubUsername}`} className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async" referrerPolicy="no-referrer" />
+                <GitHubStreakCard isDark={isDark} username={githubUsername} />
               </div>
             </article>
 
@@ -1336,7 +1337,7 @@ const HomePage = () => {
                 <a href={QUICK_CONTACT.leetcode} target="_blank" rel="noreferrer" className="text-xs font-bold text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-colors">Open ↗</a>
               </div>
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-green-400/18 dark:bg-[#050d14] p-2">
-                <img src={leetcodeCardUrl} alt={`LeetCode stats for ${leetcodeUsername}`} className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async" referrerPolicy="no-referrer" />
+                <LeetCodeStatsCard isDark={isDark} username={leetcodeUsername} />
               </div>
             </article>
 
@@ -1349,7 +1350,7 @@ const HomePage = () => {
                 {tryHackMeMetric?.value || "Top 1%"} on TryHackMe — 275 Rooms
               </div>
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-green-400/18 dark:bg-[#050d14] p-2">
-                <img src={tryHackMeCardUrl} alt={`TryHackMe badge for ${tryHackMeUsername}`} className="block h-auto w-full transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async" referrerPolicy="no-referrer" />
+                <TryHackMeBadgeCard username={tryHackMeUsername} />
               </div>
             </article>
           </div>

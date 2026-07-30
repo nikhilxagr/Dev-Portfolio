@@ -43,12 +43,11 @@ export const LenisProvider = ({ children }) => {
     };
   }, []);
 
-  // Scroll to top smoothly on route navigation
+  // Scroll to top instantly on route navigation & page load
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     if (lenisRef.current) {
       lenisRef.current.scrollTo(0, { immediate: true });
-    } else {
-      window.scrollTo(0, 0);
     }
   }, [location.pathname]);
 
