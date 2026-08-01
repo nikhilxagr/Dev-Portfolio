@@ -345,68 +345,9 @@ const AboutPage = () => {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {/* GitHub Card */}
-              <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-                    GitHub Streak
-                  </h3>
-                  <a
-                    href={QUICK_CONTACT.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
-                  >
-                    Open ↗
-                  </a>
-                </div>
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-emerald-500/20 dark:bg-slate-950">
-                  <GitHubStreakCard isDark={isDark} username={githubUsername} />
-                </div>
-              </article>
-
-              {/* LeetCode Card */}
-              <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-                    LeetCode Stats
-                  </h3>
-                  <a
-                    href={QUICK_CONTACT.leetcode}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
-                  >
-                    Open ↗
-                  </a>
-                </div>
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-emerald-500/20 dark:bg-slate-950">
-                  <LeetCodeStatsCard isDark={isDark} username={leetcodeUsername} />
-                </div>
-              </article>
-
-              {/* TryHackMe Card */}
-              <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80 md:col-span-2 xl:col-span-1">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-                    TryHackMe Badges
-                  </h3>
-                  <a
-                    href={QUICK_CONTACT.tryhackme}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
-                  >
-                    Open ↗
-                  </a>
-                </div>
-                <div className="mb-2 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-                  {tryHackMeMetric?.value || "Top 1%"} on TryHackMe
-                </div>
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-emerald-500/20 dark:bg-slate-950">
-                  <TryHackMeBadgeCard username={tryHackMeUsername} />
-                </div>
-              </article>
+              <GitHubStreakCard username={githubUsername} profileUrl={QUICK_CONTACT.github} />
+              <LeetCodeStatsCard username={leetcodeUsername} profileUrl={QUICK_CONTACT.leetcode} />
+              <TryHackMeBadgeCard username={tryHackMeUsername} profileUrl={QUICK_CONTACT.tryhackme} />
             </div>
           </FadeInUp>
         </div>

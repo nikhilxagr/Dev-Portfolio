@@ -17,7 +17,12 @@
   <link rel="dns-prefetch" href="https://portfolio-api.onrender.com" />
   <link rel="preload" as="image" href="/images/profile/nikhil-upload-hero.webp" type="image/webp" fetchpriority="high" />
   <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Outfit:wght@700;800;900&display=swap" />
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Outfit:wght@700;800;900&display=swap"
+    media="print" onload="this.media='all'" />
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Outfit:wght@700;800;900&display=swap" />
+  </noscript>
   <meta name="application-name" content="Nikhil Agrahari Portfolio" />
   <meta name="apple-mobile-web-app-title" content="Nikhil Agrahari Portfolio" />
   <meta name="description"
@@ -88,11 +93,23 @@
       }
     ]
   </script>
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="ed9a3d0c-4fa4-4fff-b20a-242118e737ec"></script>
 </head>
 
 <body>
   <div id="root"></div>
+  <script>
+    (function() {
+      try {
+        var s = document.createElement('script');
+        s.async = true;
+        s.defer = true;
+        s.src = 'https://cloud.umami.is/script.js';
+        s.setAttribute('data-website-id', 'ed9a3d0c-4fa4-4fff-b20a-242118e737ec');
+        s.onerror = function() {};
+        document.head.appendChild(s);
+      } catch(e) {}
+    })();
+  </script>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 

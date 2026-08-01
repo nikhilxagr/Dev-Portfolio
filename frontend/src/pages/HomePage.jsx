@@ -1320,39 +1320,10 @@ const HomePage = () => {
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Live profile cards showing real progress</p>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
-            <article className="group h-full rounded-2xl border border-slate-200 bg-white dark:bg-[#050d14] shadow-md dark:border-green-400/22 dark:shadow-none p-4 sm:p-5">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">GitHub Streak</h3>
-                <a href={QUICK_CONTACT.github} target="_blank" rel="noreferrer" className="text-xs font-bold text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-colors">Open ↗</a>
-              </div>
-              <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-green-400/18 dark:bg-[#050d14] p-2">
-                <GitHubStreakCard isDark={isDark} username={githubUsername} />
-              </div>
-            </article>
-
-            <article className="group h-full rounded-2xl border border-slate-200 bg-white dark:bg-[#050d14] shadow-md dark:border-green-400/22 dark:shadow-none p-4 sm:p-5">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">LeetCode Stats</h3>
-                <a href={QUICK_CONTACT.leetcode} target="_blank" rel="noreferrer" className="text-xs font-bold text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-colors">Open ↗</a>
-              </div>
-              <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-green-400/18 dark:bg-[#050d14] p-2">
-                <LeetCodeStatsCard isDark={isDark} username={leetcodeUsername} />
-              </div>
-            </article>
-
-            <article className="group h-full rounded-2xl border border-slate-200 bg-white dark:bg-[#050d14] shadow-md dark:border-green-400/22 dark:shadow-none p-4 sm:p-5 md:col-span-2 xl:col-span-1">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">TryHackMe Proof</h3>
-                <a href={QUICK_CONTACT.tryhackme} target="_blank" rel="noreferrer" className="text-xs font-bold text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-colors">Open ↗</a>
-              </div>
-              <div className="mb-3 inline-flex rounded-full border border-green-500/30 bg-green-500/10 text-green-700 dark:border-green-400/40 dark:bg-green-400/10 dark:text-green-300 px-3 py-1 text-xs font-bold">
-                {tryHackMeMetric?.value || "Top 1%"} on TryHackMe — 275 Rooms
-              </div>
-              <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-green-400/18 dark:bg-[#050d14] p-2">
-                <TryHackMeBadgeCard username={tryHackMeUsername} />
-              </div>
-            </article>
+          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <GitHubStreakCard username={githubUsername} profileUrl={QUICK_CONTACT.github} />
+            <LeetCodeStatsCard username={leetcodeUsername} profileUrl={QUICK_CONTACT.leetcode} />
+            <TryHackMeBadgeCard username={tryHackMeUsername} profileUrl={QUICK_CONTACT.tryhackme} />
           </div>
         </FadeInUp>
       </section>
@@ -1462,9 +1433,10 @@ const HomePage = () => {
                         href={blog.url || `/blog/${blog.slug}`}
                         target="_blank"
                         rel="noreferrer"
+                        aria-label={`Read article: ${blog.title}`}
                         className="mt-4 inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800 hover:text-green-600 dark:text-slate-300 dark:hover:text-green-400 transition-colors"
                       >
-                        Read More <ArrowRight size={11} />
+                        Read Article <ArrowRight size={11} />
                       </a>
                     </div>
                   </article>
