@@ -71,12 +71,12 @@ function App() {
       return false;
     }
 
-    return window.localStorage.getItem(LOADER_VISIT_KEY) !== "1";
+    return window.sessionStorage.getItem(LOADER_VISIT_KEY) !== "1";
   });
 
   const handleLoaderComplete = () => {
     if (typeof window !== "undefined") {
-      window.localStorage.setItem(LOADER_VISIT_KEY, "1");
+      window.sessionStorage.setItem(LOADER_VISIT_KEY, "1");
       window.scrollTo(0, 0);
     }
 
@@ -164,10 +164,15 @@ function App() {
                     <Route path="/how-i-build" element={<HowIBuildPage />} />
                     <Route path="/experiments" element={<ExperimentsPage />} />
                     <Route path="/security" element={<SecurityPage />} />
+                    <Route path="/experiments/security-labs" element={<SecurityPage />} />
                     <Route path="/terminal" element={<TerminalPage />} />
+                    <Route path="/experiments/terminal" element={<TerminalPage />} />
                     <Route path="/cyber-tools" element={<CyberToolsPage />} />
+                    <Route path="/experiments/tools" element={<CyberToolsPage />} />
                     <Route path="/dsa-lab" element={<DsaLabPage />} />
+                    <Route path="/experiments/dsa" element={<DsaLabPage />} />
                     <Route path="/methodology" element={<MethodologyPage />} />
+                    <Route path="/experiments/methodology" element={<MethodologyPage />} />
                     <Route path="/blog" element={<BlogPage />} />
                     <Route path="/blog/:slug" element={<BlogDetailsPage />} />
                     <Route path="/services" element={<ServicesPage />} />

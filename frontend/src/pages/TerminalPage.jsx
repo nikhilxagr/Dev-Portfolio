@@ -95,7 +95,12 @@ Status: Open for Software Engineering, Full Stack & Application Security Roles.`
   LeetCode: leetcode.com/u/nikhilxagr/
   TryHackMe: tryhackme.com/p/nikhilxagr`,
 
-  whoami: `guest@nikhil-portfolio ~ privileged_visitor (Level 1 ACCESS)`,
+  whoami: `Nikhil Agrahari (@nikhilxagr)
+  Full-Stack Web Developer & Security-First Engineer
+  Education : BCA (Bachelor of Computer Applications) @ BBD University, Lucknow
+  Location  : Lucknow, Uttar Pradesh, India 🇮🇳
+  Status    : Open for Software Engineering, Full Stack & Application Security Roles
+  Access    : Authenticated Developer Session [UID: 1001]`,
 
   sudo: `[SECURITY NOTICE] Access denied: Root privileges required for kernel modification. Incident logged to security audit trail.`,
 
@@ -124,6 +129,22 @@ const TerminalPage = () => {
 
   const terminalBodyRef = useRef(null);
   const inputRef = useRef(null);
+
+  const handleWheel = (e) => {
+    const el = terminalBodyRef.current;
+    if (!el) return;
+
+    const isScrollable = el.scrollHeight > el.clientHeight;
+    if (!isScrollable) return;
+
+    const isAtTop = el.scrollTop <= 0 && e.deltaY < 0;
+    const isAtBottom =
+      Math.abs(el.scrollHeight - el.scrollTop - el.clientHeight) <= 4 && e.deltaY > 0;
+
+    if (!isAtTop && !isAtBottom) {
+      e.stopPropagation();
+    }
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
@@ -283,6 +304,7 @@ const TerminalPage = () => {
           <div
             className="overflow-hidden rounded-3xl border-2 border-emerald-500/40 dark:border-emerald-500/35 bg-[#03080c] shadow-[0_24px_80px_rgba(0,20,10,0.3)] dark:shadow-[0_24px_80px_rgba(0,10,5,0.85)] flex flex-col h-[520px] sm:h-[620px]"
             onClick={() => inputRef.current?.focus()}
+            onWheel={handleWheel}
           >
             {/* Terminal header */}
             <div className="flex items-center justify-between border-b border-emerald-500/20 bg-[#061218]/90 px-4 sm:px-6 py-3.5 shrink-0">

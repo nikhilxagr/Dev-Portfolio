@@ -324,12 +324,15 @@ const Navbar = () => {
                   onClick={() => { setOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                   className="group flex items-center shrink-0"
                 >
-                  <span className={clsx(
-                    "font-outfit text-[1.4rem] sm:text-[1.6rem] font-black tracking-[0.16em] uppercase select-none transition-all duration-300",
-                    "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
-                    "drop-shadow-[0_4px_22px_rgba(52,211,153,0.65)] group-hover:drop-shadow-[0_6px_30px_rgba(52,211,153,0.9)] group-hover:scale-[1.03]",
-                    "inline-block"
-                  )}>
+                  <span
+                    id="navbar-logo-text"
+                    className={clsx(
+                      "font-outfit text-[1.4rem] sm:text-[1.6rem] font-black tracking-[0.16em] uppercase select-none transition-all duration-300",
+                      "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
+                      "drop-shadow-[0_4px_22px_rgba(52,211,153,0.65)] group-hover:drop-shadow-[0_6px_30px_rgba(52,211,153,0.9)] group-hover:scale-[1.03]",
+                      "inline-block"
+                    )}
+                  >
                     NIKHIL
                   </span>
                 </Link>
@@ -363,7 +366,11 @@ const Navbar = () => {
 
                     const isParentActive =
                       location.pathname.startsWith("/experiments") ||
-                      location.pathname.startsWith("/security");
+                      location.pathname.startsWith("/security") ||
+                      location.pathname.startsWith("/terminal") ||
+                      location.pathname.startsWith("/cyber-tools") ||
+                      location.pathname.startsWith("/dsa") ||
+                      location.pathname.startsWith("/methodology");
 
                     return (
                       <div
@@ -392,13 +399,8 @@ const Navbar = () => {
 
                         {isDropdownOpen && (
                           <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2.5 w-[330px] z-50">
-                            <div className={clsx(
-                              "rounded-3xl border p-3 shadow-[0_20px_50px_rgba(0,10,2,0.85)] backdrop-blur-2xl transition-all duration-300 animate-fadeIn",
-                              isDark
-                                ? "border-emerald-500/30 bg-[#030d07]/95 text-white shadow-[0_16px_50px_rgba(0,10,2,0.9)]"
-                                : "border-slate-200 bg-white/95 text-slate-900 shadow-xl",
-                            )}>
-                              <div className="px-3 py-1.5 font-mono text-[10px] uppercase font-bold text-emerald-500 dark:text-emerald-400 tracking-widest border-b border-emerald-500/20 mb-2">
+                            <div className="rounded-3xl border border-slate-200/90 dark:border-emerald-500/30 bg-white/98 dark:bg-[#030d07]/95 text-slate-900 dark:text-white shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:shadow-[0_16px_50px_rgba(0,10,2,0.9)] backdrop-blur-2xl transition-all duration-300 animate-fadeIn ring-1 ring-black/5 dark:ring-transparent">
+                              <div className="px-3 py-1.5 font-mono text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-widest border-b border-slate-200/60 dark:border-emerald-500/20 mb-2">
                                 // {item.label.toUpperCase()}
                               </div>
                               <div className="space-y-1">
@@ -412,26 +414,22 @@ const Navbar = () => {
                                       className={({ isActive }) => clsx(
                                         "group/sub flex items-center justify-between gap-3 rounded-2xl p-2.5 sm:p-3 transition-all duration-300 ease-out border font-outfit",
                                         isActive
-                                          ? isDark
-                                            ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-300 font-extrabold shadow-[0_0_20px_rgba(52,211,153,0.25)]"
-                                            : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 font-extrabold"
-                                          : isDark
-                                            ? "border-transparent text-slate-200/90 hover:bg-white/[0.08] hover:border-emerald-500/30 hover:text-white"
-                                            : "border-transparent text-slate-800 hover:bg-slate-100 hover:border-slate-300 hover:text-slate-950",
+                                          ? "bg-emerald-50 dark:bg-emerald-500/15 border-emerald-400/50 dark:border-emerald-500/40 text-emerald-950 dark:text-emerald-300 font-extrabold shadow-sm dark:shadow-[0_0_20px_rgba(52,211,153,0.25)]"
+                                          : "border-transparent text-slate-800 dark:text-slate-200/90 hover:bg-emerald-50/70 dark:hover:bg-white/[0.08] hover:border-emerald-300/40 dark:hover:border-emerald-500/30 hover:text-slate-950 dark:hover:text-white",
                                       )}
                                     >
                                       <div className="flex items-center gap-3">
-                                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover/sub:scale-110 group-hover/sub:bg-emerald-500 group-hover/sub:text-black transition-all duration-300 shadow-sm">
+                                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover/sub:scale-110 group-hover/sub:bg-emerald-500 group-hover/sub:text-white dark:group-hover/sub:text-black transition-all duration-300 shadow-sm">
                                           <SubIcon size={16} />
                                         </span>
-                                        <span className="text-xs sm:text-sm font-extrabold tracking-wide">
+                                        <span className="text-xs sm:text-sm font-extrabold tracking-wide text-slate-900 dark:text-slate-100">
                                           {sub.label}
                                         </span>
                                       </div>
 
                                       <ChevronRight
                                         size={15}
-                                        className="text-slate-400 dark:text-slate-500 opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 group-hover/sub:text-emerald-400 transition-all duration-200 shrink-0"
+                                        className="text-slate-400 dark:text-slate-500 opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 group-hover/sub:text-emerald-500 dark:group-hover/sub:text-emerald-400 transition-all duration-200 shrink-0"
                                       />
                                     </NavLink>
                                   );
