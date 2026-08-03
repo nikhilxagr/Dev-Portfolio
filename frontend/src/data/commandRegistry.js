@@ -1,0 +1,18 @@
+export const COMMAND_REGISTRY = [
+  { id: "nav-home", label: "Go to Home Page", category: "Navigation", route: "/" },
+  { id: "nav-about", label: "Go to About Page", category: "Navigation", route: "/about" },
+  { id: "nav-skills", label: "Go to Skills Page", category: "Navigation", route: "/skills" },
+  { id: "nav-projects", label: "Go to Projects Page", category: "Navigation", route: "/projects" },
+  { id: "nav-journey", label: "Go to Journey Timeline", category: "Navigation", route: "/journey" },
+  { id: "nav-blog", label: "Go to Technical Articles & Blog", category: "Navigation", route: "/blog" },
+  { id: "nav-services", label: "Go to Services & Pricing", category: "Navigation", route: "/services" },
+  { id: "nav-contact", label: "Go to Contact & Social Links", category: "Navigation", route: "/contact" },
+  { id: "exp-security", label: "Security Labs & Writeups", category: "Experiments", route: "/experiments/security-labs" },
+  { id: "exp-terminal", label: "Interactive Dev Terminal", category: "Experiments", route: "/experiments/terminal" },
+  { id: "exp-dsa", label: "Data Structure & Algorithm Lab", category: "Experiments", route: "/experiments/dsa" },
+  { id: "exp-tools", label: "Cyber Security Tools & Breach Checker", category: "Experiments", route: "/experiments/tools" },
+  { id: "exp-methodology", label: "Security Methodology Documentation", category: "Experiments", route: "/experiments/methodology" },
+  { id: "action-resume", label: "Download Full-Stack Resume", category: "Actions", action: "DOWNLOAD_RESUME" },
+  { id: "action-github", label: "Open GitHub Profile", category: "Actions", externalUrl: "https://github.com/nikhilxagr" },
+  { id: "action-linkedin", label: "Open LinkedIn Profile", category: "Actions", externalUrl: "https://www.linkedin.com/in/nikhilxagr/" },
+];

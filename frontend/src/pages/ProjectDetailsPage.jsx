@@ -11,7 +11,7 @@ import { getProjectBySlug } from "@/services/projects.service";
 import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createProjectSchema } from "@/utils/seo";
-import { SIGNATURE_PROJECTS } from "@/constants/siteData";
+import { SIGNATURE_PROJECTS } from "@/data/projectsData";
 
 const ProjectDetailsPage = () => {
   const { slug } = useParams();

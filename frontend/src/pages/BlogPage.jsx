@@ -9,7 +9,7 @@ import FadeInUp from "@/components/animations/FadeInUp";
 import { getBlogs } from "@/services/blogs.service";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";
-import { BLOG_LINKS } from "@/constants/siteData";
+import { BLOG_POSTS as BLOG_LINKS } from "@/data/blogsData";
 
 const matchesBlogSearch = (blog, currentKeyword) => {
   const keyword = currentKeyword.trim().toLowerCase();

@@ -22,12 +22,9 @@ import {
   Wrench,
   X,
 } from "lucide-react";
-import {
-  BLOG_LINKS,
-  NAV_LINKS,
-  SIGNATURE_PROJECTS,
-  SKILL_GROUPS,
-} from "@/constants/siteData";
+import { NAV_LINKS, SKILL_GROUPS } from "@/constants/siteData";
+import { SIGNATURE_PROJECTS } from "@/data/projectsData";
+import { BLOG_POSTS as BLOG_LINKS } from "@/data/blogsData";
 import { useTheme } from "@/context/ThemeContext";
 import clsx from "clsx";
 

@@ -16,7 +16,6 @@ import RouteErrorBoundary from "@/components/RouteErrorBoundary";
 import { prewarmBackendForCheckout } from "@/services/payment.service";
 import { prefetchAllRoutesIdle } from "@/utils/prefetchRoute";
 
-// Route-Level Lazy Loading — Non-critical pages dynamically imported as async chunks
 const HomePage = lazy(() => import("@/pages/HomePage.jsx"));
 const AboutPage = lazy(() => import("@/pages/AboutPage.jsx"));
 const SkillsPage = lazy(() => import("@/pages/SkillsPage.jsx"));
@@ -47,12 +46,11 @@ const AdminLoginPage = lazy(() => import("@/pages/AdminLoginPage.jsx"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage.jsx"));
 const HowIBuildPage = lazy(() => import("@/pages/HowIBuildPage.jsx"));
 const AuthCallbackPage = lazy(() => import("@/pages/AuthCallbackPage.jsx"));
-const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.jsx"));
+import NotFoundPage from "@/pages/NotFoundPage.jsx";
 
 const LOADER_VISIT_KEY = "portfolio_loader_seen";
 const MotionDiv = motion.div;
 
-// Clean invisible route fallback — eliminates skeleton flash & CLS for smooth seamless page transitions
 const RouteFallback = () => (
   <div className="min-h-[85vh] w-full" aria-hidden="true" />
 );
@@ -146,22 +144,14 @@ function App() {
             <AnimatePresence mode="wait">
               <MotionDiv
                 key={location.pathname}
-                initial={
-                  prefersReducedMotion
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: 4 }
-                }
+                initial={{ opacity: 1 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={
-                  prefersReducedMotion
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: -2 }
-                }
+                exit={{ opacity: 0 }}
                 transition={{
-                  duration: 0.08,
+                  duration: 0.15,
                   ease: "easeOut",
                 }}
-                className="transform-gpu will-change-transform"
+                className="transform-gpu"
               >
                 {/* Route-Level Error Boundary + Invisible Suspense Fallback (Zero Dotted Flash) */}
                 <RouteErrorBoundary>

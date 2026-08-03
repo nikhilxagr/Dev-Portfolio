@@ -11,7 +11,7 @@ import { getBlogBySlug } from "@/services/blogs.service";
 import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBlogPostingSchema, createBreadcrumbSchema } from "@/utils/seo";
-import { BLOG_LINKS } from "@/constants/siteData";
+import { BLOG_POSTS as BLOG_LINKS } from "@/data/blogsData";
 
 const BlogDetailsPage = () => {
   const { slug } = useParams();

@@ -97,14 +97,9 @@ const AboutSection = () => {
             <article className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-lg dark:border-green-400/25 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#082218] dark:to-[#050d14] dark:shadow-none p-6 sm:p-7 backdrop-blur-md">
               <div className="pointer-events-none absolute -top-12 -right-10 h-36 w-36 rounded-full bg-green-500/10 dark:bg-green-400/12 blur-3xl" />
               <div className="relative">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-green-500/30 bg-green-500/10 text-green-600 dark:border-green-400/35 dark:bg-green-400/12 dark:text-green-400">
-                    <Code2 size={22} />
-                  </span>
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-green-600/70 dark:text-green-400/70">Role 01</p>
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">Full Stack Developer</h4>
-                  </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-green-600/70 dark:text-green-400/70">Role 01</p>
+                  <h4 className="text-lg font-bold text-slate-900 dark:text-white">Full Stack Developer</h4>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {["React", "Node.js", "MongoDB", "Express", "Next.js"].map(t => (
@@ -130,14 +125,9 @@ const AboutSection = () => {
             <article className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-lg dark:border-cyan-500/25 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#081e2e] dark:to-[#050d14] dark:shadow-none p-6 sm:p-7 backdrop-blur-md">
               <div className="pointer-events-none absolute -bottom-14 -left-10 h-36 w-36 rounded-full bg-emerald-500/10 dark:bg-cyan-400/12 blur-3xl" />
               <div className="relative">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:border-cyan-400/35 dark:bg-cyan-400/12 dark:text-cyan-400">
-                    <ShieldCheck size={22} />
-                  </span>
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-emerald-600/70 dark:text-cyan-400/70">Role 02</p>
-                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">CyberSec Practitioner</h4>
-                  </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-emerald-600/70 dark:text-cyan-400/70">Role 02</p>
+                  <h4 className="text-lg font-bold text-slate-900 dark:text-white">CyberSec Practitioner</h4>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {["Burp Suite", "Nmap", "Kali Linux", "OWASP", "TryHackMe"].map(t => (

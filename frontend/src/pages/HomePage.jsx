@@ -15,11 +15,9 @@ import {
   createProfessionalServiceSchema,
   createWebSiteSchema,
 } from "@/utils/seo";
-import {
-  BLOG_LINKS,
-  SIGNATURE_PROJECTS,
-  SITE_PROFILE,
-} from "@/constants/siteData";
+import { SITE_PROFILE } from "@/constants/siteData";
+import { SIGNATURE_PROJECTS } from "@/data/projectsData";
+import { BLOG_POSTS as BLOG_LINKS } from "@/data/blogsData";
 
 const sortBlogsByDate = (blogs = []) =>
   [...blogs].sort((a, b) => {
@@ -29,15 +27,14 @@ const sortBlogsByDate = (blogs = []) =>
   });
 
 const staticLatestBlogs = sortBlogsByDate(BLOG_LINKS).slice(0, 3);
+const staticFeaturedProjects = SIGNATURE_PROJECTS.filter((item) => item.featured);
 
 const HomePage = () => {
-  const [featuredProjects, setFeaturedProjects] = useState([]);
-  const [loadingProjects, setLoadingProjects] = useState(true);
+  const [featuredProjects, setFeaturedProjects] = useState(staticFeaturedProjects);
+  const [loadingProjects, setLoadingProjects] = useState(false);
   const [projectError, setProjectError] = useState("");
   const [latestBlogs, setLatestBlogs] = useState(staticLatestBlogs);
-  const [loadingLatestBlog, setLoadingLatestBlog] = useState(
-    staticLatestBlogs.length === 0,
-  );
+  const [loadingLatestBlog, setLoadingLatestBlog] = useState(false);
   const [latestBlogError, setLatestBlogError] = useState("");
   const [projectFilter, setProjectFilter] = useState("All");
 
@@ -48,47 +45,40 @@ const HomePage = () => {
 
   useEffect(() => {
     const loadFeatured = async () => {
-      setLoadingProjects(true);
       try {
         const response = await getProjects({ featured: true, limit: 3 });
-        setFeaturedProjects(response.data || []);
+        if (response?.data?.length > 0) {
+          setFeaturedProjects(response.data);
+        }
       } catch (error) {
         setProjectError(
           getErrorMessage(error, "Unable to load featured projects now."),
         );
-      } finally {
-        setLoadingProjects(false);
       }
     };
 
     const loadLatestBlog = async () => {
-      setLoadingLatestBlog(staticLatestBlogs.length === 0);
-      setLatestBlogError("");
       try {
         const response = await getBlogs({ limit: 3 });
         const apiBlogs = response.data || [];
-        const mergedMap = new Map();
-        BLOG_LINKS.forEach((staticBlog) => {
-          mergedMap.set(staticBlog.slug, staticBlog);
-        });
-        apiBlogs.forEach((apiBlog) => {
-          const staticBlog = BLOG_LINKS.find(
-            (item) => item.slug === apiBlog.slug,
+        if (apiBlogs.length > 0) {
+          const mergedMap = new Map();
+          BLOG_LINKS.forEach((staticBlog) => {
+            mergedMap.set(staticBlog.slug, staticBlog);
+          });
+          apiBlogs.forEach((apiBlog) => {
+            const staticBlog = BLOG_LINKS.find(
+              (item) => item.slug === apiBlog.slug,
+            );
+            const merged = mergeStaticAndApiContent(staticBlog, apiBlog);
+            mergedMap.set(merged.slug || apiBlog.slug || apiBlog._id, merged);
+          });
+          setLatestBlogs(
+            sortBlogsByDate(Array.from(mergedMap.values())).slice(0, 3),
           );
-          const merged = mergeStaticAndApiContent(staticBlog, apiBlog);
-          mergedMap.set(merged.slug || apiBlog.slug || apiBlog._id, merged);
-        });
-        setLatestBlogs(
-          sortBlogsByDate(Array.from(mergedMap.values())).slice(0, 3),
-        );
+        }
       } catch (error) {
         setLatestBlogs(staticLatestBlogs);
-        if (staticLatestBlogs.length === 0)
-          setLatestBlogError(
-            getErrorMessage(error, "Unable to load latest blog right now."),
-          );
-      } finally {
-        setLoadingLatestBlog(false);
       }
     };
 

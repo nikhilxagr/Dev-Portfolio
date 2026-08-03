@@ -66,18 +66,13 @@ const SkillsSection = () => {
               <article className={`relative h-full overflow-hidden rounded-3xl border p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-7 ${visual.cardClass}`}>
                 <div className={`pointer-events-none absolute -top-12 -right-12 h-36 w-36 rounded-full blur-3xl ${visual.orbClass}`} />
 
-                <div className="relative flex items-center gap-3">
-                  <span className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl border ${visual.iconWrapClass}`}>
-                    <Icon size={24} className={visual.iconColorClass} />
-                  </span>
-                  <div>
-                    <h3 className={`text-lg font-bold sm:text-xl ${visual.titleClass}`}>
-                      {category.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {category.description || category.summary}
-                    </p>
-                  </div>
+                <div className="relative">
+                  <h3 className={`text-lg font-bold sm:text-xl ${visual.titleClass}`}>
+                    {category.title}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {category.description || category.summary}
+                  </p>
                 </div>
 
                 <div className="relative mt-6 flex flex-wrap gap-2">

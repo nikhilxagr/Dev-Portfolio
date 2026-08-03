@@ -6,7 +6,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import ProjectCard from "@/components/ui/ProjectCard";
 import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
-import { SIGNATURE_PROJECTS } from "@/constants/siteData";
+import { SIGNATURE_PROJECTS } from "@/data/projectsData";
 import { getProjects } from "@/services/projects.service";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";

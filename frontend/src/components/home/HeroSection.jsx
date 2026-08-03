@@ -381,13 +381,13 @@ const HeroSection = () => {
               <div className="relative group">
                 <div className="absolute -inset-6 rounded-full border border-dashed border-green-400/25 animate-[spin_40s_linear_infinite]" />
                 <div className="absolute -inset-3 rounded-full border border-green-400/30 shadow-[0_0_50px_rgba(34,197,94,0.2)]" />
-                <div className="relative h-[320px] w-[320px] sm:h-[380px] sm:w-[380px] lg:h-[420px] lg:w-[420px] xl:h-[460px] xl:w-[460px] overflow-hidden rounded-full border-[5px] border-green-500 shadow-[0_0_50px_rgba(34,197,94,0.4)] bg-green-950 transition-transform duration-500 hover:scale-[1.02]">
+                <div className="relative h-[220px] w-[220px] sm:h-[260px] sm:w-[260px] lg:h-[300px] lg:w-[300px] xl:h-[330px] xl:w-[330px] overflow-hidden rounded-full border-[4px] border-green-500 shadow-[0_0_40px_rgba(34,197,94,0.35)] bg-green-950 transition-transform duration-500 hover:scale-[1.02]">
                   <img
                     src={SITE_PROFILE.profileImage}
                     alt={SITE_PROFILE.profileImageAlt}
                     className="h-full w-full object-cover object-center"
-                    width={460}
-                    height={460}
+                    width={330}
+                    height={330}
                     loading="eager"
                     decoding="async"
                     fetchPriority="high"

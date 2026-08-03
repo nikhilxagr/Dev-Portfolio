@@ -36,7 +36,7 @@ import { loadCashfreeCheckout } from "@/utils/loadCashfree";
 import { createBreadcrumbSchema } from "@/utils/seo";
 import { useUserAuth } from "@/context/UserAuthContext";
 import { getGoogleAuthUrl } from "@/services/userAuth.service";
-import { SERVICE_OFFERINGS } from "@/constants/siteData";
+import { SERVICE_OFFERINGS } from "@/data/servicesData";
 
 const GoogleIcon = () => (
   <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
