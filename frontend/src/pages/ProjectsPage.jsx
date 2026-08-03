@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search, X, ChevronDown } from "lucide-react";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
@@ -41,6 +41,22 @@ const ProjectsPage = () => {
   const [category, setCategory] = useState("ALL");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("FEATURED");
+
+  const handleCategorySelect = useCallback((item) => {
+    setCategory(item);
+  }, []);
+
+  const handleSearchChange = useCallback((event) => {
+    setSearch(event.target.value);
+  }, []);
+
+  const handleSearchClear = useCallback(() => {
+    setSearch("");
+  }, []);
+
+  const handleSortChange = useCallback((event) => {
+    setSortBy(event.target.value);
+  }, []);
 
   useEffect(() => {
     getProjects()
@@ -136,14 +152,14 @@ const ProjectsPage = () => {
             <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
             <input
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={handleSearchChange}
               placeholder="Search projects by name, tech stack, or description..."
               className="w-full rounded-2xl border border-slate-300 bg-white/80 dark:border-white/10 dark:bg-[#030d07]/80 px-11 py-3 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none backdrop-blur-md focus:border-lime-400 dark:focus:border-lime-400 shadow-lg transition-all"
             />
             {search && (
               <button
                 type="button"
-                onClick={() => setSearch("")}
+                onClick={handleSearchClear}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
               >
                 <X size={14} />
@@ -157,7 +173,7 @@ const ProjectsPage = () => {
               <button
                 key={item}
                 type="button"
-                onClick={() => setCategory(item)}
+                onClick={() => handleCategorySelect(item)}
                 className={`rounded-xl px-4 py-2 text-xs font-black tracking-wider uppercase transition-all duration-200 ${
                   category === item
                     ? "bg-lime-400 text-slate-950 shadow-[0_0_20px_rgba(163,230,53,0.55)] scale-[1.03]"
@@ -172,7 +188,7 @@ const ProjectsPage = () => {
             <div className="relative inline-block">
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={handleSortChange}
                 aria-label="Sort projects by"
                 className="appearance-none rounded-xl border border-slate-300 bg-slate-100/80 dark:border-emerald-500/30 dark:bg-[#08140c]/90 px-3.5 py-2 pr-8 font-mono text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 outline-none focus:border-lime-400 cursor-pointer shadow-sm transition hover:border-slate-400 dark:hover:border-lime-400/50"
               >
@@ -190,10 +206,10 @@ const ProjectsPage = () => {
           </p>
         </div>
 
-        {/* Project Cards Grid — Immediate Render without Scroll Delay */}
-        <div className="mt-8">
+        {/* Project Cards Grid — cv-auto skips layout/paint until scrolled */}
+        <div className="mt-8 cv-auto">
           {sortedProjects.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 transform-gpu">
               {sortedProjects.map((project, index) => (
                 <ProjectCard
                   key={project._id || project.slug}

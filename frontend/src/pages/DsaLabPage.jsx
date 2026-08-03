@@ -2333,136 +2333,148 @@ const DsaLabPage = () => {
         </FadeInUp>
 
         {/* Module 02: Graphs */}
-        <FadeInUp delay={0.2} className="mt-14 sm:mt-16">
-          <div className="mb-5 sm:mb-6">
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
-                // MODULE 02 — GRAPH TRAVERSAL
-              </span>
-              <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-0.5 text-[10px] font-bold text-cyan-300">
-                🟢 Live
-              </span>
+        <div className="cv-auto">
+          <FadeInUp delay={0.2} className="mt-14 sm:mt-16">
+            <div className="mb-5 sm:mb-6">
+              <div className="flex items-center gap-3 mb-1.5">
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
+                  // MODULE 02 — GRAPH TRAVERSAL
+                </span>
+                <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-0.5 text-[10px] font-bold text-cyan-300">
+                  🟢 Live
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+                Graph Traversal &amp; Shortest Path Lab
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
+                Dijkstra · BFS · DFS — interactive node graph canvas with weighted distance tracking and queue/stack state.
+              </p>
             </div>
-            <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Graph Traversal &amp; Shortest Path Lab
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-              Dijkstra · BFS · DFS — interactive node graph canvas with weighted distance tracking and queue/stack state.
-            </p>
-          </div>
 
-          <GraphVisualizer />
-        </FadeInUp>
+            <GraphVisualizer />
+          </FadeInUp>
+        </div>
 
         {/* Module 03: Trees */}
-        <FadeInUp delay={0.3} className="mt-14 sm:mt-16">
-          <div className="mb-5 sm:mb-6">
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400">
-                // MODULE 03 — AVL &amp; BST TREES
-              </span>
-              <span className="rounded-full border border-violet-500/40 bg-violet-500/10 px-2.5 py-0.5 text-[10px] font-bold text-violet-300">
-                🟢 Live
-              </span>
+        <div className="cv-auto">
+          <FadeInUp delay={0.3} className="mt-14 sm:mt-16">
+            <div className="mb-5 sm:mb-6">
+              <div className="flex items-center gap-3 mb-1.5">
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400">
+                  // MODULE 03 — AVL &amp; BST TREES
+                </span>
+                <span className="rounded-full border border-violet-500/40 bg-violet-500/10 px-2.5 py-0.5 text-[10px] font-bold text-violet-300">
+                  🟢 Live
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+                BST &amp; AVL Self-Balancing Tree Lab
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
+                Binary Search Tree · AVL Rotations · In-Order, Pre-Order, Post-Order Traversals with interactive node insertion.
+              </p>
             </div>
-            <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              BST &amp; AVL Self-Balancing Tree Lab
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-              Binary Search Tree · AVL Rotations · In-Order, Pre-Order, Post-Order Traversals with interactive node insertion.
-            </p>
-          </div>
 
-          <BstTreeVisualizer />
-        </FadeInUp>
+            <BstTreeVisualizer />
+          </FadeInUp>
+        </div>
 
         {/* Module 04: Dynamic Programming */}
-        <FadeInUp delay={0.4} className="mt-14 sm:mt-16">
-          <div className="mb-5 sm:mb-6">
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                // MODULE 04 — DYNAMIC PROGRAMMING
-              </span>
-              <span className="rounded-full border border-lime-500/40 bg-lime-500/10 px-2.5 py-0.5 text-[10px] font-bold text-lime-300">
-                🟢 Live
-              </span>
+        <div className="cv-auto">
+          <FadeInUp delay={0.4} className="mt-14 sm:mt-16">
+            <div className="mb-5 sm:mb-6">
+              <div className="flex items-center gap-3 mb-1.5">
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+                  // MODULE 04 — DYNAMIC PROGRAMMING
+                </span>
+                <span className="rounded-full border border-lime-500/40 bg-lime-500/10 px-2.5 py-0.5 text-[10px] font-bold text-lime-300">
+                  🟢 Live
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+                Dynamic Programming &amp; 2D Grid Lab
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
+                0/1 Knapsack · Longest Common Subsequence (LCS) — 2D matrix memoization table computation with backtracking path highlights.
+              </p>
             </div>
-            <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Dynamic Programming &amp; 2D Grid Lab
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-              0/1 Knapsack · Longest Common Subsequence (LCS) — 2D matrix memoization table computation with backtracking path highlights.
-            </p>
-          </div>
 
-          <DpGridVisualizer />
-        </FadeInUp>
+            <DpGridVisualizer />
+          </FadeInUp>
+        </div>
 
         {/* Module 05: Two Pointers */}
-        <FadeInUp delay={0.5} className="mt-14 sm:mt-16">
-          <div className="mb-5 sm:mb-6">
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
-                // MODULE 05 — TWO POINTERS &amp; WINDOW
-              </span>
-              <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold text-amber-300">
-                🟢 Live
-              </span>
+        <div className="cv-auto">
+          <FadeInUp delay={0.5} className="mt-14 sm:mt-16">
+            <div className="mb-5 sm:mb-6">
+              <div className="flex items-center gap-3 mb-1.5">
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                  // MODULE 05 — TWO POINTERS &amp; WINDOW
+                </span>
+                <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold text-amber-300">
+                  🟢 Live
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+                Two-Pointer &amp; Sliding Window Lab
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
+                Binary Search · Sliding Window Subarray · Container With Most Water — pointer movement and window frame tracking.
+              </p>
             </div>
-            <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Two-Pointer &amp; Sliding Window Lab
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-              Binary Search · Sliding Window Subarray · Container With Most Water — pointer movement and window frame tracking.
-            </p>
-          </div>
 
-          <TwoPointerVisualizer />
-        </FadeInUp>
+            <TwoPointerVisualizer />
+          </FadeInUp>
+        </div>
 
         {/* Module 06: Backtracking */}
-        <FadeInUp delay={0.6} className="mt-14 sm:mt-16">
-          <div className="mb-5 sm:mb-6">
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-rose-600 dark:text-rose-400">
-                // MODULE 06 — N-QUEENS BACKTRACKING
-              </span>
-              <span className="rounded-full border border-rose-500/40 bg-rose-500/10 px-2.5 py-0.5 text-[10px] font-bold text-rose-300">
-                🟢 Live
-              </span>
+        <div className="cv-auto">
+          <FadeInUp delay={0.6} className="mt-14 sm:mt-16">
+            <div className="mb-5 sm:mb-6">
+              <div className="flex items-center gap-3 mb-1.5">
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-rose-600 dark:text-rose-400">
+                  // MODULE 06 — N-QUEENS BACKTRACKING
+                </span>
+                <span className="rounded-full border border-rose-500/40 bg-rose-500/10 px-2.5 py-0.5 text-[10px] font-bold text-rose-300">
+                  🟢 Live
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+                Backtracking N-Queens Visualizer
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
+                N-Queens Chessboard Puzzle — recursive decision tree, attack conflict alert, and rewind backtracking state.
+              </p>
             </div>
-            <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Backtracking N-Queens Visualizer
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-              N-Queens Chessboard Puzzle — recursive decision tree, attack conflict alert, and rewind backtracking state.
-            </p>
-          </div>
 
-          <BacktrackingVisualizer />
-        </FadeInUp>
+            <BacktrackingVisualizer />
+          </FadeInUp>
+        </div>
 
         {/* Module 07: LRU Cache */}
-        <FadeInUp delay={0.7} className="mt-14 sm:mt-16">
-          <div className="mb-5 sm:mb-6">
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400">
-                // MODULE 07 — LRU CACHE &amp; LINKED LIST
-              </span>
-              <span className="rounded-full border border-teal-500/40 bg-teal-500/10 px-2.5 py-0.5 text-[10px] font-bold text-teal-300">
-                🟢 Live
-              </span>
+        <div className="cv-auto">
+          <FadeInUp delay={0.7} className="mt-14 sm:mt-16">
+            <div className="mb-5 sm:mb-6">
+              <div className="flex items-center gap-3 mb-1.5">
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400">
+                  // MODULE 07 — LRU CACHE &amp; LINKED LIST
+                </span>
+                <span className="rounded-full border border-teal-500/40 bg-teal-500/10 px-2.5 py-0.5 text-[10px] font-bold text-teal-300">
+                  🟢 Live
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+                LRU Cache &amp; Doubly Linked List Lab
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
+                Least Recently Used Cache Eviction — Hash Map + Doubly Linked List node promotion (MRU Head) and tail eviction (LRU Tail).
+              </p>
             </div>
-            <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              LRU Cache &amp; Doubly Linked List Lab
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-              Least Recently Used Cache Eviction — Hash Map + Doubly Linked List node promotion (MRU Head) and tail eviction (LRU Tail).
-            </p>
-          </div>
 
-          <LinkedListVisualizer />
-        </FadeInUp>
+            <LinkedListVisualizer />
+          </FadeInUp>
+        </div>
       </section>
     </>
   );

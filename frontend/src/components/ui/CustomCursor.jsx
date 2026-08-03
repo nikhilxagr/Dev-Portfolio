@@ -60,15 +60,13 @@ export const CustomCursor = () => {
         style={{
           x: smoothX,
           y: smoothY,
-          translateX: "-50%",
-          translateY: "-50%",
         }}
         animate={{
           scale: isClicking ? 0.75 : isHovered ? 1.8 : 1,
           opacity: isHovered ? 0.6 : 0.4,
         }}
         transition={{ duration: 0.15, ease: "easeOut" }}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-8 w-8 rounded-full border border-sky-400/60 bg-sky-400/10 shadow-[0_0_15px_rgba(56,189,248,0.3)] backdrop-blur-[1px] transform-gpu"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-sky-400/60 bg-sky-400/10 shadow-[0_0_15px_rgba(56,189,248,0.3)] backdrop-blur-[1px] transform-gpu will-change-transform"
       />
 
       {/* Center Precise Dot */}
@@ -76,14 +74,12 @@ export const CustomCursor = () => {
         style={{
           x: cursorX,
           y: cursorY,
-          translateX: "-50%",
-          translateY: "-50%",
         }}
         animate={{
           scale: isClicking ? 0.5 : isHovered ? 0 : 1,
         }}
         transition={{ duration: 0.1, ease: "easeOut" }}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] transform-gpu"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] transform-gpu will-change-transform"
       />
     </>
   );

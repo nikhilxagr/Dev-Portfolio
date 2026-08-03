@@ -2,12 +2,14 @@ import { Router } from 'express'
 import { body } from 'express-validator'
 import { loginAdmin, verifyAdminSession } from '../controllers/authController.js'
 import validateRequest from '../middleware/validateRequest.js'
-import authMiddleware from '../middleware/authMiddleware.js'
+import adminAuthMiddleware from '../middleware/adminAuthMiddleware.js'
+import { adminAuthLimiter, adminApiLimiter } from '../middleware/rateLimiter.js'
 
 const router = Router()
 
 router.post(
   '/login',
+  adminAuthLimiter,
   [
     body('email').isEmail().withMessage('Valid email is required'),
     body('password')
@@ -19,6 +21,6 @@ router.post(
   loginAdmin,
 )
 
-router.get('/verify', authMiddleware, verifyAdminSession)
+router.get('/verify', adminApiLimiter, adminAuthMiddleware, verifyAdminSession)
 
 export default router

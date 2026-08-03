@@ -10,17 +10,23 @@ import {
 } from "../controllers/userAuthController.js";
 import { userAuthMiddleware } from "../middleware/userAuthMiddleware.js";
 import validateRequest from "../middleware/validateRequest.js";
+import {
+  userAuthLimiter,
+  oauthLimiter,
+  userProfileLimiter,
+} from "../middleware/rateLimiter.js";
 
 const router = Router();
 
 // OAuth Routes
-router.get("/google", initiateGoogleAuth);
-router.get("/google/callback", handleGoogleCallback);
-router.post("/google/credential", handleGoogleCredential);
+router.get("/google", oauthLimiter, initiateGoogleAuth);
+router.get("/google/callback", oauthLimiter, handleGoogleCallback);
+router.post("/google/credential", userAuthLimiter, handleGoogleCredential);
 
 // Email / Password Auth
 router.post(
   "/register",
+  userAuthLimiter,
   [
     body("name").trim().notEmpty().withMessage("Name is required"),
     body("email").isEmail().withMessage("Valid email is required"),
@@ -34,6 +40,7 @@ router.post(
 
 router.post(
   "/login",
+  userAuthLimiter,
   [
     body("email").isEmail().withMessage("Valid email is required"),
     body("password").notEmpty().withMessage("Password is required"),
@@ -43,6 +50,6 @@ router.post(
 );
 
 // Profile endpoint
-router.get("/me", userAuthMiddleware, getCurrentUser);
+router.get("/me", userProfileLimiter, userAuthMiddleware, getCurrentUser);
 
 export default router;

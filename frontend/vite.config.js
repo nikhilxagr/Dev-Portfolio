@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
       minify: "oxc",
       cssMinify: true,
       reportCompressedSize: false,
-      chunkSizeWarningLimit: 650,
+      chunkSizeWarningLimit: 250,
       rollupOptions: {
         output: {
           banner: isProduction
@@ -55,6 +55,10 @@ export default defineConfig(({ mode }) => {
 
             if (id.includes("/axios/") || id.includes("/react-helmet-async/")) {
               return "vendor-data";
+            }
+
+            if (id.includes("/lenis/") || id.includes("/canvas-confetti/")) {
+              return "vendor-effects";
             }
 
             return "vendor-misc";

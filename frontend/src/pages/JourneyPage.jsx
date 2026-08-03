@@ -972,7 +972,7 @@ const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
                   : "border-transparent opacity-50 hover:opacity-80"
               }`}
             >
-              <img src={src} alt={`thumb-${i}`} className="h-full w-full object-cover" />
+              <img src={src} alt={`thumb-${i}`} className="h-full w-full object-cover" width={80} height={56} loading="lazy" decoding="async" />
             </button>
           ))}
         </div>
@@ -1055,7 +1055,7 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
         <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Gallery Preview</p>
         <div className="flex gap-2">
           {d.gallery.map((src, i) => (
-            <img key={i} src={src} alt="gallery" className="h-20 w-20 rounded-xl object-cover border border-white/[0.08]" />
+            <img key={i} src={src} alt="gallery" className="h-20 w-20 rounded-xl object-cover border border-white/[0.08]" width={80} height={80} loading="lazy" decoding="async" />
           ))}
         </div>
         <p className="mt-1 text-[9px] text-zinc-600">{d.gallery.length} Photo{d.gallery.length !== 1 ? "s" : ""}</p>
@@ -1105,9 +1105,9 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
       <motion.article
         initial={{ opacity: 0, x: side === "left" ? -50 : 50, y: 16 }}
         whileInView={{ opacity: 1, x: 0, y: 0 }}
-        viewport={{ once: true, margin: "-5% 0px -5% 0px" }}
+        viewport={{ once: true, margin: "-50px 0px" }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-        className="group relative w-full max-w-2xl overflow-hidden rounded-[1.6rem] border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/70 shadow-[0_8px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-all duration-500 hover:border-zinc-300 dark:hover:border-white/[0.15] hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.7)]"
+        className="group relative w-full max-w-2xl overflow-hidden rounded-[1.6rem] border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/70 shadow-[0_8px_40px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-all duration-500 hover:border-zinc-300 dark:hover:border-white/[0.15] hover:shadow-[0_20px_60px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_60px_rgba(0,0,0,0.7)] transform-gpu will-change-transform"
       >
         {/* Top accent line */}
         <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${event.accent} opacity-80`} />
@@ -1129,7 +1129,11 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
                 ? "object-contain p-6 bg-zinc-950/80"
                 : "object-cover"
             }`}
+            width={800}
+            height={256}
             loading="lazy"
+            decoding="async"
+            style={{ aspectRatio: "16/9" }}
             onError={(e) => { e.currentTarget.style.display = "none"; }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-transparent" />
@@ -1261,11 +1265,11 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
       )}
 
       <motion.article
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-5% 0px -5% 0px" }}
-        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-        className="group relative flex flex-col overflow-hidden rounded-[1.4rem] border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 shadow-[0_4px_24px_rgba(0,0,0,0.07)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-sm transition-all duration-500 hover:border-zinc-300 dark:hover:border-white/[0.14] hover:-translate-y-1"
+        viewport={{ once: true, margin: "-50px 0px" }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        className="group relative flex flex-col overflow-hidden rounded-[1.4rem] border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 shadow-[0_4px_24px_rgba(0,0,0,0.07)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)] backdrop-blur-sm transition-all duration-500 hover:border-zinc-300 dark:hover:border-white/[0.14] hover:-translate-y-1 transform-gpu will-change-transform"
       >
         <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${event.accent} opacity-80`} />
         
@@ -1284,7 +1288,11 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
                 ? "object-contain p-4 bg-zinc-950/80"
                 : "object-cover"
             }`}
+            width={800}
+            height={192}
             loading="lazy"
+            decoding="async"
+            style={{ aspectRatio: "16/9" }}
             onError={(e) => { e.currentTarget.style.display = "none"; }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/70 to-transparent" />

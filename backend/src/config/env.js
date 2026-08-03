@@ -175,12 +175,35 @@ export const env = {
     (isDevelopment ? "http://localhost:5173" : "https://nikhilxagr.vercel.app"),
 };
 
+if (!isDevelopment) {
+  if (env.jwtSecret === developmentFallbacks.JWT_SECRET) {
+    throw new Error(
+      "Insecure production configuration: JWT_SECRET must be set explicitly in environment.",
+    );
+  }
+
+  if (env.adminEmail === developmentFallbacks.ADMIN_EMAIL) {
+    throw new Error(
+      "Insecure production configuration: ADMIN_EMAIL must be set explicitly in environment.",
+    );
+  }
+}
+
 const hasCashfreeAppId = Boolean(env.cashfreeAppId);
 const hasCashfreeSecretKey = Boolean(env.cashfreeSecretKey);
 
 if (hasCashfreeAppId !== hasCashfreeSecretKey) {
   throw new Error(
     "CASHFREE_APP_ID and CASHFREE_SECRET_KEY must be set together",
+  );
+}
+
+const hasGoogleClientId = Boolean(env.googleClientId);
+const hasGoogleClientSecret = Boolean(env.googleClientSecret);
+
+if (hasGoogleClientId !== hasGoogleClientSecret) {
+  throw new Error(
+    "GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set together",
   );
 }
 
@@ -199,6 +222,11 @@ if (!["sandbox", "production"].includes(normalizedCashfreeEnvironment)) {
 env.cashfreeEnvironment = normalizedCashfreeEnvironment;
 
 if (hasCashfreeAppId && !env.cashfreeWebhookSecret) {
+  if (!isDevelopment) {
+    throw new Error(
+      "Missing required environment variable CASHFREE_WEBHOOK_SECRET for production payment webhooks.",
+    );
+  }
   console.warn(
     "[env] CASHFREE_WEBHOOK_SECRET is not set. Webhook signature verification is bypassed.",
   );

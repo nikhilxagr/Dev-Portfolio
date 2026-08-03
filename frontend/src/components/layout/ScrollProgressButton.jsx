@@ -34,17 +34,31 @@ const ScrollProgressButton = () => {
   });
 
   useEffect(() => {
+    let ticking = false;
     const updateState = () => {
-      const metrics = getScrollMetrics();
-      setScrollState({
-        progress: metrics.progress,
-        isVisible: metrics.isVisible,
-      });
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const metrics = getScrollMetrics();
+          setScrollState((prev) => {
+            const nextProgress = Math.round(metrics.progress * 100) / 100;
+            if (
+              prev.isVisible === metrics.isVisible &&
+              Math.abs(prev.progress - nextProgress) < 0.01
+            ) {
+              ticking = false;
+              return prev;
+            }
+            ticking = false;
+            return { progress: nextProgress, isVisible: metrics.isVisible };
+          });
+        });
+        ticking = true;
+      }
     };
 
     updateState();
     window.addEventListener("scroll", updateState, { passive: true });
-    window.addEventListener("resize", updateState);
+    window.addEventListener("resize", updateState, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", updateState);
@@ -77,39 +91,41 @@ const ScrollProgressButton = () => {
 
   return (
     <div
-      className={`pointer-events-none fixed bottom-5 right-4 z-50 transition-all duration-300 sm:bottom-7 sm:right-6 ${
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+      className={`pointer-events-none fixed bottom-4 right-4 z-[99] transition-all duration-300 sm:bottom-6 sm:right-6 ${
+        isVisible
+          ? "translate-y-0 opacity-100 scale-100"
+          : "translate-y-6 opacity-0 scale-90"
       }`}
     >
       <button
         type="button"
         onClick={handleScrollToTop}
         aria-label={`Back to top. Page progress ${progressPercent}%`}
-        className={`pointer-events-auto group relative h-13 w-13 sm:h-14 sm:w-14 overflow-hidden rounded-full border backdrop-blur transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 ${
+        className={`pointer-events-auto group relative flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center overflow-hidden rounded-full border backdrop-blur-md transition-all duration-300 active:scale-90 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 ${
           isDark
-            ? "border-emerald-500/30 bg-[#050d14]/90 shadow-[0_8px_25px_rgba(52,211,153,0.3)] focus-visible:ring-emerald-400"
-            : "border-emerald-500/40 bg-white/95 shadow-[0_8px_25px_rgba(16,185,129,0.25)] focus-visible:ring-emerald-600"
+            ? "border-emerald-500/40 bg-[#050d14]/90 shadow-[0_6px_20px_rgba(52,211,153,0.35)] focus-visible:ring-emerald-400 text-emerald-400"
+            : "border-emerald-600/40 bg-white/95 shadow-[0_6px_20px_rgba(16,185,129,0.25)] focus-visible:ring-emerald-600 text-emerald-700"
         }`}
       >
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-[2px] rounded-full"
+          className="pointer-events-none absolute inset-0.5 rounded-full"
           style={{ background: ringGradient }}
         />
         <span
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-[5px] rounded-full border ${
+          className={`pointer-events-none absolute inset-[3px] rounded-full border ${
             isDark
               ? "border-emerald-500/20 bg-[#030a05]"
-              : "border-emerald-500/30 bg-slate-50"
+              : "border-emerald-500/20 bg-white"
           }`}
         />
 
-        <span className="relative z-10 inline-flex h-full w-full items-center justify-center">
+        <span className="relative z-10 flex items-center justify-center">
           <ArrowUp
             size={18}
             className={`transition-transform duration-300 group-hover:-translate-y-0.5 ${
-              isDark ? "text-emerald-400" : "text-emerald-700 font-black"
+              isDark ? "text-emerald-400" : "text-emerald-700 font-extrabold"
             }`}
           />
         </span>

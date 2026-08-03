@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { fadeUp, fadeDown } from './motion/fade.js'
 
 const MotionDiv = motion.div
 
@@ -11,20 +12,16 @@ const FadeInUp = ({
   className = '',
   style = {},
 }) => {
-  const yInit = direction === 'up' ? distance : -distance
+  const variant = direction === 'up' ? fadeUp(delay, 0.7, distance) : fadeDown(delay, 0.7, distance)
 
   return (
     <MotionDiv
-      className={`transform-gpu ${className}`}
+      className={`transform-gpu will-change-transform ${className}`}
       style={style}
-      initial={{ opacity: 0, y: yInit }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once, amount: 0.15 }}
-      transition={{
-        duration: 0.7,
-        ease: [0.16, 1, 0.3, 1], // Apple Expo easeOut
-        delay,
-      }}
+      initial={variant.initial}
+      whileInView={variant.animate}
+      viewport={{ once, margin: "-50px 0px", amount: 0 }}
+      transition={variant.transition}
     >
       {children}
     </MotionDiv>

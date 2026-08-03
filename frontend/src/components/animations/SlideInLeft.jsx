@@ -23,11 +23,11 @@ const SlideInLeft = ({
 
   return (
     <MotionDiv
-      className={className}
+      className={`transform-gpu will-change-transform ${className}`}
       style={style}
       initial={{ opacity: 0, x: xInit }}
       whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once, amount: 0.15 }}
+      viewport={{ once, margin: "-50px 0px", amount: 0.15 }}
       transition={{
         type: 'spring',
         stiffness: 220,

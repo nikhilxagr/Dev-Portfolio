@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
@@ -25,6 +25,14 @@ const matchesBlogSearch = (blog, currentKeyword) => {
 const BlogPage = () => {
   const [blogs, setBlogs] = useState(BLOG_LINKS);
   const [search, setSearch] = useState("");
+
+  const handleSearchChange = useCallback((e) => {
+    setSearch(e.target.value);
+  }, []);
+
+  const handleSearchClear = useCallback(() => {
+    setSearch("");
+  }, []);
 
   useEffect(() => {
     getBlogs()
@@ -100,62 +108,59 @@ const BlogPage = () => {
       {/* Main Section with Centered Minimal Header */}
       <section className="section-wrap pt-4 sm:pt-6 pb-20">
         
-        {/* Centered Minimal Hero Header */}
-        <FadeInUp>
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Professional Heading */}
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
-              TECHNICAL <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">ARTICLES</span>
-            </h1>
+        {/* Minimal Hero Header */}
+        <div className="text-center max-w-4xl mx-auto">
+          {/* Professional Heading */}
+          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+            TECHNICAL <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">NOTES</span>
+          </h1>
 
-            {/* Clean Subtitle */}
-            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Articles from project builds, engineering practice, system architecture, and technical writing. Includes backend posts and external writing from Medium and LinkedIn.
-            </p>
+          {/* Clean Subtitle */}
+          <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Notes, tutorials, and practical insights on full-stack web engineering and cyber security.
+          </p>
 
-            {/* Centered Search Bar */}
-            <div className="mt-8 mx-auto max-w-xl relative">
-              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
-              <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search by title, content, or tags..."
-                className="w-full rounded-2xl border border-slate-300 bg-white/80 dark:border-white/10 dark:bg-[#030d07]/80 px-11 py-3 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none backdrop-blur-md focus:border-lime-400 dark:focus:border-lime-400 shadow-lg transition-all"
-              />
-              {search && (
-                <button
-                  type="button"
-                  onClick={() => setSearch("")}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-
-            {/* Article Counter */}
-            <p className="mt-5 font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-              // SHOWING <span className="text-lime-500 dark:text-lime-400 font-extrabold">{displayBlogs.length}</span> ARTICLES
-            </p>
+          {/* Centered Search Bar */}
+          <div className="mt-8 mx-auto max-w-xl relative">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
+            <input
+              value={search}
+              onChange={handleSearchChange}
+              placeholder="Search articles by title, topic, or keyword..."
+              className="w-full rounded-2xl border border-slate-300 bg-white/80 dark:border-white/10 dark:bg-[#030d07]/80 px-11 py-3 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none backdrop-blur-md focus:border-lime-400 dark:focus:border-lime-400 shadow-lg transition-all"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={handleSearchClear}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+              >
+                <X size={14} />
+              </button>
+            )}
           </div>
-        </FadeInUp>
 
-        {/* Blog Cards Grid — Immediate Render without Scroll Delay */}
-        <div className="mt-8">
+          {/* Counter */}
+          <p className="mt-5 font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+            // SHOWING <span className="text-lime-500 dark:text-lime-400 font-extrabold">{displayBlogs.length}</span> ARTICLES
+          </p>
+        </div>
+
+        {/* Blog Cards Grid — cv-auto skips layout/paint until scrolled */}
+        <div className="mt-8 cv-auto">
           {displayBlogs.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 transform-gpu">
               {displayBlogs.map((blog, index) => (
-                <BlogCard key={blog._id || blog.slug} blog={blog} priority={index < 3} />
+                <BlogCard key={blog._id || blog.slug} blog={blog} priority={index < 6} />
               ))}
             </div>
           ) : (
             <EmptyState
-              title="No matching posts found"
-              message="Try clearing your search terms or checking back later for published articles."
+              title="No matching articles found"
+              message="Try searching with different keywords."
             />
           )}
         </div>
-
       </section>
     </>
   );

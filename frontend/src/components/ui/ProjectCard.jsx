@@ -68,7 +68,7 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
     ["kanoon-mate", "fast-feast", "snapurl", "ai-powered-code-reviewer"].includes(project.slug);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:bg-[#050d14] dark:border-white/[0.08] shadow-md dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-green-500/40 dark:hover:border-green-400/30 hover:shadow-xl">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:bg-[#050d14] dark:border-white/[0.08] shadow-md dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-green-500/40 dark:hover:border-green-400/30 hover:shadow-xl transform-gpu will-change-transform">
       {/* screenshot */}
       <div className="relative overflow-hidden">
         <picture>
@@ -76,7 +76,7 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
           <img
             src={previewImage}
             alt={`${project.title} preview`}
-            className="h-[190px] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+            className="h-[190px] w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03] transform-gpu will-change-transform"
             width={640}
             height={190}
             loading={priority ? "eager" : "lazy"}

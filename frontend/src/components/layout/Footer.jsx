@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Mail, ShieldCheck, ArrowUpRight } from "lucide-react";
 import {
@@ -85,6 +86,8 @@ const Footer = () => {
                             alt={`${item.label} logo`}
                             loading="lazy"
                             decoding="async"
+                            width={16}
+                            height={16}
                             className="h-4 w-4 object-contain"
                           />
                         ) : (
@@ -176,7 +179,7 @@ const Footer = () => {
         {/* Footer Bottom Bar */}
         <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-slate-300 dark:border-emerald-500/20 pt-6 text-xs text-slate-700 dark:text-slate-400">
           <p>
-            Copyright © {new Date().getFullYear()}{" "}
+            Copyright &copy; {new Date().getFullYear()}{" "}
             <Link
               to="/admin/login"
               className="font-extrabold text-slate-900 dark:text-emerald-300 transition hover:text-emerald-700 dark:hover:text-emerald-400"
@@ -194,4 +197,7 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+const MemoizedFooter = memo(Footer);
+MemoizedFooter.displayName = "Footer";
+
+export default MemoizedFooter;

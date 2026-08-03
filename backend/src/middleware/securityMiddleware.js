@@ -110,9 +110,63 @@ export const applySecurityMiddleware = (app) => {
     }),
   );
 
+  app.use((_req, res, next) => {
+    res.setHeader(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=(), payment=(self \"https://sdk.cashfree.com\")",
+    );
+    next();
+  });
+
   app.use(
     helmet({
-      contentSecurityPolicy: false,
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          baseUri: ["'self'"],
+          objectSrc: ["'none'"],
+          frameAncestors: ["'none'"],
+          formAction: [
+            "'self'",
+            "https://accounts.google.com",
+            "https://api.cashfree.com",
+            "https://cashfree.com",
+            "https://*.cashfree.com",
+          ],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            "https://accounts.google.com",
+            "https://ssl.gstatic.com",
+            "https://sdk.cashfree.com",
+            "https://va.vercel-scripts.com",
+          ],
+          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+          imgSrc: ["'self'", "data:", "blob:", "https:"],
+          fontSrc: ["'self'", "data:", "https://fonts.gstatic.com"],
+          connectSrc: [
+            "'self'",
+            "https:",
+            "wss:",
+            "https://accounts.google.com",
+            "https://oauth2.googleapis.com",
+            "https://www.googleapis.com",
+            "https://*.cashfree.com",
+          ],
+          frameSrc: [
+            "'self'",
+            "https://accounts.google.com",
+            "https://cashfree.com",
+            "https://*.cashfree.com",
+          ],
+          upgradeInsecureRequests: [],
+        },
+      },
+      frameguard: { action: "deny" },
+      noSniff: true,
+      xssFilter: true,
+      hidePoweredBy: true,
       hsts:
         env.nodeEnv === "production"
           ? {
@@ -121,12 +175,9 @@ export const applySecurityMiddleware = (app) => {
               preload: true,
             }
           : false,
-      referrerPolicy: {
-        policy: "no-referrer",
-      },
-      xDnsPrefetchControl: {
-        allow: false,
-      },
+      referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      xDnsPrefetchControl: { allow: false },
     }),
   );
   app.use(hpp());

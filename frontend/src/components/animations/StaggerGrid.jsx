@@ -1,22 +1,16 @@
 import { motion } from 'framer-motion'
+import { staggerContainer, staggerItem as itemVariant } from './motion/stagger.js'
 
 const MotionDiv = motion.div
 
 export const StaggerGrid = ({ children, className = '' }) => {
   return (
     <MotionDiv
-      className={className}
-      variants={{
-        hidden: {},
-        show: {
-          transition: {
-            staggerChildren: 0.1,
-          },
-        },
-      }}
+      className={`transform-gpu ${className}`}
+      variants={staggerContainer(0.1)}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, margin: "-50px 0px", amount: 0.15 }}
     >
       {children}
     </MotionDiv>
@@ -26,11 +20,8 @@ export const StaggerGrid = ({ children, className = '' }) => {
 export const StaggerItem = ({ children, className = '' }) => {
   return (
     <MotionDiv
-      className={className}
-      variants={{
-        hidden: { opacity: 0, y: 18 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
-      }}
+      className={`transform-gpu ${className}`}
+      variants={itemVariant}
     >
       {children}
     </MotionDiv>

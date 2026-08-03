@@ -12,8 +12,11 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import SignInModal from "@/components/auth/SignInModal";
 import UserProfileModal from "@/components/auth/UserProfileModal";
 import LenisProvider from "@/components/layout/LenisProvider";
+import RouteErrorBoundary from "@/components/RouteErrorBoundary";
 import { prewarmBackendForCheckout } from "@/services/payment.service";
+import { prefetchAllRoutesIdle } from "@/utils/prefetchRoute";
 
+// Route-Level Lazy Loading — Non-critical pages dynamically imported as async chunks
 const HomePage = lazy(() => import("@/pages/HomePage.jsx"));
 const AboutPage = lazy(() => import("@/pages/AboutPage.jsx"));
 const SkillsPage = lazy(() => import("@/pages/SkillsPage.jsx"));
@@ -49,18 +52,21 @@ const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.jsx"));
 const LOADER_VISIT_KEY = "portfolio_loader_seen";
 const MotionDiv = motion.div;
 
+// Invisible placeholder fallback — eliminates CLS and prevents dotted spinner flash on page switch
 const RouteFallback = () => (
-  <div className="section-wrap pt-16 pb-16">
-    <div className="mx-auto max-w-md rounded-2xl border border-cyan-300/25 bg-slate-950/70 p-5 text-center text-sm text-slate-300">
-      Loading page...
-    </div>
-  </div>
+  <div className="min-h-[85vh] w-full" aria-hidden="true" />
 );
+
+const LegacyRedirect = ({ to }) => {
+  const location = useLocation();
+  return <Navigate to={`${to}${location.search}`} replace />;
+};
 
 function App() {
   const location = useLocation();
   const prefersReducedMotion = useReducedMotion();
   const isAdminRoute = location.pathname.startsWith("/admin");
+
   const [showLoader, setShowLoader] = useState(() => {
     if (typeof window === "undefined") {
       return false;
@@ -93,6 +99,13 @@ function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname, showLoader]);
+
+  // Preload all page chunks in background idle time for instant, zero-wait navigation
+  useEffect(() => {
+    if (!showLoader) {
+      prefetchAllRoutesIdle();
+    }
+  }, [showLoader]);
 
   useEffect(() => {
     if (isAdminRoute || showLoader) {
@@ -130,104 +143,102 @@ function App() {
         <div className="relative z-10 flex min-h-screen flex-col">
           {!isAdminRoute ? <Navbar /> : null}
           <main className="flex-1 min-h-[85vh]" style={mainStyle}>
-            <AnimatePresence initial={false}>
+            <AnimatePresence mode="wait">
               <MotionDiv
                 key={location.pathname}
                 initial={
                   prefersReducedMotion
                     ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: 10, scale: 0.99 }
+                    : { opacity: 0, y: 6 }
                 }
-                animate={{ opacity: 1, y: 0, scale: 1 }}
+                animate={{ opacity: 1, y: 0 }}
                 exit={
                   prefersReducedMotion
                     ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: -8, scale: 0.99 }
+                    : { opacity: 0, y: -4 }
                 }
                 transition={{
-                  duration: 0.35,
+                  duration: 0.2,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="transform-gpu"
+                className="transform-gpu will-change-transform"
               >
-                <Suspense fallback={<div className="min-h-[85vh] w-full" />}>
-                  <Routes location={location}>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/skills" element={<SkillsPage />} />
-                    <Route path="/projects" element={<ProjectsPage />} />
-                    <Route
-                      path="/projects/:slug"
-                      element={<ProjectDetailsPage />}
-                    />
-                    <Route path="/journey" element={<JourneyPage />} />
-                    <Route path="/how-i-build" element={<HowIBuildPage />} />
-                    <Route path="/experiments" element={<ExperimentsPage />} />
-                    <Route path="/security" element={<SecurityPage />} />
-                    <Route path="/experiments/security-labs" element={<SecurityPage />} />
-                    <Route path="/terminal" element={<TerminalPage />} />
-                    <Route path="/experiments/terminal" element={<TerminalPage />} />
-                    <Route path="/cyber-tools" element={<CyberToolsPage />} />
-                    <Route path="/experiments/tools" element={<CyberToolsPage />} />
-                    <Route path="/dsa-lab" element={<DsaLabPage />} />
-                    <Route path="/experiments/dsa" element={<DsaLabPage />} />
-                    <Route path="/methodology" element={<MethodologyPage />} />
-                    <Route path="/experiments/methodology" element={<MethodologyPage />} />
-                    <Route path="/blog" element={<BlogPage />} />
-                    <Route path="/blog/:slug" element={<BlogDetailsPage />} />
-                    <Route path="/services" element={<ServicesPage />} />
-                    <Route path="/support" element={<SupportPage />} />
-                    <Route path="/payment-success" element={<PaymentSuccessPage />} />
-                    <Route path="/receipt-portal" element={<ReceiptPortalPage />} />
-                    <Route path="/refund-policy" element={<RefundPolicyPage />} />
-                    <Route
-                      path="/privacy-policy"
-                      element={<PrivacyPolicyPage />}
-                    />
-                    <Route path="/terms-and-conditions" element={<TermsPage />} />
-                    <Route
-                      path="/cancellation-policy"
-                      element={<CancellationPolicyPage />}
-                    />
-                    <Route
-                      path="/delivery-policy"
-                      element={<DeliveryPolicyPage />}
-                    />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/admin/login" element={<AdminLoginPage />} />
-                    <Route
-                      path="/admin"
-                      element={
-                        <ProtectedRoute>
-                          <AdminDashboardPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/admin/dashboard"
-                      element={<Navigate to="/admin" replace />}
-                    />
-                    <Route path="/auth/callback" element={<AuthCallbackPage />} />
-                    <Route path="/home" element={<Navigate to="/" replace />} />
+                {/* Route-Level Error Boundary + Invisible Suspense Fallback (Zero Dotted Flash) */}
+                <RouteErrorBoundary>
+                  <Suspense fallback={<RouteFallback />}>
+                    <Routes location={location}>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/about" element={<AboutPage />} />
+                      <Route path="/skills" element={<SkillsPage />} />
+                      <Route path="/projects" element={<ProjectsPage />} />
+                      <Route
+                        path="/projects/:slug"
+                        element={<ProjectDetailsPage />}
+                      />
+                      <Route path="/journey" element={<JourneyPage />} />
+                      <Route path="/how-i-build" element={<HowIBuildPage />} />
+                      <Route path="/experiments" element={<ExperimentsPage />} />
+                      <Route path="/security" element={<SecurityPage />} />
+                      <Route path="/experiments/security-labs" element={<SecurityPage />} />
+                      <Route path="/terminal" element={<TerminalPage />} />
+                      <Route path="/experiments/terminal" element={<TerminalPage />} />
+                      <Route path="/cyber-tools" element={<CyberToolsPage />} />
+                      <Route path="/experiments/tools" element={<CyberToolsPage />} />
+                      <Route path="/dsa-lab" element={<DsaLabPage />} />
+                      <Route path="/experiments/dsa" element={<DsaLabPage />} />
+                      <Route path="/methodology" element={<MethodologyPage />} />
+                      <Route path="/experiments/methodology" element={<MethodologyPage />} />
+                      <Route path="/blog" element={<BlogPage />} />
+                      <Route path="/blog/:slug" element={<BlogDetailsPage />} />
+                      <Route path="/services" element={<ServicesPage />} />
+                      <Route path="/support" element={<SupportPage />} />
+                      <Route path="/payment/success" element={<PaymentSuccessPage />} />
+                      <Route path="/payment-success" element={<LegacyRedirect to="/payment/success" />} />
+                      <Route path="/receipts" element={<ReceiptPortalPage />} />
+                      <Route path="/receipt-portal" element={<LegacyRedirect to="/receipts" />} />
+                      <Route path="/refund-policy" element={<RefundPolicyPage />} />
+                      <Route
+                        path="/privacy-policy"
+                        element={<PrivacyPolicyPage />}
+                      />
+                      <Route path="/terms-and-conditions" element={<TermsPage />} />
+                      <Route
+                        path="/cancellation-policy"
+                        element={<CancellationPolicyPage />}
+                      />
+                      <Route
+                        path="/delivery-policy"
+                        element={<DeliveryPolicyPage />}
+                      />
+                      <Route path="/contact" element={<ContactPage />} />
+                      <Route path="/admin/login" element={<AdminLoginPage />} />
+                      <Route
+                        path="/admin"
+                        element={
+                          <ProtectedRoute>
+                            <AdminDashboardPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/dashboard"
+                        element={<Navigate to="/admin" replace />}
+                      />
+                      <Route path="/auth/callback" element={<AuthCallbackPage />} />
+                      <Route path="/home" element={<Navigate to="/" replace />} />
 
-                    {/* Experiment sub-page aliases — navbar + ExperimentsPage links use these paths */}
-                    <Route path="/experiments/security-labs" element={<Navigate to="/security" replace />} />
-                    <Route path="/experiments/terminal" element={<Navigate to="/terminal" replace />} />
-                    <Route path="/experiments/dsa" element={<Navigate to="/dsa-lab" replace />} />
-                    <Route path="/experiments/tools" element={<Navigate to="/cyber-tools" replace />} />
-                    <Route path="/experiments/methodology" element={<Navigate to="/methodology" replace />} />
-
-                    <Route path="*" element={<NotFoundPage />} />
-                  </Routes>
-                </Suspense>
+                      <Route path="*" element={<NotFoundPage />} />
+                    </Routes>
+                  </Suspense>
+                </RouteErrorBoundary>
               </MotionDiv>
             </AnimatePresence>
           </main>
-          <SignInModal />
-          <UserProfileModal />
-          {!showLoader ? <ScrollProgressButton /> : null}
           {!isAdminRoute ? <Footer /> : null}
         </div>
+        {!showLoader ? <ScrollProgressButton /> : null}
+        <SignInModal />
+        <UserProfileModal />
         <Analytics />
       </div>
     </LenisProvider>

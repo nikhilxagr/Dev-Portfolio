@@ -8,7 +8,7 @@ import {
   updateProject,
 } from "../controllers/projectController.js";
 import validateRequest from "../middleware/validateRequest.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import adminAuthMiddleware from "../middleware/adminAuthMiddleware.js";
 import { publicReadLimiter } from "../middleware/rateLimiter.js";
 
 const router = Router();
@@ -46,7 +46,7 @@ router.get("/:slug", publicReadLimiter, getProjectBySlug);
 
 router.post(
   "/",
-  authMiddleware,
+  adminAuthMiddleware,
   projectValidation,
   validateRequest,
   createProject,
@@ -54,7 +54,7 @@ router.post(
 
 router.put(
   "/:id",
-  authMiddleware,
+  adminAuthMiddleware,
   [
     param("id").isMongoId().withMessage("Invalid project id"),
     ...projectValidation,
@@ -65,7 +65,7 @@ router.put(
 
 router.delete(
   "/:id",
-  authMiddleware,
+  adminAuthMiddleware,
   [param("id").isMongoId().withMessage("Invalid project id")],
   validateRequest,
   deleteProject,

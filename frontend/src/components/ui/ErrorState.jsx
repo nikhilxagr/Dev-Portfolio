@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import Button from '@/components/ui/Button'
 
 const ErrorState = ({ title = 'Something went wrong', message, onRetry }) => {
@@ -16,4 +17,7 @@ const ErrorState = ({ title = 'Something went wrong', message, onRetry }) => {
   )
 }
 
-export default ErrorState
+const MemoizedErrorState = memo(ErrorState)
+MemoizedErrorState.displayName = 'ErrorState'
+
+export default MemoizedErrorState

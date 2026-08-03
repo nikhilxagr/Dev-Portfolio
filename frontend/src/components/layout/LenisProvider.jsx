@@ -34,15 +34,32 @@ export const LenisProvider = ({ children }) => {
 
     lenisRef.current = lenis;
 
+    let rafId = null;
+
     function raf(time) {
+      if (document.hidden) {
+        rafId = requestAnimationFrame(raf);
+        return;
+      }
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    const rafId = requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       lenis.destroy();
       lenisRef.current = null;
     };

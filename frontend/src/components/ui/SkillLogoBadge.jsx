@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import clsx from "clsx";
 import { useTheme } from "@/context/ThemeContext";
 import { getSkillLogoUrl } from "@/constants/skillLogos";
@@ -23,6 +23,8 @@ const SkillLogoBadge = ({ skill, skillName, className }) => {
             alt={`${name} logo`}
             loading="lazy"
             decoding="async"
+            width={14}
+            height={14}
             className="h-3.5 w-3.5 object-contain"
             onError={() => setLogoFailed(true)}
           />
@@ -37,4 +39,7 @@ const SkillLogoBadge = ({ skill, skillName, className }) => {
   );
 };
 
-export default SkillLogoBadge;
+const MemoizedSkillLogoBadge = memo(SkillLogoBadge);
+MemoizedSkillLogoBadge.displayName = "SkillLogoBadge";
+
+export default MemoizedSkillLogoBadge;

@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import { param } from 'express-validator'
-import authMiddleware from '../middleware/authMiddleware.js'
+import adminAuthMiddleware from '../middleware/adminAuthMiddleware.js'
 import validateRequest from '../middleware/validateRequest.js'
+import { adminApiLimiter } from '../middleware/rateLimiter.js'
 import {
   getAdminOverview,
   getAdminPaymentsHistory,
@@ -11,7 +12,8 @@ import { getContactMessages, markContactAsRead } from '../controllers/contactCon
 
 const router = Router()
 
-router.use(authMiddleware)
+router.use(adminApiLimiter)
+router.use(adminAuthMiddleware)
 
 router.get('/overview', getAdminOverview)
 router.get('/payments', getAdminPaymentsHistory)

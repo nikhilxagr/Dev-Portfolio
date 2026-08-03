@@ -24,4 +24,7 @@ const authMiddleware = (req, _res, next) => {
   }
 };
 
+export { default as adminAuthMiddleware } from "./adminAuthMiddleware.js";
+
 export default authMiddleware;
+

@@ -33,7 +33,14 @@ export const loginAdmin = async (req, res, next) => {
     }
 
     const token = jwt.sign(
-      { email: env.adminEmail, role: "admin" },
+      {
+        id: "admin",
+        email: env.adminEmail,
+        role: "admin",
+        type: "admin",
+        iss: "portfolio-api",
+        aud: "portfolio-admin",
+      },
       env.jwtSecret,
       {
         expiresIn: env.jwtExpiresIn,

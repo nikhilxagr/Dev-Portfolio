@@ -9,7 +9,7 @@ const VARIANTS = {
   right: { hidden: { opacity: 0, x: 40 },              show: { opacity: 1, x: 0 } },
   scale: { hidden: { opacity: 0, scale: 0.85 },        show: { opacity: 1, scale: 1 } },
   fade:  { hidden: { opacity: 0 },                     show: { opacity: 1 } },
-  blur:  { hidden: { opacity: 0, filter: 'blur(8px)' },show: { opacity: 1, filter: 'blur(0px)' } },
+  blur:  { hidden: { opacity: 0, scale: 0.94, y: 10 }, show: { opacity: 1, scale: 1, y: 0 } },
 }
 
 const SPRING = {
@@ -46,12 +46,12 @@ const ScrollReveal = ({
 
   return (
     <MotionDiv
-      className={className}
+      className={`transform-gpu will-change-transform ${className}`}
       style={style}
       variants={variants}
       initial="hidden"
       whileInView="show"
-      viewport={{ once, amount }}
+      viewport={{ once, margin: "-50px 0px", amount }}
       transition={{ ...SPRING, delay }}
     >
       {children}

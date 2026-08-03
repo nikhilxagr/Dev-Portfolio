@@ -19,11 +19,11 @@ const ScaleIn = ({
 }) => {
   return (
     <MotionDiv
-      className={className}
+      className={`transform-gpu will-change-transform ${className}`}
       style={style}
       initial={{ opacity: 0, scale: fromScale, y: 14 }}
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
-      viewport={{ once, amount: 0.12 }}
+      viewport={{ once, margin: "-50px 0px", amount: 0.12 }}
       transition={{
         type: 'spring',
         stiffness: 200,

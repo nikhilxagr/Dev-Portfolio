@@ -260,7 +260,11 @@ const AboutPage = () => {
                     src={SITE_PROFILE.profileImage}
                     alt={SITE_PROFILE.profileImageAlt}
                     className="h-full w-full object-cover object-top"
+                    width={192}
+                    height={192}
                     loading="lazy"
+                    decoding="async"
+                    fetchPriority="auto"
                   />
                 </div>
               </div>

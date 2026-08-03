@@ -99,7 +99,7 @@ const SUPPORT_FAQS = [
   },
   {
     q: "Will I receive an official payment receipt?",
-    a: "Yes! As soon as your contribution completes, an automated digital receipt is generated and linked to your account. You can view or download it anytime from the Receipt Portal (/receipt-portal).",
+    a: "Yes! As soon as your contribution completes, an automated digital receipt is generated and linked to your account. You can view or download it anytime from the Receipt Portal (/receipts).",
   },
   {
     q: "Can I contribute a custom amount?",

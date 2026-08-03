@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 
 const containerVariants = {
@@ -98,4 +99,7 @@ const SectionTitle = ({
   )
 }
 
-export default SectionTitle
+const MemoizedSectionTitle = memo(SectionTitle)
+MemoizedSectionTitle.displayName = 'SectionTitle'
+
+export default MemoizedSectionTitle

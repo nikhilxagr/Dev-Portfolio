@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 
 const UserAvatar = ({ user, className = "h-7 w-7 text-xs", textClassName = "font-black" }) => {
   const [imgError, setImgError] = useState(false);
@@ -11,6 +11,10 @@ const UserAvatar = ({ user, className = "h-7 w-7 text-xs", textClassName = "font
         className={`${className} rounded-full object-cover shrink-0 border border-emerald-500/30`}
         referrerPolicy="no-referrer"
         crossOrigin="anonymous"
+        width={32}
+        height={32}
+        loading="lazy"
+        decoding="async"
         onError={() => setImgError(true)}
       />
     );
@@ -27,4 +31,7 @@ const UserAvatar = ({ user, className = "h-7 w-7 text-xs", textClassName = "font
   );
 };
 
-export default UserAvatar;
+const MemoizedUserAvatar = memo(UserAvatar);
+MemoizedUserAvatar.displayName = "UserAvatar";
+
+export default MemoizedUserAvatar;

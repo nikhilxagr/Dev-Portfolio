@@ -43,6 +43,7 @@ import { useUserAuth } from "@/context/UserAuthContext";
 import { NAV_LINKS, QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
 import { useTheme } from "@/context/ThemeContext";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { prefetchRoute } from "@/utils/prefetchRoute";
 
 const NAV_OFFSET_REM = 6;
 const OPPORTUNITY_BANNER_HEIGHT_REM = 2.25;
@@ -128,9 +129,18 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY > 40;
+          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -398,9 +408,9 @@ const Navbar = () => {
                         </NavLink>
 
                         {isDropdownOpen && (
-                          <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2.5 w-[330px] z-50">
-                            <div className="rounded-3xl border border-slate-200/90 dark:border-emerald-500/30 bg-white/98 dark:bg-[#030d07]/95 text-slate-900 dark:text-white shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:shadow-[0_16px_50px_rgba(0,10,2,0.9)] backdrop-blur-2xl transition-all duration-300 animate-fadeIn ring-1 ring-black/5 dark:ring-transparent">
-                              <div className="px-3 py-1.5 font-mono text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-widest border-b border-slate-200/60 dark:border-emerald-500/20 mb-2">
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2.5 w-[335px] z-[9999] pointer-events-auto">
+                            <div className="rounded-3xl border border-slate-200 dark:border-emerald-500/30 bg-white dark:bg-[#030d07] text-slate-900 dark:text-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] dark:shadow-[0_16px_50px_rgba(0,10,2,0.9)] p-2 transition-all duration-300 animate-fadeIn ring-1 ring-black/10 dark:ring-transparent">
+                              <div className="px-3 py-2 font-mono text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-widest border-b border-slate-100 dark:border-emerald-500/20 mb-1.5">
                                 // {item.label.toUpperCase()}
                               </div>
                               <div className="space-y-1">
@@ -415,7 +425,7 @@ const Navbar = () => {
                                         "group/sub flex items-center justify-between gap-3 rounded-2xl p-2.5 sm:p-3 transition-all duration-300 ease-out border font-outfit",
                                         isActive
                                           ? "bg-emerald-50 dark:bg-emerald-500/15 border-emerald-400/50 dark:border-emerald-500/40 text-emerald-950 dark:text-emerald-300 font-extrabold shadow-sm dark:shadow-[0_0_20px_rgba(52,211,153,0.25)]"
-                                          : "border-transparent text-slate-800 dark:text-slate-200/90 hover:bg-emerald-50/70 dark:hover:bg-white/[0.08] hover:border-emerald-300/40 dark:hover:border-emerald-500/30 hover:text-slate-950 dark:hover:text-white",
+                                          : "border-transparent text-slate-800 dark:text-slate-200/90 hover:bg-slate-100 dark:hover:bg-white/[0.08] hover:border-emerald-300/40 dark:hover:border-emerald-500/30 hover:text-slate-950 dark:hover:text-white",
                                       )}
                                     >
                                       <div className="flex items-center gap-3">
@@ -443,7 +453,13 @@ const Navbar = () => {
                   }
 
                   return (
-                    <NavLink key={item.to} to={item.to} className={navItemClass}>
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      className={navItemClass}
+                      onMouseEnter={() => prefetchRoute(item.to)}
+                      onFocus={() => prefetchRoute(item.to)}
+                    >
                       <span className="relative z-10">{item.label}</span>
                     </NavLink>
                   );
@@ -530,7 +546,7 @@ const Navbar = () => {
                           <User size={14} className="text-emerald-500" /> My Profile
                         </button>
                         <Link
-                          to="/receipt-portal"
+                          to="/receipts"
                           onClick={() => setUserMenuOpen(false)}
                           className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
                         >
@@ -832,7 +848,7 @@ const Navbar = () => {
                       <User size={13} className="text-emerald-500" /> Profile
                     </button>
                     <Link
-                      to="/receipt-portal"
+                      to="/receipts"
                       onClick={() => setOpen(false)}
                       className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 text-xs font-bold text-slate-800 dark:text-slate-200"
                     >

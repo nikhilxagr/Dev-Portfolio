@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 const ThemeContext = createContext({
   theme: 'dark',
@@ -33,9 +33,9 @@ export const ThemeProvider = ({ children }) => {
     window.localStorage.setItem(THEME_KEY, theme)
   }, [theme])
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'))
-  }
+  }, [])
 
   const value = useMemo(
     () => ({
@@ -43,7 +43,7 @@ export const ThemeProvider = ({ children }) => {
       isDark: theme === 'dark',
       toggleTheme,
     }),
-    [theme],
+    [theme, toggleTheme],
   )
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>

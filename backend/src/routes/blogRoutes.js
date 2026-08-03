@@ -8,7 +8,7 @@ import {
   updateBlog,
 } from "../controllers/blogController.js";
 import validateRequest from "../middleware/validateRequest.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import adminAuthMiddleware from "../middleware/adminAuthMiddleware.js";
 import { publicReadLimiter } from "../middleware/rateLimiter.js";
 
 const router = Router();
@@ -35,11 +35,11 @@ const blogValidation = [
 router.get("/", publicReadLimiter, getBlogs);
 router.get("/:slug", publicReadLimiter, getBlogBySlug);
 
-router.post("/", authMiddleware, blogValidation, validateRequest, createBlog);
+router.post("/", adminAuthMiddleware, blogValidation, validateRequest, createBlog);
 
 router.put(
   "/:id",
-  authMiddleware,
+  adminAuthMiddleware,
   [param("id").isMongoId().withMessage("Invalid blog id"), ...blogValidation],
   validateRequest,
   updateBlog,
@@ -47,7 +47,7 @@ router.put(
 
 router.delete(
   "/:id",
-  authMiddleware,
+  adminAuthMiddleware,
   [param("id").isMongoId().withMessage("Invalid blog id")],
   validateRequest,
   deleteBlog,

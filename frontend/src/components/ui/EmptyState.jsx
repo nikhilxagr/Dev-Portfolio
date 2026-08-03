@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const EmptyState = ({ title, message }) => {
   return (
     <div className="card-surface rounded-2xl p-6 text-center">
@@ -7,4 +9,7 @@ const EmptyState = ({ title, message }) => {
   );
 };
 
-export default EmptyState;
+const MemoizedEmptyState = memo(EmptyState);
+MemoizedEmptyState.displayName = "EmptyState";
+
+export default MemoizedEmptyState;

@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
@@ -5,13 +6,27 @@ import ApiError from "../utils/ApiError.js";
 import { env } from "../config/env.js";
 import { sendResponse } from "../utils/apiResponse.js";
 
+const parseCookieHeader = (cookieHeader) => {
+  if (!cookieHeader) return {};
+  return Object.fromEntries(
+    cookieHeader.split(";").map((cookie) => {
+      const [key, ...v] = cookie.trim().split("=");
+      return [key, v.join("=")];
+    }),
+  );
+};
+
 const generateUserToken = (user) => {
   return jwt.sign(
     {
-      userId: user._id,
+      id: user._id.toString(),
+      userId: user._id.toString(),
       email: user.email,
       name: user.name,
+      role: "user",
       type: "user",
+      iss: "portfolio-api",
+      aud: "portfolio-user",
     },
     env.jwtSecret,
     { expiresIn: "7d" },
@@ -29,6 +44,14 @@ export const initiateGoogleAuth = (_req, res) => {
     return;
   }
 
+  const state = crypto.randomBytes(32).toString("hex");
+  res.cookie("g_oauth_state", state, {
+    httpOnly: true,
+    secure: env.nodeEnv === "production",
+    sameSite: "lax",
+    maxAge: 10 * 60 * 1000, // 10 minutes
+  });
+
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const options = {
     redirect_uri: env.googleCallbackUrl,
@@ -36,6 +59,7 @@ export const initiateGoogleAuth = (_req, res) => {
     access_type: "offline",
     response_type: "code",
     prompt: "consent",
+    state,
     scope: [
       "https://www.googleapis.com/auth/userinfo.profile",
       "https://www.googleapis.com/auth/userinfo.email",
@@ -50,9 +74,20 @@ export const initiateGoogleAuth = (_req, res) => {
 export const handleGoogleCallback = async (req, res) => {
   const code = req.query.code;
   const error = req.query.error;
+  const state = req.query.state;
 
-  if (error || !code) {
-    res.redirect(`${env.frontendUrl}/auth/callback?error=access_denied`);
+  const cookies = req.cookies || parseCookieHeader(req.headers.cookie);
+  const cookieState = cookies.g_oauth_state;
+
+  res.clearCookie("g_oauth_state");
+
+  if (error || !code || !state || !cookieState || state !== cookieState) {
+    console.error("[UserAuth] Google Callback state or CSRF error:", {
+      hasCode: Boolean(code),
+      hasState: Boolean(state),
+      stateMatched: Boolean(state && state === cookieState),
+    });
+    res.redirect(`${env.frontendUrl}/auth/callback?error=invalid_state`);
     return;
   }
 
@@ -91,7 +126,12 @@ export const handleGoogleCallback = async (req, res) => {
 
     const googleUser = await profileResponse.json();
 
-    if (!profileResponse.ok || !googleUser.email) {
+    const isEmailVerified =
+      googleUser.email_verified === true ||
+      googleUser.verified_email === true ||
+      googleUser.email_verified === "true";
+
+    if (!profileResponse.ok || !googleUser.email || !isEmailVerified) {
       res.redirect(`${env.frontendUrl}/auth/callback?error=profile_fetch_failed`);
       return;
     }
@@ -146,6 +186,17 @@ export const handleGoogleCredential = async (req, res, next) => {
 
     if (!response.ok || !googleUser.email) {
       throw new ApiError(401, "Invalid Google credential");
+    }
+
+    if (env.googleClientId && googleUser.aud !== env.googleClientId) {
+      throw new ApiError(401, "Invalid Google credential audience");
+    }
+
+    const isEmailVerified =
+      googleUser.email_verified === true || googleUser.email_verified === "true";
+
+    if (!isEmailVerified) {
+      throw new ApiError(401, "Google email is not verified");
     }
 
     let user = await User.findOne({

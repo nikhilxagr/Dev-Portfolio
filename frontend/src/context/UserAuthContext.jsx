@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import {
   getCurrentUserProfileService,
   getStoredUserToken,
@@ -81,25 +81,42 @@ export const UserAuthProvider = ({ children }) => {
     setUser((prev) => (prev ? { ...prev, ...updatedFields } : null));
   }, []);
 
+  const value = useMemo(
+    () => ({
+      user,
+      isLoggedIn: Boolean(user),
+      loading,
+      login,
+      logout,
+      checkAuth,
+      isSignInModalOpen,
+      openSignInModal,
+      closeSignInModal,
+      signInModalOptions,
+      isProfileModalOpen,
+      openProfileModal,
+      closeProfileModal,
+      updateUser,
+    }),
+    [
+      user,
+      loading,
+      login,
+      logout,
+      checkAuth,
+      isSignInModalOpen,
+      openSignInModal,
+      closeSignInModal,
+      signInModalOptions,
+      isProfileModalOpen,
+      openProfileModal,
+      closeProfileModal,
+      updateUser,
+    ],
+  );
+
   return (
-    <UserAuthContext.Provider
-      value={{
-        user,
-        isLoggedIn: Boolean(user),
-        loading,
-        login,
-        logout,
-        checkAuth,
-        isSignInModalOpen,
-        openSignInModal,
-        closeSignInModal,
-        signInModalOptions,
-        isProfileModalOpen,
-        openProfileModal,
-        closeProfileModal,
-        updateUser,
-      }}
-    >
+    <UserAuthContext.Provider value={value}>
       {children}
     </UserAuthContext.Provider>
   );

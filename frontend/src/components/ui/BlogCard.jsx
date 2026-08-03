@@ -45,7 +45,7 @@ const BlogCard = ({
 
   return (
     <article
-      className={`group flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-white/[0.08] dark:shadow-none transition hover:-translate-y-1 ${isCompact ? "p-4" : "p-5"} ${className}`}
+      className={`group flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-white/[0.08] dark:shadow-none transition hover:-translate-y-1 transform-gpu will-change-transform ${isCompact ? "p-4" : "p-5"} ${className}`}
     >
       <div className="mb-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-white/[0.08] dark:bg-[#07111e]">
         <picture>
@@ -55,7 +55,7 @@ const BlogCard = ({
           <img
             src={previewImage}
             alt={`${blog.title} preview`}
-            className={`${isCompact ? "h-36" : "h-44"} w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]`}
+            className={`${isCompact ? "h-36" : "h-44"} w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] transform-gpu will-change-transform`}
             width={imageWidth}
             height={imageHeight}
             loading={imageLoading}

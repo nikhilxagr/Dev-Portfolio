@@ -22,6 +22,61 @@ export const authLimiter = rateLimit({
   },
 });
 
+export const userAuthLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many authentication attempts. Please try again later.",
+  },
+});
+
+export const oauthLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many OAuth authentication attempts. Please try again later.",
+  },
+});
+
+export const userProfileLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "User profile rate limit exceeded. Please try again later.",
+  },
+});
+
+export const adminAuthLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many admin login attempts. Please try again later.",
+  },
+});
+
+export const adminApiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Admin API rate limit exceeded. Please slow down.",
+  },
+});
+
 export const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 20,
@@ -72,7 +127,10 @@ export const webhookLimiter = rateLimit({
   max: 180,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: "Webhook rate limit reached." },
+  message: {
+    success: false,
+    message: "Webhook rate limit reached.",
+  },
 });
 
 export const publicReadLimiter = rateLimit({

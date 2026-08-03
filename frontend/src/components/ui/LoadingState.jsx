@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const LoadingState = ({
   message = "Loading data...",
   cards = 3,
@@ -68,4 +70,7 @@ const LoadingState = ({
   );
 };
 
-export default LoadingState;
+const MemoizedLoadingState = memo(LoadingState);
+MemoizedLoadingState.displayName = "LoadingState";
+
+export default MemoizedLoadingState;

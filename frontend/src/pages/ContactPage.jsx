@@ -407,6 +407,8 @@ const ContactPage = () => {
                               alt={`${item.label} logo`}
                               loading="lazy"
                               decoding="async"
+                              width={14}
+                              height={14}
                               className="h-[14px] w-[14px] object-contain"
                             />
                           )}

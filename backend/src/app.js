@@ -10,7 +10,6 @@ import userAuthRoutes from "./routes/userAuthRoutes.js";
 import { applySecurityMiddleware } from "./middleware/securityMiddleware.js";
 import {
   generalLimiter,
-  authLimiter,
   contactLimiter,
 } from "./middleware/rateLimiter.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorMiddleware.js";
@@ -95,7 +94,7 @@ app.use("/api", (req, res, next) => {
   next();
 });
 
-app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/user-auth", userAuthRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/blogs", blogRoutes);
