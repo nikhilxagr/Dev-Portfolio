@@ -219,18 +219,18 @@ const SortingVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-emerald-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-emerald-500/15 bg-slate-950/70">
+    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-emerald-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-emerald-500/15 dark:bg-slate-950/70">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 shrink-0">
-              <BarChart2 className="text-emerald-400" size={16} />
+              <BarChart2 className="text-emerald-600 dark:text-emerald-400" size={16} />
             </div>
-            <span className="font-mono text-xs font-bold text-slate-300">
-              Interactive Swapping Engine <span className="text-emerald-400 font-extrabold uppercase">({algorithm})</span>
+            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
+              Interactive Swapping Engine <span className="text-emerald-700 dark:text-emerald-400 font-extrabold uppercase">({algorithm})</span>
             </span>
           </div>
-          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-mono font-bold text-emerald-300 self-start sm:self-auto">
+          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-mono font-bold text-emerald-700 dark:text-emerald-300 self-start sm:self-auto">
             {arraySize} Elements
           </span>
         </div>
@@ -238,10 +238,10 @@ const SortingVisualizer = () => {
 
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
         {/* Custom User Input Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3.5 sm:p-4 rounded-2xl border border-emerald-500/25 bg-slate-950/80 shadow-lg backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-emerald-500/25 dark:bg-slate-950/80 shadow-sm backdrop-blur-md">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-xs uppercase text-emerald-400 font-black tracking-wider whitespace-nowrap">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+            <span className="font-mono text-xs uppercase text-emerald-700 dark:text-emerald-400 font-black tracking-wider whitespace-nowrap">
               Custom User Input:
             </span>
           </div>
@@ -251,18 +251,18 @@ const SortingVisualizer = () => {
             onChange={(e) => setCustomArrayText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleApplyCustomArray()}
             placeholder="Type custom numbers e.g. 45, 12, 89, 34, 67, 23"
-            className="flex-1 rounded-xl border border-slate-700/80 bg-slate-900 px-3.5 py-2 font-mono text-xs text-emerald-300 placeholder-slate-500 outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition"
+            className="flex-1 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700/80 dark:bg-slate-900 dark:text-emerald-300 dark:placeholder-slate-500 px-3.5 py-2 font-mono text-xs outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-1 focus:ring-emerald-500 transition"
           />
           <button
             type="button"
             onClick={handleApplyCustomArray}
-            className="rounded-xl border border-emerald-400/50 bg-emerald-500/20 px-5 py-2 font-mono text-xs font-black text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 transition-all duration-200 shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"
+            className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-400/50 dark:bg-emerald-500/20 px-5 py-2 font-mono text-xs font-black text-emerald-800 dark:text-emerald-300 hover:bg-emerald-500 hover:text-white dark:hover:text-slate-950 transition-all duration-200 shadow-sm shrink-0"
           >
             Visualize Input
           </button>
         </div>
         <div>
-          <p className="font-mono text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-2.5">Choose Algorithm</p>
+          <p className="font-mono text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-widest mb-2.5">Choose Algorithm</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
             {SORT_ALGORITHMS.map((a) => {
               const isActive = algorithm === a;
@@ -272,43 +272,58 @@ const SortingVisualizer = () => {
                   key={a}
                   onClick={() => setAlgorithm(a)}
                   className={`relative flex flex-col items-start gap-1.5 rounded-2xl border p-3.5 sm:p-4 text-left transition-all duration-200 ${
-                    isActive ? "shadow-lg" : "border-slate-800 bg-slate-900/40 hover:border-slate-700 hover:bg-slate-900/60"
+                    isActive ? "shadow-md" : "border-slate-200 bg-slate-50/80 text-slate-700 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-900/60"
                   }`}
-                  style={isActive ? { borderColor: `${c.color}60`, backgroundColor: `${c.color}12`, boxShadow: `0 0 24px ${c.color}28` } : {}}
+                  style={isActive ? { borderColor: `${c.color}80`, backgroundColor: `${c.color}15`, boxShadow: `0 0 20px ${c.color}25` } : {}}
                 >
                   <div className="flex items-center justify-between w-full">
-                    <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isActive ? c.color : "#334155" }} />
-                    {isActive && <span className="rounded-md px-1.5 py-0.5 text-[9px] font-bold font-mono" style={{ backgroundColor: `${c.color}30`, color: c.color }}>ACTIVE</span>}
+                    <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isActive ? c.color : "#94a3b8" }} />
+                    <span className="font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{c.method}</span>
                   </div>
-                  <span className="text-sm sm:text-base font-black text-white">{a}</span>
-                  <span className="font-mono text-[10px] text-slate-500">{c.avg} avg</span>
+                  <span className="font-display text-base font-bold text-slate-900 dark:text-white">{a}</span>
+                  <div className="flex flex-wrap gap-2 text-[11px] font-mono mt-1">
+                    <span className="text-slate-600 dark:text-slate-400">Avg: <strong className="text-slate-900 dark:text-slate-200">{c.avg}</strong></span>
+                    <span className="text-slate-600 dark:text-slate-400">Space: <strong className="text-slate-900 dark:text-slate-200">{c.space}</strong></span>
+                  </div>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
+        {/* Speed / Controls */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-900/40">
           <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-500 font-bold whitespace-nowrap">Array Size</span>
-            <div className="flex items-center gap-2 flex-1 sm:flex-none">
+            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-400 font-bold whitespace-nowrap">Size:</span>
+            <div className="flex items-center gap-2">
               <input
-                type="range" min={8} max={40} value={arraySize}
-                onChange={(e) => { setArraySize(+e.target.value); setInputArray(randomArray(+e.target.value)); }}
-                className="w-full sm:w-28 accent-emerald-400 cursor-pointer"
+                type="range"
+                min="8"
+                max="40"
+                value={arraySize}
+                onChange={(e) => {
+                  const size = Number(e.target.value);
+                  setArraySize(size);
+                  setInputArray(randomArray(size));
+                }}
+                className="h-2 w-28 sm:w-36 rounded-lg bg-slate-300 dark:bg-slate-700 accent-emerald-500 cursor-pointer"
               />
-              <span className="font-mono text-xs font-bold text-white w-6 text-center">{arraySize}</span>
+              <span className="font-mono text-xs font-bold text-slate-900 dark:text-white w-6 text-center">{arraySize}</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-500 font-bold whitespace-nowrap">Speed</span>
-            <div className="grid grid-cols-4 rounded-xl border border-slate-800 overflow-hidden w-full sm:w-auto text-center">
+            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-400 font-bold whitespace-nowrap">Speed</span>
+            <div className="grid grid-cols-4 rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden w-full sm:w-auto text-center">
               {Object.keys(SPEEDS).map((s) => (
                 <button
                   key={s}
                   onClick={() => setSpeed(s)}
-                  className={`px-2.5 sm:px-3 py-1.5 font-mono text-[11px] sm:text-xs font-bold transition ${speed === s ? "bg-emerald-500 text-black" : "bg-slate-900/60 text-slate-400 hover:text-white"}`}
+                  className={`px-2.5 sm:px-3 py-1.5 font-mono text-[11px] sm:text-xs font-bold transition ${
+                    speed === s
+                      ? "bg-emerald-500 text-black font-black"
+                      : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"
+                  }`}
                 >
                   {s}
                 </button>
@@ -318,51 +333,52 @@ const SortingVisualizer = () => {
 
           <button
             onClick={regenerate}
-            className="w-full md:w-auto ml-0 md:ml-auto flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 font-mono text-xs font-bold text-slate-300 hover:border-emerald-500/60 hover:text-emerald-300 transition"
+            className="w-full md:w-auto ml-0 md:ml-auto flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-4 py-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300 hover:border-emerald-500/60 hover:text-emerald-600 dark:hover:text-emerald-300 transition"
           >
             <RotateCcw size={14} /> Shuffle Array
           </button>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-800/60 bg-slate-950/40 p-3 sm:px-4 sm:py-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: barColor }} />
-            <p className="font-mono text-xs text-slate-200 font-bold truncate">
+            <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
               {currentStep.phase || "Press Play to start visualizing"}
             </p>
           </div>
 
-          <div className="grid grid-cols-3 sm:flex items-center justify-between sm:justify-end gap-1 sm:gap-4 font-mono text-[10px] sm:text-[11px] text-slate-400 border-t border-slate-800/60 pt-2 sm:pt-0 sm:border-t-0 text-center sm:text-left">
-            <span>Step <span className="text-white font-bold">{stepIdx + 1}</span>/{steps.length}</span>
-            <span><span className="text-white font-bold">{currentStep.comparisons ?? 0}</span> comps</span>
+          <div className="grid grid-cols-3 sm:flex items-center justify-between sm:justify-end gap-1 sm:gap-4 font-mono text-[10px] sm:text-[11px] text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800/60 pt-2 sm:pt-0 sm:border-t-0 text-center sm:text-left">
+            <span>Step <span className="text-slate-900 dark:text-white font-bold">{stepIdx + 1}</span>/{steps.length}</span>
+            <span><span className="text-slate-900 dark:text-white font-bold">{currentStep.comparisons ?? 0}</span> comps</span>
             <span><span className="font-bold" style={{ color: barColor }}>{progress}%</span> done</span>
           </div>
         </div>
 
-        <div className="h-1 w-full rounded-full bg-slate-900 overflow-hidden -mt-3 sm:-mt-4">
+        <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-900 overflow-hidden -mt-3 sm:-mt-4">
           <div className="h-full rounded-full transition-all duration-100" style={{ width: `${progress}%`, backgroundColor: barColor }} />
         </div>
 
-        <div className="relative flex items-end gap-[2px] sm:gap-1 overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#020b05] to-[#010804] px-2 sm:px-3 pt-3 pb-0 h-[220px] sm:h-[280px]">
+        {/* Sorting Array Visualizer Canvas */}
+        <div className="relative flex items-end gap-[2px] sm:gap-1 overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-800/60 bg-slate-950 dark:bg-gradient-to-b dark:from-[#020b05] dark:to-[#010804] px-2 sm:px-3 pt-3 pb-0 h-[220px] sm:h-[280px]">
           {arr.map((val, i) => (
             <SortBar key={i} value={val} maxVal={maxVal} isComparing={comparing.has(i)} isSwapped={swapped.has(i)} isSorted={sorted.has(i)} isPivot={i === pivotIdx && !sorted.has(i)} barColor={barColor} />
           ))}
         </div>
 
         <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <RotateCcw size={13} /> Reset
           </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             ◀ Prev
           </button>
           <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: barColor, boxShadow: `0 4px 24px ${barColor}55` }}>
             {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
           </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             Next ▶
           </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <SkipForward size={13} /> End
           </button>
         </div>
@@ -618,18 +634,18 @@ const GraphVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-cyan-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-cyan-500/15 bg-slate-950/70">
+    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-cyan-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-cyan-500/15 dark:bg-slate-950/70">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 shrink-0">
-              <Network className="text-cyan-400" size={16} />
+              <Network className="text-cyan-600 dark:text-cyan-400" size={16} />
             </div>
-            <span className="font-mono text-xs font-bold text-slate-300">
-              Graph Execution Engine <span className="text-cyan-400 font-extrabold uppercase">({algo})</span>
+            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
+              Graph Execution Engine <span className="text-cyan-700 dark:text-cyan-400 font-extrabold uppercase">({algo})</span>
             </span>
           </div>
-          <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-mono font-bold text-cyan-300 self-start sm:self-auto">
+          <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-mono font-bold text-cyan-700 dark:text-cyan-300 self-start sm:self-auto">
             Start: {startNode} → Target: {targetNode}
           </span>
         </div>
@@ -637,7 +653,7 @@ const GraphVisualizer = () => {
 
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
         <div>
-          <p className="font-mono text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-2.5">Choose Graph Algorithm</p>
+          <p className="font-mono text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-widest mb-2.5">Choose Graph Algorithm</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
             {Object.keys(GRAPH_ALGORITHMS).map((key) => {
               const item = GRAPH_ALGORITHMS[key];
@@ -647,67 +663,67 @@ const GraphVisualizer = () => {
                   key={key}
                   onClick={() => setAlgo(key)}
                   className={`flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all ${
-                    isActive ? "shadow-lg" : "border-slate-800 bg-slate-900/40 hover:border-slate-700"
+                    isActive ? "shadow-md" : "border-slate-200 bg-slate-50/80 text-slate-700 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300 dark:hover:border-slate-700"
                   }`}
-                  style={isActive ? { borderColor: `${item.color}60`, backgroundColor: `${item.color}12`, boxShadow: `0 0 24px ${item.color}28` } : {}}
+                  style={isActive ? { borderColor: `${item.color}80`, backgroundColor: `${item.color}15`, boxShadow: `0 0 20px ${item.color}25` } : {}}
                 >
                   <div className="flex items-center justify-between w-full">
-                    <span className="text-sm font-black text-white">{key}</span>
+                    <span className="text-sm font-black text-slate-900 dark:text-white">{key}</span>
                     {isActive && <span className="rounded px-1.5 py-0.5 text-[9px] font-bold font-mono" style={{ backgroundColor: `${item.color}30`, color: item.color }}>ACTIVE</span>}
                   </div>
-                  <span className="font-mono text-[10px] text-slate-400">{item.desc}</span>
+                  <span className="font-mono text-[10px] text-slate-600 dark:text-slate-400">{item.desc}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
           <div className="flex flex-wrap items-center gap-3">
-            <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-300">
+            <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
               Start Node:
-              <select value={startNode} onChange={(e) => setStartNode(e.target.value)} className="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-cyan-400 font-black outline-none">
+              <select value={startNode} onChange={(e) => setStartNode(e.target.value)} className="rounded-lg border border-slate-300 bg-white text-cyan-700 dark:border-slate-700 dark:bg-slate-900 dark:text-cyan-400 px-2.5 py-1 text-xs font-black outline-none">
                 {nodes.map((n) => <option key={n.id} value={n.id}>{n.id}</option>)}
               </select>
             </label>
 
-            <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-300">
+            <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
               Target Node:
-              <select value={targetNode} onChange={(e) => setTargetNode(e.target.value)} className="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-lime-400 font-black outline-none">
+              <select value={targetNode} onChange={(e) => setTargetNode(e.target.value)} className="rounded-lg border border-slate-300 bg-white text-lime-700 dark:border-slate-700 dark:bg-slate-900 dark:text-lime-400 px-2.5 py-1 text-xs font-black outline-none">
                 {nodes.map((n) => <option key={n.id} value={n.id}>{n.id}</option>)}
               </select>
             </label>
           </div>
 
           <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-500 font-bold whitespace-nowrap">Speed</span>
-            <div className="grid grid-cols-3 rounded-xl border border-slate-800 overflow-hidden w-full sm:w-auto text-center">
+            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-500 font-bold whitespace-nowrap">Speed</span>
+            <div className="grid grid-cols-3 rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden w-full sm:w-auto text-center">
               {["Slow", "Normal", "Fast"].map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-cyan-500 text-black" : "bg-slate-900/60 text-slate-400 hover:text-white"}`}>
+                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-cyan-500 text-black font-black" : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"}`}>
                   {s}
                 </button>
               ))}
             </div>
           </div>
 
-          <button onClick={randomizeWeights} className="w-full md:w-auto ml-0 md:ml-auto flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 font-mono text-xs font-bold text-slate-300 hover:border-cyan-500/60 hover:text-cyan-300 transition">
+          <button onClick={randomizeWeights} className="w-full md:w-auto ml-0 md:ml-auto flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-4 py-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300 hover:border-cyan-500/60 hover:text-cyan-600 dark:hover:text-cyan-300 transition">
             <RotateCcw size={14} /> Randomize Weights
           </button>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-800/60 bg-slate-950/40 p-3 sm:px-4 sm:py-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p className="font-mono text-xs text-slate-200 font-bold truncate">
+            <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
               {currStep.phase || "Press Play to start graph traversal"}
             </p>
           </div>
-          <span className="font-mono text-[11px] text-slate-400 shrink-0">
-            Step <span className="text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
+          <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 shrink-0">
+            Step <span className="text-slate-900 dark:text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
           </span>
         </div>
 
-        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#020912] to-[#01060c] p-4 sm:p-6 flex items-center justify-center min-h-[260px] sm:min-h-[310px]">
+        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-700/80 dark:border-slate-800/60 bg-[#06111a] dark:bg-gradient-to-b dark:from-[#020912] dark:to-[#01060c] p-4 sm:p-6 flex items-center justify-center min-h-[260px] sm:min-h-[310px] shadow-inner">
           <svg viewBox="0 0 540 250" className="w-full max-w-2xl h-auto overflow-visible">
             {edges.map((edge) => {
               const uNode = nodes.find((n) => n.id === edge.u);
@@ -718,7 +734,7 @@ const GraphVisualizer = () => {
               const isPath = pathEdgesSet.has(edgeKey);
               const isActive = activeEdgesSet.has(edgeKey);
 
-              let strokeColor = "#1e293b";
+              let strokeColor = "#334155";
               let strokeWidth = 2;
               if (isPath) { strokeColor = "#f59e0b"; strokeWidth = 4; }
               else if (isActive) { strokeColor = themeColor; strokeWidth = 3; }
@@ -730,8 +746,8 @@ const GraphVisualizer = () => {
                 <g key={edgeKey}>
                   <line x1={uNode.x} y1={uNode.y} x2={vNode.x} y2={vNode.y} stroke={strokeColor} strokeWidth={strokeWidth} strokeDasharray={isActive && !isPath ? "4 4" : "none"} className="transition-all duration-300" />
                   <g transform={`translate(${midX}, ${midY})`}>
-                    <circle r="11" fill="#091322" stroke={isPath ? "#f59e0b" : "#334155"} strokeWidth="1.5" />
-                    <text textAnchor="middle" dy="3.5" fontSize="10" fontWeight="bold" fill={isPath ? "#f59e0b" : "#94a3b8"} fontFamily="monospace">
+                    <circle r="11" fill="#0b1726" stroke={isPath ? "#f59e0b" : "#475569"} strokeWidth="1.5" />
+                    <text textAnchor="middle" dy="3.5" fontSize="10" fontWeight="bold" fill={isPath ? "#f59e0b" : "#cbd5e1"} fontFamily="monospace">
                       {edge.weight}
                     </text>
                   </g>
@@ -746,8 +762,8 @@ const GraphVisualizer = () => {
               const isVisited = visitedSet.has(node.id);
               const isInPath = pathSet.has(node.id);
 
-              let fill = "#0f172a";
-              let stroke = "#334155";
+              let fill = "#1e293b";
+              let stroke = "#475569";
               let strokeW = "2";
 
               if (isInPath) { fill = "#f59e0b"; stroke = "#fbbf24"; strokeW = "3"; }
@@ -777,7 +793,7 @@ const GraphVisualizer = () => {
                   )}
                   {nodeDist !== null && (
                     <g transform="translate(22, 0)">
-                      <rect x="0" y="-8" width="24" height="14" rx="4" fill="#0f172a" stroke="#334155" />
+                      <rect x="0" y="-8" width="24" height="14" rx="4" fill="#0b1726" stroke="#0ea5e9" strokeWidth="1" />
                       <text textAnchor="middle" x="12" dy="2" fontSize="9" fontWeight="bold" fill="#38bdf8" fontFamily="monospace">
                         {nodeDist === Infinity ? "∞" : nodeDist}
                       </text>
@@ -790,19 +806,19 @@ const GraphVisualizer = () => {
         </div>
 
         <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <RotateCcw size={13} /> Reset
           </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             ◀ Prev
           </button>
           <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
             {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
           </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             Next ▶
           </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <SkipForward size={13} /> End
           </button>
         </div>
@@ -1014,28 +1030,28 @@ const DpGridVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-lime-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-lime-500/15 bg-slate-950/70">
+    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-lime-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-lime-500/15 dark:bg-slate-950/70">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-lime-500/30 bg-lime-500/10 shrink-0">
-              <Grid className="text-lime-400" size={16} />
+              <Grid className="text-lime-600 dark:text-lime-400" size={16} />
             </div>
-            <span className="font-mono text-xs font-bold text-slate-300">
-              2D Memoization Table <span className="text-lime-400 font-extrabold uppercase">({problem})</span>
+            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
+              2D Memoization Table <span className="text-lime-700 dark:text-lime-400 font-extrabold uppercase">({problem})</span>
             </span>
           </div>
 
           <div className="flex gap-2 w-full sm:w-auto">
             <button
               onClick={() => { setProblem("Knapsack"); setStepIdx(0); setPlaying(false); }}
-              className={`flex-1 sm:flex-initial rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold transition text-center ${problem === "Knapsack" ? "border-lime-400 bg-lime-500/20 text-lime-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}
+              className={`flex-1 sm:flex-initial rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold transition text-center ${problem === "Knapsack" ? "border-lime-500 bg-lime-500/20 text-lime-800 dark:border-lime-400 dark:bg-lime-500/20 dark:text-lime-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}
             >
               🎒 0/1 Knapsack
             </button>
             <button
               onClick={() => { setProblem("LCS"); setStepIdx(0); setPlaying(false); }}
-              className={`flex-1 sm:flex-initial rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold transition text-center ${problem === "LCS" ? "border-cyan-400 bg-cyan-500/20 text-cyan-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}
+              className={`flex-1 sm:flex-initial rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold transition text-center ${problem === "LCS" ? "border-cyan-500 bg-cyan-500/20 text-cyan-800 dark:border-cyan-400 dark:bg-cyan-500/20 dark:text-cyan-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}
             >
               🔤 LCS Subsequence
             </button>
@@ -1044,31 +1060,31 @@ const DpGridVisualizer = () => {
       </div>
 
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
           {problem === "Knapsack" ? (
             <div className="flex items-center gap-3">
-              <span className="font-mono text-[11px] uppercase text-slate-400 font-bold">Knapsack Capacity W:</span>
-              <input type="range" min={4} max={8} value={capacity} onChange={(e) => setCapacity(+e.target.value)} className="w-28 accent-lime-400 cursor-pointer" />
-              <span className="font-mono text-xs font-black text-lime-400">{capacity}</span>
+              <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-400 font-bold">Knapsack Capacity W:</span>
+              <input type="range" min={4} max={8} value={capacity} onChange={(e) => setCapacity(+e.target.value)} className="w-28 accent-lime-500 cursor-pointer" />
+              <span className="font-mono text-xs font-black text-lime-700 dark:text-lime-400">{capacity}</span>
             </div>
           ) : (
             <div className="flex flex-wrap items-center gap-3">
-              <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-300">
+              <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
                 Str A:
-                <input type="text" maxLength={7} value={strA} onChange={(e) => setStrA(e.target.value.toUpperCase())} className="rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-cyan-400 font-black outline-none w-24 uppercase" />
+                <input type="text" maxLength={7} value={strA} onChange={(e) => setStrA(e.target.value.toUpperCase())} className="rounded-lg border border-slate-300 bg-white text-cyan-700 dark:border-slate-700 dark:bg-slate-900 dark:text-cyan-400 px-2 py-1 text-xs font-black outline-none w-24 uppercase" />
               </label>
-              <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-300">
+              <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
                 Str B:
-                <input type="text" maxLength={7} value={strB} onChange={(e) => setStrB(e.target.value.toUpperCase())} className="rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-lime-400 font-black outline-none w-24 uppercase" />
+                <input type="text" maxLength={7} value={strB} onChange={(e) => setStrB(e.target.value.toUpperCase())} className="rounded-lg border border-slate-300 bg-white text-lime-700 dark:border-slate-700 dark:bg-slate-900 dark:text-lime-400 px-2 py-1 text-xs font-black outline-none w-24 uppercase" />
               </label>
             </div>
           )}
 
           <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-500 font-bold whitespace-nowrap">Speed</span>
-            <div className="grid grid-cols-3 rounded-xl border border-slate-800 overflow-hidden w-full sm:w-auto text-center">
+            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-500 font-bold whitespace-nowrap">Speed</span>
+            <div className="grid grid-cols-3 rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden w-full sm:w-auto text-center">
               {["Slow", "Normal", "Fast"].map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-lime-500 text-black" : "bg-slate-900/60 text-slate-400 hover:text-white"}`}>
+                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-lime-500 text-black font-black" : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"}`}>
                   {s}
                 </button>
               ))}
@@ -1076,38 +1092,38 @@ const DpGridVisualizer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-800/60 bg-slate-950/40 p-3 sm:px-4 sm:py-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p className="font-mono text-xs text-slate-200 font-bold truncate">
+            <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
               {currStep.phase || "Press Play to step through 2D Matrix computation."}
             </p>
           </div>
-          <span className="font-mono text-[11px] text-slate-400 shrink-0">
-            Step <span className="text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
+          <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 shrink-0">
+            Step <span className="text-slate-900 dark:text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
           </span>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-slate-800/80 bg-slate-950/70 p-4">
+        <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-slate-50/90 dark:bg-slate-950/70 p-4">
           <table className="w-full font-mono text-xs border-collapse min-w-[500px]">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-500">
-                <th className="p-2 text-left bg-slate-900/50">i / j</th>
+              <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-500">
+                <th className="p-2 text-left bg-slate-100 dark:bg-slate-900/50">i / j</th>
                 {problem === "Knapsack" ? (
                   Array.from({ length: capacity + 1 }, (_, w) => (
-                    <th key={w} className="p-2 text-center bg-slate-900/50">w={w}</th>
+                    <th key={w} className="p-2 text-center bg-slate-100 dark:bg-slate-900/50">w={w}</th>
                   ))
                 ) : (
                   ["∅", ...strB.split("")].map((ch, idx) => (
-                    <th key={idx} className="p-2 text-center bg-slate-900/50">{ch} (j={idx})</th>
+                    <th key={idx} className="p-2 text-center bg-slate-100 dark:bg-slate-900/50">{ch} (j={idx})</th>
                   ))
                 )}
               </tr>
             </thead>
             <tbody>
               {dpMatrix.map((row, i) => (
-                <tr key={i} className="border-b border-slate-800/40">
-                  <td className="p-2 font-bold text-slate-400 bg-slate-900/30 whitespace-nowrap">
+                <tr key={i} className="border-b border-slate-200/60 dark:border-slate-800/40">
+                  <td className="p-2 font-bold text-slate-700 dark:text-slate-400 bg-slate-100/60 dark:bg-slate-900/30 whitespace-nowrap">
                     {problem === "Knapsack"
                       ? (i === 0 ? "∅ (0)" : `${items[i - 1]?.name || `Item ${i}`} (i=${i})`)
                       : (i === 0 ? "∅ (0)" : `${strA[i - 1] || ""} (i=${i})`)}
@@ -1115,17 +1131,17 @@ const DpGridVisualizer = () => {
                   {row.map((val, j) => {
                     const isActive = activeCell[0] === i && activeCell[1] === j;
                     const isDep = depSet.has(`${i}-${j}`);
-                    let cellBg = "bg-slate-900/20 text-slate-300";
-                    let borderCls = "border-slate-800/50";
+                    let cellBg = "bg-white text-slate-800 dark:bg-slate-900/20 dark:text-slate-300";
+                    let borderCls = "border-slate-200 dark:border-slate-800/50";
 
                     if (isBacktrack && isDep) {
-                      cellBg = "bg-amber-500/20 text-amber-300 font-black shadow-[inset_0_0_12px_rgba(245,158,11,0.3)]";
+                      cellBg = "bg-amber-500/20 text-amber-800 dark:text-amber-300 font-black shadow-[inset_0_0_12px_rgba(245,158,11,0.3)]";
                       borderCls = "border-amber-500/50";
                     } else if (isActive) {
-                      cellBg = problem === "Knapsack" ? "bg-lime-500/25 text-lime-200 font-black" : "bg-cyan-500/25 text-cyan-200 font-black";
-                      borderCls = problem === "Knapsack" ? "border-lime-400" : "border-cyan-400";
+                      cellBg = problem === "Knapsack" ? "bg-lime-500/25 text-lime-900 dark:text-lime-200 font-black" : "bg-cyan-500/25 text-cyan-900 dark:text-cyan-200 font-black";
+                      borderCls = problem === "Knapsack" ? "border-lime-500 dark:border-lime-400" : "border-cyan-500 dark:border-cyan-400";
                     } else if (isDep) {
-                      cellBg = "bg-violet-500/20 text-violet-300 font-bold";
+                      cellBg = "bg-violet-500/20 text-violet-800 dark:text-violet-300 font-bold";
                       borderCls = "border-violet-500/40";
                     }
 
@@ -1143,12 +1159,12 @@ const DpGridVisualizer = () => {
 
         {currStep.selectedItems?.length > 0 && (
           <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
-            <span className="font-mono text-[10px] font-extrabold uppercase text-amber-300 tracking-wider">
+            <span className="font-mono text-[10px] font-extrabold uppercase text-amber-800 dark:text-amber-300 tracking-wider">
               Selected Optimal Knapsack Items
             </span>
             <div className="flex flex-wrap gap-2 mt-2">
               {currStep.selectedItems.map((it, idx) => (
-                <span key={idx} className="rounded-lg border border-amber-400/40 bg-amber-400/20 px-3 py-1 font-mono text-xs font-black text-amber-200">
+                <span key={idx} className="rounded-lg border border-amber-400/40 bg-amber-400/20 px-3 py-1 font-mono text-xs font-black text-amber-900 dark:text-amber-200">
                   📦 {it.name} (wt: {it.wt}, val: {it.val})
                 </span>
               ))}
@@ -1158,29 +1174,29 @@ const DpGridVisualizer = () => {
 
         {currStep.lcsString && (
           <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/10 p-4">
-            <span className="font-mono text-[10px] font-extrabold uppercase text-cyan-300 tracking-wider">
+            <span className="font-mono text-[10px] font-extrabold uppercase text-cyan-800 dark:text-cyan-300 tracking-wider">
               Longest Common Subsequence Output
             </span>
-            <div className="mt-2 font-mono text-lg font-black text-cyan-200 tracking-widest">
+            <div className="mt-2 font-mono text-lg font-black text-cyan-900 dark:text-cyan-200 tracking-widest">
               "{currStep.lcsString}"
             </div>
           </div>
         )}
 
         <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <RotateCcw size={13} /> Reset
           </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             ◀ Prev
           </button>
           <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
             {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
           </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             Next ▶
           </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <SkipForward size={13} /> End
           </button>
         </div>
@@ -1343,26 +1359,26 @@ const TwoPointerVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-amber-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-amber-500/15 bg-slate-950/70">
+    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-amber-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-amber-500/15 dark:bg-slate-950/70">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 shrink-0">
-              <Sliders className="text-amber-400" size={16} />
+              <Sliders className="text-amber-600 dark:text-amber-400" size={16} />
             </div>
-            <span className="font-mono text-xs font-bold text-slate-300">
-              Pointer Tracking Engine <span className="text-amber-400 font-black uppercase">({pattern})</span>
+            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
+              Pointer Tracking Engine <span className="text-amber-700 dark:text-amber-400 font-black uppercase">({pattern})</span>
             </span>
           </div>
 
           <div className="flex gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
-            <button onClick={() => setPattern("BinarySearch")} className={`flex-1 sm:flex-initial rounded-xl border px-3 py-1.5 font-mono text-xs font-bold transition ${pattern === "BinarySearch" ? "border-cyan-400 bg-cyan-500/20 text-cyan-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}>
+            <button onClick={() => setPattern("BinarySearch")} className={`flex-1 sm:flex-initial rounded-xl border px-3 py-1.5 font-mono text-xs font-bold transition ${pattern === "BinarySearch" ? "border-cyan-500 bg-cyan-500/20 text-cyan-800 dark:border-cyan-400 dark:bg-cyan-500/20 dark:text-cyan-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}>
               🔍 Binary Search
             </button>
-            <button onClick={() => setPattern("SlidingWindow")} className={`flex-1 sm:flex-initial rounded-xl border px-3 py-1.5 font-mono text-xs font-bold transition ${pattern === "SlidingWindow" ? "border-amber-400 bg-amber-500/20 text-amber-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}>
+            <button onClick={() => setPattern("SlidingWindow")} className={`flex-1 sm:flex-initial rounded-xl border px-3 py-1.5 font-mono text-xs font-bold transition ${pattern === "SlidingWindow" ? "border-amber-500 bg-amber-500/20 text-amber-800 dark:border-amber-400 dark:bg-amber-500/20 dark:text-amber-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}>
               🪟 Sliding Window
             </button>
-            <button onClick={() => setPattern("WaterContainer")} className={`flex-1 sm:flex-initial rounded-xl border px-3 py-1.5 font-mono text-xs font-bold transition ${pattern === "WaterContainer" ? "border-pink-400 bg-pink-500/20 text-pink-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}>
+            <button onClick={() => setPattern("WaterContainer")} className={`flex-1 sm:flex-initial rounded-xl border px-3 py-1.5 font-mono text-xs font-bold transition ${pattern === "WaterContainer" ? "border-pink-500 bg-pink-500/20 text-pink-800 dark:border-pink-400 dark:bg-pink-500/20 dark:text-pink-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}>
               💧 Water Container
             </button>
           </div>
@@ -1370,17 +1386,17 @@ const TwoPointerVisualizer = () => {
       </div>
 
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
           {pattern === "BinarySearch" ? (
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[11px] uppercase text-slate-400 font-bold">Search Target:</span>
+                <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-400 font-bold">Search Target:</span>
                 <input
                   type="number"
                   value={target}
                   onChange={(e) => setTarget(Number(e.target.value))}
                   placeholder="Target"
-                  className="w-24 rounded-lg border border-cyan-500/40 bg-slate-900 px-3 py-1 font-mono text-xs text-cyan-300 font-bold outline-none focus:border-cyan-400"
+                  className="w-24 rounded-lg border border-slate-300 bg-white text-cyan-700 dark:border-cyan-500/40 dark:bg-slate-900 dark:text-cyan-300 px-3 py-1 font-mono text-xs font-bold outline-none focus:border-cyan-500"
                 />
               </div>
 
@@ -1391,12 +1407,12 @@ const TwoPointerVisualizer = () => {
                   onChange={(e) => setCustomArrayText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleApplyCustomBsArray()}
                   placeholder="Custom array e.g. 10, 25, 42, 60, 88"
-                  className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1 font-mono text-xs text-cyan-200 outline-none"
+                  className="flex-1 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-cyan-200 px-3 py-1 font-mono text-xs outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleApplyCustomBsArray}
-                  className="rounded-lg border border-cyan-500/40 bg-cyan-500/20 px-3 py-1 font-mono text-xs font-bold text-cyan-300 hover:bg-cyan-500 hover:text-black transition"
+                  className="rounded-lg border border-cyan-500/40 bg-cyan-500/10 dark:bg-cyan-500/20 px-3 py-1 font-mono text-xs font-bold text-cyan-800 dark:text-cyan-300 hover:bg-cyan-500 hover:text-white dark:hover:text-black transition"
                 >
                   Set
                 </button>
@@ -1404,19 +1420,19 @@ const TwoPointerVisualizer = () => {
             </div>
           ) : pattern === "SlidingWindow" ? (
             <div className="flex items-center gap-3">
-              <span className="font-mono text-[11px] uppercase text-slate-400 font-bold">Window Size K:</span>
-              <input type="range" min={2} max={5} value={windowSize} onChange={(e) => setWindowSize(+e.target.value)} className="w-28 accent-amber-400 cursor-pointer" />
-              <span className="font-mono text-xs font-black text-amber-400">{windowSize}</span>
+              <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-400 font-bold">Window Size K:</span>
+              <input type="range" min={2} max={5} value={windowSize} onChange={(e) => setWindowSize(+e.target.value)} className="w-28 accent-amber-500 cursor-pointer" />
+              <span className="font-mono text-xs font-black text-amber-700 dark:text-amber-400">{windowSize}</span>
             </div>
           ) : (
-            <span className="font-mono text-xs font-bold text-slate-400">Container Width × Min(H_Left, H_Right)</span>
+            <span className="font-mono text-xs font-bold text-slate-600 dark:text-slate-400">Container Width × Min(H_Left, H_Right)</span>
           )}
 
           <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-500 font-bold whitespace-nowrap">Speed</span>
-            <div className="grid grid-cols-3 rounded-xl border border-slate-800 overflow-hidden w-full sm:w-auto text-center">
+            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-500 font-bold whitespace-nowrap">Speed</span>
+            <div className="grid grid-cols-3 rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden w-full sm:w-auto text-center">
               {["Slow", "Normal", "Fast"].map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-amber-500 text-black" : "bg-slate-900/60 text-slate-400 hover:text-white"}`}>
+                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-amber-500 text-black font-black" : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"}`}>
                   {s}
                 </button>
               ))}
@@ -1424,19 +1440,19 @@ const TwoPointerVisualizer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-800/60 bg-slate-950/40 p-3 sm:px-4 sm:py-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p className="font-mono text-xs text-slate-200 font-bold truncate">
+            <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
               {currStep.phase || "Press Play to step through two-pointer execution."}
             </p>
           </div>
-          <span className="font-mono text-[11px] text-slate-400 shrink-0">
-            Step <span className="text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
+          <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 shrink-0">
+            Step <span className="text-slate-900 dark:text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
           </span>
         </div>
 
-        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#0e0702] to-[#040201] p-4 sm:p-6 flex flex-col items-center justify-center min-h-[220px]">
+        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-700/80 dark:border-slate-800/60 bg-[#08121c] dark:bg-gradient-to-b dark:from-[#0e0702] dark:to-[#040201] p-4 sm:p-6 flex flex-col items-center justify-center min-h-[220px] shadow-inner">
           {pattern === "BinarySearch" && (
             <div className="flex items-center gap-2 flex-wrap justify-center my-6">
               {binaryArray.map((val, i) => {
@@ -1445,10 +1461,10 @@ const TwoPointerVisualizer = () => {
                 const isMid = currStep.mid === i;
                 const isFound = currStep.foundIdx === i;
 
-                let border = "border-slate-800 bg-slate-900/40 text-slate-400";
-                if (isFound) border = "border-emerald-400 bg-emerald-500/30 text-emerald-200 shadow-[0_0_16px_rgba(34,197,94,0.5)]";
-                else if (isMid) border = "border-amber-400 bg-amber-500/30 text-amber-200 shadow-[0_0_16px_rgba(245,158,11,0.5)]";
-                else if (isLeft || isRight) border = "border-cyan-400 bg-cyan-500/20 text-cyan-200";
+                let border = "border-slate-600 bg-slate-800/90 text-white";
+                if (isFound) border = "border-emerald-400 bg-emerald-500/40 text-emerald-100 shadow-[0_0_20px_rgba(34,197,94,0.6)]";
+                else if (isMid) border = "border-amber-400 bg-amber-500/40 text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.6)]";
+                else if (isLeft || isRight) border = "border-cyan-400 bg-cyan-500/30 text-cyan-100 shadow-[0_0_16px_rgba(6,182,212,0.4)]";
 
                 return (
                   <div key={i} className="relative flex flex-col items-center">
@@ -1457,10 +1473,10 @@ const TwoPointerVisualizer = () => {
                       {isRight && "R"}
                       {isMid && <span className="text-amber-400">MID</span>}
                     </div>
-                    <div className={`h-11 w-11 rounded-xl border flex items-center justify-center font-mono text-sm font-black transition-all ${border}`}>
+                    <div className={`h-11 w-11 rounded-xl border-2 flex items-center justify-center font-mono text-sm font-black transition-all ${border}`}>
                       {val}
                     </div>
-                    <span className="font-mono text-[9px] text-slate-600 mt-1">[{i}]</span>
+                    <span className="font-mono text-[10px] font-bold text-slate-400 mt-1">[{i}]</span>
                   </div>
                 );
               })}
@@ -1471,15 +1487,15 @@ const TwoPointerVisualizer = () => {
             <div className="flex items-center gap-2 flex-wrap justify-center my-6">
               {SLIDING_WINDOW_ARRAY.map((val, i) => {
                 const inWin = currStep.window && i >= currStep.window[0] && i <= currStep.window[1];
-                let border = "border-slate-800 bg-slate-900/40 text-slate-400";
-                if (inWin) border = "border-amber-400 bg-amber-500/20 text-amber-200 shadow-[0_0_16px_rgba(245,158,11,0.4)]";
+                let border = "border-slate-600 bg-slate-800/90 text-white";
+                if (inWin) border = "border-amber-400 bg-amber-500/30 text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.5)]";
 
                 return (
                   <div key={i} className="relative flex flex-col items-center">
-                    <div className={`h-11 w-11 rounded-xl border flex items-center justify-center font-mono text-sm font-black transition-all ${border}`}>
+                    <div className={`h-11 w-11 rounded-xl border-2 flex items-center justify-center font-mono text-sm font-black transition-all ${border}`}>
                       {val}
                     </div>
-                    <span className="font-mono text-[9px] text-slate-600 mt-1">[{i}]</span>
+                    <span className="font-mono text-[10px] font-bold text-slate-400 mt-1">[{i}]</span>
                   </div>
                 );
               })}
@@ -1493,15 +1509,15 @@ const TwoPointerVisualizer = () => {
                 const isR = currStep.right === i;
                 const isBetween = currStep.left !== undefined && i >= currStep.left && i <= currStep.right;
 
-                let barBg = "bg-slate-800";
+                let barBg = "bg-slate-700";
                 if (isL || isR) barBg = "bg-pink-500 shadow-[0_0_16px_rgba(236,72,153,0.6)]";
-                else if (isBetween) barBg = "bg-pink-950/60 border-t border-pink-500/40";
+                else if (isBetween) barBg = "bg-pink-900/60 border-t-2 border-pink-400";
 
                 return (
                   <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
-                    <span className="font-mono text-[9px] font-bold text-pink-300 mb-1">{isL ? "L" : isR ? "R" : ""}</span>
+                    <span className="font-mono text-[10px] font-extrabold text-pink-300 mb-1">{isL ? "L" : isR ? "R" : ""}</span>
                     <div style={{ height: `${(h / 9) * 100}%` }} className={`w-full rounded-t-md transition-all ${barBg}`} />
-                    <span className="font-mono text-[9px] text-slate-500 mt-1">h={h}</span>
+                    <span className="font-mono text-[10px] font-bold text-slate-400 mt-1">h={h}</span>
                   </div>
                 );
               })}
@@ -1511,32 +1527,32 @@ const TwoPointerVisualizer = () => {
 
         {pattern === "SlidingWindow" && (
           <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-center justify-between">
-            <span className="font-mono text-xs font-bold text-amber-300">Current Window Sum: <span className="text-white font-black text-sm">{currStep.currSum}</span></span>
-            <span className="font-mono text-xs font-bold text-amber-400">Max Subarray Sum: <span className="text-white font-black text-sm">{currStep.maxSum}</span></span>
+            <span className="font-mono text-xs font-bold text-amber-800 dark:text-amber-300">Current Window Sum: <span className="text-slate-900 dark:text-white font-black text-sm">{currStep.currSum}</span></span>
+            <span className="font-mono text-xs font-bold text-amber-800 dark:text-amber-400">Max Subarray Sum: <span className="text-slate-900 dark:text-white font-black text-sm">{currStep.maxSum}</span></span>
           </div>
         )}
 
         {pattern === "WaterContainer" && (
           <div className="rounded-2xl border border-pink-500/30 bg-pink-500/10 p-4 flex items-center justify-between">
-            <span className="font-mono text-xs font-bold text-pink-300">Current Water Area: <span className="text-white font-black text-sm">{currStep.currArea} units²</span></span>
-            <span className="font-mono text-xs font-bold text-pink-400">Max Capacity: <span className="text-white font-black text-sm">{currStep.maxArea} units²</span></span>
+            <span className="font-mono text-xs font-bold text-pink-800 dark:text-pink-300">Current Water Area: <span className="text-slate-900 dark:text-white font-black text-sm">{currStep.currArea} units²</span></span>
+            <span className="font-mono text-xs font-bold text-pink-800 dark:text-pink-400">Max Capacity: <span className="text-slate-900 dark:text-white font-black text-sm">{currStep.maxArea} units²</span></span>
           </div>
         )}
 
         <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <RotateCcw size={13} /> Reset
           </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             ◀ Prev
           </button>
           <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
             {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
           </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             Next ▶
           </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <SkipForward size={13} /> End
           </button>
         </div>
@@ -1671,24 +1687,24 @@ const BacktrackingVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-rose-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-rose-500/15 bg-slate-950/70">
+    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-rose-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-rose-500/15 dark:bg-slate-950/70">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-rose-500/30 bg-rose-500/10 shrink-0">
-              <Crown className="text-rose-400" size={16} />
+              <Crown className="text-rose-600 dark:text-rose-400" size={16} />
             </div>
-            <span className="font-mono text-xs font-bold text-slate-300">
-              Backtracking Solver <span className="text-rose-400 font-black">({boardSize}×{boardSize} Board)</span>
+            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
+              Backtracking Solver <span className="text-rose-700 dark:text-rose-400 font-black">({boardSize}×{boardSize} Board)</span>
             </span>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold text-slate-400">Board Size:</span>
-            <button onClick={() => setBoardSize(4)} className={`rounded-xl border px-3 py-1 font-mono text-xs font-bold transition ${boardSize === 4 ? "border-rose-400 bg-rose-500/20 text-rose-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}>
+            <span className="font-mono text-xs font-bold text-slate-600 dark:text-slate-400">Board Size:</span>
+            <button onClick={() => setBoardSize(4)} className={`rounded-xl border px-3 py-1 font-mono text-xs font-bold transition ${boardSize === 4 ? "border-rose-500 bg-rose-500/20 text-rose-800 dark:border-rose-400 dark:bg-rose-500/20 dark:text-rose-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}>
               4 × 4
             </button>
-            <button onClick={() => setBoardSize(8)} className={`rounded-xl border px-3 py-1 font-mono text-xs font-bold transition ${boardSize === 8 ? "border-rose-400 bg-rose-500/20 text-rose-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}>
+            <button onClick={() => setBoardSize(8)} className={`rounded-xl border px-3 py-1 font-mono text-xs font-bold transition ${boardSize === 8 ? "border-rose-500 bg-rose-500/20 text-rose-800 dark:border-rose-400 dark:bg-rose-500/20 dark:text-rose-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}>
               8 × 8
             </button>
           </div>
@@ -1696,21 +1712,21 @@ const BacktrackingVisualizer = () => {
       </div>
 
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-xs font-bold text-slate-300">
-              Valid Solutions: <span className="text-emerald-400 font-black text-sm">{currStep.solutionsCount || 0}</span>
+            <span className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+              Valid Solutions: <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm">{currStep.solutionsCount || 0}</span>
             </span>
-            <span className="font-mono text-xs font-bold text-slate-300">
-              Backtracks: <span className="text-rose-400 font-black text-sm">{currStep.backtracksCount || 0}</span>
+            <span className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+              Backtracks: <span className="text-rose-600 dark:text-rose-400 font-black text-sm">{currStep.backtracksCount || 0}</span>
             </span>
           </div>
 
           <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-500 font-bold whitespace-nowrap">Speed</span>
-            <div className="grid grid-cols-4 rounded-xl border border-slate-800 overflow-hidden w-full sm:w-auto text-center">
+            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-500 font-bold whitespace-nowrap">Speed</span>
+            <div className="grid grid-cols-4 rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden w-full sm:w-auto text-center">
               {["Slow", "Normal", "Fast", "Turbo"].map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} className={`px-2.5 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-rose-500 text-black" : "bg-slate-900/60 text-slate-400 hover:text-white"}`}>
+                <button key={s} onClick={() => setSpeed(s)} className={`px-2.5 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-rose-500 text-black font-black" : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"}`}>
                   {s}
                 </button>
               ))}
@@ -1718,20 +1734,20 @@ const BacktrackingVisualizer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-800/60 bg-slate-950/40 p-3 sm:px-4 sm:py-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p className="font-mono text-xs text-slate-200 font-bold truncate">
+            <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
               {currStep.phase || "Press Play to step through N-Queens backtracking."}
             </p>
           </div>
-          <span className="font-mono text-[11px] text-slate-400 shrink-0">
-            Step <span className="text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
+          <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 shrink-0">
+            Step <span className="text-slate-900 dark:text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
           </span>
         </div>
 
-        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#100306] to-[#040102] p-4 sm:p-6 flex items-center justify-center min-h-[260px] sm:min-h-[320px]">
-          <div className={`grid gap-1 border-2 border-slate-800 p-2 rounded-xl bg-slate-950 ${boardSize === 4 ? "grid-cols-4 w-64 h-64" : "grid-cols-8 w-80 h-80 sm:w-96 sm:h-96"}`}>
+        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-800/60 bg-slate-950 dark:bg-gradient-to-b dark:from-[#100306] dark:to-[#040102] p-4 sm:p-6 flex items-center justify-center min-h-[260px] sm:min-h-[320px]">
+          <div className={`grid gap-1 border-2 border-slate-700 dark:border-slate-800 p-2 rounded-xl bg-slate-950 ${boardSize === 4 ? "grid-cols-4 w-64 h-64" : "grid-cols-8 w-80 h-80 sm:w-96 sm:h-96"}`}>
             {Array.from({ length: boardSize * boardSize }, (_, idx) => {
               const r = Math.floor(idx / boardSize);
               const c = idx % boardSize;
@@ -1769,19 +1785,19 @@ const BacktrackingVisualizer = () => {
         </div>
 
         <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <RotateCcw size={13} /> Reset
           </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             ◀ Prev
           </button>
           <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
             {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
           </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             Next ▶
           </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
+          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             <SkipForward size={13} /> End
           </button>
         </div>
@@ -1865,29 +1881,29 @@ const LinkedListVisualizer = () => {
   };
 
   return (
-    <div className="rounded-3xl border border-teal-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-teal-500/15" style={{ background: "linear-gradient(135deg, #031412 0%, #030d07 60%, #010c0a 100%)" }}>
+    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-teal-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
+      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-slate-200/90 bg-slate-100/90 dark:border-teal-500/15 dark:bg-slate-950/70">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-teal-500/30 bg-teal-500/10 shrink-0">
-              <Database className="text-teal-400" size={18} />
+              <Database className="text-teal-600 dark:text-teal-400" size={18} />
             </div>
             <div>
-              <h2 className="font-display text-base sm:text-xl font-black uppercase text-white tracking-wider">
+              <h2 className="font-display text-base sm:text-xl font-black uppercase text-slate-900 dark:text-white tracking-wider">
                 LRU Cache &amp; Doubly Linked List Lab
               </h2>
-              <p className="font-mono text-[10px] text-slate-400">Least Recently Used Eviction &amp; Pointer Operations</p>
+              <p className="font-mono text-[10px] text-slate-600 dark:text-slate-400">Least Recently Used Eviction &amp; Pointer Operations</p>
             </div>
           </div>
 
-          <span className="rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1 text-xs font-mono font-bold text-teal-300 self-start sm:self-auto">
+          <span className="rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1 text-xs font-mono font-bold text-teal-700 dark:text-teal-300 self-start sm:self-auto">
             Capacity: {lruCache.length} / {capacity} Nodes
           </span>
         </div>
       </div>
 
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
           <div className="flex flex-wrap items-center gap-2.5">
             <input
               type="text"
@@ -1895,39 +1911,39 @@ const LinkedListVisualizer = () => {
               value={keyInput}
               onChange={(e) => setKeyInput(e.target.value)}
               placeholder="Key (e.g. D)"
-              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-white font-mono font-bold outline-none focus:border-teal-500 w-28 uppercase"
+              className="rounded-xl border border-slate-300 bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white font-mono font-bold px-3 py-2 text-xs outline-none focus:border-teal-500 w-28 uppercase"
             />
             <input
               type="number"
               value={valInput}
               onChange={(e) => setValInput(e.target.value)}
               placeholder="Val (e.g. 40)"
-              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-white font-mono font-bold outline-none focus:border-teal-500 w-28"
+              className="rounded-xl border border-slate-300 bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white font-mono font-bold px-3 py-2 text-xs outline-none focus:border-teal-500 w-28"
             />
 
             <button
               onClick={handleGet}
-              className="flex items-center gap-1 rounded-xl bg-teal-600 px-3.5 py-2 font-mono text-xs font-extrabold text-white hover:bg-teal-500 transition"
+              className="flex items-center gap-1 rounded-xl bg-teal-600 px-3.5 py-2 font-mono text-xs font-extrabold text-white hover:bg-teal-500 transition shadow-sm"
             >
               <Search size={13} /> GET(key)
             </button>
             <button
               onClick={handlePut}
-              className="flex items-center gap-1 rounded-xl bg-emerald-600 px-3.5 py-2 font-mono text-xs font-extrabold text-white hover:bg-emerald-500 transition"
+              className="flex items-center gap-1 rounded-xl bg-emerald-600 px-3.5 py-2 font-mono text-xs font-extrabold text-white hover:bg-emerald-500 transition shadow-sm"
             >
               <Plus size={13} /> PUT(key, val)
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 rounded-xl border border-slate-800/60 bg-slate-950/40 p-3 sm:px-4">
-          <span className="h-2 w-2 rounded-full animate-pulse bg-teal-400 shrink-0" />
-          <p className="font-mono text-xs text-slate-200 font-bold truncate">
+        <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4">
+          <span className="h-2 w-2 rounded-full animate-pulse bg-teal-500 dark:bg-teal-400 shrink-0" />
+          <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
             {phaseMsg}
           </p>
         </div>
 
-        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#021210] to-[#010807] p-4 sm:p-6 flex flex-col items-center justify-center min-h-[220px]">
+        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-700/80 dark:border-slate-800/60 bg-[#061413] dark:bg-gradient-to-b dark:from-[#021210] dark:to-[#010807] p-4 sm:p-6 flex flex-col items-center justify-center min-h-[220px] shadow-inner">
           <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-center my-4">
             {lruCache.map((item, idx) => {
               const isHead = idx === 0;
@@ -1935,25 +1951,25 @@ const LinkedListVisualizer = () => {
               const isActive = activeKey === item.key;
               const isEvicted = evictedKey === item.key;
 
-              let nodeBg = "bg-slate-900/60 border-slate-700 text-slate-200";
-              if (isEvicted) nodeBg = "bg-rose-500/20 border-rose-500 text-rose-200 animate-pulse";
-              else if (isActive) nodeBg = "bg-teal-500/30 border-teal-400 text-teal-100 shadow-[0_0_16px_rgba(20,184,166,0.5)]";
+              let nodeBg = "bg-slate-800/90 border-slate-600 text-white";
+              if (isEvicted) nodeBg = "bg-rose-500/30 border-rose-400 text-rose-100 animate-pulse";
+              else if (isActive) nodeBg = "bg-teal-500/40 border-teal-300 text-teal-100 shadow-[0_0_20px_rgba(20,184,166,0.6)]";
 
               return (
                 <div key={item.key} className="flex items-center gap-2 sm:gap-4">
-                  <div className={`relative flex flex-col items-center p-3.5 rounded-2xl border min-w-[90px] transition-all duration-300 ${nodeBg}`}>
+                  <div className={`relative flex flex-col items-center p-3.5 rounded-2xl border-2 min-w-[90px] transition-all duration-300 ${nodeBg}`}>
                     <div className="flex items-center gap-1 mb-1">
-                      {isHead && <span className="rounded px-1.5 py-0.5 text-[8px] font-black font-mono bg-emerald-500/30 text-emerald-300">MRU HEAD</span>}
-                      {isTail && <span className="rounded px-1.5 py-0.5 text-[8px] font-black font-mono bg-cyan-500/30 text-cyan-300">LRU TAIL</span>}
+                      {isHead && <span className="rounded px-1.5 py-0.5 text-[8px] font-black font-mono bg-emerald-500/40 text-emerald-200">MRU HEAD</span>}
+                      {isTail && <span className="rounded px-1.5 py-0.5 text-[8px] font-black font-mono bg-cyan-500/40 text-cyan-200">LRU TAIL</span>}
                     </div>
 
                     <span className="font-mono text-base font-black text-white">{item.key}</span>
-                    <span className="font-mono text-[10px] text-slate-400">val: {item.val}</span>
+                    <span className="font-mono text-[10px] font-bold text-slate-300">val: {item.val}</span>
                   </div>
 
                   {idx < lruCache.length - 1 && (
-                    <div className="flex flex-col items-center text-slate-500">
-                      <ArrowLeftRight size={18} className="text-teal-400/70" />
+                    <div className="flex flex-col items-center text-slate-400">
+                      <ArrowLeftRight size={18} className="text-teal-400" />
                     </div>
                   )}
                 </div>
@@ -1961,7 +1977,7 @@ const LinkedListVisualizer = () => {
             })}
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-2 font-mono text-[10px] text-slate-400 border-t border-slate-800/60 pt-3 w-full max-w-lg">
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-2 font-mono text-[10px] font-bold text-slate-400 border-t border-slate-800/60 pt-3 w-full max-w-lg">
             <span className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-emerald-400" /> MRU (Most Recently Used)</span>
             <span className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-cyan-400" /> LRU (Least Recently Used)</span>
           </div>

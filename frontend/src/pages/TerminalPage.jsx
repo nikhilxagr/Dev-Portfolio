@@ -302,19 +302,19 @@ const TerminalPage = () => {
         <div className="w-full max-w-5xl">
           {/* Terminal container */}
           <div
-            className="overflow-hidden rounded-3xl border-2 border-emerald-500/40 dark:border-emerald-500/35 bg-[#03080c] shadow-[0_24px_80px_rgba(0,20,10,0.3)] dark:shadow-[0_24px_80px_rgba(0,10,5,0.85)] flex flex-col h-[520px] sm:h-[620px]"
+            className="overflow-hidden rounded-3xl border-2 border-slate-300/80 dark:border-emerald-500/35 bg-[#03080c] shadow-[0_20px_60px_rgba(0,0,0,0.18)] dark:shadow-[0_24px_80px_rgba(0,10,5,0.85)] flex flex-col h-[520px] sm:h-[620px]"
             onClick={() => inputRef.current?.focus()}
             onWheel={handleWheel}
           >
             {/* Terminal header */}
-            <div className="flex items-center justify-between border-b border-emerald-500/20 bg-[#061218]/90 px-4 sm:px-6 py-3.5 shrink-0">
+            <div className="flex items-center justify-between border-b border-slate-800/80 dark:border-emerald-500/20 bg-[#07131b] dark:bg-[#061218]/90 px-4 sm:px-6 py-3.5 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-full bg-red-500/80 inline-block shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
-                  <span className="h-3 w-3 rounded-full bg-yellow-500/80 inline-block shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
-                  <span className="h-3 w-3 rounded-full bg-green-500/80 inline-block shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+                  <span className="h-3 w-3 rounded-full bg-red-500/90 inline-block shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
+                  <span className="h-3 w-3 rounded-full bg-yellow-500/90 inline-block shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
+                  <span className="h-3 w-3 rounded-full bg-green-500/90 inline-block shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
                 </div>
-                <div className="h-3.5 w-px bg-emerald-500/20 mx-1 hidden sm:block" />
+                <div className="h-3.5 w-px bg-emerald-500/30 mx-1 hidden sm:block" />
                 <span className="font-mono text-xs font-bold text-emerald-400 tracking-wider flex items-center gap-1.5">
                   <Terminal size={14} className="text-emerald-400" />
                   nikhil@dev-terminal:~
@@ -325,7 +325,7 @@ const TerminalPage = () => {
                 <button
                   type="button"
                   onClick={handleCopyLogs}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-1 font-mono text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 transition"
                 >
                   {copied ? <Check size={13} className="text-green-400" /> : <Copy size={13} />}
                   {copied ? "Copied" : "Copy Logs"}
@@ -333,7 +333,7 @@ const TerminalPage = () => {
                 <button
                   type="button"
                   onClick={() => executeCmd("clear")}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-1 font-mono text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 transition"
                 >
                   <RotateCcw size={13} /> Clear
                 </button>
@@ -341,14 +341,14 @@ const TerminalPage = () => {
             </div>
 
             {/* Quick command buttons */}
-            <div className="flex flex-wrap items-center gap-1.5 border-b border-emerald-500/10 bg-[#040e14] px-4 py-2 text-xs">
-              <span className="font-mono text-[10px] font-bold uppercase text-slate-500 tracking-wider mr-1">Quick Run:</span>
+            <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800/80 dark:border-emerald-500/10 bg-[#050e15] px-4 py-2 text-xs">
+              <span className="font-mono text-[10px] font-bold uppercase text-slate-400 tracking-wider mr-1">Quick Run:</span>
               {["help", "about", "bio", "skills", "projects", "tools", "journey", "stats", "contact", "whoami"].map((cmd) => (
                 <button
                   key={cmd}
                   type="button"
                   onClick={() => executeCmd(cmd)}
-                  className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 font-mono text-[11px] font-bold text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/20 transition"
+                  className="rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 font-mono text-[11px] font-bold text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/25 transition"
                 >
                   {cmd}
                 </button>
@@ -369,12 +369,12 @@ const TerminalPage = () => {
                   );
                 }
                 if (line.type === "error") {
-                  return <p key={idx} className="text-rose-400">{line.text}</p>;
+                  return <p key={idx} className="text-rose-400 font-medium">{line.text}</p>;
                 }
                 if (line.type === "info") {
-                  return <p key={idx} className="text-emerald-400/80">{line.text}</p>;
+                  return <p key={idx} className="text-emerald-400/90 font-medium">{line.text}</p>;
                 }
-                return <p key={idx} className="text-emerald-300/90 whitespace-pre-wrap">{line.text}</p>;
+                return <p key={idx} className="text-emerald-300/95 font-medium whitespace-pre-wrap">{line.text}</p>;
               })}
 
               {/* Input Prompt Row */}
@@ -386,7 +386,7 @@ const TerminalPage = () => {
                   value={inputVal}
                   onChange={(e) => setInputVal(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 bg-transparent font-mono text-xs sm:text-sm font-bold text-white outline-none placeholder:text-emerald-700"
+                  className="flex-1 bg-transparent font-mono text-xs sm:text-sm font-bold text-white outline-none placeholder:text-emerald-600/80"
                   placeholder="Type a command (e.g. 'help', 'bio', 'projects') — [Tab for auto-complete]..."
                   autoFocus
                 />

@@ -5,6 +5,7 @@ import AboutSection from "@/components/home/AboutSection";
 import SkillsSection from "@/components/home/SkillsSection";
 import ProjectsSection from "@/components/home/ProjectsSection";
 import BlogsSection from "@/components/home/BlogsSection";
+import JourneySection from "@/components/home/JourneySection";
 import ContactSection from "@/components/home/ContactSection";
 import { getProjects } from "@/services/projects.service";
 import { getBlogs } from "@/services/blogs.service";
@@ -38,7 +39,7 @@ const HomePage = () => {
   const [latestBlogError, setLatestBlogError] = useState("");
   const [projectFilter, setProjectFilter] = useState("All");
 
-  // Stable reference — prevents ProjectsSection re-render on unrelated parent state changes
+
   const handleProjectFilter = useCallback((tab) => {
     setProjectFilter(tab);
   }, []);
@@ -168,6 +169,9 @@ const HomePage = () => {
           latestBlogError={latestBlogError}
           latestBlogs={latestBlogs}
         />
+      </div>
+      <div className="cv-auto">
+        <JourneySection />
       </div>
       <div className="cv-auto">
         <ContactSection />
