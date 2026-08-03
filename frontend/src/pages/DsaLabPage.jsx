@@ -164,6 +164,7 @@ const SortingVisualizer = () => {
   const [arraySize, setArraySize] = useState(() => (typeof window !== "undefined" && window.innerWidth < 640 ? 16 : 24));
   const [speed, setSpeed] = useState("Normal");
   const [inputArray, setInputArray] = useState(() => randomArray(typeof window !== "undefined" && window.innerWidth < 640 ? 16 : 24));
+  const [customArrayText, setCustomArrayText] = useState("");
   const [steps, setSteps] = useState([]);
   const [stepIdx, setStepIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -195,6 +196,18 @@ const SortingVisualizer = () => {
 
   const regenerate = () => setInputArray(randomArray(arraySize));
 
+  const handleApplyCustomArray = () => {
+    const parsed = customArrayText
+      .split(/[\s,]+/)
+      .map((v) => Number(v.trim()))
+      .filter((v) => !isNaN(v) && v > 0 && v <= 200);
+
+    if (parsed.length >= 2) {
+      setInputArray(parsed);
+      setArraySize(parsed.length);
+    }
+  };
+
   const currentStep = steps[stepIdx] || {};
   const arr = currentStep.arr || inputArray;
   const maxVal = Math.max(...arr, 1);
@@ -207,26 +220,47 @@ const SortingVisualizer = () => {
 
   return (
     <div className="rounded-3xl border border-emerald-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-emerald-500/15" style={{ background: "linear-gradient(135deg, #050d08 0%, #030d07 60%, #030b0a 100%)" }}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-emerald-500/15 bg-slate-950/70">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 shrink-0">
-              <BarChart2 className="text-emerald-400" size={18} />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 shrink-0">
+              <BarChart2 className="text-emerald-400" size={16} />
             </div>
-            <div>
-              <h2 className="font-display text-base sm:text-xl font-black uppercase text-white tracking-wider">
-                Sorting &amp; Space Visualizer
-              </h2>
-              <p className="font-mono text-[10px] text-slate-500">Interactive Memory Pointer &amp; Swapping Engine</p>
-            </div>
+            <span className="font-mono text-xs font-bold text-slate-300">
+              Interactive Swapping Engine <span className="text-emerald-400 font-extrabold uppercase">({algorithm})</span>
+            </span>
           </div>
           <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-mono font-bold text-emerald-300 self-start sm:self-auto">
-            {algorithm} · {arraySize} Elements
+            {arraySize} Elements
           </span>
         </div>
       </div>
 
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
+        {/* Custom User Input Bar */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3.5 sm:p-4 rounded-2xl border border-emerald-500/25 bg-slate-950/80 shadow-lg backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-mono text-xs uppercase text-emerald-400 font-black tracking-wider whitespace-nowrap">
+              Custom User Input:
+            </span>
+          </div>
+          <input
+            type="text"
+            value={customArrayText}
+            onChange={(e) => setCustomArrayText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleApplyCustomArray()}
+            placeholder="Type custom numbers e.g. 45, 12, 89, 34, 67, 23"
+            className="flex-1 rounded-xl border border-slate-700/80 bg-slate-900 px-3.5 py-2 font-mono text-xs text-emerald-300 placeholder-slate-500 outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition"
+          />
+          <button
+            type="button"
+            onClick={handleApplyCustomArray}
+            className="rounded-xl border border-emerald-400/50 bg-emerald-500/20 px-5 py-2 font-mono text-xs font-black text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 transition-all duration-200 shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"
+          >
+            Visualize Input
+          </button>
+        </div>
         <div>
           <p className="font-mono text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-2.5">Choose Algorithm</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
@@ -425,7 +459,7 @@ function* dfsGraphGen(nodes, edges, startNode = "A", targetNode = "F") {
         return;
       }
 
-      yield { current: curr, ds: [...stack], visited: Array.from(visited), activeEdges: [], path, phase: `Popped Node ${curr} from stack.` };
+      yield { current: curr, ds: [...stack], visited: Array.from(visited), activeEdges: [], path: [], phase: `Popped Node ${curr} from stack.` };
 
       const neighbors = adj[curr] || [];
       for (const { neighbor } of neighbors) {
@@ -585,21 +619,18 @@ const GraphVisualizer = () => {
 
   return (
     <div className="rounded-3xl border border-cyan-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-cyan-500/15" style={{ background: "linear-gradient(135deg, #050e18 0%, #030d07 60%, #020912 100%)" }}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-cyan-500/15 bg-slate-950/70">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 shrink-0">
-              <Network className="text-cyan-400" size={18} />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 shrink-0">
+              <Network className="text-cyan-400" size={16} />
             </div>
-            <div>
-              <h2 className="font-display text-base sm:text-xl font-black uppercase text-white tracking-wider">
-                Graph Traversal &amp; Shortest Path
-              </h2>
-              <p className="font-mono text-[10px] text-slate-400">Dijkstra, BFS &amp; DFS Node State Visualizer</p>
-            </div>
+            <span className="font-mono text-xs font-bold text-slate-300">
+              Graph Execution Engine <span className="text-cyan-400 font-extrabold uppercase">({algo})</span>
+            </span>
           </div>
           <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-mono font-bold text-cyan-300 self-start sm:self-auto">
-            {algo} · Start: {startNode} → Target: {targetNode}
+            Start: {startNode} → Target: {targetNode}
           </span>
         </div>
       </div>
@@ -780,373 +811,6 @@ const GraphVisualizer = () => {
   );
 };
 
-// BST and AVL self-balancing tree
-
-class TreeNode {
-  constructor(val) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
-    this.height = 1;
-    this.id = `node-${val}-${Math.random().toString(36).slice(2, 6)}`;
-  }
-}
-
-function getNodeHeight(node) { return node ? node.height : 0; }
-function getBalance(node) { return node ? getNodeHeight(node.left) - getNodeHeight(node.right) : 0; }
-function updateHeight(node) { if (node) node.height = Math.max(getNodeHeight(node.left), getNodeHeight(node.right)) + 1; }
-
-function cloneTree(node) {
-  if (!node) return null;
-  const copy = new TreeNode(node.val);
-  copy.id = node.id;
-  copy.height = node.height;
-  copy.left = cloneTree(node.left);
-  copy.right = cloneTree(node.right);
-  return copy;
-}
-
-function computeLayout(node, x = 260, y = 40, level = 0, dx = 90) {
-  if (!node) return null;
-  const nextDx = Math.max(22, dx * 0.52);
-  return {
-    ...node,
-    x,
-    y,
-    left: computeLayout(node.left, x - dx, y + 55, level + 1, nextDx),
-    right: computeLayout(node.right, x + dx, y + 55, level + 1, nextDx),
-  };
-}
-
-function flattenTree(layoutNode, nodesArr = [], edgesArr = []) {
-  if (!layoutNode) return { nodes: nodesArr, edges: edgesArr };
-  nodesArr.push({ id: layoutNode.id, val: layoutNode.val, height: layoutNode.height, x: layoutNode.x, y: layoutNode.y });
-
-  if (layoutNode.left) {
-    edgesArr.push({ u: layoutNode.id, v: layoutNode.left.id, x1: layoutNode.x, y1: layoutNode.y, x2: layoutNode.left.x, y2: layoutNode.left.y });
-    flattenTree(layoutNode.left, nodesArr, edgesArr);
-  }
-  if (layoutNode.right) {
-    edgesArr.push({ u: layoutNode.id, v: layoutNode.right.id, x1: layoutNode.x, y1: layoutNode.y, x2: layoutNode.right.x, y2: layoutNode.right.y });
-    flattenTree(layoutNode.right, nodesArr, edgesArr);
-  }
-
-  return { nodes: nodesArr, edges: edgesArr };
-}
-
-function* bstInsertGen(root, val, isAvl = true) {
-  function* insertHelper(node, val) {
-    if (!node) return new TreeNode(val);
-
-    yield { tree: null, activeVal: val, comparingVal: node.val, phase: `Compare value ${val} with current node ${node.val}` };
-
-    if (val < node.val) node.left = yield* insertHelper(node.left, val);
-    else if (val > node.val) node.right = yield* insertHelper(node.right, val);
-    else return node;
-
-    updateHeight(node);
-    const balance = getBalance(node);
-
-    if (isAvl) {
-      if (balance > 1 && val < node.left.val) return rightRotate(node);
-      if (balance < -1 && val > node.right.val) return leftRotate(node);
-      if (balance > 1 && val > node.left.val) { node.left = leftRotate(node.left); return rightRotate(node); }
-      if (balance < -1 && val < node.right.val) { node.right = rightRotate(node.right); return leftRotate(node); }
-    }
-    return node;
-  }
-
-  function rightRotate(y) {
-    const x = y.left, T2 = x.right;
-    x.right = y; y.left = T2;
-    updateHeight(y); updateHeight(x);
-    return x;
-  }
-
-  function leftRotate(x) {
-    const y = x.right, T2 = y.left;
-    y.left = x; x.right = T2;
-    updateHeight(x); updateHeight(y);
-    return y;
-  }
-
-  return yield* insertHelper(root, val);
-}
-
-function* inorderGen(node, result = []) {
-  if (!node) return;
-  yield* inorderGen(node.left, result);
-  result.push(node.val);
-  yield { activeVal: node.val, result: [...result], phase: `In-Order: Visited node ${node.val}` };
-  yield* inorderGen(node.right, result);
-}
-
-function* preorderGen(node, result = []) {
-  if (!node) return;
-  result.push(node.val);
-  yield { activeVal: node.val, result: [...result], phase: `Pre-Order: Visited node ${node.val}` };
-  yield* preorderGen(node.left, result);
-  yield* preorderGen(node.right, result);
-}
-
-function* postorderGen(node, result = []) {
-  if (!node) return;
-  yield* postorderGen(node.left, result);
-  yield* postorderGen(node.right, result);
-  result.push(node.val);
-  yield { activeVal: node.val, result: [...result], phase: `Post-Order: Visited node ${node.val}` };
-}
-
-const TREE_PRESETS = {
-  Balanced: [25, 15, 35, 10, 20, 30, 40],
-  Degenerate: [10, 20, 30, 40, 50],
-  AVL_Test: [50, 25, 75, 10, 30, 60, 80, 5, 15],
-};
-
-const BstTreeVisualizer = () => {
-  const [treeRoot, setTreeRoot] = useState(() => {
-    let r = null;
-    [25, 15, 35, 10, 20, 30, 40].forEach((v) => {
-      const g = bstInsertGen(r, v, true);
-      let res = g.next();
-      while (!res.done) res = g.next();
-      r = res.value;
-    });
-    return r;
-  });
-
-  const [inputVal, setInputVal] = useState("");
-  const [traversalType, setTraversalType] = useState("In-Order");
-  const [speed, setSpeed] = useState("Normal");
-  const [steps, setSteps] = useState([]);
-  const [stepIdx, setStepIdx] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const [isAvl, setIsAvl] = useState(true);
-  const intervalRef = useRef(null);
-
-  const handleInsert = (v) => {
-    const val = Number(v || inputVal);
-    if (isNaN(val)) return;
-
-    const cloned = cloneTree(treeRoot);
-    const gen = bstInsertGen(cloned, val, isAvl);
-    const collected = [];
-    let res = gen.next();
-    while (!res.done) {
-      collected.push({ ...res.value, tree: cloneTree(cloned) });
-      res = gen.next();
-    }
-    const finalTree = res.value;
-    collected.push({ tree: cloneTree(finalTree), activeVal: val, comparingVal: val, phase: `✅ Successfully inserted ${val} into Tree!` });
-
-    setTreeRoot(finalTree);
-    setSteps(collected);
-    setStepIdx(0);
-    setPlaying(true);
-    setInputVal("");
-  };
-
-  const handleRunTraversal = (tType) => {
-    const type = tType || traversalType;
-    setTraversalType(type);
-    let gen;
-    if (type === "In-Order") gen = inorderGen(treeRoot);
-    else if (type === "Pre-Order") gen = preorderGen(treeRoot);
-    else gen = postorderGen(treeRoot);
-
-    const collected = [];
-    let res = gen.next();
-    while (!res.done) {
-      collected.push(res.value);
-      res = gen.next();
-    }
-
-    setSteps(collected);
-    setStepIdx(0);
-    setPlaying(true);
-  };
-
-  useEffect(() => {
-    clearInterval(intervalRef.current);
-    if (playing) {
-      intervalRef.current = setInterval(() => {
-        setStepIdx((prev) => {
-          if (prev >= steps.length - 1) {
-            setPlaying(false);
-            return prev;
-          }
-          return prev + 1;
-        });
-      }, SPEEDS[speed] * 2);
-    }
-    return () => clearInterval(intervalRef.current);
-  }, [playing, speed, steps.length]);
-
-  const loadPreset = (presetName) => {
-    let r = null;
-    TREE_PRESETS[presetName].forEach((v) => {
-      const g = bstInsertGen(r, v, isAvl);
-      let res = g.next();
-      while (!res.done) res = g.next();
-      r = res.value;
-    });
-    setTreeRoot(r);
-    setSteps([{ tree: cloneTree(r), activeVal: null, comparingVal: null, phase: `Loaded ${presetName} Tree Preset.` }]);
-    setStepIdx(0);
-    setPlaying(false);
-  };
-
-  const clearTree = () => { setTreeRoot(null); setSteps([]); setStepIdx(0); setPlaying(false); };
-
-  const currStep = steps[stepIdx] || {};
-  const activeTree = currStep.tree || treeRoot;
-  const layoutTree = computeLayout(activeTree);
-  const { nodes: svgNodes, edges: svgEdges } = flattenTree(layoutTree);
-  const themeColor = "#a78bfa";
-
-  return (
-    <div className="rounded-3xl border border-violet-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-violet-500/15" style={{ background: "linear-gradient(135deg, #0b0518 0%, #030d07 60%, #080212 100%)" }}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/10 shrink-0">
-              <GitCommit className="text-violet-400" size={18} />
-            </div>
-            <div>
-              <h2 className="font-display text-base sm:text-xl font-black uppercase text-white tracking-wider">
-                BST &amp; AVL Self-Balancing Tree Lab
-              </h2>
-              <p className="font-mono text-[10px] text-slate-400">Interactive Rotations &amp; Traversal Engine</p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setIsAvl((prev) => !prev)}
-            className={`rounded-full border px-3 py-1 font-mono text-xs font-bold transition self-start sm:self-auto ${isAvl ? "border-emerald-400 bg-emerald-500/20 text-emerald-300" : "border-slate-700 bg-slate-900 text-slate-400"}`}
-          >
-            {isAvl ? "⚡ AVL Auto-Balance ON" : "Unbalanced BST Mode"}
-          </button>
-        </div>
-      </div>
-
-      <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <input
-              type="number"
-              value={inputVal}
-              onChange={(e) => setInputVal(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleInsert()}
-              placeholder="Enter val (e.g. 42)"
-              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-white font-mono font-bold outline-none focus:border-violet-500 w-36"
-            />
-            <button onClick={() => handleInsert()} className="flex items-center gap-1.5 rounded-xl bg-violet-600 px-4 py-2 font-mono text-xs font-extrabold text-white hover:bg-violet-500 transition shadow-md">
-              <Plus size={14} /> Insert Node
-            </button>
-          </div>
-
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="font-mono text-[10px] font-bold text-slate-500 uppercase">Presets:</span>
-            {Object.keys(TREE_PRESETS).map((pName) => (
-              <button key={pName} onClick={() => loadPreset(pName)} className="rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1 font-mono text-[11px] font-bold text-slate-300 hover:border-violet-500/50 hover:text-violet-300 transition">
-                {pName}
-              </button>
-            ))}
-            <button onClick={clearTree} className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1 font-mono text-[11px] font-bold text-rose-300 hover:bg-rose-500/20 transition ml-auto">
-              <Trash2 size={12} className="inline mr-1" /> Clear
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl border border-slate-800 bg-slate-950/60">
-          <span className="font-mono text-[11px] uppercase font-bold text-slate-400">Run Traversal:</span>
-          <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-            {["In-Order", "Pre-Order", "Post-Order"].map((t) => (
-              <button key={t} onClick={() => handleRunTraversal(t)} className="flex-1 sm:flex-initial rounded-xl border border-violet-500/30 bg-violet-500/10 px-3.5 py-1.5 font-mono text-xs font-bold text-violet-300 hover:bg-violet-500/20 transition text-center">
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-800/60 bg-slate-950/40 p-3 sm:px-4 sm:py-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p className="font-mono text-xs text-slate-200 font-bold truncate">
-              {currStep.phase || "Tree is ready. Insert nodes or select a traversal."}
-            </p>
-          </div>
-          <span className="font-mono text-[11px] text-slate-400 shrink-0">
-            Step <span className="text-white font-bold">{stepIdx + 1}</span>/{steps.length || 1}
-          </span>
-        </div>
-
-        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#060212] to-[#020108] p-4 sm:p-6 flex items-center justify-center min-h-[280px] sm:min-h-[340px]">
-          {svgNodes.length === 0 ? (
-            <div className="text-center text-slate-500 font-mono text-xs">
-              <GitCommit size={32} className="mx-auto mb-2 opacity-40 text-violet-400" />
-              Empty Tree. Type a number above and click "Insert Node".
-            </div>
-          ) : (
-            <svg viewBox="0 0 520 280" className="w-full max-w-2xl h-auto overflow-visible">
-              {svgEdges.map((edge) => (
-                <line key={`${edge.u}-${edge.v}`} x1={edge.x1} y1={edge.y1} x2={edge.x2} y2={edge.y2} stroke="#334155" strokeWidth="2" className="transition-all duration-300" />
-              ))}
-              {svgNodes.map((node) => {
-                const isActive = currStep.comparingVal === node.val || currStep.activeVal === node.val;
-                let fill = "#0f172a";
-                let stroke = "#38bdf8";
-                if (isActive) { fill = "#a78bfa"; stroke = "#ffffff"; }
-                return (
-                  <g key={node.id} transform={`translate(${node.x}, ${node.y})`}>
-                    {isActive && <circle r="22" fill="none" stroke="#a78bfa" strokeWidth="2" opacity="0.6" className="animate-ping" />}
-                    <circle r="18" fill={fill} stroke={stroke} strokeWidth="2" className="transition-all duration-300" />
-                    <text textAnchor="middle" dy="4" fontSize="12" fontWeight="900" fill={isActive ? "#000000" : "#ffffff"} fontFamily="monospace">
-                      {node.val}
-                    </text>
-                  </g>
-                );
-              })}
-            </svg>
-          )}
-        </div>
-
-        {currStep.result && (
-          <div className="rounded-2xl border border-violet-500/30 bg-violet-500/10 p-4">
-            <span className="font-mono text-[10px] font-extrabold uppercase text-violet-300 tracking-wider">
-              {traversalType} Traversal Output Stream
-            </span>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {currStep.result.map((v, i) => (
-                <span key={i} className="rounded-lg border border-violet-400/40 bg-violet-400/20 px-3 py-1 font-mono text-xs font-black text-white">
-                  {v}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
-            <RotateCcw size={13} /> Reset
-          </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
-            ◀ Prev
-          </button>
-          <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
-            {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
-          </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
-            Next ▶
-          </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white transition">
-            <SkipForward size={13} /> End
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // Dynamic programming grid visualizer
 
@@ -1351,29 +1015,26 @@ const DpGridVisualizer = () => {
 
   return (
     <div className="rounded-3xl border border-lime-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-lime-500/15" style={{ background: "linear-gradient(135deg, #091404 0%, #030d07 60%, #041002 100%)" }}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-lime-500/15 bg-slate-950/70">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-lime-500/30 bg-lime-500/10 shrink-0">
-              <Grid className="text-lime-400" size={18} />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-lime-500/30 bg-lime-500/10 shrink-0">
+              <Grid className="text-lime-400" size={16} />
             </div>
-            <div>
-              <h2 className="font-display text-base sm:text-xl font-black uppercase text-white tracking-wider">
-                Dynamic Programming &amp; 2D Grid Lab
-              </h2>
-              <p className="font-mono text-[10px] text-slate-400">Interactive 2D Memoization Table &amp; Backtracking Engine</p>
-            </div>
+            <span className="font-mono text-xs font-bold text-slate-300">
+              2D Memoization Table <span className="text-lime-400 font-extrabold uppercase">({problem})</span>
+            </span>
           </div>
 
           <div className="flex gap-2 w-full sm:w-auto">
             <button
-              onClick={() => setProblem("Knapsack")}
+              onClick={() => { setProblem("Knapsack"); setStepIdx(0); setPlaying(false); }}
               className={`flex-1 sm:flex-initial rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold transition text-center ${problem === "Knapsack" ? "border-lime-400 bg-lime-500/20 text-lime-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}
             >
               🎒 0/1 Knapsack
             </button>
             <button
-              onClick={() => setProblem("LCS")}
+              onClick={() => { setProblem("LCS"); setStepIdx(0); setPlaying(false); }}
               className={`flex-1 sm:flex-initial rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold transition text-center ${problem === "LCS" ? "border-cyan-400 bg-cyan-500/20 text-cyan-200" : "border-slate-700 bg-slate-900 text-slate-400"}`}
             >
               🔤 LCS Subsequence
@@ -1448,8 +1109,8 @@ const DpGridVisualizer = () => {
                 <tr key={i} className="border-b border-slate-800/40">
                   <td className="p-2 font-bold text-slate-400 bg-slate-900/30 whitespace-nowrap">
                     {problem === "Knapsack"
-                      ? (i === 0 ? "∅ (0)" : `${items[i - 1].name} (i=${i})`)
-                      : (i === 0 ? "∅ (0)" : `${strA[i - 1]} (i=${i})`)}
+                      ? (i === 0 ? "∅ (0)" : `${items[i - 1]?.name || `Item ${i}`} (i=${i})`)
+                      : (i === 0 ? "∅ (0)" : `${strA[i - 1] || ""} (i=${i})`)}
                   </td>
                   {row.map((val, j) => {
                     const isActive = activeCell[0] === i && activeCell[1] === j;
@@ -1617,6 +1278,8 @@ function* waterContainerGen(heights) {
 const TwoPointerVisualizer = () => {
   const [pattern, setPattern] = useState("BinarySearch");
   const [target, setTarget] = useState(42);
+  const [binaryArray, setBinaryArray] = useState(BINARY_SEARCH_ARRAY);
+  const [customArrayText, setCustomArrayText] = useState("");
   const [windowSize, setWindowSize] = useState(3);
 
   const [speed, setSpeed] = useState("Normal");
@@ -1628,7 +1291,7 @@ const TwoPointerVisualizer = () => {
   useEffect(() => {
     let collected = [];
     if (pattern === "BinarySearch") {
-      const gen = binarySearchGen(BINARY_SEARCH_ARRAY, target);
+      const gen = binarySearchGen(binaryArray, target);
       let res = gen.next();
       while (!res.done) { collected.push(res.value); res = gen.next(); }
     } else if (pattern === "SlidingWindow") {
@@ -1645,7 +1308,7 @@ const TwoPointerVisualizer = () => {
     setStepIdx(0);
     setPlaying(false);
     clearInterval(intervalRef.current);
-  }, [pattern, target, windowSize]);
+  }, [pattern, target, binaryArray, windowSize]);
 
   useEffect(() => {
     clearInterval(intervalRef.current);
@@ -1663,24 +1326,33 @@ const TwoPointerVisualizer = () => {
     return () => clearInterval(intervalRef.current);
   }, [playing, speed, steps.length]);
 
+  const handleApplyCustomBsArray = () => {
+    const parsed = customArrayText
+      .split(/[\s,]+/)
+      .map((v) => Number(v.trim()))
+      .filter((v) => !isNaN(v))
+      .sort((a, b) => a - b);
+
+    if (parsed.length >= 2) {
+      setBinaryArray(parsed);
+    }
+  };
+
   const currStep = steps[stepIdx] || {};
   const themeColor = pattern === "BinarySearch" ? "#38bdf8" : pattern === "SlidingWindow" ? "#f59e0b" : "#ec4899";
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
     <div className="rounded-3xl border border-amber-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-amber-500/15" style={{ background: "linear-gradient(135deg, #180d04 0%, #030d07 60%, #120902 100%)" }}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-amber-500/15 bg-slate-950/70">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 shrink-0">
-              <Sliders className="text-amber-400" size={18} />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 shrink-0">
+              <Sliders className="text-amber-400" size={16} />
             </div>
-            <div>
-              <h2 className="font-display text-base sm:text-xl font-black uppercase text-white tracking-wider">
-                Two-Pointer &amp; Sliding Window Lab
-              </h2>
-              <p className="font-mono text-[10px] text-slate-400">Binary Search, Sliding Window &amp; Water Container Pointers</p>
-            </div>
+            <span className="font-mono text-xs font-bold text-slate-300">
+              Pointer Tracking Engine <span className="text-amber-400 font-black uppercase">({pattern})</span>
+            </span>
           </div>
 
           <div className="flex gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
@@ -1700,12 +1372,35 @@ const TwoPointerVisualizer = () => {
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 bg-slate-950/50">
           {pattern === "BinarySearch" ? (
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-[11px] uppercase text-slate-400 font-bold">Search Target:</span>
-              <select value={target} onChange={(e) => setTarget(+e.target.value)} className="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-cyan-400 font-black outline-none">
-                {BINARY_SEARCH_ARRAY.map((v) => <option key={v} value={v}>{v}</option>)}
-                <option value={99}>99 (Not Found)</option>
-              </select>
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[11px] uppercase text-slate-400 font-bold">Search Target:</span>
+                <input
+                  type="number"
+                  value={target}
+                  onChange={(e) => setTarget(Number(e.target.value))}
+                  placeholder="Target"
+                  className="w-24 rounded-lg border border-cyan-500/40 bg-slate-900 px-3 py-1 font-mono text-xs text-cyan-300 font-bold outline-none focus:border-cyan-400"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 flex-1 sm:flex-initial min-w-[200px]">
+                <input
+                  type="text"
+                  value={customArrayText}
+                  onChange={(e) => setCustomArrayText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleApplyCustomBsArray()}
+                  placeholder="Custom array e.g. 10, 25, 42, 60, 88"
+                  className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-1 font-mono text-xs text-cyan-200 outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCustomBsArray}
+                  className="rounded-lg border border-cyan-500/40 bg-cyan-500/20 px-3 py-1 font-mono text-xs font-bold text-cyan-300 hover:bg-cyan-500 hover:text-black transition"
+                >
+                  Set
+                </button>
+              </div>
             </div>
           ) : pattern === "SlidingWindow" ? (
             <div className="flex items-center gap-3">
@@ -1744,7 +1439,7 @@ const TwoPointerVisualizer = () => {
         <div className="relative w-full overflow-hidden rounded-2xl border border-slate-800/60 bg-gradient-to-b from-[#0e0702] to-[#040201] p-4 sm:p-6 flex flex-col items-center justify-center min-h-[220px]">
           {pattern === "BinarySearch" && (
             <div className="flex items-center gap-2 flex-wrap justify-center my-6">
-              {BINARY_SEARCH_ARRAY.map((val, i) => {
+              {binaryArray.map((val, i) => {
                 const isLeft = currStep.left === i;
                 const isRight = currStep.right === i;
                 const isMid = currStep.mid === i;
@@ -1977,18 +1672,15 @@ const BacktrackingVisualizer = () => {
 
   return (
     <div className="rounded-3xl border border-rose-500/20 bg-[#030d07] shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-5 border-b border-rose-500/15" style={{ background: "linear-gradient(135deg, #1c050a 0%, #030d07 60%, #140206 100%)" }}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-rose-500/15 bg-slate-950/70">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-rose-500/30 bg-rose-500/10 shrink-0">
-              <Crown className="text-rose-400" size={18} />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-rose-500/30 bg-rose-500/10 shrink-0">
+              <Crown className="text-rose-400" size={16} />
             </div>
-            <div>
-              <h2 className="font-display text-base sm:text-xl font-black uppercase text-white tracking-wider">
-                Backtracking N-Queens Visualizer
-              </h2>
-              <p className="font-mono text-[10px] text-slate-400">Recursive Call Stack Rollback &amp; Attack Conflict Detection</p>
-            </div>
+            <span className="font-mono text-xs font-bold text-slate-300">
+              Backtracking Solver <span className="text-rose-400 font-black">({boardSize}×{boardSize} Board)</span>
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -2305,27 +1997,25 @@ const DsaLabPage = () => {
               </span>
             </h1>
             <p className="mt-3 text-xs sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Interactive step-by-step algorithm visualizers for sorting, graph traversal, AVL Trees, Dynamic Programming, Two-Pointer sliding windows, N-Queens Backtracking, and LRU Cache.
+              Interactive step-by-step algorithm visualizers for sorting, graph traversal, Dynamic Programming, Two-Pointer sliding windows, and N-Queens Backtracking with custom user input.
             </p>
           </div>
         </FadeInUp>
 
         {/* Module 01: Sorting */}
         <FadeInUp delay={0.1}>
-          <div className="mb-5 sm:mb-6">
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+          <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 mb-3 backdrop-blur-md">
+              <span className="font-mono text-xs font-black uppercase tracking-widest text-emerald-400">
                 // MODULE 01 — SORTING ALGORITHMS
               </span>
-              <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-300">
-                🟢 Live
-              </span>
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
             </div>
-            <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-              Sorting &amp; Space Complexity Visualizer
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+              Sorting &amp; Space Visualizer
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-              QuickSort · MergeSort · HeapSort — step-by-step with memory pointer highlights and complexity analysis.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+              QuickSort · MergeSort · HeapSort — step-by-step memory pointers, real-time custom array input &amp; complexity metrics.
             </p>
           </div>
 
@@ -2334,21 +2024,19 @@ const DsaLabPage = () => {
 
         {/* Module 02: Graphs */}
         <div className="cv-auto">
-          <FadeInUp delay={0.2} className="mt-14 sm:mt-16">
-            <div className="mb-5 sm:mb-6">
-              <div className="flex items-center gap-3 mb-1.5">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
+          <FadeInUp delay={0.2} className="mt-16 sm:mt-20">
+            <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 mb-3 backdrop-blur-md">
+                <span className="font-mono text-xs font-black uppercase tracking-widest text-cyan-400">
                   // MODULE 02 — GRAPH TRAVERSAL
                 </span>
-                <span className="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-2.5 py-0.5 text-[10px] font-bold text-cyan-300">
-                  🟢 Live
-                </span>
+                <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                Graph Traversal &amp; Shortest Path Lab
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+                Graph Traversal &amp; Shortest Path
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-                Dijkstra · BFS · DFS — interactive node graph canvas with weighted distance tracking and queue/stack state.
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+                Dijkstra · BFS · DFS — interactive node graph canvas with weighted distance tracking and stack/queue state.
               </p>
             </div>
 
@@ -2356,47 +2044,21 @@ const DsaLabPage = () => {
           </FadeInUp>
         </div>
 
-        {/* Module 03: Trees */}
+        {/* Module 03: Dynamic Programming */}
         <div className="cv-auto">
-          <FadeInUp delay={0.3} className="mt-14 sm:mt-16">
-            <div className="mb-5 sm:mb-6">
-              <div className="flex items-center gap-3 mb-1.5">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400">
-                  // MODULE 03 — AVL &amp; BST TREES
+          <FadeInUp delay={0.3} className="mt-16 sm:mt-20">
+            <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-lime-500/30 bg-lime-500/10 mb-3 backdrop-blur-md">
+                <span className="font-mono text-xs font-black uppercase tracking-widest text-lime-400">
+                  // MODULE 03 — DYNAMIC PROGRAMMING
                 </span>
-                <span className="rounded-full border border-violet-500/40 bg-violet-500/10 px-2.5 py-0.5 text-[10px] font-bold text-violet-300">
-                  🟢 Live
-                </span>
+                <span className="h-2 w-2 rounded-full bg-lime-400 animate-ping" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                BST &amp; AVL Self-Balancing Tree Lab
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+                Dynamic Programming &amp; 2D Grid
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-                Binary Search Tree · AVL Rotations · In-Order, Pre-Order, Post-Order Traversals with interactive node insertion.
-              </p>
-            </div>
-
-            <BstTreeVisualizer />
-          </FadeInUp>
-        </div>
-
-        {/* Module 04: Dynamic Programming */}
-        <div className="cv-auto">
-          <FadeInUp delay={0.4} className="mt-14 sm:mt-16">
-            <div className="mb-5 sm:mb-6">
-              <div className="flex items-center gap-3 mb-1.5">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                  // MODULE 04 — DYNAMIC PROGRAMMING
-                </span>
-                <span className="rounded-full border border-lime-500/40 bg-lime-500/10 px-2.5 py-0.5 text-[10px] font-bold text-lime-300">
-                  🟢 Live
-                </span>
-              </div>
-              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                Dynamic Programming &amp; 2D Grid Lab
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-                0/1 Knapsack · Longest Common Subsequence (LCS) — 2D matrix memoization table computation with backtracking path highlights.
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+                0/1 Knapsack · Longest Common Subsequence (LCS) — 2D matrix memoization computation with backtracking highlights.
               </p>
             </div>
 
@@ -2404,23 +2066,21 @@ const DsaLabPage = () => {
           </FadeInUp>
         </div>
 
-        {/* Module 05: Two Pointers */}
+        {/* Module 04: Two Pointers */}
         <div className="cv-auto">
-          <FadeInUp delay={0.5} className="mt-14 sm:mt-16">
-            <div className="mb-5 sm:mb-6">
-              <div className="flex items-center gap-3 mb-1.5">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
-                  // MODULE 05 — TWO POINTERS &amp; WINDOW
+          <FadeInUp delay={0.4} className="mt-16 sm:mt-20">
+            <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 mb-3 backdrop-blur-md">
+                <span className="font-mono text-xs font-black uppercase tracking-widest text-amber-400">
+                  // MODULE 04 — TWO POINTERS &amp; WINDOW
                 </span>
-                <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold text-amber-300">
-                  🟢 Live
-                </span>
+                <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                Two-Pointer &amp; Sliding Window Lab
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+                Two-Pointer &amp; Sliding Window
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-                Binary Search · Sliding Window Subarray · Container With Most Water — pointer movement and window frame tracking.
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+                Binary Search · Sliding Window Subarray · Water Container — custom target search and pointer movement tracking.
               </p>
             </div>
 
@@ -2428,51 +2088,25 @@ const DsaLabPage = () => {
           </FadeInUp>
         </div>
 
-        {/* Module 06: Backtracking */}
+        {/* Module 05: Backtracking */}
         <div className="cv-auto">
-          <FadeInUp delay={0.6} className="mt-14 sm:mt-16">
-            <div className="mb-5 sm:mb-6">
-              <div className="flex items-center gap-3 mb-1.5">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-rose-600 dark:text-rose-400">
-                  // MODULE 06 — N-QUEENS BACKTRACKING
+          <FadeInUp delay={0.5} className="mt-16 sm:mt-20">
+            <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-rose-500/30 bg-rose-500/10 mb-3 backdrop-blur-md">
+                <span className="font-mono text-xs font-black uppercase tracking-widest text-rose-400">
+                  // MODULE 05 — N-QUEENS BACKTRACKING
                 </span>
-                <span className="rounded-full border border-rose-500/40 bg-rose-500/10 px-2.5 py-0.5 text-[10px] font-bold text-rose-300">
-                  🟢 Live
-                </span>
+                <span className="h-2 w-2 rounded-full bg-rose-400 animate-ping" />
               </div>
-              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
                 Backtracking N-Queens Visualizer
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
                 N-Queens Chessboard Puzzle — recursive decision tree, attack conflict alert, and rewind backtracking state.
               </p>
             </div>
 
             <BacktrackingVisualizer />
-          </FadeInUp>
-        </div>
-
-        {/* Module 07: LRU Cache */}
-        <div className="cv-auto">
-          <FadeInUp delay={0.7} className="mt-14 sm:mt-16">
-            <div className="mb-5 sm:mb-6">
-              <div className="flex items-center gap-3 mb-1.5">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400">
-                  // MODULE 07 — LRU CACHE &amp; LINKED LIST
-                </span>
-                <span className="rounded-full border border-teal-500/40 bg-teal-500/10 px-2.5 py-0.5 text-[10px] font-bold text-teal-300">
-                  🟢 Live
-                </span>
-              </div>
-              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                LRU Cache &amp; Doubly Linked List Lab
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
-                Least Recently Used Cache Eviction — Hash Map + Doubly Linked List node promotion (MRU Head) and tail eviction (LRU Tail).
-              </p>
-            </div>
-
-            <LinkedListVisualizer />
           </FadeInUp>
         </div>
       </section>

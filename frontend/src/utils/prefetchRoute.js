@@ -52,10 +52,7 @@ export const prefetchAllRoutesIdle = () => {
   };
 
   if (typeof window !== "undefined") {
-    if ("requestIdleCallback" in window) {
-      window.requestIdleCallback(runPrefetch, { timeout: 3000 });
-    } else {
-      window.setTimeout(runPrefetch, 1500);
-    }
+    // Eagerly prefetch all routes immediately after initial render (150ms timeout)
+    window.setTimeout(runPrefetch, 150);
   }
 };

@@ -793,12 +793,11 @@ const formatLabel = (value = "") => {
   }
   return value;
 };
-
-// Fixed year navigator — highlights active year on scroll
+// Fixed year navigator — highlights active year on scroll (exact July 20 commit implementation)
 const FixedYearNav = ({ years, activeYear, onYearClick }) => (
   <div className="fixed right-6 top-1/2 z-50 hidden -translate-y-1/2 xl:flex xl:flex-col xl:items-center">
     {/* Capsule container */}
-    <div className="flex flex-col items-center gap-1 rounded-[2rem] border border-slate-200 dark:border-white/10 bg-white/90 dark:bg-zinc-950/95 px-3 py-4 shadow-xl dark:shadow-[0_8px_48px_rgba(0,0,0,0.8)] backdrop-blur-xl transition-colors duration-200">
+    <div className="flex flex-col items-center gap-1 rounded-[2rem] border border-slate-200 dark:border-white/10 bg-white/90 dark:bg-zinc-950/95 px-3 py-4 shadow-xl dark:shadow-[0_8px_48px_rgba(0,0,0,0.8)] backdrop-blur-xl">
       {/* Label */}
       <p className="mb-3 text-[8px] font-bold uppercase tracking-[0.4em] text-slate-500 dark:text-zinc-600">
         Years
@@ -815,53 +814,33 @@ const FixedYearNav = ({ years, activeYear, onYearClick }) => (
               aria-label={`Go to year ${year}`}
               className={`relative flex h-12 w-12 flex-col items-center justify-center rounded-[14px] border text-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-300 ${
                 isActive
-                  ? "scale-110 border-lime-400 bg-lime-400 text-black shadow-[0_0_24px_rgba(163,230,53,0.6),0_0_0_4px_rgba(163,230,53,0.15)]"
-                  : "border-slate-200 dark:border-transparent bg-slate-100 dark:bg-zinc-900/80 text-slate-600 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-800 hover:text-slate-900 dark:hover:text-zinc-200"
+                  ? "scale-110 border-lime-300 bg-lime-300 shadow-[0_0_24px_rgba(163,230,53,0.6),0_0_0_4px_rgba(163,230,53,0.15)]"
+                  : "border-transparent bg-zinc-900/80 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300"
               }`}
             >
               <span
-                className={`text-[9px] font-bold leading-none ${
-                  isActive ? "text-black/60" : "text-slate-500 dark:text-zinc-600"
+                className={`text-[9px] font-semibold leading-none ${
+                  isActive ? "text-black/50" : "text-zinc-600"
                 }`}
               >
                 {String(year).slice(0, 2)}
               </span>
               <span
                 className={`text-[14px] font-black leading-none ${
-                  isActive ? "text-black" : "text-slate-800 dark:text-zinc-300"
+                  isActive ? "text-black" : ""
                 }`}
               >
                 {String(year).slice(2)}
               </span>
-              {/* Glow pip on active */}
-              {isActive && (
-                <motion.span
-                  layoutId="navPip"
-                  className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-lime-400 shadow-[0_0_10px_rgba(163,230,53,1)]"
-                />
-              )}
             </button>
           );
         })}
       </div>
-
-      {/* Bottom divider + active year label */}
-      <div className="mt-3 h-px w-8 bg-slate-200 dark:bg-zinc-800" />
-      <AnimatePresence mode="wait">
-        <motion.p
-          key={activeYear}
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.2 }}
-          className="mt-2 text-[8px] font-bold uppercase tracking-[0.3em] text-slate-500 dark:text-zinc-600"
-        >
-          {activeYear}
-        </motion.p>
-      </AnimatePresence>
     </div>
   </div>
 );
+
+
 
 // GALLERY LIGHTBOX
 const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
@@ -1419,7 +1398,7 @@ const JourneyPage = () => {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [view, setView] = useState("timeline");
-  const [activeYear, setActiveYear] = useState(null);
+  const [activeYear, setActiveYear] = useState(2024);
   const [expandedId, setExpandedId] = useState(null);
 
   // Scroll to and expand card matching URL hash
@@ -1597,6 +1576,9 @@ const JourneyPage = () => {
       />
 
       
+
+
+      
       {view === "timeline" && (showFloatingNav || search.trim() !== "") && (
         <FixedYearNav
           years={allYears}
@@ -1605,7 +1587,6 @@ const JourneyPage = () => {
         />
       )}
 
-      
       <section className="relative overflow-hidden pt-10 pb-16 sm:pt-14 sm:pb-20 bg-white/0">
         {/* Ambient glows */}
         <div className="pointer-events-none absolute inset-0">
@@ -1836,7 +1817,7 @@ const JourneyPage = () => {
 
       
       <section className="section-wrap py-12 sm:py-16">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <AnimatePresence mode="wait">
             
             {view === "grid" ? (
@@ -1879,7 +1860,7 @@ const JourneyPage = () => {
                   </div>
                 ) : (
                   groupedByYear.map(({ year, items }) => (
-                    <div key={year} id={`year-${year}`}>
+                    <div key={year} id={`year-${year}`} className="scroll-mt-28">
                       
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
@@ -1942,18 +1923,15 @@ const JourneyPage = () => {
                             return (
                               <div key={event.id} id={event.id} className="relative scroll-mt-28">
 
-                                {}
                                 <div className="absolute left-4 top-8 -translate-x-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:top-10">
                                   <TimelineDot
                                     isActive={activeYear === year}
                                   />
                                 </div>
 
-                                {}
                                 <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-center lg:gap-0">
                                   {isLeft ? (
                                     <>
-                                      {/* Card on left half */}
                                       <div className="flex justify-end lg:pr-14">
                                         <JourneyCard
                                           event={event}
@@ -1962,7 +1940,6 @@ const JourneyPage = () => {
                                           onToggle={() => toggleExpand(event.id)}
                                         />
                                       </div>
-                                      {/* Meta on right half */}
                                       <div className="hidden lg:flex lg:flex-col lg:items-start lg:pl-14">
                                         <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-600">
                                           {formatLabel(event.duration)}
@@ -1976,7 +1953,6 @@ const JourneyPage = () => {
                                     </>
                                   ) : (
                                     <>
-                                      {/* Meta on left half */}
                                       <div className="hidden lg:flex lg:flex-col lg:items-end lg:pr-14 lg:text-right">
                                         <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-600">
                                           {formatLabel(event.duration)}
@@ -1987,7 +1963,6 @@ const JourneyPage = () => {
                                           {event.category}
                                         </span>
                                       </div>
-                                      {/* Card on right half */}
                                       <div className="flex justify-start lg:pl-14">
                                         <JourneyCard
                                           event={event}

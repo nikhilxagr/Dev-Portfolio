@@ -52,7 +52,7 @@ const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.jsx"));
 const LOADER_VISIT_KEY = "portfolio_loader_seen";
 const MotionDiv = motion.div;
 
-// Invisible placeholder fallback — eliminates CLS and prevents dotted spinner flash on page switch
+// Clean invisible route fallback — eliminates skeleton flash & CLS for smooth seamless page transitions
 const RouteFallback = () => (
   <div className="min-h-[85vh] w-full" aria-hidden="true" />
 );
@@ -149,17 +149,17 @@ function App() {
                 initial={
                   prefersReducedMotion
                     ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: 6 }
+                    : { opacity: 0, y: 4 }
                 }
                 animate={{ opacity: 1, y: 0 }}
                 exit={
                   prefersReducedMotion
                     ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: -4 }
+                    : { opacity: 0, y: -2 }
                 }
                 transition={{
-                  duration: 0.2,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: 0.08,
+                  ease: "easeOut",
                 }}
                 className="transform-gpu will-change-transform"
               >
