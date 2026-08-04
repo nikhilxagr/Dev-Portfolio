@@ -25,6 +25,7 @@ import {
 import { NAV_LINKS, SKILL_GROUPS } from "@/constants/siteData";
 import { SIGNATURE_PROJECTS } from "@/data/projectsData";
 import { BLOG_POSTS as BLOG_LINKS } from "@/data/blogsData";
+import { journeyData } from "@/data/journeyData";
 import { useTheme } from "@/context/ThemeContext";
 import clsx from "clsx";
 
@@ -71,7 +72,7 @@ const score = (item, rawQuery) => {
   return total / queryTokens.length;
 };
 
-// Build index of pages, projects, skills, blogs, and timeline items
+// Build index of pages, projects, skills, blogs, journey milestones, tools & DSA labs
 const buildIndex = () => {
   const items = [];
 
@@ -189,108 +190,76 @@ const buildIndex = () => {
     });
   });
 
-  // Journey / Hackathons — each item gets a deep-link hash
-  const hackathons = [
-    {
-      id: "journey-nerds",
-      domId: "nerds-hack-days-lucknow-2026",
-      label: "Nerds Hack Days Lucknow",
-      description: "Nerds Room × MLH · July 2026 · Built Kanoon-Mate AI Legal OS",
-      badge: "Latest",
-      extra: "kanoon mate legal ai hackathon nerds room mlh pw institute innovation",
-    },
-    {
-      id: "journey-techx26",
-      domId: "techx26-hackathon-2026",
-      label: "TechX26 Hackathon",
-      description: "12-Hour Build Sprint · AI & Innovation",
-      badge: "Hackathon",
-      extra: "techx26 hackathon ai build sprint innovation",
-    },
-    {
-      id: "journey-android-nova",
-      domId: "android-nova-2026",
-      label: "Android Nova 2.0",
-      description: "Android development workshop · Jetpack Compose",
-      badge: "Workshop",
-      extra: "android nova workshop jetpack compose mobile development",
-    },
-    {
-      id: "journey-hackwithsmile",
-      domId: "hackwithsmile-ctf-2026",
-      label: "HackWithSmile CTF 2026",
-      description: "Cybersecurity CTF competition · 2026",
-      badge: "CTF",
-      extra: "ctf hackwithsmile cybersecurity competition",
-    },
-    {
-      id: "journey-product-builders",
-      domId: "product-builders-day-2026",
-      label: "Product Builders Day",
-      description: "Startup & product building event · 2026",
-      badge: "Event",
-      extra: "product builders day startup event 2026",
-    },
-    {
-      id: "journey-launch-pad",
-      domId: "launch-pad-startup-screening-2026",
-      label: "Launch Pad Startup Screening",
-      description: "Startup screening & pitching event",
-      badge: "Startup",
-      extra: "launchpad startup screening pitch event",
-    },
-    {
-      id: "journey-bca",
-      domId: "bca-bbd-2024",
-      label: "BCA at BBD University",
-      description: "Bachelor of Computer Applications · 2024–2027",
-      badge: "Education",
-      extra: "bca bbd university degree computer applications computer science",
-    },
-    {
-      id: "journey-class12",
-      domId: "class-12th-cbse-2024",
-      label: "Class 12th CBSE",
-      description: "St. John's School · Physics, Chemistry, Math",
-      badge: "Education",
-      extra: "class 12 cbse st johns school science pcm",
-    },
-    {
-      id: "journey-cisco",
-      domId: "cisco-ethical-hacker-2025",
-      label: "Cisco Certified Ethical Hacker",
-      description: "Certified Ethical Hacker · Cisco Networking Academy",
-      badge: "Cert",
-      extra: "cisco ethical hacker certification cybersecurity certified",
-    },
-    {
-      id: "journey-mongodb",
-      domId: "mongodb-associate-developer-2025",
-      label: "MongoDB Associate Developer",
-      description: "Database modeling, aggregation, indexing & security",
-      badge: "Cert",
-      extra: "mongodb associate developer database certification nosql",
-    },
-    {
-      id: "journey-postman",
-      domId: "postman-api-fundamentals-student-expert-2025",
-      label: "Postman API Student Expert",
-      description: "API testing, automation, and documentation expert",
-      badge: "Cert",
-      extra: "postman api student expert testing backend automation",
-    },
+  // Dynamically Index Real Journey Milestones & Hackathons from journeyData
+  journeyData.forEach((event) => {
+    const techStr = (event.details?.technologies || []).join(" ");
+    const skillStr = (event.details?.skills || []).join(" ");
+    const featureStr = (event.details?.keyFeatures || []).join(" ");
+    const overviewStr = event.details?.overview || "";
+    const problemStr = event.details?.problem || "";
+    const solutionStr = event.details?.solution || "";
+
+    const kw = tokenise(
+      `${event.title} ${event.organization} ${event.category} ${event.tag} ${event.subtitle || ""} ${event.description || ""} ${overviewStr} ${problemStr} ${solutionStr} ${techStr} ${skillStr} ${featureStr} ${event.location || ""}`
+    );
+
+    items.push({
+      id: `journey-${event.id}`,
+      type: "hackathon",
+      label: event.title,
+      description: `${event.tag} · ${event.organization}`,
+      to: `/journey#${event.id}`,
+      icon: GitBranch,
+      badge: event.tag || "Journey",
+      keywords: kw,
+      _corpus: kw.join(" "),
+    });
+  });
+
+  // Cyber Security Tools
+  const cyberTools = [
+    { id: "tool-breach", label: "Breach Inspector", description: "Audit emails against compromised data leaks", to: "/experiments/cyber-tools", icon: ShieldCheck, badge: "Security" },
+    { id: "tool-password", label: "Password Strength Analyzer", description: "Entropy & crack time estimator", to: "/experiments/cyber-tools", icon: KeyRound, badge: "Security" },
+    { id: "tool-header", label: "HTTP Header Auditor", description: "CSP, HSTS, X-Frame-Options security audit", to: "/experiments/cyber-tools", icon: Lock, badge: "Security" },
   ];
 
-  hackathons.forEach((h) => {
-    const kw = tokenise(`${h.label} ${h.description} ${h.extra}`);
+  cyberTools.forEach((t) => {
+    const kw = tokenise(`${t.label} ${t.description} cyber security tool audit`);
     items.push({
-      id: h.id,
-      type: "hackathon",
-      label: h.label,
-      description: h.description,
-      to: `/journey#${h.domId}`,
-      icon: GitBranch,
-      badge: h.badge,
+      id: t.id,
+      type: "experiment",
+      label: t.label,
+      description: t.description,
+      to: t.to,
+      icon: t.icon,
+      badge: t.badge,
+      keywords: kw,
+      _corpus: kw.join(" "),
+    });
+  });
+
+  // DSA Lab Visualizers
+  const dsaVisualizers = [
+    { id: "dsa-sorting", label: "Sorting Algorithms Visualizer", description: "QuickSort, MergeSort, BubbleSort, InsertionSort step-by-step", to: "/experiments/dsa-lab", icon: Cpu, badge: "DSA" },
+    { id: "dsa-search", label: "Binary Search Visualizer", description: "Logarithmic search steps on sorted array", to: "/experiments/dsa-lab", icon: Cpu, badge: "DSA" },
+    { id: "dsa-twopointer", label: "Two Pointers & Sliding Window", description: "Subarray sums, container with most water visualizer", to: "/experiments/dsa-lab", icon: Cpu, badge: "DSA" },
+    { id: "dsa-nqueens", label: "N-Queens Backtracking", description: "Constraint satisfaction & backtracking visualizer", to: "/experiments/dsa-lab", icon: Cpu, badge: "DSA" },
+    { id: "dsa-linkedlist", label: "Linked List Operations", description: "Singly linked list insertion, deletion & traversal", to: "/experiments/dsa-lab", icon: Cpu, badge: "DSA" },
+    { id: "dsa-stackqueue", label: "Stack & Queue Visualizer", description: "LIFO stack push/pop & FIFO queue enqueue/dequeue", to: "/experiments/dsa-lab", icon: Cpu, badge: "DSA" },
+    { id: "dsa-graph", label: "Graph Traversal BFS & DFS", description: "Dijkstra, BFS & DFS shortest path graph visualizer", to: "/experiments/dsa-lab", icon: Cpu, badge: "DSA" },
+    { id: "dsa-tree", label: "Binary Search Tree Traversal", description: "In-order, Pre-order & Post-order BST visualizer", to: "/experiments/dsa-lab", icon: Cpu, badge: "DSA" },
+  ];
+
+  dsaVisualizers.forEach((v) => {
+    const kw = tokenise(`${v.label} ${v.description} data structures algorithm dsa lab visualizer`);
+    items.push({
+      id: v.id,
+      type: "experiment",
+      label: v.label,
+      description: v.description,
+      to: v.to,
+      icon: v.icon,
+      badge: v.badge,
       keywords: kw,
       _corpus: kw.join(" "),
     });
@@ -360,10 +329,11 @@ const FEATURED = [
 
 const SEARCH_CHIPS = [
   { icon: "⚖️", label: "Kanoon-Mate", to: "/projects/kanoon-mate" },
+  { icon: "🏆", label: "Nerds Hackathon", to: "/journey#nerds-hack-days-lucknow-2026" },
+  { icon: "🚀", label: "Android Nova", to: "/journey#android-nova-2026" },
+  { icon: "💼", label: "ASSOCHAM", to: "/journey#assocham-samarth-2026" },
   { icon: "🍔", label: "Fast Feast", to: "/projects/fast-feast" },
   { icon: "⚡", label: "SnapURL", to: "/projects/snapurl" },
-  { icon: "🤖", label: "Code Reviewer", to: "/projects/ai-powered-code-reviewer" },
-  { icon: "🏆", label: "Nerds Hackathon", to: "/journey#nerds-hack-days-lucknow-2026" },
   { icon: "🛡️", label: "Security Labs", to: "/experiments/security-labs" },
   { icon: "💻", label: "React", query: "React" },
   { icon: "🟢", label: "Node.js", query: "Node.js" },

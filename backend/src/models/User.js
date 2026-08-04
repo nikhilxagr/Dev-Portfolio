@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+    phone: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 30,
+    },
     googleId: {
       type: String,
       sparse: true,

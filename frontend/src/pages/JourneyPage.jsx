@@ -643,27 +643,40 @@ const TimelineDot = ({ isActive }) => (
 
 // MAIN PAGE
 const JourneyPage = () => {
-  const { hash } = useLocation();
+  const location = useLocation();
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [view, setView] = useState("timeline");
   const [activeYear, setActiveYear] = useState(2024);
   const [expandedId, setExpandedId] = useState(null);
 
-  // Scroll to and expand card matching URL hash
+  // Scroll to and expand card matching URL hash or search parameter (?selected=id or #id)
   useEffect(() => {
-    if (!hash) return;
-    const id = hash.replace("#", "");
-    const timer = setTimeout(() => {
+    const hashId = location.hash ? location.hash.replace("#", "") : null;
+    const searchParams = new URLSearchParams(location.search);
+    const selectedParam = searchParams.get("selected") || searchParams.get("id");
+    const targetId = hashId || selectedParam;
 
-      const el = document.getElementById(id);
+    if (!targetId) return;
+
+    // Reset search and filter to ensure target card is rendered
+    setActiveFilter("All");
+    setSearch("");
+    setExpandedId(targetId);
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById(targetId);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
-        setExpandedId(id);
+        el.classList.add("ring-2", "ring-lime-400", "rounded-2xl", "transition-all", "duration-500");
+        setTimeout(() => {
+          el.classList.remove("ring-2", "ring-lime-400");
+        }, 3500);
       }
-    }, 600);
+    }, 300);
+
     return () => clearTimeout(timer);
-  }, [hash]);
+  }, [location.hash, location.search]);
 
   const [showFloatingNav, setShowFloatingNav] = useState(false);
   const [showCategoryFilters, setShowCategoryFilters] = useState(true);
@@ -1084,12 +1097,13 @@ const JourneyPage = () => {
                   </div>
                 ) : (
                   filteredData.map((event) => (
-                    <GridCard
-                      key={event.id}
-                      event={event}
-                      isExpanded={expandedId === event.id}
-                      onToggle={() => toggleExpand(event.id)}
-                    />
+                    <div key={event.id} id={event.id} className="scroll-mt-28">
+                      <GridCard
+                        event={event}
+                        isExpanded={expandedId === event.id}
+                        onToggle={() => toggleExpand(event.id)}
+                      />
+                    </div>
                   ))
                 )}
               </motion.div>

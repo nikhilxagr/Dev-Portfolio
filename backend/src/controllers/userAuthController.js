@@ -145,8 +145,8 @@ export const handleGoogleCallback = async (req, res) => {
       if (!user.googleId) {
         user.googleId = googleUser.id;
       }
-      user.avatar = googleUser.picture || user.avatar;
-      user.name = user.name || googleUser.name;
+      user.avatar = user.avatar || googleUser.picture || "";
+      user.name = user.name || googleUser.name || "User";
       user.isEmailVerified = true;
       user.lastLoginAt = new Date();
       await user.save();
@@ -207,7 +207,8 @@ export const handleGoogleCredential = async (req, res, next) => {
       if (!user.googleId) {
         user.googleId = googleUser.sub;
       }
-      user.avatar = googleUser.picture || user.avatar;
+      user.avatar = user.avatar || googleUser.picture || "";
+      user.name = user.name || googleUser.name || "User";
       user.isEmailVerified = true;
       user.lastLoginAt = new Date();
       await user.save();
@@ -231,6 +232,7 @@ export const handleGoogleCredential = async (req, res, next) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone || "",
         avatar: user.avatar,
         authProvider: user.authProvider,
       },
@@ -282,6 +284,7 @@ export const registerUser = async (req, res, next) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone || "",
         avatar: user.avatar,
         authProvider: user.authProvider,
       },
@@ -330,6 +333,7 @@ export const loginUser = async (req, res, next) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone || "",
         avatar: user.avatar,
         authProvider: user.authProvider,
       },
@@ -346,9 +350,50 @@ export const getCurrentUser = async (req, res) => {
       id: req.user._id,
       name: req.user.name,
       email: req.user.email,
+      phone: req.user.phone || "",
       avatar: req.user.avatar,
       authProvider: req.user.authProvider,
       createdAt: req.user.createdAt,
     },
   });
+};
+
+// 7. Update Current User Profile
+export const updateCurrentUser = async (req, res, next) => {
+  try {
+    const { name, phone } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      throw new ApiError(404, "User profile not found");
+    }
+
+    if (typeof name === "string") {
+      const trimmedName = name.trim();
+      if (!trimmedName) {
+        throw new ApiError(400, "Full name cannot be empty");
+      }
+      user.name = trimmedName;
+    }
+
+    if (typeof phone === "string") {
+      user.phone = phone.trim();
+    }
+
+    await user.save();
+
+    sendResponse(res, 200, "User profile updated successfully", {
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "",
+        avatar: user.avatar,
+        authProvider: user.authProvider,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { User, Phone, Check, X, ShieldCheck } from "lucide-react";
+import { User, Phone, Check, X, ShieldCheck, Loader2 } from "lucide-react";
 import { useUserAuth } from "@/context/UserAuthContext";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { updateUserProfileService } from "@/services/userAuth.service";
 
 const GoogleIcon = () => (
   <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
@@ -30,6 +31,8 @@ const UserProfileModal = () => {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
@@ -41,20 +44,38 @@ const UserProfileModal = () => {
 
   if (!isProfileModalOpen || !user) return null;
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    updateUser({
-      name: name.trim(),
-      phone: phone.trim(),
-    });
+    setSaving(true);
+    setErrorMsg("");
 
-    setSavedSuccess(true);
-    setTimeout(() => {
-      setSavedSuccess(false);
-      closeProfileModal();
-    }, 1200);
+    try {
+      const updatedUser = await updateUserProfileService({
+        name: name.trim(),
+        phone: phone.trim(),
+      });
+
+      if (updatedUser) {
+        updateUser(updatedUser);
+      } else {
+        updateUser({
+          name: name.trim(),
+          phone: phone.trim(),
+        });
+      }
+
+      setSavedSuccess(true);
+      setTimeout(() => {
+        setSavedSuccess(false);
+        closeProfileModal();
+      }, 1200);
+    } catch (err) {
+      setErrorMsg(err.message || "Failed to save profile changes.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -109,6 +130,12 @@ const UserProfileModal = () => {
             </div>
           ) : (
             <form onSubmit={handleSave} className="mt-6 space-y-4">
+              {errorMsg && (
+                <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-center text-xs font-bold text-rose-300">
+                  {errorMsg}
+                </div>
+              )}
+
               {/* Full Name (Editable) */}
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1">
@@ -170,15 +197,23 @@ const UserProfileModal = () => {
                 <button
                   type="button"
                   onClick={closeProfileModal}
-                  className="flex-1 rounded-xl border border-slate-700 bg-slate-800 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700 transition"
+                  disabled={saving}
+                  className="flex-1 rounded-xl border border-slate-700 bg-slate-800 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700 transition disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-2.5 text-xs font-extrabold text-slate-950 shadow-md hover:brightness-110 transition"
+                  disabled={saving}
+                  className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-2.5 text-xs font-extrabold text-slate-950 shadow-md hover:brightness-110 transition flex items-center justify-center gap-1.5 disabled:opacity-50"
                 >
-                  Save Profile
+                  {saving ? (
+                    <>
+                      <Loader2 className="animate-spin h-4 w-4" /> Saving...
+                    </>
+                  ) : (
+                    "Save Profile"
+                  )}
                 </button>
               </div>
             </form>

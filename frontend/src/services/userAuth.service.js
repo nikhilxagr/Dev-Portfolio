@@ -78,6 +78,22 @@ export const getCurrentUserProfileService = async () => {
   }
 };
 
+export const updateUserProfileService = async ({ name, phone }) => {
+  const token = getStoredUserToken();
+  if (!token) throw new Error("Authentication required");
+
+  try {
+    const response = await api.put(
+      "/user-auth/me",
+      { name, phone },
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    return response.data?.data?.user || null;
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Failed to update profile"));
+  }
+};
+
 export const getGoogleAuthUrl = () => {
   return `${API_BASE_URL.replace(/\/+$/, "")}/user-auth/google`;
 };

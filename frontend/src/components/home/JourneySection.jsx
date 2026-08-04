@@ -44,13 +44,20 @@ const JourneySection = () => {
     <section className="section-wrap section-divider pt-10 pb-12">
       <FadeInUp>
         <div className="text-center max-w-3xl mx-auto">
-          <p className="font-mono text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">
-            hackathons, conferences, certifications, industrial visits, and technical events.
-          </p>
+          <div className="mb-4 inline-block">
+            <span className="inline-flex items-center gap-2 rounded-full border border-lime-500/40 dark:border-[#ccff00]/30 bg-lime-500/10 dark:bg-[#ccff00]/10 px-4.5 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-lime-700 dark:text-[#ccff00]">
+              CONTINUOUS LEARNING &amp; GROWTH
+            </span>
+          </div>
+
           <h2 className="font-display text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl">
-            Continuous Learning &amp; Growth
-            <span className="block text-lime-600 dark:text-[#ccff00]">Professional Journey</span>
+            PROFESSIONAL
+            <span className="block text-slate-900 dark:text-white">JOURNEY</span>
           </h2>
+
+          <p className="mt-4 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Explore my experiences beyond projects and blogs, including internships, workshops, hackathons, conferences, certifications, industrial visits, and technical events.
+          </p>
         </div>
       </FadeInUp>
 
