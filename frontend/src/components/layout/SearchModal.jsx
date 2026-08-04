@@ -7,6 +7,7 @@ import {
   Briefcase,
   Code2,
   Cpu,
+  ExternalLink,
   FileText,
   FlaskConical,
   Folder,
@@ -15,6 +16,7 @@ import {
   KeyRound,
   Lock,
   Mail,
+  MessageCircle,
   Milestone,
   Search,
   ShieldCheck,
@@ -24,7 +26,7 @@ import {
   Wrench,
   X,
 } from "lucide-react";
-import { NAV_LINKS, SKILL_GROUPS } from "@/constants/siteData";
+import { NAV_LINKS, QUICK_CONTACT, SKILL_GROUPS, SOCIAL_LINKS } from "@/constants/siteData";
 import { SIGNATURE_PROJECTS } from "@/data/projectsData";
 import { BLOG_POSTS as BLOG_LINKS } from "@/data/blogsData";
 import { journeyData } from "@/data/journeyData";
@@ -267,6 +269,42 @@ const buildIndex = () => {
     });
   });
 
+  // Social Profiles
+  const socialIconMap = {
+    GitHub: GitBranch,
+    LinkedIn: Briefcase,
+    Instagram: User,
+    Medium: BookOpen,
+    TryHackMe: ShieldCheck,
+    WhatsApp: MessageCircle,
+    LeetCode: Hash,
+    GeeksforGeeks: Code2,
+  };
+
+  const allSocials = [
+    ...SOCIAL_LINKS,
+    { label: "LeetCode", href: QUICK_CONTACT.leetcode },
+    { label: "GeeksforGeeks", href: QUICK_CONTACT.gfg },
+    { label: "Email", href: `mailto:${QUICK_CONTACT.email}` },
+    { label: "WhatsApp Chat", href: QUICK_CONTACT.whatsapp },
+  ];
+
+  allSocials.forEach((s) => {
+    const kw = tokenise(`${s.label} social contact profile follow connect reach`);
+    items.push({
+      id: `social-${s.label.toLowerCase().replace(/\s+/g, "-")}`,
+      type: "social",
+      label: s.label,
+      description: s.href.replace(/^mailto:/, ""),
+      href: s.href,
+      to: null,
+      icon: socialIconMap[s.label] || ExternalLink,
+      badge: "Social",
+      keywords: kw,
+      _corpus: kw.join(" "),
+    });
+  });
+
   return items;
 };
 
@@ -337,6 +375,8 @@ const SEARCH_CHIPS = [
   { icon: "🍔", label: "Fast Feast", to: "/projects/fast-feast" },
   { icon: "⚡", label: "SnapURL", to: "/projects/snapurl" },
   { icon: "🛡️", label: "Security Labs", to: "/experiments/security-labs" },
+  { icon: "📸", label: "Instagram", query: "Instagram" },
+  { icon: "💬", label: "WhatsApp", query: "WhatsApp" },
   { icon: "💻", label: "React", query: "React" },
   { icon: "🟢", label: "Node.js", query: "Node.js" },
 ];
@@ -348,9 +388,10 @@ const TYPE_LABELS = {
   skill: "Skills",
   blog: "Blog",
   hackathon: "Hackathons & Journey",
+  social: "Social & Contact",
 };
 
-const TYPE_ORDER = ["page", "hackathon", "project", "blog", "experiment", "skill"];
+const TYPE_ORDER = ["page", "hackathon", "project", "blog", "experiment", "skill", "social"];
 
 const TYPE_COLORS = {
   page:       { dark: "text-sky-400 bg-sky-400/10 border-sky-400/30",         light: "text-sky-800 bg-sky-100 border-sky-300 font-bold" },
@@ -359,6 +400,7 @@ const TYPE_COLORS = {
   skill:      { dark: "text-amber-400 bg-amber-400/10 border-amber-400/30",     light: "text-amber-900 bg-amber-100 border-amber-300 font-bold" },
   blog:       { dark: "text-rose-400 bg-rose-400/10 border-rose-400/30",     light: "text-rose-800 bg-rose-100 border-rose-300 font-bold" },
   hackathon:  { dark: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30",     light: "text-teal-800 bg-teal-100 border-teal-300 font-bold" },
+  social:     { dark: "text-pink-400 bg-pink-400/10 border-pink-400/30",      light: "text-pink-800 bg-pink-100 border-pink-300 font-bold" },
 };
 
 const SearchModal = ({ isOpen, onClose }) => {
@@ -417,6 +459,10 @@ const SearchModal = ({ isOpen, onClose }) => {
   const handleSelect = useCallback(
     (item) => {
       onClose();
+      if (item.href && item.type === "social") {
+        window.open(item.href, "_blank", "noopener,noreferrer");
+        return;
+      }
       const to = item.to;
       navigate(to);
     },
@@ -524,13 +570,23 @@ const SearchModal = ({ isOpen, onClose }) => {
             {item.badge}
           </span>
         )}
-        <ArrowRight
-          size={15}
-          className={clsx(
-            "shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 hidden sm:block",
-            isDark ? "text-cyan-400" : "text-emerald-600",
-          )}
-        />
+        {item.type === "social" ? (
+          <ExternalLink
+            size={14}
+            className={clsx(
+              "shrink-0 opacity-60 group-hover:opacity-100 transition-opacity hidden sm:block",
+              isDark ? "text-pink-400" : "text-pink-600",
+            )}
+          />
+        ) : (
+          <ArrowRight
+            size={15}
+            className={clsx(
+              "shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 hidden sm:block",
+              isDark ? "text-cyan-400" : "text-emerald-600",
+            )}
+          />
+        )}
       </button>
     );
   };
@@ -586,7 +642,7 @@ const SearchModal = ({ isOpen, onClose }) => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Search projects, skills, hackathons, blogs..."
+                placeholder="Search projects, skills, social, hackathons, blogs..."
                 className={clsx(
                   "flex-1 bg-transparent text-sm sm:text-base font-semibold outline-none placeholder:font-normal placeholder:text-xs sm:placeholder:text-sm min-w-0 transition-colors",
                   isDark

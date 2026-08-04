@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, useMemo } from "react";
 import SeoHead from "@/components/seo/SeoHead";
 import HeroSection from "@/components/home/HeroSection";
 import AboutSection from "@/components/home/AboutSection";
+import ConsistencyDashboard from "@/components/home/ConsistencyDashboard";
 import SkillsSection from "@/components/home/SkillsSection";
 import ProjectsSection from "@/components/home/ProjectsSection";
 import BlogsSection from "@/components/home/BlogsSection";
@@ -147,6 +148,9 @@ const HomePage = () => {
       {/* Critical above-fold — render eagerly */}
       <HeroSection />
       <AboutSection />
+      <div className="cv-auto">
+        <ConsistencyDashboard />
+      </div>
 
       {/* Below-fold sections — cv-auto defers layout+paint until near viewport */}
       <div className="cv-auto">

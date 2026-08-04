@@ -515,11 +515,20 @@ flowchart TD
 
 ---
 
-## License
+## Community & License Documentation
 
-This repository is proprietary and released under all-rights-reserved terms.
+Copyright (c) 2026 Nikhil Agrahari. All rights reserved.  
+Contact: [nikhilagrahari530@gmail.com](mailto:nikhilagrahari530@gmail.com)
 
-- [LICENSE](LICENSE)
+| Document | Description |
+|---|---|
+| 📄 **[LICENSE](LICENSE)** | MIT Open Source License |
+| 📜 **[NOTICE](NOTICE)** | Third-party software attributions & copyright headers |
+| ⚖️ **[DMCA.md](DMCA.md)** | DMCA Takedown Policy & Intellectual Property Notice |
+| 🛡️ **[SECURITY.md](SECURITY.md)** | Vulnerability disclosure SLA & security controls |
+| 🤝 **[CONTRIBUTING.md](CONTRIBUTING.md)** | Contribution guidelines, PR workflow & coding standards |
+| 📜 **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** | Contributor Covenant v2.1 standards |
+| 📋 **[CHANGELOG.md](CHANGELOG.md)** | Release notes and version history |
 
 ---
 
@@ -527,6 +536,7 @@ This repository is proprietary and released under all-rights-reserved terms.
 
 <div align="center">
 
+[![Email](https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:nikhilagrahari530@gmail.com)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nikhilxagr)
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nikhilxagr)
 [![Portfolio](https://img.shields.io/badge/Live%20Portfolio-00C2FF?style=for-the-badge&logo=vercel&logoColor=white)](https://nikhilxagr.vercel.app)

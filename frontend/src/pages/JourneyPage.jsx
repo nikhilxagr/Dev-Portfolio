@@ -687,11 +687,21 @@ const JourneyPage = () => {
   }, []);
 
   const statsSummary = useMemo(() => {
-    const totalExperiences = journeyData.length;
     const internships = journeyData.filter((e) => e.category === "Internships").length;
-    const workshops = journeyData.filter((e) => e.category === "Workshops" || e.category === "Startup Events").length;
-    const certifications = journeyData.filter((e) => e.category === "Certifications").length;
-    const conferences = journeyData.filter((e) => e.category === "Hackathons").length;
+    const workshops = journeyData.filter(
+      (e) =>
+        e.category === "Workshops" ||
+        e.category === "Startup Events" ||
+        e.category === "Academic Programs"
+    ).length;
+    const certifications = journeyData.filter(
+      (e) => e.category === "Certifications" || e.category === "Achievements"
+    ).length;
+    const conferences = journeyData.filter(
+      (e) => e.category === "Hackathons" || e.category === "Open Source"
+    ).length;
+
+    const totalExperiences = internships + workshops + certifications + conferences;
     return { totalExperiences, internships, workshops, certifications, conferences };
   }, []);
 

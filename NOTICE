@@ -1,0 +1,51 @@
+Developer Portfolio & Engineering Sandbox
+Copyright (c) 2026 Nikhil Agrahari. All rights reserved.
+
+This product includes software developed by Nikhil Agrahari and third-party open-source components.
+
+========================================================================
+Third-Party Software & Acknowledgments
+========================================================================
+
+This project incorporates the following open-source software libraries and tools:
+
+1. React & React DOM
+   - Copyright (c) Meta Platforms, Inc. and affiliates.
+   - License: MIT License
+
+2. Vite & Rolldown Bundler
+   - Copyright (c) 2019-present Yuxi (Evan) You & Vite Contributors.
+   - License: MIT License
+
+3. Tailwind CSS
+   - Copyright (c) Tailwind Labs, Inc.
+   - License: MIT License
+
+4. Framer Motion
+   - Copyright (c) 2018 Framer B.V.
+   - License: MIT License
+
+5. Lucide React Icons
+   - Copyright (c) 2022-present Lucide Contributors.
+   - License: ISC License / MIT License
+
+6. Express.js & Node.js Ecosystem
+   - Copyright (c) OpenJS Foundation and Node.js contributors.
+   - License: MIT License
+
+7. MongoDB Node Driver & Mongoose
+   - Copyright (c) MongoDB, Inc.
+   - License: Apache License 2.0 / MIT License
+
+8. Canvas Confetti
+   - Copyright (c) 2018 Kiril Vatev
+   - License: ISC License
+
+========================================================================
+Contact & Support
+========================================================================
+
+Maintained by Nikhil Agrahari
+Email: nikhilagrahari530@gmail.com
+Portfolio: https://nikhilagrahari.dev
+GitHub: https://github.com/nikhilxagr/Dev-Portfolio

@@ -1229,3 +1229,59 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+/* ─── Hardcoded Light Mode Contrast & Readability Fixes ──────────────────── */
+html.light .cta-enterprise-banner,
+html:not(.dark) .cta-enterprise-banner {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .cta-enterprise-banner h2,
+html:not(.dark) .cta-enterprise-banner h2 {
+  color: #0f172a !important;
+}
+
+html.light .cta-enterprise-banner p,
+html:not(.dark) .cta-enterprise-banner p {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+html.dark .cta-enterprise-banner {
+  background-color: #030d07 !important;
+  color: #ffffff !important;
+  border-color: rgba(52, 211, 153, 0.4) !important;
+}
+
+html.dark .cta-enterprise-banner h2 {
+  color: #ffffff !important;
+}
+
+html.dark .cta-enterprise-banner p {
+  color: #cbd5e1 !important;
+  font-weight: 700 !important;
+}
+
+/* Light Mode Input & Control Overrides */
+html.light input[type="text"],
+html.light input[type="number"] {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Visualizer dark canvas contrast lock */
+html.light .dsa-visualizer-canvas,
+html:not(.dark) .dsa-visualizer-canvas {
+  background-color: #040a12 !important;
+  border-color: #1e293b !important;
+}
+
+html.light .dsa-node-index,
+html:not(.dark) .dsa-node-index {
+  color: #cbd5e1 !important;
+  font-weight: 900 !important;
+}

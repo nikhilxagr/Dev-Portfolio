@@ -67,6 +67,7 @@ export const QUICK_CONTACT = {
   supportEmail: "nikhilagrahari530@gmail.com",
   phone: "+91 7897872883",
   whatsapp: "https://wa.me/7897872883",
+  instagram: "https://www.instagram.com/nikhilxagr/",
   linkedin: "https://www.linkedin.com/in/nikhilxagr/",
   github: "https://github.com/nikhilxagr",
   leetcode: "https://leetcode.com/u/nikhilxagr/",

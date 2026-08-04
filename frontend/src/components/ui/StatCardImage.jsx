@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Flame, ShieldCheck, ExternalLink, Code2 } from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
 
 export const GitHubStreakCard = ({ username = "nikhilxagr", profileUrl = "https://github.com/nikhilxagr" }) => {
+  const { isDark } = useTheme();
   const [imgFailed, setImgFailed] = useState(false);
-  const imageUrl = `https://streak-stats.demolab.com?user=${username}&theme=Nightowl&hide_border=false`;
+  const imageUrl = `https://streak-stats.demolab.com?user=${username}&theme=${isDark ? "Nightowl" : "default"}&hide_border=false`;
 
   return (
     <div className="flex flex-col justify-between h-full rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm transition-all duration-300 hover:border-emerald-500/50 hover:shadow-md dark:border-emerald-500/20 dark:bg-[#050d14] dark:hover:border-emerald-400/40">
@@ -72,8 +74,9 @@ export const GitHubStreakCard = ({ username = "nikhilxagr", profileUrl = "https:
 };
 
 export const LeetCodeStatsCard = ({ username = "nikhilxagr", profileUrl = "https://leetcode.com/u/nikhilxagr/" }) => {
+  const { isDark } = useTheme();
   const [imgFailed, setImgFailed] = useState(false);
-  const imageUrl = `https://leetcard.jacoblin.cool/${username}?theme=dark&ext=heatmap`;
+  const imageUrl = `https://leetcard.jacoblin.cool/${username}?theme=${isDark ? "dark" : "light"}&ext=heatmap`;
 
   return (
     <div className="flex flex-col justify-between h-full rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm transition-all duration-300 hover:border-amber-500/50 hover:shadow-md dark:border-amber-500/20 dark:bg-[#050d14] dark:hover:border-amber-400/40">

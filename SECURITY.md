@@ -1,90 +1,93 @@
-# Security Policy
+# Security Policy & Defensive Engineering Standards
 
-## Scope
+Copyright (c) 2026 Nikhil Agrahari. All rights reserved.
+Contact: [nikhilagrahari530@gmail.com](mailto:nikhilagrahari530@gmail.com)
 
-This policy covers the full repository and deployed services:
+Security is a foundational pillar of this repository and associated services. As a Full Stack & Security Engineer, I maintain rigorous defensive controls and an active vulnerability response program.
 
-- Frontend: Vercel deployment
-- Backend API: Render deployment
-- Data and payment flow: MongoDB Atlas and Cashfree integration
+---
 
-## Supported Versions
+## 🎯 Scope & Services
 
-| Version               | Security Updates |
-| --------------------- | ---------------- |
-| Current main branch   | Yes              |
-| Older snapshots/forks | No               |
+This security policy applies to all repository source code, environment configurations, and deployed infrastructure:
 
-## Reporting A Vulnerability
+| Scope Asset | Environment | Description |
+|---|---|---|
+| **Frontend Application** | Vercel | Single Page React application with client-side security sandboxes |
+| **Backend REST API** | Render | Node.js (ESM) API server handling contact, admin, and payments |
+| **Database Tier** | MongoDB Atlas | Encrypted cloud database cluster |
+| **Payment Integration** | Cashfree Gateway | Webhook processing & payment verification engine |
 
-- Email: nikhilagrahari530@gmail.com
-- Subject: Security Report - Developer Portfolio
-- Include: impact, reproduction steps, affected endpoint/page, and proof of concept
+---
 
-Do not post security vulnerabilities in public issues, discussions, or social media.
+## 🛡️ Supported Versions
 
-## Response SLA
+Only the latest `main` branch is actively supported with security updates and patches.
 
-- Acknowledgement: within 24 hours
-- First status update: within 3 days
-- Ongoing updates: every 3 days until closure
+| Version | Status | Security Patches |
+|---|---|---|
+| `main` branch | **Active** | ✅ Supported |
+| Previous tags / forks | End of Life | ❌ Not Supported |
 
-## Disclosure Process
+---
 
-1. Report is received and triaged.
-2. Severity is assigned (Critical, High, Medium, Low).
-3. Mitigation or fix is prepared and tested.
-4. Fix is deployed.
-5. Reporter is notified when resolved.
+## 📬 Reporting a Vulnerability
 
-## Security Controls In This Repository
+If you discover a security vulnerability or weakness in this application, **please report it responsibly**. Do NOT disclose issues publicly in GitHub Issues, Pull Requests, or social media.
 
-- HTTP hardening middleware and structured CORS policy
-- Input validation on public and admin APIs
-- Request sanitization for XSS and NoSQL-style key abuse
-- Route-specific rate limiting
-- JWT-based admin authentication (phase-2 migration planned to secure cookies)
-- Payment/webhook signature verification with timing-safe comparison
-- Centralized API error handling
+### Contact Details
+- **Email**: [nikhilagrahari530@gmail.com](mailto:nikhilagrahari530@gmail.com)
+- **Subject**: `[SECURITY VULNERABILITY REPORT] - <Target Module>`
 
-## Secret Handling Rules
+### Report Details to Include
+1. **Summary & Impact**: Concise explanation of the vulnerability and its potential risk.
+2. **Affected Asset**: Specific URL endpoint, API route, or frontend component.
+3. **Reproduction Steps**: Clear, step-by-step instructions or Proof of Concept (PoC).
+4. **Suggested Fix**: Optional recommendation to remediate the vulnerability.
 
-- Never commit real secrets.
-- Use environment variables only.
-- Rotate secrets immediately if exposure is suspected.
-- Required rotation targets:
-  - JWT secret
-  - Admin password hash
-  - Cashfree secret key
-  - Cashfree webhook secret
+---
 
-## Security Testing Expectations
+## ⏱️ Response SLA
 
-Before production deployment:
+- **Initial Acknowledgment**: Within **24 Hours**
+- **Triage & Severity Assessment**: Within **48 Hours**
+- **Patch & Deployment Window**:
+  - **Critical / High**: Within **72 Hours**
+  - **Medium / Low**: Within **7 Days**
 
-1. Run dependency vulnerability checks for frontend and backend.
-2. Verify CORS behavior for allowed and blocked origins.
-3. Verify rate-limit behavior for auth and payment routes.
-4. Verify webhook signature failure path.
-5. Verify admin route access control and token/session expiry behavior.
+---
 
-## Incident Response (Minimum)
+## 🔒 Security Controls Implemented
 
-1. Contain: disable affected flow or route.
-2. Rotate potentially exposed credentials.
-3. Assess scope: logs, affected records, and time window.
-4. Fix and redeploy.
-5. Document root cause and prevention action.
+### 1. Payment Verification Integrity
+- **Timing-Safe Signatures**: Webhook signature verification uses `crypto.timingSafeEqual` with HMAC SHA-256 to prevent timing side-channel attacks.
+- **Strict Payload Validation**: Payment status verification confirms amount, order ID, and signature matching before updating transactions.
 
-## Anti-Copy And Ownership Notice
+### 2. API Defense & Hardening
+- **Helmet HTTP Headers**: Enforces strict Content-Security-Policy (CSP), Strict-Transport-Security (HSTS), X-Content-Type-Options, and Frameguard.
+- **Rate Limiting**: Custom express rate limiters applied on sensitive routes (`/api/contact`, `/api/admin/login`, `/api/payments`).
+- **NoSQL & XSS Protection**: Request parameters are sanitized against MongoDB operator injection (`express-mongo-sanitize`) and cross-site scripting (`xss-clean`).
 
-Code, design, text, and media are proprietary unless explicitly stated otherwise. Reuse, redistribution, or derivative publication requires written permission.
+### 3. Session & Secret Management
+- **Environment Isolation**: Zero secrets committed to version control. All API keys, database URIs, and JWT secrets are injected strictly via environment variables.
+- **Timing-Safe Credential Auth**: Admin authentication enforces bcrypt password hashing and strong JWT verification.
 
-## Policy Maintenance
+---
 
-This document is reviewed when:
+## 🧪 Security Audit Checklist
 
-- authentication model changes
-- payment flow changes
-- deployment platform changes
-- any Critical or High incident occurs
+Before releasing major features, the following validation checks are executed:
+
+- [x] Run `npm audit` on frontend & backend dependencies.
+- [x] Test CORS origin enforcement against unauthorized domains.
+- [x] Validate rate limiter threshold triggers on public endpoints.
+- [x] Verify timing-safe comparison on webhook verification routes.
+- [x] Audit XSS sanitization on custom user input forms.
+
+---
+
+## ⚖️ Responsible Disclosure & Ethics
+
+Security researchers who discover and report vulnerabilities in compliance with this policy will receive proper attribution in the repository release notes. Unauthorized access to user data, service disruption, or destruction of resources is strictly prohibited. For copyright or DMCA notices, refer to [DMCA.md](DMCA.md).
+
+*Document Last Updated: August 2026*

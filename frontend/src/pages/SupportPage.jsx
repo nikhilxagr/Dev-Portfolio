@@ -629,26 +629,26 @@ const SupportPage = () => {
         </div>
 
         {/* Bottom CTA Banner */}
-        <div className="mt-16 rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/60 via-slate-950 to-teal-950/60 p-8 text-center text-white shadow-2xl relative overflow-hidden">
+        <div className="mt-16 rounded-3xl border border-slate-200 bg-white dark:border-emerald-500/40 dark:bg-[#030d07] p-8 sm:p-10 text-center text-slate-900 dark:text-white shadow-xl dark:shadow-2xl relative overflow-hidden cta-enterprise-banner">
           <div className="pointer-events-none absolute -right-20 -bottom-20 h-60 w-60 rounded-full bg-emerald-500/10 blur-3xl" />
           
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-3.5 py-1 text-xs font-extrabold text-emerald-300 mb-3">
-            <Globe size={13} /> LOOKING FOR DEDICATED SERVICES?
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-100 text-emerald-900 dark:border-emerald-400/50 dark:bg-emerald-400/15 dark:text-emerald-300 px-4 py-1.5 text-xs font-black mb-4 shadow-xs">
+            <Globe size={14} /> LOOKING FOR DEDICATED SERVICES?
           </span>
 
-          <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
             Explore Dedicated Engineering Services &amp; Projects
           </h2>
 
-          <p className="mt-2 text-xs sm:text-sm text-slate-300 font-medium max-w-xl mx-auto leading-relaxed">
+          <p className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-200 font-bold max-w-xl mx-auto leading-relaxed">
             Looking to hire for a custom web build, API architecture, or 1:1 code mentorship? Explore structured service plans or view live projects.
           </p>
 
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Button to="/services" className="min-w-[190px]">
+            <Button to="/services" className="min-w-[190px] !bg-emerald-500 hover:!bg-emerald-600 !text-slate-950 dark:!bg-emerald-400 dark:hover:!bg-emerald-300 font-black shadow-lg">
               <Sparkles size={16} /> View Service Plans
             </Button>
-            <Button to="/projects" variant="secondary" className="min-w-[180px]">
+            <Button to="/projects" variant="secondary" className="min-w-[180px] !border-slate-300 !bg-slate-100 !text-slate-900 hover:!bg-slate-200 dark:!border-emerald-400/50 dark:!bg-emerald-500/20 dark:!text-white dark:hover:!bg-emerald-500/30 font-black shadow-sm">
               <Code2 size={16} /> Explore Open Projects
             </Button>
           </div>
