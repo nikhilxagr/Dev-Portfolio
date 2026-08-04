@@ -12,6 +12,8 @@ import {
   Folder,
   GitBranch,
   Hash,
+  KeyRound,
+  Lock,
   Mail,
   Milestone,
   Search,

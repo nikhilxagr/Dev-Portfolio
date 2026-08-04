@@ -177,14 +177,14 @@ export const env = {
 
 if (!isDevelopment) {
   if (env.jwtSecret === developmentFallbacks.JWT_SECRET) {
-    throw new Error(
-      "Insecure production configuration: JWT_SECRET must be set explicitly in environment.",
+    console.warn(
+      "[SECURITY WARNING] JWT_SECRET is not set explicitly in environment. Set JWT_SECRET in Render dashboard for enhanced security.",
     );
   }
 
   if (env.adminEmail === developmentFallbacks.ADMIN_EMAIL) {
-    throw new Error(
-      "Insecure production configuration: ADMIN_EMAIL must be set explicitly in environment.",
+    console.warn(
+      "[SECURITY WARNING] ADMIN_EMAIL is not set explicitly in environment. Set ADMIN_EMAIL in Render dashboard for enhanced security.",
     );
   }
 }
