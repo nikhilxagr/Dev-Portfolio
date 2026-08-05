@@ -1,0 +1,5 @@
+{
+  "watch": ["src", "knowledge"],
+  "ext": "js,json,md",
+  "ignore": ["node_modules"]
+}

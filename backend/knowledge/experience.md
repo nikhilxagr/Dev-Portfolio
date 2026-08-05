@@ -1,29 +1,27 @@
-# Nikhil's Experience & Internships
+# Nikhil's Experience & Work
 
 ## Professional Experience
 
 ### Freelance Full-Stack Developer
-**Self-employed | Ongoing**
+**Self-employed | 2024 – Present**
 
-Nikhil takes on freelance web development projects including:
+Nikhil started freelancing on web development projects in 2024, alongside his BCA studies at BBD University, Lucknow. His freelance work includes:
 - Custom portfolio and business websites
 - Full-stack web applications
 - API development and integration
 - Security reviews and hardening
 - Performance optimization
 
-**Notable freelance work**:
-- Built production applications with real payment gateways
+**Notable work**:
+- Built production applications with real payment gateways (Cashfree)
 - Developed CMS systems for content management
-- Implemented secure authentication systems
+- Implemented secure authentication systems (JWT + Google OAuth)
 
 ---
 
 ## Internship Experience
 
 *Nikhil is actively seeking internship and entry-level opportunities in Full-Stack Development or Cybersecurity. If you're interested in hiring him, please reach out at nikhilagrahari530@gmail.com.*
-
-*Specific internship details can be provided directly — please contact Nikhil for the most up-to-date information.*
 
 ---
 

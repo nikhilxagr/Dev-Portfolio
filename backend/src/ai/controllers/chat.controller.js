@@ -1,6 +1,8 @@
 import { streamChatResponse } from "../services/chat.service.js";
 import { isKnowledgeReady, getKnowledgeStats } from "../knowledge/knowledge.index.js";
 import { env } from "../../config/env.js";
+import { isRagReady } from "../rag/rag.index.js";
+import { getStoreStats } from "../rag/vector.store.js";
 
 export const chatStream = async (req, res) => {
   const { message, history = [], sessionId } = req.body;
@@ -75,7 +77,9 @@ export const chatStream = async (req, res) => {
 export const aiHealth = (req, res) => {
   const knowledgeReady = isKnowledgeReady();
   const geminiConfigured = Boolean(env.geminiApiKey);
-  const stats = knowledgeReady ? getKnowledgeStats() : null;
+  const ragReady = isRagReady();
+  const knowledgeStats = knowledgeReady ? getKnowledgeStats() : null;
+  const ragStats = ragReady ? getStoreStats() : null;
 
   res.status(200).json({
     success: true,
@@ -84,10 +88,15 @@ export const aiHealth = (req, res) => {
       status: knowledgeReady && geminiConfigured ? "ready" : "degraded",
       knowledgeReady,
       geminiConfigured,
-      ...(stats && {
-        knowledgeTopics: stats.topics,
-        knowledgeTopicCount: stats.topicCount,
-        knowledgeSizeKB: Math.round(stats.totalBytes / 1024),
+      ragReady,
+      ...(knowledgeStats && {
+        knowledgeTopics: knowledgeStats.topics,
+        knowledgeTopicCount: knowledgeStats.topicCount,
+        knowledgeSizeKB: Math.round(knowledgeStats.totalBytes / 1024),
+      }),
+      ...(ragStats && {
+        ragChunkCount: ragStats.totalChunks,
+        ragTopicBreakdown: ragStats.topicBreakdown,
       }),
     },
   });

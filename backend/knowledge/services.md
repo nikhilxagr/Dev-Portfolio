@@ -1,101 +1,114 @@
-# Nikhil's Services
+# Nikhil's Services — Real Pricing & Offerings
 
-## What Nikhil Offers
+Nikhil provides freelance web development, cybersecurity, and guidance services. All payments are processed securely through Cashfree payment gateway integrated directly in the portfolio.
 
-Nikhil provides freelance web development and consulting services for individuals and businesses looking to build high-quality, secure web applications.
-
----
-
-## Service Offerings
-
-### 1. Full-Stack Web Application Development
-**Best for**: Startups, businesses, individuals needing a complete web application
-
-- Custom web applications built with React + Node.js + MongoDB
-- Admin dashboards and CMS systems
-- User authentication (JWT, OAuth)
-- Payment gateway integration
-- API development and third-party integrations
-- Responsive, mobile-first design
-
-### 2. Frontend Development
-**Best for**: Clients who need a stunning UI built on existing or new backend
-
-- React.js applications
-- Modern, animated UI with Framer Motion
-- Tailwind CSS styling and custom design systems
-- Performance optimization and bundle analysis
-- Responsive design and cross-browser compatibility
-
-### 3. Backend API Development
-**Best for**: Clients who need a robust backend or API
-
-- Node.js + Express REST API design
-- MongoDB database architecture
-- Authentication and authorization systems
-- Rate limiting and security middleware
-- Documentation and testing
-
-### 4. Security Audit & Hardening
-**Best for**: Existing applications that need a security review
-
-- OWASP Top 10 vulnerability assessment
-- Input validation and sanitization review
-- Authentication and authorization audit
-- Dependency vulnerability scanning (npm audit)
-- Security recommendations and implementation
-
-### 5. Portfolio & Personal Websites
-**Best for**: Developers, designers, professionals
-
-- Premium portfolio websites
-- Blog integration
-- Contact forms and email integration
-- SEO optimization
-- Fast load times and performance
+**Services Page**: https://nikhilxagr.vercel.app/services  
+**Contact for custom work**: nikhilagrahari530@gmail.com
 
 ---
 
-## Pricing
+## Available Services & Real Pricing
 
-Pricing is project-based and depends on scope, complexity, and timeline.
-
-**To get a quote**: Visit the Services page on the portfolio or send a project inquiry to nikhilagrahari530@gmail.com
-
-The Services page at https://nikhilxagr.vercel.app/services has detailed pricing for standard packages.
+### 1:1 Mentorship
+**Category**: Guidance  
+**Price**: INR 99  
+**Turnaround**: Schedule-based  
+**What you get**: A short student-friendly session for guidance on web development, project direction, learning roadmaps, or portfolio improvement.
 
 ---
 
-## Availability
+### Resume Review and Help
+**Category**: Career Support  
+**Price**: INR 149  
+**Turnaround**: 1 to 2 days  
+**What you get**: Resume feedback and improvement support for students and freshers who want a cleaner, stronger technical profile. Includes ATS optimization and positioning advice.
 
-Nikhil is currently **available** for new projects. 
+---
 
-- **Turnaround**: Depends on project scope; small projects in 1-2 weeks, larger projects in 4-8 weeks
-- **Communication**: Regular updates and check-ins throughout the project
-- **Revisions**: Included in standard packages
+### Portfolio Guidance
+**Category**: Guidance  
+**Price**: INR 99  
+**Turnaround**: 1 to 2 days  
+**What you get**: Guidance for students who want to improve portfolio structure, project presentation, and personal branding.
+
+---
+
+### Frontend Development
+**Category**: Build and Delivery  
+**Price**: INR 1,099 – 1,499  
+**Turnaround**: 3 to 5 days for basic scope  
+**What you get**: Responsive frontend modules or small websites focused on clean UI, usability, and handover clarity. Built with React, Tailwind CSS, and Framer Motion.
+
+---
+
+### Backend Development
+**Category**: Build and Delivery  
+**Price**: INR 1,299 – 1,799  
+**Turnaround**: 3 to 6 days  
+**What you get**: Node.js and Express-based backend support for APIs, validation, routing, and simple data workflows.
+
+---
+
+### Full Stack Development
+**Category**: Build and Delivery  
+**Price**: INR 2,999 – 3,499  
+**Turnaround**: Depends on scope  
+**What you get**: Small full-stack builds with frontend, backend, database integration, and basic deployment support.
+
+---
+
+## Support / Tip Nikhil's Work
+**Min**: INR 1 | **Max**: INR 50,000  
+**Quick Amounts**: INR 49, 99, 149, 199, 499, 999  
+If his work or portfolio helped you, you can support him directly through the portfolio's support/donate system.
+
+---
+
+## Cybersecurity Skills (Security Services Context)
+
+Nikhil's cybersecurity expertise used in security-related service work:
+
+**Recon & Diagnostics**: Kali Linux, Nmap, Gobuster, Whois, Subdomain Discovery  
+**Application Security Review**: Burp Suite, OWASP Testing Guide, SQLMap, Nikto, Manual Payload Validation  
+**Network & Traffic Diagnostics**: Wireshark, Tcpdump, Port Analysis, Protocol Inspection  
+**Data & File Analysis**: Steghide, ExifTool, strings, File Signature Checks  
+**Validation & Hardening**: Metasploit, Risk Verification, Configuration Checks, Hardening Basics
+
+---
+
+## Main Skill Areas (Self-Assessed)
+
+| Skill Area | Proficiency | Key Tools |
+|-----------|-------------|-----------|
+| Application Security | 78% | OWASP Top 10, Burp Suite, SQLi/XSS, Threat Modeling |
+| Full Stack Development | 85% | React, Node.js, MongoDB, REST APIs |
+| Languages & Frameworks | 80% | JavaScript, Python, React, Next.js |
 
 ---
 
 ## How to Get Started
 
-1. **Visit**: https://nikhilxagr.vercel.app/services or https://nikhilxagr.vercel.app/contact
-2. **Email**: nikhilagrahari530@gmail.com with your project description
-3. **Discuss**: Nikhil will schedule a call or respond via email to understand requirements
-4. **Quote**: A detailed quote and timeline will be provided
-5. **Build**: Project kicks off with clear milestones and communication
+1. **Visit**: https://nikhilxagr.vercel.app/services
+2. **Browse services** and select what you need
+3. **Pay directly** through the portfolio (Cashfree gateway — UPI, cards, net banking)
+4. **Or email**: nikhilagrahari530@gmail.com with your project description
 
 ---
 
-## Payment
+## Payment Methods Accepted
 
-Secure payments are accepted through the portfolio's integrated payment system, supporting UPI, credit/debit cards, and net banking (via Cashfree gateway).
+Secure payments via Cashfree Payment Gateway:
+- UPI (Google Pay, PhonePe, Paytm, etc.)
+- Credit / Debit Cards
+- Net Banking
 
 ---
 
 ## Guarantee
 
-Nikhil takes pride in the quality of his work. Every project comes with:
+Every project comes with:
 - Clean, documented code
 - Security best practices applied
 - Mobile-responsive design
 - Post-delivery support for bug fixes
+- Regular communication throughout the project

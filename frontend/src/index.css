@@ -1345,4 +1345,17 @@ html:not(.dark) .dsa-node-index {
 
 html.light .ai-chat-scroll:hover::-webkit-scrollbar-thumb {
   background: rgba(2, 132, 199, 0.40);
+}
+
+/* Remove any browser or extension focus outline / green ring on AI input */
+#nikhil-ai-input,
+#nikhil-ai-input:focus,
+#nikhil-ai-input:focus-visible,
+#nikhil-ai-input:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  -webkit-tap-highlight-color: transparent !important;
 }

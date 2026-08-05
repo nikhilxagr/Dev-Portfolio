@@ -6,8 +6,6 @@ const SUGGESTED_QUESTIONS = [
   'Tell me about Nikhil',
   'What projects has he built?',
   'Why should I hire him?',
-  'What technologies does he know?',
-  'Explain Vistagram',
   'What certifications does he have?',
   'Is he available for work?',
   'How can I contact Nikhil?',
@@ -44,17 +42,8 @@ const AISuggestedQuestions = ({ onSelect }) => {
         <h3
           className={`text-base font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}
         >
-          Hi, I&apos;m Nikhil AI
+          Ask me Anything about Nikhil
         </h3>
-        <p
-          className={`mt-1 text-xs leading-relaxed ${
-            isDark ? 'text-slate-400' : 'text-slate-600 font-medium'
-          }`}
-        >
-          Your guide to Nikhil&apos;s portfolio.
-          <br />
-          Ask me anything about him.
-        </p>
       </div>
 
       <motion.div

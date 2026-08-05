@@ -3,6 +3,7 @@ import { env } from "./config/env.js";
 import { connectDatabase, disconnectDatabase } from "./config/db.js";
 import { ensurePaymentTransactionIndexes } from "./models/PaymentTransaction.js";
 import { loadKnowledge } from "./ai/knowledge/knowledge.loader.js";
+import { initializeRag } from "./ai/rag/rag.index.js";
 
 let server;
 let reconnectTimerId = null;
@@ -69,10 +70,17 @@ const startServer = async () => {
 
   app.locals.dbConnected = dbConnected;
 
-  // Load Nikhil AI knowledge base (non-fatal — runs in parallel with server bind)
-  loadKnowledge().catch((error) => {
-    console.warn(`[KnowledgeLoader] Startup warning: ${error.message}`);
-  });
+  // Load knowledge base then initialize RAG in the background (non-blocking)
+  loadKnowledge()
+    .then(() => {
+      // initializeRag runs in background — server is already listening and responsive
+      initializeRag().catch((err) => {
+        console.warn(`[RAG] Background init warning: ${err.message}`);
+      });
+    })
+    .catch((error) => {
+      console.warn(`[KnowledgeLoader] Startup warning: ${error.message}`);
+    });
 
   server = app.listen(env.port, () => {
     console.log(`Backend running on port ${env.port}`);

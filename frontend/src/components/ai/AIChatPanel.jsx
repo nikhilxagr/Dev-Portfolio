@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, Wifi, WifiOff } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import AIMessageList from './AIMessageList';
 import AIInputBar from './AIInputBar';
@@ -154,26 +154,6 @@ const AIChatPanel = ({
             >
               <X size={15} />
             </button>
-          </div>
-
-          {/* Status Bar */}
-          <div
-            className={`flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold border-b ${
-              isDark
-                ? 'border-white/5 bg-[#040c18]/40 text-slate-500'
-                : 'border-slate-200 bg-slate-100 text-slate-700'
-            }`}
-          >
-            {isKnowledgeReady ? (
-              <Wifi size={10} className={isDark ? 'text-emerald-500' : 'text-emerald-700'} />
-            ) : (
-              <WifiOff size={10} className="text-amber-500" />
-            )}
-            <span>
-              {isKnowledgeReady
-                ? 'Grounded in portfolio knowledge · Powered by Gemini'
-                : 'Knowledge loading…'}
-            </span>
           </div>
 
           {/* Feed */}

@@ -41,10 +41,10 @@ const AIInputBar = ({
       }`}
     >
       <div
-        className={`flex items-end gap-2 rounded-2xl border px-3 py-2 transition-all duration-200 ${
+        className={`flex items-end gap-2 rounded-2xl border px-3.5 py-2.5 transition-all duration-200 ${
           isDark
-            ? 'border-sky-500/25 bg-[#070f1a] focus-within:border-sky-500/50 focus-within:shadow-[0_0_0_1px_rgba(56,189,248,0.15)]'
-            : 'border-sky-300 bg-white focus-within:border-sky-500 focus-within:shadow-[0_0_0_2px_rgba(2,132,199,0.18)] shadow-xs'
+            ? 'border-sky-500/25 bg-[#070f1a] focus-within:border-sky-500/50'
+            : 'border-sky-300 bg-white focus-within:border-sky-500 shadow-xs'
         }`}
       >
         <textarea
@@ -58,12 +58,18 @@ const AIInputBar = ({
           disabled={isBusy}
           aria-label="Message Nikhil AI"
           aria-describedby="nikhil-ai-char-count"
-          className={`max-h-[120px] min-h-[24px] flex-1 resize-none bg-transparent text-sm leading-relaxed outline-none placeholder:text-sm disabled:cursor-not-allowed ${
+          className={`max-h-[120px] min-h-[24px] flex-1 resize-none border-0 bg-transparent text-sm leading-relaxed outline-none ring-0 focus:border-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 placeholder:text-sm disabled:cursor-not-allowed ${
             isDark
               ? 'text-slate-100 placeholder-slate-600'
               : 'text-slate-900 placeholder-slate-500 font-medium'
           }`}
-          style={{ scrollbarWidth: 'none' }}
+          style={{
+            scrollbarWidth: 'none',
+            outline: 'none',
+            border: 'none',
+            boxShadow: 'none',
+            WebkitAppearance: 'none',
+          }}
         />
 
         <motion.button
@@ -89,33 +95,6 @@ const AIInputBar = ({
             <SendHorizonal size={15} />
           )}
         </motion.button>
-      </div>
-
-      <div className="mt-1.5 flex items-center justify-between px-1">
-        <span
-          className={`text-[10px] font-medium ${
-            isDark ? 'text-slate-600' : 'text-slate-500'
-          }`}
-        >
-          Enter to send · Shift+Enter for newline
-        </span>
-        <span
-          id="nikhil-ai-char-count"
-          className={`text-[10px] font-semibold tabular-nums transition-colors ${
-            isOverLimit
-              ? 'text-rose-500'
-              : isNearLimit
-              ? isDark
-                ? 'text-amber-400'
-                : 'text-amber-600'
-              : isDark
-              ? 'text-slate-600'
-              : 'text-slate-400'
-          }`}
-          aria-live="polite"
-        >
-          {charCount}/{MAX_CHARS}
-        </span>
       </div>
     </div>
   );

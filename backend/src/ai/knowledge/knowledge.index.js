@@ -2,6 +2,7 @@ const knowledgeStore = new Map();
 
 export const getAllKnowledge = () => {
   const ORDERED_TOPICS = [
+    "personality",
     "about",
     "resume",
     "projects",

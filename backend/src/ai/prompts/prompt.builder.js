@@ -5,7 +5,8 @@ const MAX_HISTORY_TURNS = 6;
 const MAX_HISTORY_MESSAGE_CHARS = 1500;
 const MAX_USER_MESSAGE_CHARS = 500;
 
-const buildKnowledgeContext = () => {
+// Full knowledge context — used as fallback when RAG is not ready
+const buildFullKnowledgeContext = () => {
   const entries = getAllKnowledge();
 
   if (entries.length === 0) {
@@ -38,6 +39,31 @@ const buildConversationHistory = (history) => {
     .join("\n\n");
 };
 
+/**
+ * Builds a prompt using RAG-retrieved context (small, relevant chunks only).
+ * This is the primary path when RAG is ready.
+ */
+export const buildRagPrompt = ({ userMessage, ragContext, history = [] }) => {
+  const sanitizedMessage = String(userMessage ?? "")
+    .trim()
+    .slice(0, MAX_USER_MESSAGE_CHARS);
+
+  if (!sanitizedMessage) {
+    throw new Error("User message cannot be empty after sanitization");
+  }
+
+  const conversation = buildConversationHistory(history);
+
+  return SYSTEM_PROMPT_TEMPLATE
+    .replace("{{KNOWLEDGE_CONTEXT}}", ragContext)
+    .replace("{{CONVERSATION}}", conversation)
+    .replace("{{USER_MESSAGE}}", sanitizedMessage);
+};
+
+/**
+ * Builds a prompt using the full knowledge base context.
+ * Used as a fallback when RAG is not ready or returns no results.
+ */
 export const buildPrompt = ({ userMessage, history = [] }) => {
   const sanitizedMessage = String(userMessage ?? "")
     .trim()
@@ -47,7 +73,7 @@ export const buildPrompt = ({ userMessage, history = [] }) => {
     throw new Error("User message cannot be empty after sanitization");
   }
 
-  const knowledgeContext = buildKnowledgeContext();
+  const knowledgeContext = buildFullKnowledgeContext();
   const conversation = buildConversationHistory(history);
 
   return SYSTEM_PROMPT_TEMPLATE

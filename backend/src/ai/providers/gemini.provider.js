@@ -2,14 +2,19 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 import { AIProvider } from "./provider.interface.js";
 import { env } from "../../config/env.js";
 
-const PRIMARY_MODEL = "gemini-2.5-flash";
-const FALLBACK_MODELS = ["gemini-2.0-flash-lite", "gemini-2.0-flash"];
+const PRIMARY_MODEL = "gemini-flash-latest";
+const FALLBACK_MODELS = [
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+  "gemini-2.0-flash-lite",
+];
 
 const GENERATION_CONFIG = {
-  temperature: 0.3,
-  topP: 0.8,
+  temperature: 0.4,
+  topP: 0.85,
   topK: 40,
-  maxOutputTokens: 1024,
+  maxOutputTokens: 2048,
   candidateCount: 1,
 };
 
