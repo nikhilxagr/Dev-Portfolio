@@ -2,6 +2,7 @@ import app from "./app.js";
 import { env } from "./config/env.js";
 import { connectDatabase, disconnectDatabase } from "./config/db.js";
 import { ensurePaymentTransactionIndexes } from "./models/PaymentTransaction.js";
+import { loadKnowledge } from "./ai/knowledge/knowledge.loader.js";
 
 let server;
 let reconnectTimerId = null;
@@ -67,6 +68,11 @@ const startServer = async () => {
   }
 
   app.locals.dbConnected = dbConnected;
+
+  // Load Nikhil AI knowledge base (non-fatal — runs in parallel with server bind)
+  loadKnowledge().catch((error) => {
+    console.warn(`[KnowledgeLoader] Startup warning: ${error.message}`);
+  });
 
   server = app.listen(env.port, () => {
     console.log(`Backend running on port ${env.port}`);

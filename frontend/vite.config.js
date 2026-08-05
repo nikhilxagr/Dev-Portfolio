@@ -8,6 +8,9 @@ export default defineConfig(({ mode }) => {
   const buildFingerprint = new Date().toISOString().replace(/[:.]/g, "-");
 
   return {
+    define: {
+      __BUNDLED_DEV__: false,
+    },
     plugins: [react()],
     resolve: {
       alias: {

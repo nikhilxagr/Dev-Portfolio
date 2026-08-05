@@ -1072,26 +1072,37 @@ html {
 
 /* ─── @keyframes for shimmer / skeleton loading ───────────────────────────── */
 @keyframes shimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
 }
 
 .animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.0) 0%,
-    rgba(255, 255, 255, 0.08) 40%,
-    rgba(255, 255, 255, 0.0) 80%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.0) 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.0) 80%);
   background-size: 200% auto;
   animation: shimmer 2.4s linear infinite;
 }
 
 /* ─── @keyframes for gradient-text animate ────────────────────────────────── */
 @keyframes gradient-shift {
-  0%   { background-position: 0%   50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0%   50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .animate-gradient-text {
@@ -1101,13 +1112,27 @@ html {
 
 /* ─── @keyframes for subtle floating elements ─────────────────────────────── */
 @keyframes float-slow {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes float-medium {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50%       { transform: translateY(-16px) rotate(2deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-16px) rotate(2deg);
+  }
 }
 
 .animate-float-slow {
@@ -1129,6 +1154,7 @@ html {
 
 /* ─── Reveal animation base (CSS fallback for no-JS) ─────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -1184,7 +1210,8 @@ html.light * {
 }
 
 /* ─── Lenis Smooth Scroll CSS Resets & GPU Optimization ──────────────────── */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
@@ -1285,3 +1312,37 @@ html:not(.dark) .dsa-node-index {
   color: #cbd5e1 !important;
   font-weight: 900 !important;
 }
+
+/* AI Chat Scrollbar — activates on hover with glowing thumb */
+.ai-chat-scroll {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ai-chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ai-chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ai-chat-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ai-chat-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.ai-chat-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.75);
+}
+
+html.light .ai-chat-scroll:hover::-webkit-scrollbar-thumb {
+  background: rgba(2, 132, 199, 0.40);
+}

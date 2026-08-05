@@ -173,6 +173,7 @@ export const env = {
   frontendUrl:
     readOptionalVariable("FRONTEND_URL", ["CLIENT_URL"]) ||
     (isDevelopment ? "http://localhost:5173" : "https://nikhilxagr.vercel.app"),
+  geminiApiKey: readOptionalVariable("GEMINI_API_KEY"),
 };
 
 if (!isDevelopment) {
@@ -244,5 +245,12 @@ if (
 ) {
   throw new Error(
     "PAYMENT_RECEIPT_EMAIL_ENABLED=true requires RESEND_API_KEY and PAYMENT_FROM_EMAIL",
+  );
+}
+
+// Nikhil AI: warn if Gemini key is missing (non-fatal — AI features are optional)
+if (!env.geminiApiKey) {
+  console.warn(
+    "[env] GEMINI_API_KEY is not set. Nikhil AI assistant will be unavailable.",
   );
 }

@@ -6,13 +6,13 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BackgroundGrid from "@/components/layout/BackgroundGrid";
 import PortfolioLoader from "@/components/layout/PortfolioLoader";
-import ScrollProgressButton from "@/components/layout/ScrollProgressButton";
 import ScrollProgressBar from "@/components/layout/ScrollProgressBar";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import SignInModal from "@/components/auth/SignInModal";
 import UserProfileModal from "@/components/auth/UserProfileModal";
 import LenisProvider from "@/components/layout/LenisProvider";
 import RouteErrorBoundary from "@/components/RouteErrorBoundary";
+import NikhilAI from "@/components/ai/NikhilAI";
 import { prewarmBackendForCheckout } from "@/services/payment.service";
 import { prefetchAllRoutesIdle } from "@/utils/prefetchRoute";
 
@@ -226,10 +226,11 @@ function App() {
           </main>
           {!isAdminRoute ? <Footer /> : null}
         </div>
-        {!showLoader ? <ScrollProgressButton /> : null}
         <SignInModal />
         <UserProfileModal />
-        <Analytics />
+        {/* Nikhil AI — recruiter assistant widget */}
+        <NikhilAI />
+        {import.meta.env.PROD ? <Analytics /> : null}
       </div>
     </LenisProvider>
   );

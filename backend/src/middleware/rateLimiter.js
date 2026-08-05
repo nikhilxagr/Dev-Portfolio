@@ -143,3 +143,16 @@ export const publicReadLimiter = rateLimit({
     message: "Too many requests. Please retry shortly.",
   },
 });
+
+// Nikhil AI — conservative limit because each request costs Gemini API credits
+export const aiChatLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "AI chat limit reached. Please try again in a few minutes.",
+  },
+});
+
