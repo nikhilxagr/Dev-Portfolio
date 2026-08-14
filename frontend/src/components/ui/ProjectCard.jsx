@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink, Download } from "lucide-react";
 
 // GitHub SVG icon
 const GitHubMark = ({ className = "h-[13px] w-[13px]" }) => (
@@ -169,6 +169,20 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
                 Demo
               </span>
             )}
+
+            {/* APK button */}
+            {project.apkUrl ? (
+              <a
+                href={project.apkUrl}
+                download="Vistagram.apk"
+                aria-label="Download Android APK"
+                title="Download Android APK"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-cyan-500/40 bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500 hover:text-black dark:hover:text-black px-3 py-2 text-xs font-black uppercase tracking-widest transition-all duration-200"
+              >
+                APK
+                <Download size={11} />
+              </a>
+            ) : null}
           </div>
         </div>
       </div>

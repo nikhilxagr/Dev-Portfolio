@@ -50,7 +50,7 @@ Status: Open for Software Engineering, Full Stack & Application Security Roles.`
 
   projects: `Featured Real Projects:
   1. Vistagram (Full-Stack Real-Time Social Media Platform)
-     Tech: React, Node.js, Express, MongoDB, Socket.io | Live: myvistagram.vercel.app
+     Tech: React, Node.js, Express, MongoDB, Socket.io | Live: myvistagram.vercel.app | APK: /Vistagram.apk
   2. Kanoon-Mate (Legal AI Assistant · Built during Nerds Hack Days Lucknow 2026)
      Tech: React, Node.js, Express, MongoDB | Repo: github.com/nikhilxagr/Kanoon-Mate--HackethonProjects-
   3. Fast Feast (Modern Food Delivery Web Application)

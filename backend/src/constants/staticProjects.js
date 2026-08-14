@@ -76,6 +76,7 @@ export const STATIC_PROJECTS = [
     status: "Completed ✅ (Live on Vercel)",
     githubUrl: "https://github.com/nikhilxagr/Vistagram",
     liveDemoUrl: "https://myvistagram.vercel.app/",
+    apkUrl: "/Vistagram.apk",
     imageUrl: "/images/projects/vistagram-cover.webp",
     featured: true,
     hasDetails: true,

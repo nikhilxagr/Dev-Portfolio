@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, Download } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
 import SectionTitle from "@/components/ui/SectionTitle";
 import LoadingState from "@/components/ui/LoadingState";
@@ -187,6 +187,15 @@ const ProjectDetailsPage = () => {
                       className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 text-black px-4 py-2 text-xs font-black uppercase tracking-wider hover:bg-emerald-400 transition shadow-md"
                     >
                       <ExternalLink size={15} /> Live Demo
+                    </a>
+                  ) : null}
+                  {project.apkUrl ? (
+                    <a
+                      href={project.apkUrl}
+                      download="Vistagram.apk"
+                      className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/40 bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500 hover:text-black dark:hover:text-black px-4 py-2 text-xs font-black uppercase tracking-wider transition shadow-md"
+                    >
+                      <Download size={15} /> Download Android APK
                     </a>
                   ) : null}
                 </div>
