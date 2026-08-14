@@ -16,11 +16,15 @@ const CATEGORIES = ["ALL", "FULL STACK", "WEB DEV", "PYTHON", "CYBER SECURITY", 
 const matchesProjectFilters = (project, selectedCategory, currentSearch) => {
   let matchesCategory = true;
   if (selectedCategory === "FULL STACK") {
-    matchesCategory = project.category === "Web Dev" || project.category === "Full Stack";
+    matchesCategory =
+      project.category?.toLowerCase() === "full stack" ||
+      project.category?.toLowerCase() === "web dev";
   } else if (selectedCategory !== "ALL") {
     matchesCategory =
       project.category?.toLowerCase() === selectedCategory.toLowerCase() ||
-      (selectedCategory === "WEB DEV" && project.category === "Web Dev") ||
+      (selectedCategory === "WEB DEV" &&
+        (project.category?.toLowerCase() === "web dev" ||
+          project.category?.toLowerCase() === "full stack")) ||
       (selectedCategory === "PYTHON" && project.category === "Python") ||
       (selectedCategory === "CYBER SECURITY" && (project.category === "Cyber Security" || project.category === "Security")) ||
       (selectedCategory === "AI" && (project.category === "AI" || project.category === "AI / Security"));

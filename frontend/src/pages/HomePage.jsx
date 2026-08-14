@@ -109,7 +109,12 @@ const HomePage = () => {
   const filteredProjects = useMemo(() => {
     return projectFilter === "All"
       ? mergedFeaturedProjects
-      : mergedFeaturedProjects.filter((p) => p.category === projectFilter);
+      : mergedFeaturedProjects.filter((p) => {
+          if (projectFilter === "Web Dev") {
+            return p.category === "Web Dev" || p.category === "Full Stack" || p.category === "FULL STACK";
+          }
+          return p.category?.toLowerCase() === projectFilter.toLowerCase();
+        });
   }, [mergedFeaturedProjects, projectFilter]);
 
   const liveDemoCount = useMemo(() => {

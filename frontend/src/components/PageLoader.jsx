@@ -1,10 +1,5 @@
 import { useTheme } from "@/context/ThemeContext";
 
-/**
- * PageLoader — Lightweight, theme-aware Suspense fallback.
- * Reserves full 85vh viewport height to eliminate Cumulative Layout Shift (CLS)
- * during dynamic page chunk loading.
- */
 const PageLoader = () => {
   const { isDark } = useTheme();
 

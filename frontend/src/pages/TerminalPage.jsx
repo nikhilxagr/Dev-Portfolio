@@ -49,19 +49,21 @@ Status: Open for Software Engineering, Full Stack & Application Security Roles.`
   Visit /skills for complete skills taxonomy.`,
 
   projects: `Featured Real Projects:
-  1. Kanoon-Mate (Legal AI Assistant · Built during Nerds Hack Days Lucknow 2026)
+  1. Vistagram (Full-Stack Real-Time Social Media Platform)
+     Tech: React, Node.js, Express, MongoDB, Socket.io | Live: myvistagram.vercel.app
+  2. Kanoon-Mate (Legal AI Assistant · Built during Nerds Hack Days Lucknow 2026)
      Tech: React, Node.js, Express, MongoDB | Repo: github.com/nikhilxagr/Kanoon-Mate--HackethonProjects-
-  2. Fast Feast (Modern Food Delivery Web Application)
+  3. Fast Feast (Modern Food Delivery Web Application)
      Tech: HTML, CSS, JavaScript | Live: fastfeast-agr.netlify.app
-  3. snapURL (MERN-Based Full-Stack URL Shortener Platform)
+  4. snapURL (MERN-Based Full-Stack URL Shortener Platform)
      Tech: React, Express, Node.js, MongoDB | Live: snapurl-url-shortner.vercel.app
-  4. AI Powered Code Reviewer (MERN-Based AI Code Audit Platform)
+  5. AI Powered Code Reviewer (MERN-Based AI Code Audit Platform)
      Tech: React, Express, Node.js, MongoDB | Repo: github.com/nikhilxagr/AI-Powered-Code-Reviewer-MERN-Project
-  5. Notes App (LocalStorage Task & Notes Management Utility)
+  6. Notes App (LocalStorage Task & Notes Management Utility)
      Tech: JavaScript, LocalStorage, HTML/CSS | Live: notes-app-agr.netlify.app
-  6. QRCode Generator (Dynamic Custom Vector QR Code Utility)
+  7. QRCode Generator (Dynamic Custom Vector QR Code Utility)
      Tech: JavaScript, Canvas API | Live: qrcode-generator-agr.netlify.app
-  7. Weather App (OpenWeather REST API Forecast Dashboard)
+  8. Weather App (OpenWeather REST API Forecast Dashboard)
      Tech: JavaScript, OpenWeather API | Live: weatherappagr.netlify.app
   Visit /projects for full interactive demos & source code.`,
 

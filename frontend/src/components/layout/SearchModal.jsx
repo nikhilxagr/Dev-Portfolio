@@ -312,6 +312,15 @@ const ALL_ITEMS = buildIndex();
 
 const FEATURED = [
   {
+    id: "feat-vistagram",
+    label: "VISTAGRAM",
+    description: "Full-Stack Real-Time Social Media & Media Sharing Platform",
+    to: "/projects/vistagram",
+    icon: Code2,
+    type: "project",
+    badge: "Full Stack",
+  },
+  {
     id: "feat-kanoon",
     label: "Kanoon-Mate Project",
     description: "AI Legal Operating System built at Nerds Hack Days",
@@ -368,6 +377,7 @@ const FEATURED = [
 ];
 
 const SEARCH_CHIPS = [
+  { icon: "📸", label: "Vistagram", to: "/projects/vistagram" },
   { icon: "⚖️", label: "Kanoon-Mate", to: "/projects/kanoon-mate" },
   { icon: "🏆", label: "Nerds Hackathon", to: "/journey#nerds-hack-days-lucknow-2026" },
   { icon: "🚀", label: "Android Nova", to: "/journey#android-nova-2026" },

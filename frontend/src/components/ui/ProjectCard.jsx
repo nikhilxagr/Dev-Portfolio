@@ -16,6 +16,8 @@ const TECH_ICONS = {
   Express:        { bg: "bg-white/5",      border: "border-white/20",     text: "text-slate-200" },
   MongoDB:        { bg: "bg-[#47A248]/10", border: "border-[#47A248]/35", text: "text-emerald-400" },
   "Socket.IO":    { bg: "bg-white/8",      border: "border-white/20",     text: "text-slate-200" },
+  "Socket.io":    { bg: "bg-emerald-500/10", border: "border-emerald-500/35", text: "text-emerald-300" },
+  "Redux Toolkit": { bg: "bg-[#764ABC]/10", border: "border-[#764ABC]/35", text: "text-purple-300" },
   Cloudinary:     { bg: "bg-[#3448C5]/10", border: "border-[#3448C5]/35", text: "text-blue-300" },
   JWT:            { bg: "bg-[#FB015B]/10", border: "border-[#FB015B]/35", text: "text-pink-300" },
   Vercel:         { bg: "bg-white/5",      border: "border-white/20",     text: "text-slate-200" },
@@ -65,7 +67,7 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
 
   const showDetailsButton =
     project.hasDetails ||
-    ["kanoon-mate", "fast-feast", "snapurl", "ai-powered-code-reviewer"].includes(project.slug);
+    ["vistagram", "kanoon-mate", "fast-feast", "snapurl", "ai-powered-code-reviewer"].includes(project.slug);
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:bg-[#050d14] dark:border-white/[0.08] shadow-md dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-green-500/40 dark:hover:border-green-400/30 hover:shadow-xl transform-gpu will-change-transform">
