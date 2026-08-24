@@ -49,7 +49,9 @@ Status: Open for Software Engineering, Full Stack & Application Security Roles.`
   Visit /skills for complete skills taxonomy.`,
 
   projects: `Featured Real Projects:
-  1. Vistagram (Full-Stack Real-Time Social Media Platform)
+  1. InTube (Stateless 4K Media Downloader & Streaming Utility)
+     Tech: React, Node.js, yt-dlp, FFmpeg, Innertube | Live: intubedl.vercel.app
+  2. Vistagram (Full-Stack Real-Time Social Media Platform)
      Tech: React, Node.js, Express, MongoDB, Socket.io | Live: myvistagram.vercel.app | APK: /Vistagram.apk
   2. Kanoon-Mate (Legal AI Assistant · Built during Nerds Hack Days Lucknow 2026)
      Tech: React, Node.js, Express, MongoDB | Repo: github.com/nikhilxagr/Kanoon-Mate--HackethonProjects-

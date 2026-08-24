@@ -175,7 +175,10 @@ export const createWebSiteSchema = () => {
     "@type": "WebSite",
     name: SEO_DEFAULTS.siteTitle,
     alternateName: [
+      "Nikhil Agrahari Projects",
       "Nikhil Agrahari Portfolio",
+      "Nikhil Projects",
+      "Nikhil Portfolio",
       "Best Full Stack Developer Lucknow",
       "Best Full Stack Developer Prayagraj",
     ],
@@ -185,6 +188,57 @@ export const createWebSiteSchema = () => {
       "@type": "Person",
       name: PERSON_ENTITY.name,
     },
+  };
+};
+
+export const createSiteNavigationSchema = () => {
+  const siteUrl = getSiteUrl();
+
+  const navItems = [
+    {
+      name: "Projects & Production Case Studies",
+      url: `${siteUrl}/projects`,
+      description: "Full stack MERN applications, AI tools & web engineering case studies by Nikhil Agrahari",
+    },
+    {
+      name: "Engineering Skills & Taxonomy",
+      url: `${siteUrl}/skills`,
+      description: "Frontend, backend, cybersecurity, databases & tools taxonomy of Nikhil Agrahari",
+    },
+    {
+      name: "About Nikhil Agrahari",
+      url: `${siteUrl}/about`,
+      description: "Full stack developer background, education at BBD University & software engineering bio",
+    },
+    {
+      name: "Hackathons & Milestones",
+      url: `${siteUrl}/journey`,
+      description: "Hackathons, Nerds Hack Days, awards, certifications & education milestones",
+    },
+    {
+      name: "Developer Blog",
+      url: `${siteUrl}/blog`,
+      description: "Articles on full stack web development, system architecture & security",
+    },
+    {
+      name: "Contact Nikhil Agrahari",
+      url: `${siteUrl}/contact`,
+      description: "Direct contact, freelance inquiries & project collaboration",
+    },
+  ];
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Site Navigation Elements",
+    description: "Main site navigation sections for Nikhil Agrahari Portfolio",
+    itemListElement: navItems.map((item, index) => ({
+      "@type": "SiteNavigationElement",
+      position: index + 1,
+      name: item.name,
+      description: item.description,
+      url: item.url,
+    })),
   };
 };
 

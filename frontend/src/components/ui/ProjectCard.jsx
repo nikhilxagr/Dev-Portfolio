@@ -44,6 +44,9 @@ const TECH_ICONS = {
   "Node.JS":      { bg: "bg-[#68A063]/10", border: "border-[#68A063]/35", text: "text-[#68A063]" },
   "Gemini API":   { bg: "bg-cyan-500/10",  border: "border-cyan-500/35",  text: "text-cyan-300" },
   "OCR":          { bg: "bg-emerald-500/10", border: "border-emerald-500/35", text: "text-emerald-300" },
+  "yt-dlp":       { bg: "bg-red-500/10", border: "border-red-500/35", text: "text-red-400" },
+  "FFmpeg":       { bg: "bg-teal-500/10", border: "border-teal-500/35", text: "text-teal-300" },
+  "Innertube":    { bg: "bg-purple-500/10", border: "border-purple-500/35", text: "text-purple-300" },
   "Git":          { bg: "bg-orange-500/10", border: "border-orange-500/35", text: "text-orange-400" },
 };
 
@@ -67,7 +70,7 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
 
   const showDetailsButton =
     project.hasDetails ||
-    ["vistagram", "kanoon-mate", "fast-feast", "snapurl", "ai-powered-code-reviewer"].includes(project.slug);
+    ["intube", "intube-media-downloader", "vistagram", "kanoon-mate", "fast-feast", "snapurl", "ai-powered-code-reviewer"].includes(project.slug);
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:bg-[#050d14] dark:border-white/[0.08] shadow-md dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-green-500/40 dark:hover:border-green-400/30 hover:shadow-xl transform-gpu will-change-transform">

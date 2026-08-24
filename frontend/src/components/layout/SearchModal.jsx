@@ -312,6 +312,15 @@ const ALL_ITEMS = buildIndex();
 
 const FEATURED = [
   {
+    id: "feat-intube",
+    label: "InTube",
+    description: "Stateless 4K media utility for YouTube, Instagram & Facebook",
+    to: "/projects/intube",
+    icon: Code2,
+    type: "project",
+    badge: "Full Stack",
+  },
+  {
     id: "feat-vistagram",
     label: "VISTAGRAM",
     description: "Full-Stack Real-Time Social Media & Media Sharing Platform",
@@ -377,6 +386,7 @@ const FEATURED = [
 ];
 
 const SEARCH_CHIPS = [
+  { icon: "▶️", label: "InTube", to: "/projects/intube" },
   { icon: "📸", label: "Vistagram", to: "/projects/vistagram" },
   { icon: "⚖️", label: "Kanoon-Mate", to: "/projects/kanoon-mate" },
   { icon: "🏆", label: "Nerds Hackathon", to: "/journey#nerds-hack-days-lucknow-2026" },

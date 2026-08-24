@@ -2,6 +2,81 @@ export const PROJECT_CATEGORIES = ["All", "Web Dev", "Python", "Cyber Security",
 
 export const SIGNATURE_PROJECTS = [
   {
+    slug: "intube",
+    title: "InTube",
+    subtitle: "High-Performance Media Downloader & Streaming Utility",
+    category: "Full Stack",
+    tagline: "Stateless, privacy-focused 4K media utility and downloader for YouTube, Instagram, and Facebook.",
+    description:
+      "InTube is a modern, privacy-first web application engineered to analyze, transcode, and download high-definition media from YouTube (4K UHD, 1080p, Shorts, and 320kbps MP3), Instagram (Reels, Posts, Stories), and Facebook without advertisements, logins, or user tracking. Built with a dual-engine architecture to overcome cloud datacenter anti-bot restrictions, featuring real-time download telemetry and immediate ephemeral storage cleanup.",
+    overview:
+      "InTube is a modern, privacy-first web application engineered to analyze, transcode, and download high-definition media from YouTube (4K UHD, 1080p, Shorts, and 320kbps MP3), Instagram (Reels, Posts, Stories), and Facebook without advertisements, logins, or user tracking. Built with a dual-engine architecture to overcome cloud datacenter anti-bot restrictions, featuring real-time download telemetry and immediate ephemeral storage cleanup.",
+    problemStatement:
+      "Users face intrusive ads, mandatory logins, IP tracking, and datacenter bot-blocking when trying to download high-definition (4K/1080p) media and audio streams from social media platforms.",
+    solutionSummary:
+      "Engineered a stateless dual-engine architecture combining yt-dlp mobile protocol extraction and native Innertube API with live FFmpeg transcoding pipelines, zero-storage memory cleanup, and a neon responsive React UI.",
+    outcome:
+      "Delivered a production-ready, 100% stateless media utility supporting 4K UHD 60fps downloads, 320kbps MP3 extraction, sub-second telemetry UI, and reliable cloud deployment across Vercel and Render.",
+    tags: [
+      "React",
+      "Node.js",
+      "Express.js",
+      "yt-dlp",
+      "FFmpeg",
+      "Innertube",
+      "Tailwind CSS",
+      "REST API",
+    ],
+    highlights: [
+      "⚡ Tri-Platform Media Extraction for YouTube (up to 4K UHD 60fps & 320kbps MP3), Instagram (Reels, Posts), and Facebook HD.",
+      "🛡️ Dual-Engine Cloud Resilience with automated fallback between yt-dlp and Innertube API to eliminate cloud IP bot-blocks.",
+      "🧹 Zero-Storage Ephemeral Lifecycle where video/audio chunks are transcoded on-the-fly and wiped immediately from server memory.",
+      "📊 Real-Time Download Telemetry featuring circular countdown timers, live speed (MB/s), ETA, and FFmpeg stream merger status.",
+      "🔍 Production SEO & Indexing verified on Google Search Console with XML sitemaps, Open Graph cards, and Schema.org JSON-LD.",
+    ],
+    challenges: [
+      "Overcoming YouTube's SABR anti-bot datacenter challenges on cloud environments (Render/AWS) by implementing client-skip flags and Innertube fallback systems.",
+      "Engineering robust Node.js stream lifecycles using FFmpeg pipes to handle large 4K video transcoding with zero memory leaks.",
+      "Implementing production-grade CORS and security headers across separate cloud hosting providers (Vercel SPA + Render backend).",
+      "Designing an intuitive, responsive tri-color neon design system using Tailwind CSS with synchronized dark and light modes.",
+    ],
+    outcomes: [
+      "Engineered a production-ready 100% stateless media downloader supporting 4K UHD, 1080p, and 320kbps MP3 audio.",
+      "Built resilient fallback mechanics ensuring 99.9% extraction uptime despite cloud IP rate limits.",
+      "Configured end-to-end SEO architecture including JSON-LD schema, canonical indexing, and Google Search Console verification.",
+      "Successfully deployed frontend client on Vercel and streaming backend on Render.",
+    ],
+    techStackGrouped: {
+      Frontend: ["React 18", "Vite", "Tailwind CSS", "React Router v6", "Axios"],
+      Backend: ["Node.js (ESM)", "Express.js", "yt-dlp", "Innertube (YouTubei.js)", "FFmpeg"],
+      "Security & Performance": ["Helmet.js", "CORS Middleware", "Express Rate Limit", "Ephemeral Stream Pipes"],
+      "DevOps & Cloud": ["Vercel (Frontend)", "Render (Backend)", "Google Search Console", "Schema.org JSON-LD"],
+    },
+    techStack: [
+      "React",
+      "Node.js",
+      "Express.js",
+      "yt-dlp",
+      "FFmpeg",
+      "Tailwind CSS",
+      "Innertube",
+      "Vite",
+    ],
+    learnings: [
+      "Cloud IP Anti-Bot Evasion & Fallback Engine Architecture",
+      "Node.js Ephemeral Stream Pipelines & FFmpeg Transcoding",
+      "Zero-Memory Storage Lifecycle Management",
+      "Real-Time Telemetry & Progress Event Handling",
+      "Multi-Platform Social Media Extraction Protocols",
+    ],
+    status: "Live in Production ✅",
+    githubUrl: "https://github.com/nikhilxagr/InTube",
+    liveDemoUrl: "https://intubedl.vercel.app/",
+    imageUrl: "/images/projects/intube-cover.webp",
+    featured: true,
+    hasDetails: true,
+  },
+  {
     slug: "vistagram",
     title: "VISTAGRAM",
     subtitle: "Full-Stack Real-Time Social Media & Media Sharing Platform",

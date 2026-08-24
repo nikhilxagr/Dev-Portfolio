@@ -15,6 +15,7 @@ import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import {
   createPersonSchema,
   createProfessionalServiceSchema,
+  createSiteNavigationSchema,
   createWebSiteSchema,
 } from "@/utils/seo";
 import { SITE_PROFILE } from "@/constants/siteData";
@@ -130,6 +131,10 @@ const HomePage = () => {
         image={SITE_PROFILE.profileImage}
         imageAlt="Nikhil Agrahari - Best Full Stack Developer in Lucknow & Prayagraj"
         keywords={[
+          "nikhil agrahari projects",
+          "nikhil agrahari project",
+          "nikhil projects",
+          "nikhil project",
           "best full stack developer in lucknow",
           "best full stack developer in prayagraj",
           "top full stack developer lucknow",
@@ -147,6 +152,7 @@ const HomePage = () => {
           createPersonSchema(),
           createWebSiteSchema(),
           createProfessionalServiceSchema(),
+          createSiteNavigationSchema(),
         ]}
       />
 

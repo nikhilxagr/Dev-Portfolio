@@ -118,11 +118,17 @@ const ProjectsPage = () => {
   return (
     <>
       <SeoHead
-        title="Production Case Studies & Full Stack Projects | Nikhil Agrahari"
-        description="Explore production-ready MERN stack applications, Python desktop utilities, AI tools, and web engineering case studies built by Nikhil Agrahari."
+        title="Nikhil Agrahari Projects | Production Case Studies & Full Stack Apps"
+        description="Explore production-ready MERN stack applications, Vistagram, Kanoon-Mate, Fast Feast, snapURL, Python utilities, and AI tools built by Nikhil Agrahari."
         pathname="/projects"
         keywords={[
+          "Nikhil Agrahari projects",
+          "Nikhil Agrahari project",
+          "Nikhil projects",
+          "Nikhil project",
           "Nikhil Agrahari case studies",
+          "Nikhil Agrahari Vistagram",
+          "Nikhil Agrahari Kanoon Mate",
           "MERN stack web projects",
           "Python Tkinter GUI projects",
           "Full stack web development portfolio",
@@ -130,7 +136,7 @@ const ProjectsPage = () => {
         jsonLd={[
           createBreadcrumbSchema([
             { name: "Home", path: "/" },
-            { name: "Case Studies", path: "/projects" },
+            { name: "Projects", path: "/projects" },
           ]),
           projectListSchema,
         ]}

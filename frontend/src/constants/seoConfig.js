@@ -9,6 +9,13 @@ const fallbackSiteUrl = "https://nikhilxagr.vercel.app";
 const sameAsLinks = Array.from(
   new Set(
     [
+      "https://github.com/nikhilxagr",
+      "https://www.linkedin.com/in/nikhilxagr/",
+      "https://medium.com/@nikhilxagr",
+      "https://tryhackme.com/p/nikhilxagr",
+      "https://leetcode.com/u/nikhilxagr/",
+      "https://www.geeksforgeeks.org/profile/nikhilxagr?tab=activity",
+      "https://www.instagram.com/nikhilxagr/",
       QUICK_CONTACT.linkedin,
       QUICK_CONTACT.github,
       QUICK_CONTACT.medium,
@@ -16,14 +23,36 @@ const sameAsLinks = Array.from(
       QUICK_CONTACT.leetcode,
       QUICK_CONTACT.gfg,
       ...SOCIAL_LINKS.map((item) => item.href),
-    ].filter(Boolean),
+    ].filter((link) => link && /^https?:\/\//i.test(link)),
   ),
 );
 
 export const SEO_TARGET_KEYWORDS = [
+  "nikhil agrahari",
+  "nikhil agrahari projects",
+  "nikhil agrahari project",
+  "nikhil projects",
+  "nikhil project",
+  "nikhil agrahari github",
+  "nikhilxagr github",
+  "nikhil agrahari linkedin",
+  "nikhilxagr linkedin",
+  "nikhil bbdu",
+  "nikhil bbd",
+  "nikhil portfolio",
+  "nikhil agrahari portfolio",
+  "nikhil agrahari developer portfolio",
+  "nikhil agrahari @nikhilxagr",
+  "nikhil agrahari bbd university lucknow",
+  "nikhil agrahari case studies",
+  "nikhil agrahari vistagram",
+  "nikhil agrahari kanoon mate",
+  "nikhil agrahari fast feast",
+  "nikhil agrahari snapurl",
   "best full stack developer in lucknow",
   "best full stack developer in prayagraj",
   "top full stack developer lucknow",
+  "top mern stack developer lucknow",
   "top full stack developer prayagraj",
   "full stack developer prayagraj",
   "full stack web developer lucknow",
@@ -52,7 +81,7 @@ export const SEO_DEFAULTS = {
   brandName: "Nikhil Agrahari Portfolio",
   siteTitle: "Nikhil Agrahari | Best Full Stack Developer in Lucknow & Prayagraj",
   defaultDescription:
-    "Nikhil Agrahari is recognized as the Best Full Stack Developer & MERN Stack Engineer in Lucknow and Prayagraj, UP. Specializing in modern web applications, AI integration, and secure software engineering.",
+    "Nikhil Agrahari (@nikhilxagr) is the Best Full Stack Developer & MERN Stack Engineer in Lucknow and Prayagraj, UP. BCA student at BBD University. Explore GitHub repos, LinkedIn, portfolio projects, and security tools.",
   defaultImage:
     SITE_PROFILE.profileImage || "/images/profile/nikhil-upload-hero.webp",
   defaultImageAlt:
@@ -66,10 +95,19 @@ export const SEO_DEFAULTS = {
 
 export const PERSON_ENTITY = {
   name: SITE_PROFILE.fullName,
-  alternateName: SITE_PROFILE.shortName,
+  alternateName: [
+    "nikhilxagr",
+    "Nikhil",
+    "Nikhil BBDU",
+    "Nikhil BBD",
+    "Nikhil Portfolio",
+    "Nikhil Agrahari Lucknow",
+    "Nikhil Agrahari Prayagraj",
+    "Nikhil Agrahari BBD University",
+  ],
   jobTitle: "Best Full Stack Developer & MERN Stack Engineer",
   description:
-    "Leading Full Stack Web Developer and Product Engineer based in Lucknow and Prayagraj, Uttar Pradesh. Expert in React, Node.js, MERN stack, AI web solutions, and cybersecurity.",
+    "Official Developer Portfolio & Profiles of Nikhil Agrahari (@nikhilxagr) — Premier Full Stack Web Developer & MERN Engineer from BBD University, Lucknow and Prayagraj.",
   email: QUICK_CONTACT.email,
   telephone: QUICK_CONTACT.phone,
   addressLocality: "Lucknow",
