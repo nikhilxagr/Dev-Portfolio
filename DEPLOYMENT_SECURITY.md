@@ -45,13 +45,4 @@ When rotating Cashfree secrets:
 
 1. Update API secret and webhook secret.
 2. Redeploy backend.
-3. Verify create-order, verify, and webhook handling.
-
-## Rollback Conditions
-
-Rollback if any of the following occurs after deployment:
-
-- authentication or admin authorization regression
-- payment verification mismatch errors spike
-- valid CORS origins are blocked unexpectedly
-- webhook processing failure on valid signed events
+3. Verify create-order, verify, and webhook handling
