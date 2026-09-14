@@ -11,7 +11,7 @@ import { getProjects } from "@/services/projects.service";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";
 
-const CATEGORIES = ["ALL", "FULL STACK", "SOLO", "COLLAB", "WEB DEV", "PYTHON", "CYBER SECURITY", "AI"];
+const CATEGORIES = ["ALL", "FULL STACK", "WEB DEV", "SOLO", "COLLAB", "AI", "PYTHON", "CYBER SECURITY"];
 
 const isCollabProject = (project) => {
   if (!project) return false;
@@ -38,18 +38,24 @@ const matchesProjectFilters = (project, selectedCategory, currentSearch) => {
   } else if (selectedCategory === "SOLO") {
     matchesCategory = !isCollab;
   } else if (selectedCategory === "FULL STACK") {
+    matchesCategory = project.category?.toLowerCase() === "full stack";
+  } else if (selectedCategory === "WEB DEV") {
+    matchesCategory = project.category?.toLowerCase() === "web dev";
+  } else if (selectedCategory === "PYTHON") {
+    matchesCategory = project.category?.toLowerCase() === "python";
+  } else if (selectedCategory === "CYBER SECURITY") {
     matchesCategory =
-      project.category?.toLowerCase() === "full stack" ||
-      project.category?.toLowerCase() === "web dev";
+      project.category?.toLowerCase() === "cyber security" ||
+      project.category?.toLowerCase() === "security" ||
+      (project.tags || []).some((t) => t.toLowerCase().includes("security"));
+  } else if (selectedCategory === "AI") {
+    matchesCategory =
+      project.category?.toLowerCase() === "ai" ||
+      project.category?.toLowerCase() === "ai/ml" ||
+      project.category?.toLowerCase() === "ai / security" ||
+      (project.techStack || []).some((t) => t.toLowerCase().includes("gemini") || t.toLowerCase() === "ai");
   } else if (selectedCategory !== "ALL") {
-    matchesCategory =
-      project.category?.toLowerCase() === selectedCategory.toLowerCase() ||
-      (selectedCategory === "WEB DEV" &&
-        (project.category?.toLowerCase() === "web dev" ||
-          project.category?.toLowerCase() === "full stack")) ||
-      (selectedCategory === "PYTHON" && project.category === "Python") ||
-      (selectedCategory === "CYBER SECURITY" && (project.category === "Cyber Security" || project.category === "Security")) ||
-      (selectedCategory === "AI" && (project.category === "AI" || project.category === "AI / Security" || project.category === "AI/ML" || (project.techStack || []).some((t) => t.toLowerCase().includes("gemini") || t.toLowerCase() === "ai")));
+    matchesCategory = project.category?.toLowerCase() === selectedCategory.toLowerCase();
   }
 
   const keyword = currentSearch.trim().toLowerCase();
@@ -206,9 +212,9 @@ const ProjectsPage = () => {
                 key={item}
                 type="button"
                 onClick={() => handleCategorySelect(item)}
-                className={`rounded-xl px-4 py-2 text-xs font-black tracking-wider uppercase transition-all duration-200 ${
+                className={`rounded-xl px-4 py-2 text-xs font-black tracking-wider uppercase transition-colors duration-150 ${
                   category === item
-                    ? "bg-lime-400 text-slate-950 shadow-[0_0_20px_rgba(163,230,53,0.55)] scale-[1.03]"
+                    ? "border border-lime-400 bg-lime-400 text-slate-950 shadow-[0_0_20px_rgba(163,230,53,0.55)]"
                     : "border border-slate-200 bg-slate-100/80 text-slate-700 hover:border-slate-400 dark:border-emerald-500/20 dark:bg-[#08140c]/80 dark:text-slate-300 dark:hover:border-lime-400/50 dark:hover:text-white"
                 }`}
               >
@@ -222,7 +228,7 @@ const ProjectsPage = () => {
                 value={sortBy}
                 onChange={handleSortChange}
                 aria-label="Sort projects by"
-                className="appearance-none rounded-xl border border-slate-300 bg-slate-100/80 dark:border-emerald-500/30 dark:bg-[#08140c]/90 px-3.5 py-2 pr-8 font-mono text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 outline-none focus:border-lime-400 cursor-pointer shadow-sm transition hover:border-slate-400 dark:hover:border-lime-400/50"
+                className="appearance-none rounded-xl border border-slate-300 bg-slate-100/80 dark:border-emerald-500/30 dark:bg-[#08140c]/90 px-3.5 py-2 pr-8 font-mono text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 outline-none focus:border-lime-400 cursor-pointer shadow-sm transition-colors duration-150 hover:border-slate-400 dark:hover:border-lime-400/50"
               >
                 <option value="FEATURED">Sort By: Featured</option>
                 <option value="NEWEST">Sort By: Newest</option>

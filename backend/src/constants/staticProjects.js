@@ -457,7 +457,7 @@ export const STATIC_PROJECTS = [
   },
   {
     slug: "whatsapp-fullstack-clone",
-    title: "WhatsApp Full-Stack Clone (Nikhil WhatsApp)",
+    title: "WhatsApp Clone",
     subtitle: "Real-Time Messaging Platform with Stories, Reactions, Dual OTP Auth & WebSockets",
     category: "Full Stack",
     tagline:
@@ -576,7 +576,7 @@ export const STATIC_PROJECTS = [
   {
     slug: "snapurl",
     title: "snapURL",
-    category: "Web Dev",
+    category: "Full Stack",
     tagline: "A MERN-based URL shortener for clean, shareable links.",
     description:
       "snapURL is a full stack URL shortener that helps users convert long URLs into compact links that are easier to share, organize, and manage.",

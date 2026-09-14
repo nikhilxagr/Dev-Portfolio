@@ -128,8 +128,24 @@ const HomePage = () => {
           if (projectFilter === "Solo") {
             return !isCollab;
           }
+          if (projectFilter === "Full Stack") {
+            return p.category?.toLowerCase() === "full stack";
+          }
           if (projectFilter === "Web Dev") {
-            return p.category === "Web Dev" || p.category === "Full Stack" || p.category === "FULL STACK";
+            return p.category?.toLowerCase() === "web dev";
+          }
+          if (projectFilter === "AI") {
+            return (
+              p.category?.toLowerCase() === "ai" ||
+              p.category?.toLowerCase() === "ai/ml" ||
+              (p.techStack || []).some((t) => t.toLowerCase().includes("gemini") || t.toLowerCase() === "ai")
+            );
+          }
+          if (projectFilter === "Cyber Security") {
+            return (
+              p.category?.toLowerCase() === "cyber security" ||
+              p.category?.toLowerCase() === "security"
+            );
           }
           return p.category?.toLowerCase() === projectFilter.toLowerCase();
         });

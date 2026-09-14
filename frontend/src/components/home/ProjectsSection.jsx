@@ -7,7 +7,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { PRACTICALS } from "@/constants/siteData";
 
-const PROJECT_FILTER_TABS = ["All", "Solo", "Collab", "Web Dev", "Cyber Security", "AI"];
+const PROJECT_FILTER_TABS = ["All", "Full Stack", "Web Dev", "Solo", "Collab", "AI", "Cyber Security"];
 
 const ProjectsSection = ({
   projectFilter,
@@ -55,7 +55,7 @@ const ProjectsSection = ({
             <button
               key={tab}
               onClick={makeTabClickHandler(tab)}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-200 ${
+              className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors duration-150 ${
                 projectFilter === tab
                   ? "border-green-400 bg-green-400/15 text-green-300"
                   : "border-white/12 bg-white/5 text-slate-400 hover:border-green-400/40 hover:text-green-400"
