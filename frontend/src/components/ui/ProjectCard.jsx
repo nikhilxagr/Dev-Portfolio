@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ExternalLink, Download } from "lucide-react";
+import { ArrowRight, ExternalLink, Download, User, Users } from "lucide-react";
 
 // GitHub SVG icon
 const GitHubMark = ({ className = "h-[13px] w-[13px]" }) => (
@@ -43,15 +43,40 @@ const TECH_ICONS = {
   "Express.js":   { bg: "bg-white/5",      border: "border-white/20",     text: "text-slate-200" },
   "Node.JS":      { bg: "bg-[#68A063]/10", border: "border-[#68A063]/35", text: "text-[#68A063]" },
   "Gemini API":   { bg: "bg-cyan-500/10",  border: "border-cyan-500/35",  text: "text-cyan-300" },
+  "Google Gemini API": { bg: "bg-cyan-500/10", border: "border-cyan-500/35", text: "text-cyan-300" },
   "OCR":          { bg: "bg-emerald-500/10", border: "border-emerald-500/35", text: "text-emerald-300" },
   "yt-dlp":       { bg: "bg-red-500/10", border: "border-red-500/35", text: "text-red-400" },
   "FFmpeg":       { bg: "bg-teal-500/10", border: "border-teal-500/35", text: "text-teal-300" },
   "Innertube":    { bg: "bg-purple-500/10", border: "border-purple-500/35", text: "text-purple-300" },
+  Razorpay:       { bg: "bg-[#0C2340]/25", border: "border-blue-500/40",  text: "text-blue-400" },
+  "Google OAuth 2.0": { bg: "bg-red-500/10", border: "border-red-500/35", text: "text-red-400" },
+  Mongoose:       { bg: "bg-red-800/15", border: "border-red-700/35",   text: "text-red-400" },
+  "React 19":     { bg: "bg-[#61DAFB]/10", border: "border-[#61DAFB]/35", text: "text-[#61DAFB]" },
+  "Express 5":    { bg: "bg-white/5",      border: "border-white/20",     text: "text-slate-200" },
+  Nodemailer:     { bg: "bg-blue-500/10",  border: "border-blue-500/35",  text: "text-blue-300" },
+  Twilio:         { bg: "bg-red-600/10",   border: "border-red-600/35",   text: "text-red-400" },
   "Git":          { bg: "bg-orange-500/10", border: "border-orange-500/35", text: "text-orange-400" },
 };
 
 const getTechStyle = (tech) =>
   TECH_ICONS[tech] || { bg: "bg-white/5", border: "border-white/15", text: "text-slate-300" };
+
+// Check if a project is a collaboration project
+const isCollaborationProject = (project) => {
+  if (!project) return false;
+  if (project.projectType === "Collaboration" || project.projectType === "Collab") return true;
+  if (project.projectType === "Solo") return false;
+  const slug = (project.slug || "").toLowerCase().trim();
+  if (["kanoon-mate", "smart-lms", "smart-lms-saas-platform", "smartmess"].includes(slug)) return true;
+  const title = (project.title || "").toLowerCase().trim();
+  return (
+    title.includes("kanoon-mate") ||
+    title.includes("kanoon mate") ||
+    title.includes("smart lms") ||
+    title.includes("smartmess") ||
+    title.includes("smart mess")
+  );
+};
 
 // Project Card component
 const ProjectCard = ({ project, variant = "default", priority = false }) => {
@@ -68,9 +93,12 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
     event.currentTarget.src = fallbackImage;
   };
 
+  const isCollab = isCollaborationProject(project);
+  const projectTypeLabel = isCollab ? "Collab Project" : "Solo Project";
+
   const showDetailsButton =
     project.hasDetails ||
-    ["intube", "intube-media-downloader", "vistagram", "kanoon-mate", "fast-feast", "snapurl", "ai-powered-code-reviewer"].includes(project.slug);
+    ["intube", "intube-media-downloader", "vistagram", "kanoon-mate", "smart-lms", "smart-lms-saas-platform", "smartmess", "whatsapp-fullstack-clone", "whatsapp-clone", "fast-feast", "snapurl", "ai-powered-code-reviewer"].includes(project.slug);
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:bg-[#050d14] dark:border-white/[0.08] shadow-md dark:shadow-none transition-all duration-300 hover:-translate-y-1 hover:border-green-500/40 dark:hover:border-green-400/30 hover:shadow-xl transform-gpu will-change-transform">
@@ -96,6 +124,23 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
 
       {/* content */}
       <div className="flex flex-1 flex-col p-5">
+        {/* Category & Project Type tag header */}
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+            {project.category || "Full Stack"}
+          </span>
+          <span
+            className={`shrink-0 inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider border ${
+              isCollab
+                ? "border-purple-500/30 bg-purple-500/10 text-purple-700 dark:border-purple-400/30 dark:bg-purple-950/50 dark:text-purple-300"
+                : "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-950/50 dark:text-emerald-300"
+            }`}
+          >
+            {isCollab ? <Users size={10} /> : <User size={10} />}
+            {projectTypeLabel}
+          </span>
+        </div>
+
         {/* Project Title */}
         <h3 className="font-display text-base font-black uppercase tracking-tight text-slate-900 dark:text-white">
           {project.title}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, ExternalLink, Download } from "lucide-react";
+import { ArrowLeft, ExternalLink, Download, User, Users } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
 import SectionTitle from "@/components/ui/SectionTitle";
 import LoadingState from "@/components/ui/LoadingState";
@@ -23,6 +23,22 @@ const ProjectDetailsPage = () => {
   const [loading, setLoading] = useState(!staticProject);
   const [error, setError] = useState("");
   const fallbackImage = "/images/placeholders/content-placeholder.svg";
+
+  const isCollab = useMemo(() => {
+    if (!project) return false;
+    if (project.projectType === "Collaboration" || project.projectType === "Collab") return true;
+    if (project.projectType === "Solo") return false;
+    const s = (project.slug || slug || "").toLowerCase().trim();
+    if (["kanoon-mate", "smart-lms", "smart-lms-saas-platform", "smartmess"].includes(s)) return true;
+    const title = (project.title || "").toLowerCase().trim();
+    return (
+      title.includes("kanoon-mate") ||
+      title.includes("kanoon mate") ||
+      title.includes("smart lms") ||
+      title.includes("smartmess") ||
+      title.includes("smart mess")
+    );
+  }, [project, slug]);
   const previewImage = project?.imageUrl || fallbackImage;
   const localWebpImage =
     previewImage.startsWith("/images/") && previewImage.endsWith(".png")
@@ -135,19 +151,32 @@ const ProjectDetailsPage = () => {
           <article className="space-y-5">
             <FadeInUp>
               <header className="card-surface rounded-2xl p-6">
-                {/* Tags */}
-                {project.tags?.length ? (
-                  <div className="mb-3 flex flex-wrap gap-1.5">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-extrabold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider"
-                      >
-                        🏷️ {tag}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
+                {/* Project Type Badge & Tags */}
+                <div className="mb-4 flex flex-wrap items-center gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-black uppercase tracking-wider border shadow-sm ${
+                      isCollab
+                        ? "border-purple-400/50 bg-purple-500/15 text-purple-700 dark:text-purple-300 dark:border-purple-400/40"
+                        : "border-emerald-400/50 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 dark:border-emerald-400/40"
+                    }`}
+                  >
+                    {isCollab ? <Users size={13} className="text-purple-500 dark:text-purple-400" /> : <User size={13} className="text-emerald-500 dark:text-emerald-400" />}
+                    {isCollab ? "Collaboration Project" : "Solo Project"}
+                  </span>
+
+                  {project.tags?.length ? (
+                    project.tags
+                      .filter((t) => !["Collab Project", "Solo Project", "Collaboration Project"].includes(t))
+                      .map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-extrabold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider"
+                        >
+                          🏷️ {tag}
+                        </span>
+                      ))
+                  ) : null}
+                </div>
 
                 <SectionTitle
                   mobileCenter={false}
@@ -370,25 +399,62 @@ const ProjectDetailsPage = () => {
               <FadeInUp delay={0.18}>
                 <div className="card-surface rounded-2xl p-6">
                   <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
-                    👥 Collaboration
+                    👥 Project Team & Collaboration
                   </h2>
-                  <div className="mt-3 space-y-3 text-sm text-slate-700 dark:text-slate-300 font-medium">
+                  <div className="mt-3 space-y-4 text-sm text-slate-700 dark:text-slate-300 font-medium">
                     <p>
                       <strong className="text-slate-900 dark:text-white font-extrabold">Team:</strong> {project.collaboration.team}
                     </p>
-                    <div>
-                      <strong className="text-slate-900 dark:text-white font-extrabold">Members:</strong>
-                      <div className="mt-1.5 flex flex-wrap gap-2">
-                        {project.collaboration.members.map((m) => (
-                          <span
-                            key={m}
-                            className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-300"
-                          >
-                            {m}
-                          </span>
-                        ))}
+
+                    {project.collaboration.teamList?.length ? (
+                      <div>
+                        <strong className="text-slate-900 dark:text-white font-extrabold text-xs uppercase tracking-wider block mb-2.5">
+                          Team Members & Roles:
+                        </strong>
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                          {project.collaboration.teamList.map((member) => (
+                            <div
+                              key={member.name}
+                              className="rounded-xl border border-slate-200/90 dark:border-white/[0.08] bg-slate-100/90 dark:bg-slate-900/60 p-3.5 flex flex-col justify-between shadow-xs transition-all duration-200 hover:border-emerald-500/40"
+                            >
+                              <div>
+                                <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+                                  {member.name}
+                                </h3>
+                                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
+                                  {member.role}
+                                </p>
+                              </div>
+                              {member.portfolio ? (
+                                <a
+                                  href={member.portfolio}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-cyan-200 hover:text-emerald-600 dark:hover:text-cyan-100 transition"
+                                >
+                                  <ExternalLink size={12} /> Portfolio
+                                </a>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div>
+                        <strong className="text-slate-900 dark:text-white font-extrabold">Members:</strong>
+                        <div className="mt-1.5 flex flex-wrap gap-2">
+                          {project.collaboration.members?.map((m) => (
+                            <span
+                              key={m}
+                              className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-800 dark:text-emerald-300"
+                            >
+                              {m}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {project.collaboration.context && (
                       <p className="text-xs text-slate-500 dark:text-slate-400 italic">
                         {project.collaboration.context}

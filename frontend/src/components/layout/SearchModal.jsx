@@ -144,8 +144,13 @@ const buildIndex = () => {
 
   // Projects
   SIGNATURE_PROJECTS.forEach((project) => {
+    const isCollab =
+      project.projectType === "Collaboration" ||
+      ["kanoon-mate", "smart-lms", "smart-lms-saas-platform", "smartmess"].includes(project.slug) ||
+      (project.title && (project.title.toLowerCase().includes("kanoon-mate") || project.title.toLowerCase().includes("smart lms") || project.title.toLowerCase().includes("smartmess")));
+    const typeTag = isCollab ? "Collab Project" : "Solo Project";
     const kw = tokenise(
-      `${project.title} ${project.category} ${(project.techStack ?? []).join(" ")} ${project.tagline ?? ""} ${project.description ?? ""}`
+      `${project.title} ${project.category} ${typeTag} ${(project.techStack ?? []).join(" ")} ${(project.tags ?? []).join(" ")} ${project.tagline ?? ""} ${project.description ?? ""}`
     );
     items.push({
       id: `project-${project.slug}`,
@@ -154,7 +159,7 @@ const buildIndex = () => {
       description: project.tagline,
       to: `/projects/${project.slug}`,
       icon: Code2,
-      badge: project.category,
+      badge: `${typeTag} • ${project.category}`,
       keywords: kw,
       _corpus: kw.join(" "),
     });

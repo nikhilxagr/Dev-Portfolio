@@ -111,6 +111,23 @@ const HomePage = () => {
     return projectFilter === "All"
       ? mergedFeaturedProjects
       : mergedFeaturedProjects.filter((p) => {
+          const isCollab =
+            p.projectType === "Collaboration" ||
+            p.projectType === "Collab" ||
+            ["kanoon-mate", "smart-lms", "smart-lms-saas-platform", "smartmess"].includes(p.slug?.toLowerCase()) ||
+            (p.title && (
+              p.title.toLowerCase().includes("kanoon-mate") ||
+              p.title.toLowerCase().includes("kanoon mate") ||
+              p.title.toLowerCase().includes("smart lms") ||
+              p.title.toLowerCase().includes("smartmess") ||
+              p.title.toLowerCase().includes("smart mess")
+            ));
+          if (projectFilter === "Collab") {
+            return isCollab;
+          }
+          if (projectFilter === "Solo") {
+            return !isCollab;
+          }
           if (projectFilter === "Web Dev") {
             return p.category === "Web Dev" || p.category === "Full Stack" || p.category === "FULL STACK";
           }

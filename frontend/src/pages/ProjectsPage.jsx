@@ -11,11 +11,33 @@ import { getProjects } from "@/services/projects.service";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";
 
-const CATEGORIES = ["ALL", "FULL STACK", "WEB DEV", "PYTHON", "CYBER SECURITY", "AI"];
+const CATEGORIES = ["ALL", "FULL STACK", "SOLO", "COLLAB", "WEB DEV", "PYTHON", "CYBER SECURITY", "AI"];
+
+const isCollabProject = (project) => {
+  if (!project) return false;
+  if (project.projectType === "Collaboration" || project.projectType === "Collab") return true;
+  if (project.projectType === "Solo") return false;
+  const slug = (project.slug || "").toLowerCase().trim();
+  if (["kanoon-mate", "smart-lms", "smart-lms-saas-platform", "smartmess"].includes(slug)) return true;
+  const title = (project.title || "").toLowerCase().trim();
+  return (
+    title.includes("kanoon-mate") ||
+    title.includes("kanoon mate") ||
+    title.includes("smart lms") ||
+    title.includes("smartmess") ||
+    title.includes("smart mess")
+  );
+};
 
 const matchesProjectFilters = (project, selectedCategory, currentSearch) => {
   let matchesCategory = true;
-  if (selectedCategory === "FULL STACK") {
+  const isCollab = isCollabProject(project);
+
+  if (selectedCategory === "COLLAB") {
+    matchesCategory = isCollab;
+  } else if (selectedCategory === "SOLO") {
+    matchesCategory = !isCollab;
+  } else if (selectedCategory === "FULL STACK") {
     matchesCategory =
       project.category?.toLowerCase() === "full stack" ||
       project.category?.toLowerCase() === "web dev";
@@ -27,15 +49,15 @@ const matchesProjectFilters = (project, selectedCategory, currentSearch) => {
           project.category?.toLowerCase() === "full stack")) ||
       (selectedCategory === "PYTHON" && project.category === "Python") ||
       (selectedCategory === "CYBER SECURITY" && (project.category === "Cyber Security" || project.category === "Security")) ||
-      (selectedCategory === "AI" && (project.category === "AI" || project.category === "AI / Security"));
+      (selectedCategory === "AI" && (project.category === "AI" || project.category === "AI / Security" || project.category === "AI/ML" || (project.techStack || []).some((t) => t.toLowerCase().includes("gemini") || t.toLowerCase() === "ai")));
   }
 
   const keyword = currentSearch.trim().toLowerCase();
   if (!keyword) return matchesCategory;
 
-  const searchable = `${project.title} ${project.tagline} ${project.description} ${(
+  const searchable = `${project.title} ${project.tagline} ${project.description} ${isCollab ? "collab collaboration team" : "solo individual"} ${(
     project.techStack || []
-  ).join(" ")}`.toLowerCase();
+  ).join(" ")} ${(project.tags || []).join(" ")}`.toLowerCase();
 
   return matchesCategory && searchable.includes(keyword);
 };

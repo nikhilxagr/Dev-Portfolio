@@ -15,7 +15,9 @@ export const STATIC_PROJECTS = [
       "Engineered a stateless dual-engine architecture combining yt-dlp mobile protocol extraction and native Innertube API with live FFmpeg transcoding pipelines, zero-storage memory cleanup, and a neon responsive React UI.",
     outcome:
       "Delivered a production-ready, 100% stateless media utility supporting 4K UHD 60fps downloads, 320kbps MP3 extraction, sub-second telemetry UI, and reliable cloud deployment across Vercel and Render.",
+    projectType: "Solo",
     tags: [
+      "Solo Project",
       "React",
       "Node.js",
       "Express.js",
@@ -90,7 +92,9 @@ export const STATIC_PROJECTS = [
       "Engineered a scalable full-stack social media application with React (Vite), Redux Toolkit, Tailwind CSS, Node.js, Express.js, MongoDB, Socket.IO for live messaging/notifications, and Cloudinary for optimized media storage and transformations.",
     outcome:
       "Delivered a production-ready, highly interactive social media platform with sub-second WebSocket communication, robust dual-authentication (HTTP-Only cookies + Bearer tokens), and seamless multi-device responsiveness.",
+    projectType: "Solo",
     tags: [
+      "Solo Project",
       "React",
       "Node.js",
       "Express.js",
@@ -172,7 +176,8 @@ export const STATIC_PROJECTS = [
       "Built an AI-powered Legal Operating System that combines document intelligence, AI-assisted legal guidance, workflow automation, and intelligent case tracking into a single platform.",
     outcome:
       "Developed a functional AI-powered LegalTech prototype within the hackathon, demonstrating AI-assisted legal document understanding and an intelligent case tracking workflow.",
-    tags: ["Hackathon Project", "Collaboration Project"],
+    projectType: "Collaboration",
+    tags: ["Collab Project", "Hackathon Project", "Collaboration Project"],
     highlights: [
       "📄 AI Legal Document Analysis & Summarization",
       "⚖️ Relevant Law & Section Detection",
@@ -234,6 +239,311 @@ export const STATIC_PROJECTS = [
     hasDetails: true,
   },
   {
+    slug: "smart-lms",
+    title: "Smart LMS (SaaS Platform)",
+    subtitle: "Full-Stack SaaS Learning Management System with Gemini AI & Razorpay",
+    category: "Full Stack",
+    tagline:
+      "Full-stack SaaS Learning Management System built with React, Redux Toolkit, Tailwind CSS, Node.js, Express, MongoDB, Google OAuth 2.0, Razorpay payment gateway, and Gemini AI-powered smart search.",
+    description:
+      "Smart LMS is a production-level SaaS e-learning platform. Instructors can publish and manage courses while students browse with Gemini AI-powered smart search, authenticate securely via Google OAuth 2.0, purchase enrollments through Razorpay payment gateway, and manage learning progress on personalized dashboards.",
+    overview:
+      "Smart LMS is a comprehensive full-stack SaaS Learning Management System engineered to solve rigid search, complex checkout flows, fragmented instructor/student management, and the lack of AI-assisted exploration in conventional e-learning platforms. Featuring dual student & instructor dashboards, automated Razorpay webhook payment reconciliation, Google OAuth 2.0 SSO, and Gemini AI semantic search.",
+    problemStatement:
+      "Traditional online course management systems suffer from rigid search, complex checkout flows, fragmented student/instructor management, and lack of AI-assisted course exploration.",
+    solutionSummary:
+      "Engineered Smart LMS, a production-level SaaS e-learning platform. Instructors can publish and manage courses while students browse with Gemini AI-powered smart search, authenticate securely via Google OAuth 2.0, purchase enrollments through Razorpay payment gateway, and manage learning progress on personalized dashboards.",
+    outcome:
+      "Delivered an enterprise-grade SaaS LMS featuring semantic AI search, automated course enrollment via verified Razorpay webhooks, secure Google OAuth single sign-on, and real-time student learning analytics.",
+    projectType: "Collaboration",
+    tags: [
+      "Collab Project",
+      "React",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Redux Toolkit",
+      "Razorpay",
+      "Gemini API",
+      "OAuth 2.0",
+      "Tailwind CSS",
+    ],
+    highlights: [
+      "🧠 Gemini AI Smart Search: Semantic course search allowing students to find courses based on concept descriptions rather than exact titles.",
+      "🔐 Google OAuth 2.0 Authentication: Seamless single sign-on onboarding for students and instructors.",
+      "💳 Razorpay Payment Gateway: Secure checkout workflow with cryptographic webhook verification for automated course enrollment.",
+      "⚡ Redux Toolkit State Management: Centralized store managing course catalog, cart, user session, and dashboard metrics with query caching.",
+      "📊 Dual Student & Instructor Dashboards: Dedicated analytics, course authoring tools, and enrollment tracking panels.",
+    ],
+    challenges: [
+      "Ensuring secure checkout integrity: Razorpay webhook signature verification is mandatory to prevent unauthorized course access via spoofed client calls.",
+      "Optimizing network round-trips: Redux Toolkit query caching prevents duplicate REST API requests when switching between instructor and student views.",
+      "Improving course discoverability: AI-assisted search indexing drastically improves course discoverability compared to standard SQL/MongoDB regex search.",
+      "Managing complex multi-role authorization: Designed separate permission guardrails and state boundaries for students vs instructors.",
+    ],
+    outcomes: [
+      "Architected a robust client-server SaaS e-learning platform with React 18, Redux Toolkit, Express REST API, and MongoDB Atlas.",
+      "Engineered an automated course enrollment pipeline triggered instantly upon verified Razorpay payment webhooks.",
+      "Integrated Google OAuth 2.0 and JWT dual-layer session management for seamless user onboarding.",
+      "Implemented Gemini AI semantic search indexing, drastically reducing course discovery friction.",
+    ],
+    techStackGrouped: {
+      Frontend: ["React", "Redux Toolkit", "Tailwind CSS"],
+      Backend: ["Node.js", "Express", "Mongoose", "REST API"],
+      Database: ["MongoDB Atlas"],
+      "Auth & Payments": ["Google OAuth 2.0", "Razorpay Payment Gateway"],
+      "AI & Search": ["Google Gemini API", "Semantic Search"],
+    },
+    techStack: [
+      "React",
+      "Tailwind CSS",
+      "Redux Toolkit",
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Mongoose",
+      "Google OAuth 2.0",
+      "Razorpay",
+      "Google Gemini API",
+    ],
+    collaboration: {
+      team: "Smart LMS Team",
+      members: [
+        "Nikhil Agrahari (Backend Developer)",
+        "Gaurav Kumar Yadav (Full Stack Developer)",
+        "Khushi Sharma (Backend Developer & UI/UX)",
+        "Devansh Yadav (Frontend Developer)",
+      ],
+      teamList: [
+        {
+          name: "Gaurav Kumar Yadav",
+          role: "Full Stack Developer",
+          portfolio: "https://ggauravky.vercel.app/",
+        },
+        {
+          name: "Khushi Sharma",
+          role: "Backend Developer & UI/UX",
+          portfolio: "https://devkhushii.netlify.app/",
+        },
+        {
+          name: "Nikhil Agrahari",
+          role: "Backend Developer",
+          portfolio: "https://nikhilxagr.vercel.app/",
+        },
+        {
+          name: "Devansh Yadav",
+          role: "Frontend Developer",
+          portfolio: "https://ydevansh.vercel.app/",
+        },
+      ],
+      context:
+        "Engineered as a collaborative SaaS e-learning platform with automated Razorpay payments, Gemini AI semantic search, Google OAuth 2.0, and dual instructor/student portals.",
+    },
+    learnings: [
+      "Razorpay webhook signature verification is mandatory to prevent unauthorized course access via spoofed client calls",
+      "Redux Toolkit query caching prevents duplicate REST API requests when switching between instructor and student views",
+      "AI-assisted search indexing drastically improves course discoverability compared to standard SQL/MongoDB regex search",
+      "SaaS Multi-Tenant Course Management & Role-Based Access Control",
+    ],
+    status: "Completed ✅ (Production-level SaaS Platform)",
+    githubUrl: "https://github.com/nikhilxagr/smart-lms-mern",
+    liveDemoUrl: "",
+    imageUrl: "/images/projects/smart-lms-cover.webp",
+    featured: false,
+    hasDetails: true,
+  },
+  {
+    slug: "smartmess",
+    title: "SmartMess",
+    subtitle: "Comprehensive Hostel Mess Management & Digital Attendance Platform",
+    category: "Full Stack",
+    tagline:
+      "Comprehensive hostel mess management platform with real-time menu visibility, digital attendance, a student feedback & rating system, complaint portal, and an admin analytics dashboard.",
+    description:
+      "SmartMess is a full-stack digital platform bridging students and mess administration. Students get real-time menu access for all four meals, a 1–5 star rating system with comments, single-click digital attendance, and a tracked complaint portal. Administrators get a menu management panel, student registration approval, an analytics dashboard for ratings and trends, complaint resolution workflows, and meal-wise attendance reports.",
+    overview:
+      "SmartMess addresses the disconnected, manual operations of hostel dining facilities. By replacing paper-based attendance, unorganized WhatsApp complaint groups, and static notices with a unified digital ecosystem, SmartMess empowers students with instant meal schedule visibility and interactive feedback while providing administrators with actionable food quality and attendance analytics.",
+    problemStatement:
+      "Hostel mess management was entirely manual and disconnected. Students had no way to check the menu before walking to the mess, feedback disappeared into informal WhatsApp groups, attendance was tracked on paper prone to errors, and management had zero data on food preferences or quality trends — leading to food wastage, long queues, and low student satisfaction.",
+    solutionSummary:
+      "SmartMess is a full-stack digital platform bridging students and mess administration. Students get real-time menu access for all four meals, a 1–5 star rating system with comments, single-click digital attendance, and a tracked complaint portal. Administrators get a menu management panel, student registration approval, an analytics dashboard for ratings and trends, complaint resolution workflows, and meal-wise attendance reports.",
+    outcome:
+      "Delivered an end-to-end mess operations suite that eliminated paper attendance tracking, reduced dining hall queues via real-time menu discovery, streamlined complaint turnaround times through state-machine tracking, and provided management with MongoDB aggregation analytics for weekly meal quality trends.",
+    projectType: "Collaboration",
+    tags: [
+      "Collab Project",
+      "React",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "JWT",
+      "Vercel",
+      "Tailwind CSS",
+    ],
+    highlights: [
+      "🍽️ Real-Time Dynamic Menus: Database-driven breakfast, lunch, snacks, and dinner schedules updated instantly by mess administrators.",
+      "⭐ Student Feedback & 1-5 Star Ratings: Granular per-meal ratings and comments aggregated automatically for food quality trend analysis.",
+      "📱 Single-Tap Digital Attendance: High-speed mobile-optimized attendance logging replacing manual paper sheets during peak rush.",
+      "🎫 Complaint Portal with State Tracking: Structured ticket lifecycle (Open → In Review → Resolved) ensuring transparency and accountability.",
+      "📊 Admin Analytics Dashboard: Real-time attendance counts, rating distributions, and student registration approvals in a single pane.",
+    ],
+    challenges: [
+      "Enforcing strict RBAC: Role-based access control must be enforced on every API route — never trust the client-sent role header alone.",
+      "Real-time analytics computation: Leveraged MongoDB aggregation pipelines for rating trend analytics (average per meal, per week) rather than expensive in-memory JavaScript processing.",
+      "Rush-hour usability: Designed a large tap-target digital attendance interface optimized for rushed students entering the dining hall.",
+      "Scalable record management: Implemented cursor-based database pagination from day one to handle high-volume attendance logs without memory lag.",
+    ],
+    outcomes: [
+      "Designed React SPA with distinct student and administrator interfaces powered by role-based routing.",
+      "Developed Express REST API micro-routes for authentication, menu catalogs, ratings, attendance, and complaints.",
+      "Configured Vercel serverless architecture for automated scaling and zero-maintenance peak traffic handling.",
+      "Implemented role-encoded JWT authentication for secure, lightweight token validation across all endpoints.",
+    ],
+    techStackGrouped: {
+      Frontend: ["React", "Tailwind CSS", "Vite", "React Router"],
+      Backend: ["Node.js", "Express.js", "REST API"],
+      Database: ["MongoDB Atlas", "Aggregation Pipelines"],
+      Authentication: ["JWT (JSON Web Tokens)", "Role-Based Access Control"],
+      Deployment: ["Vercel Serverless Architecture"],
+    },
+    techStack: [
+      "React",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "JWT",
+      "Vercel",
+      "Tailwind CSS",
+    ],
+    collaboration: {
+      team: "SmartMess Core Team",
+      members: [
+        "Nikhil Agrahari (Backend Developer)",
+        "Gaurav Kumar Yadav (Full Stack Developer)",
+        "Devansh Yadav (Frontend Developer)",
+      ],
+      teamList: [
+        {
+          name: "Gaurav Kumar Yadav",
+          role: "Full Stack Developer",
+          portfolio: "https://ggauravky.vercel.app/",
+        },
+        {
+          name: "Nikhil Agrahari",
+          role: "Backend Developer",
+          portfolio: "https://nikhilxagr.vercel.app/",
+        },
+        {
+          name: "Devansh Yadav",
+          role: "Frontend Developer",
+          portfolio: "https://ydevansh.vercel.app/",
+        },
+      ],
+      context:
+        "Collaborative hostel operations platform designed to solve daily dining challenges through digital attendance, feedback analytics, and live menus.",
+    },
+    learnings: [
+      "Role-based access control must be enforced on every API route — never trust the client-sent role header alone",
+      "Aggregation pipelines in MongoDB made rating trend analytics (average per meal, per week) dramatically simpler than post-processing in JavaScript",
+      "Digital attendance UX matters as much as the feature itself — a single large tap target beats a small checkbox for rushed students",
+      "Admin dashboards need pagination from day one; loading all attendance records at once becomes a performance problem quickly",
+    ],
+    status: "Completed ✅ (Live in Production)",
+    githubUrl: "https://github.com/nikhilxagr/SmartMess",
+    liveDemoUrl: "https://smartmesslms.vercel.app/",
+    imageUrl: "/images/projects/smartmess-cover.webp",
+    featured: false,
+    hasDetails: true,
+  },
+  {
+    slug: "whatsapp-fullstack-clone",
+    title: "WhatsApp Full-Stack Clone (Nikhil WhatsApp)",
+    subtitle: "Real-Time Messaging Platform with Stories, Reactions, Dual OTP Auth & WebSockets",
+    category: "Full Stack",
+    tagline:
+      "Next-generation real-time messaging platform engineered by Nikhil Agrahari — 1-on-1 chats, 24-hour status stories, typing indicators, media sharing, and instant Socket.io events.",
+    description:
+      "A production-level WhatsApp web clone featuring bidirectional Socket.IO messaging, rich media uploads via Cloudinary CDN, 24-hour ephemeral status stories with MongoDB TTL indexing, interactive emoji reactions, message read receipts (sent ➔ delivered ➔ read), dual-channel authentication (Email & SMS OTP), and real-time online/offline presence tracking.",
+    overview:
+      "WhatsApp Full-Stack Clone (Nikhil WhatsApp) is an enterprise-grade real-time communication platform built with React 19, Node.js, Express 5, MongoDB Atlas, and Socket.IO. Replicating the core desktop and mobile WhatsApp experience, it features sub-second direct messaging, media transmission, 24-hour status stories with viewer tracking, dynamic typing indicators, message reactions, and dual-channel OTP authentication.",
+    problemStatement:
+      "Building a high-concurrency real-time communication platform requires low-latency bidirectional messaging, synchronized state management across active tabs, reliable media delivery, and ephemeral 24-hour status handling without database bloating or cross-origin session loss.",
+    solutionSummary:
+      "Architected an event-driven messaging ecosystem with Socket.IO WebSockets, Cloudinary CDN asset pipelines, and MongoDB TTL auto-expiring status stories. Implemented dual-channel OTP verification (Nodemailer email + Twilio SMS), HTTP-only JWT sessions, and granular message reaction tracking.",
+    outcome:
+      "Delivered an instantaneous, low-latency messaging application supporting rich media transfers, real-time double-tick read receipts, 24h ephemeral status stories with viewer analytics, and full conversation thread management.",
+    projectType: "Solo",
+    tags: [
+      "Solo Project",
+      "React 19",
+      "Node.js",
+      "Express 5",
+      "Socket.IO",
+      "MongoDB",
+      "Cloudinary",
+      "JWT",
+      "Tailwind CSS",
+      "Nodemailer",
+      "Twilio",
+    ],
+    highlights: [
+      "💬 1-on-1 Direct Messaging: Low-latency, bidirectional real-time chat powered by Socket.IO WebSockets.",
+      "📸 Rich Media Transmission: Send photos and videos smoothly along with text messages using Cloudinary CDN media URLs.",
+      "✓✓ Read Receipts & Emoji Reactions: Live double-tick status indicators (sent ➔ delivered ➔ read) and tap-to-attach emoji reactions (❤️ 👍 😂 😮 😢 🔥).",
+      "⏳ 24-Hour Ephemeral Status Stories: Post text, photo, or video stories that automatically expire after 24 hours via MongoDB TTL index (86400s) with viewer tracking.",
+      "🔐 Dual-Channel OTP Authentication: Secure 6-digit OTP delivery over Email (Nodemailer) and SMS Phone (Twilio) with HTTP-only JWT cookie persistence.",
+      "🟢 Real-Time Online Presence & Typing: Live online/offline status with last-seen timestamps and dynamic 3-second auto-stop typing indicators.",
+    ],
+    challenges: [
+      "Managing WebSocket state concurrency: Handling connection lifecycles (userConnected, disconnect, userStatusChanged) gracefully across network fluctuations.",
+      "Automating ephemeral data cleanup: Leveraged MongoDB TTL (Time-To-Live) index of 86400 seconds on status stories to eliminate database memory bloat automatically.",
+      "Dual-channel OTP delivery & failover: Integrated Nodemailer SMTP and Twilio SMS APIs with structured error recovery and fallback mechanisms.",
+      "Rich media streaming & compression: Handled multi-part uploads with Multer and Cloudinary CDN optimization for seamless inline photo and video playback.",
+    ],
+    outcomes: [
+      "Constructed an event-driven full-stack architecture with React 19, Express 5, and Socket.IO.",
+      "Engineered robust dual-channel OTP authentication ensuring zero unauthorized access.",
+      "Implemented automated 24-hour status story lifecycle with real-time viewer tracking.",
+      "Delivered sub-100ms real-time chat latency with delivered/read receipts and emoji reactions.",
+    ],
+    techStackGrouped: {
+      Frontend: ["React 19", "Tailwind CSS", "React Icons", "Axios", "Firebase SDK"],
+      Backend: ["Node.js", "Express 5", "REST API", "Multer", "Cookie-Parser"],
+      Database: ["MongoDB Atlas", "Mongoose 9 (TTL Indexes)"],
+      "Real-Time & Media": ["Socket.IO v4", "Cloudinary CDN (Image & Video)"],
+      "Auth & Communications": ["JWT (JSON Web Tokens)", "Nodemailer (Email OTP)", "Twilio (SMS OTP)"],
+    },
+    techStack: [
+      "React",
+      "Node.js",
+      "Express.js",
+      "Socket.io",
+      "MongoDB",
+      "Cloudinary",
+      "JWT",
+      "Tailwind CSS",
+    ],
+    collaboration: {
+      team: "Nikhil WhatsApp",
+      members: ["Nikhil Agrahari (Full Stack Developer & Architect)"],
+      context:
+        "Engineered independently by Nikhil Agrahari as a next-generation real-time messaging platform.",
+    },
+    learnings: [
+      "Socket.IO event-driven architecture and room management for 1-on-1 and group messaging",
+      "MongoDB TTL index automation for zero-maintenance ephemeral content expiration",
+      "Dual-channel multi-factor OTP verification using Nodemailer and Twilio",
+      "HTTP-only cookie security and JWT session validation for cross-origin SPA requests",
+      "Optimizing Cloudinary CDN delivery for low-latency media streaming",
+    ],
+    status: "Completed ✅ (Full-Stack Real-Time Platform)",
+    githubUrl: "https://github.com/nikhilxagr/whatsapp-fullstack-clone",
+    liveDemoUrl: "",
+    imageUrl: "/images/projects/whatsapp-clone-cover.webp",
+    featured: false,
+    hasDetails: true,
+  },
+  {
     slug: "fast-feast",
     title: "Fast Feast",
     category: "Web Dev",
@@ -254,6 +564,8 @@ export const STATIC_PROJECTS = [
       "Responsive frontend layout",
     ],
     techStack: ["HTML", "CSS", "JavaScript"],
+    projectType: "Solo",
+    tags: ["Solo Project", "HTML", "CSS", "JavaScript"],
     githubUrl:
       "https://github.com/nikhilxagr/Web-Dev-Projects/tree/main/Food%20Delivery%20Website",
     liveDemoUrl: "https://fastfeast-agr.netlify.app/",
@@ -281,6 +593,8 @@ export const STATIC_PROJECTS = [
       "Database-backed URL management",
     ],
     techStack: ["React", "Node.js", "Express.js", "MongoDB"],
+    projectType: "Solo",
+    tags: ["Solo Project", "React", "Node.js", "Express.js", "MongoDB"],
     githubUrl:
       "https://github.com/nikhilxagr/Web-Dev-Projects/tree/main/URL%20Shortener",
     liveDemoUrl: "https://snapurl-agr.netlify.app/",
@@ -308,6 +622,8 @@ export const STATIC_PROJECTS = [
       "Developer-focused utility layout",
     ],
     techStack: ["React", "JavaScript", "AI Integration"],
+    projectType: "Solo",
+    tags: ["Solo Project", "React", "JavaScript", "AI Integration"],
     githubUrl:
       "https://github.com/nikhilxagr/Web-Dev-Projects/tree/main/AI%20Code%20Reviewer",
     liveDemoUrl: "https://ai-code-reviewer-agr.netlify.app/",

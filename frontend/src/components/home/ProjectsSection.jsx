@@ -7,7 +7,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { PRACTICALS } from "@/constants/siteData";
 
-const PROJECT_FILTER_TABS = ["All", "Web Dev", "Cyber Security", "AI"];
+const PROJECT_FILTER_TABS = ["All", "Solo", "Collab", "Web Dev", "Cyber Security", "AI"];
 
 const ProjectsSection = ({
   projectFilter,
