@@ -142,7 +142,7 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
         </div>
 
         {/* Project Title */}
-        <h3 className="font-display text-base font-black uppercase tracking-tight text-slate-900 dark:text-white">
+        <h3 className="font-outfit text-lg font-bold tracking-normal text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-lime-400 transition-colors duration-200">
           {project.title}
         </h3>
 

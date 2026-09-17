@@ -18,6 +18,7 @@ export default {
         body: ['Space Grotesk', 'sans-serif'],
         syne: ['Syne', 'sans-serif'],
         outfit: ['Outfit', 'sans-serif'],
+        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
       },
       boxShadow: {
         neon: '0 0 0 1px rgba(0, 212, 255, 0.35), 0 0 30px rgba(0, 212, 255, 0.18)',

@@ -1073,7 +1073,7 @@ const AdminDashboardPage = () => {
                             )}
                           </div>
 
-                          <h3 className="font-display text-base font-bold text-white">{project.title}</h3>
+                          <h3 className="font-outfit text-base font-bold text-white">{project.title}</h3>
                           <p className="mt-1 text-xs text-slate-400 line-clamp-2">{project.description}</p>
 
                           {/* Tech Stack */}
