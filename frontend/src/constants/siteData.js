@@ -2,9 +2,9 @@ export const SITE_PROFILE = {
   fullName: "Nikhil Agrahari",
   shortName: "Nikhil",
   title: "Nikhil Agrahari Portfolio",
-  headline: "BCA Student | Full Stack Developer | Web Solutions Builder",
-  role: "Web Developer",
-  education: "BCA, BBD University, Lucknow",
+  headline: "BCA Student (3rd Year) | Full Stack Developer Intern at EVOC Labs",
+  role: "Full Stack Developer",
+  education: "BCA (3rd Year), Babu Banarasi Das University, Lucknow",
   location: "Lucknow, India",
   availability:
     "Open to freelance projects, portfolio guidance, mentorship, and collaboration.",
@@ -90,10 +90,10 @@ export const LEGAL_LINKS = [
 
 export const ABOUT_STORY = [
   "Hi, I'm Nikhil Agrahari.",
-  "I am a second-year BCA student at BBD University, Lucknow, focused on web development and practical software engineering. Currently working as a web developer, I enjoy turning ideas into interactive, user-friendly digital solutions.",
-  "I believe in writing clean, efficient code and building projects that create real value. Alongside development, I continuously improve secure coding practices, performance, and reliability.",
-  "My learning path stays broad on purpose. I enjoy frontend development, backend logic, and deployment workflows, because understanding the complete system helps deliver better products.",
-  "Beyond coding, I am focused on consistent growth, collaboration, and building work that reflects both curiosity and discipline.",
+  "I am a third-year BCA student at Babu Banarasi Das University, Lucknow, and a Full Stack Developer Intern at EVOC Labs. I focus on building practical, scalable web applications and solving real-world problems through technology.",
+  "My journey has taken me from learning programming fundamentals to engineering full-stack applications, working with APIs and databases, implementing authentication, and understanding how real-world software is delivered.",
+  "I enjoy turning ideas into working products — from designing intuitive interfaces and building clean backend APIs to connecting databases and deploying reliable web apps.",
+  "Alongside core engineering, I actively explore cybersecurity, AI workflows, system design, and algorithmic problem-solving as I continue growing as a developer.",
 ];
 
 export const FOCUS_AREAS = [
