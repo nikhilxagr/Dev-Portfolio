@@ -90,10 +90,9 @@ export const LEGAL_LINKS = [
 
 export const ABOUT_STORY = [
   "Hi, I'm Nikhil Agrahari.",
-  "I am a third-year BCA student at Babu Banarasi Das University, Lucknow, and a Full Stack Developer Intern at EVOC Labs. I focus on building practical, scalable web applications and solving real-world problems through technology.",
-  "My journey has taken me from learning programming fundamentals to engineering full-stack applications, working with APIs and databases, implementing authentication, and understanding how real-world software is delivered.",
-  "I enjoy turning ideas into working products — from designing intuitive interfaces and building clean backend APIs to connecting databases and deploying reliable web apps.",
-  "Alongside core engineering, I actively explore cybersecurity, AI workflows, system design, and algorithmic problem-solving as I continue growing as a developer.",
+  "I am a third-year BCA student at Babu Banarasi Das University, Lucknow, and currently working as a Full Stack Developer Intern at EVOC Labs.",
+  "I build full-stack web applications using React, Node.js, Express, and MongoDB, focusing on clean user interfaces, reliable APIs, and secure database workflows.",
+  "Beyond development, I practice cybersecurity on TryHackMe, solve problem-solving challenges on LeetCode, and explore practical AI tools to continuously improve as an engineer.",
 ];
 
 export const FOCUS_AREAS = [

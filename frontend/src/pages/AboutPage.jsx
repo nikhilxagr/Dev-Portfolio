@@ -45,9 +45,9 @@ const aboutIdentityBadges = [
     value: "Lucknow, Uttar Pradesh, India",
   },
   {
-    icon: ShieldCheck,
-    label: "Engineering Mindset",
-    value: "Clean execution, reliable data flows, and secure coding habits",
+    icon: Code2,
+    label: "Core Stack",
+    value: "React, Node.js, Express, MongoDB, Python",
   },
 ];
 
@@ -163,24 +163,18 @@ const AboutPage = () => {
                   // Who I Am
                 </p>
                 <h2 className="mt-2 text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-                  Student Builder with a Practical Engineering Mindset
+                  Full Stack Developer &amp; BCA Student
                 </h2>
 
                 <div className="mt-4 space-y-3 text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-medium">
                   <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                    I&apos;m a third-year BCA student and Full Stack Developer focused on building practical, scalable web applications and solving real-world problems through technology.
+                    Hi, I&apos;m Nikhil Agrahari — a third-year BCA student at Babu Banarasi Das University, Lucknow, and currently working as a Full Stack Developer Intern at EVOC Labs.
                   </p>
                   <p>
-                    Currently, I&apos;m working as a <strong className="text-slate-900 dark:text-emerald-300 font-bold">Full Stack Developer Intern at EVOC Labs</strong>, gaining hands-on experience building and improving production-oriented applications across frontend and backend systems.
+                    I enjoy building full-stack web applications using React, Node.js, Express, and MongoDB. I focus on creating clean user interfaces, developing reliable APIs, and connecting databases to build products that work seamlessly.
                   </p>
                   <p>
-                    My journey has taken me from learning programming fundamentals to engineering full-stack applications, designing RESTful APIs, connecting databases, implementing authentication, and understanding how real-world software is developed and delivered.
-                  </p>
-                  <p>
-                    I enjoy turning ideas into working products — from designing clean interfaces and building APIs to connecting databases and deploying reliable web apps.
-                  </p>
-                  <p className="text-slate-600 dark:text-slate-400">
-                    Alongside core web engineering, I continuously explore cybersecurity fundamentals, AI-assisted workflows, system design, and algorithmic problem-solving as I grow as a developer.
+                    Alongside web development, I practice cybersecurity on TryHackMe, solve problem-solving challenges on LeetCode, and explore practical AI tools to keep learning and growing as an engineer.
                   </p>
                 </div>
               </div>

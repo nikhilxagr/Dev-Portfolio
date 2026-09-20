@@ -52,33 +52,62 @@ const AboutSection = () => {
     <>
       <StatsBar />
       <section className="section-wrap section-divider pt-8 sm:pt-12">
+        {/* Centered Large Section Header outside the div */}
         <FadeInUp>
-          <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-xl dark:border-green-400/22 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#082218] dark:to-[#050d14] dark:shadow-none p-6 sm:p-8 mb-6">
+          <div className="text-center mb-8 sm:mb-10">
+            <p className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3.5 py-1 font-display text-[10px] uppercase tracking-[0.2em] text-green-600 dark:text-green-300 sm:text-xs font-bold">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
+              About Me
+            </p>
+            <h2 className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+              ABOUT <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">ME</span>
+            </h2>
+          </div>
+        </FadeInUp>
+
+        <FadeInUp delay={0.08}>
+          <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-xl dark:border-green-400/22 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#082218] dark:to-[#050d14] dark:shadow-none p-6 sm:p-8 mb-8">
             <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-green-500/10 dark:bg-green-400/10 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-emerald-500/8 dark:bg-emerald-400/8 blur-3xl" />
             <div className="relative">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-green-600 dark:text-green-400">About Me</p>
-              <h2 className="mt-2 text-4xl font-black text-slate-900 dark:text-white sm:text-5xl lg:text-6xl leading-[0.95]">
-                Who I Am
-              </h2>
-              <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_auto]">
-                <div className="space-y-4 max-w-2xl">
+              <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
+                <div className="space-y-3.5 max-w-2xl">
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                    Full Stack Developer &amp; 3rd-Year BCA Student
+                  </h3>
                   <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-                    I'm a <span className="font-bold text-green-600 dark:text-green-400">BCA student at BBD University, Lucknow</span>, combining full-stack engineering with practical cybersecurity. I don't just learn tools — I build real products and solve real problems.
+                    I&apos;m a <span className="font-bold text-green-600 dark:text-green-400">third-year BCA student at Babu Banarasi Das University, Lucknow</span> and a <span className="font-bold text-green-600 dark:text-green-400">Full Stack Developer Intern at EVOC Labs</span>.
                   </p>
                   <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                    My approach: write clean code, think about security from day one, and document everything. Whether it's a MERN application or a security lab writeup, I care about the quality of my output.
+                    I build full-stack web applications using React, Node.js, Express, and MongoDB, with a focus on clean interfaces, reliable APIs, and secure database workflows.
                   </p>
-                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                    Currently seeking <span className="font-semibold text-slate-900 dark:text-white">internship opportunities</span> in Full Stack Engineering, Application Security, or DevSecOps — where both my skills create real value.
-                  </p>
+                  <div className="pt-2">
+                    <a
+                      href="/about"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-colors"
+                    >
+                      Read More About Me <ArrowRight size={13} />
+                    </a>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2 lg:items-end">
+                <div className="flex flex-col gap-2 lg:items-end justify-center">
                   <div className="flex flex-wrap gap-2 lg:flex-col">
-                    {["BCA · BBD University", "Lucknow, India 🇮🇳", "Open to Internships", "Security-First Mindset"].map(tag => (
-                      <span key={tag} className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/30 bg-green-500/10 text-green-700 dark:border-green-400/35 dark:bg-green-500/20 dark:text-green-300 px-3 py-1.5 text-xs font-semibold">
+                    {[
+                      { text: "Full Stack Intern @ EVOC Labs", highlight: true },
+                      { text: "BCA (3rd Year) · BBD University", highlight: false },
+                      { text: "Lucknow, India 🇮🇳", highlight: false },
+                      { text: "React · Node · MongoDB", highlight: false },
+                    ].map(({ text, highlight }) => (
+                      <span
+                        key={text}
+                        className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold ${
+                          highlight
+                            ? "border-green-500/40 bg-green-500/15 text-green-700 dark:border-green-400/40 dark:bg-green-500/20 dark:text-green-300 font-bold"
+                            : "border-green-500/30 bg-green-500/10 text-green-700 dark:border-green-400/35 dark:bg-green-500/20 dark:text-green-300"
+                        }`}
+                      >
                         <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
-                        {tag}
+                        {text}
                       </span>
                     ))}
                   </div>
@@ -88,8 +117,7 @@ const AboutSection = () => {
           </div>
 
           <div className="mb-5">
-            <p className="text-xs uppercase tracking-[0.22em] text-green-600 dark:text-green-400">Dual-Role Profile</p>
-            <h3 className="mt-1.5 text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">What I Can Deliver</h3>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">What I Can Deliver</h3>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Clear objectives across both roles — no filler, no guesses.</p>
           </div>
 
