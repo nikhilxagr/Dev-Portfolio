@@ -72,7 +72,7 @@ const AboutSection = () => {
                     Full Stack Developer &amp; 3rd-Year BCA Student
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-                    I&apos;m a <span className="font-bold text-green-600 dark:text-green-400">third-year BCA student at Babu Banarasi Das University, Lucknow</span> and a <span className="font-bold text-green-600 dark:text-green-400">Full Stack Developer Intern at EVOC Labs</span>.
+                    I&apos;m a <span className="font-bold text-green-600 dark:text-green-400">third-year BCA student at Babu Banarasi Das University, Lucknow</span> and an <span className="font-bold text-green-600 dark:text-green-400">aspiring Full Stack Developer</span> actively seeking internship opportunities.
                   </p>
                   <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                     I build full-stack web applications using React, Node.js, Express, and MongoDB, with a focus on clean interfaces, reliable APIs, and secure database workflows.
@@ -89,7 +89,7 @@ const AboutSection = () => {
                 <div className="flex flex-col gap-2 lg:items-end justify-center">
                   <div className="flex flex-wrap gap-2 lg:flex-col">
                     {[
-                      { text: "Full Stack Intern @ EVOC Labs", highlight: true },
+                      { text: "Aspiring Full Stack Dev · Open to Roles", highlight: true },
                       { text: "BCA (3rd Year) · BBD University", highlight: false },
                       { text: "Lucknow, India 🇮🇳", highlight: false },
                       { text: "React · Node · MongoDB", highlight: false },

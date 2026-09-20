@@ -36,8 +36,8 @@ const aboutIdentityBadges = [
   },
   {
     icon: Briefcase,
-    label: "Current Role",
-    value: "Full Stack Developer Intern • EVOC Labs",
+    label: "Career Status",
+    value: "Actively Seeking Full Stack Developer Roles",
   },
   {
     icon: MapPin,
@@ -115,17 +115,17 @@ const AboutPage = () => {
     <>
       <SeoHead
         title="About Nikhil Agrahari | Full Stack Developer & BCA Student"
-        description="Learn about Nikhil Agrahari, a 3rd-year BCA student at BBDU Lucknow and Full Stack Developer Intern at EVOC Labs. Discover technical background, full-stack projects, and engineering journey."
+        description="Learn about Nikhil Agrahari, a 3rd-year BCA student at BBDU Lucknow and aspiring Full Stack Developer actively seeking opportunities. Discover technical background, full-stack projects, and engineering journey."
         pathname="/about"
         image={SITE_PROFILE.profileImage}
         imageAlt="About Nikhil Agrahari"
         keywords={[
           "about Nikhil Agrahari",
-          "Nikhil Agrahari EVOC Labs",
+          "Nikhil Agrahari portfolio",
           "BBD University BCA developer",
           "Full Stack Developer Lucknow",
           "MERN stack engineer",
-          "EVOC Labs intern",
+          "Full Stack Developer Internships",
         ]}
         jsonLd={[
           createPersonSchema(),
@@ -145,7 +145,7 @@ const AboutPage = () => {
               PROFILE <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">OVERVIEW</span>
             </h1>
             <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Who I am, what I am currently building, my engineering internship experience, and the technical direction I am moving toward.
+              Who I am, what I am currently building, the skills I practice, and the technical direction I am moving toward.
             </p>
           </div>
         </FadeInUp>
@@ -168,7 +168,7 @@ const AboutPage = () => {
 
                 <div className="mt-4 space-y-3 text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-medium">
                   <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                    Hi, I&apos;m Nikhil Agrahari — a third-year BCA student at Babu Banarasi Das University, Lucknow, and currently working as a Full Stack Developer Intern at EVOC Labs.
+                    Hi, I&apos;m Nikhil Agrahari — a third-year BCA student at Babu Banarasi Das University, Lucknow, and an aspiring Full Stack Developer actively seeking internship and entry-level engineering roles.
                   </p>
                   <p>
                     I enjoy building full-stack web applications using React, Node.js, Express, and MongoDB. I focus on creating clean user interfaces, developing reliable APIs, and connecting databases to build products that work seamlessly.
@@ -229,7 +229,7 @@ const AboutPage = () => {
                       </div>
                       <span className="absolute -bottom-2 -right-2 inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-white px-2.5 py-0.5 text-[10px] font-bold text-emerald-700 dark:border-emerald-400/30 dark:bg-[#030d07] dark:text-emerald-300 shadow-sm">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Intern @ EVOC Labs
+                        Open to Opportunities
                       </span>
                     </div>
                   </div>
@@ -242,7 +242,7 @@ const AboutPage = () => {
                   {SITE_PROFILE.fullName}
                 </h2>
                 <p className="mt-1 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
-                  Third-Year BCA Student • Full Stack Developer Intern at EVOC Labs
+                  Third-Year BCA Student • Aspiring Full Stack Developer
                 </p>
 
                 <div className="mt-4 space-y-1.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
@@ -309,57 +309,57 @@ const AboutPage = () => {
         {/* Experience & Education Section */}
         <div className="mt-8 grid gap-6 md:grid-cols-2">
           
-          {/* Experience Card */}
+          {/* Career Status / Opportunity Card */}
           <FadeInUp delay={0.08} className="flex flex-col justify-between rounded-3xl border border-slate-200 bg-white/90 p-6 sm:p-7 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/90">
             <div>
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
-                  // Experience
+                  // Career Status
                 </p>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-extrabold text-emerald-700 dark:text-emerald-300">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Active Internship
+                  Open to Opportunities
                 </span>
               </div>
 
               <div className="mt-4 flex items-start gap-3.5">
                 <div className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300">
-                  <Building2 size={24} />
+                  <Briefcase size={24} />
                 </div>
                 <div>
                   <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight">
-                    Full Stack Developer Intern
+                    Full Stack Developer Roles
                   </h3>
                   <p className="mt-0.5 text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                    EVOC Labs
+                    Actively Seeking Internships &amp; Entry-Level Roles
                   </p>
                   <div className="mt-1 flex flex-wrap items-center gap-2 text-xs font-mono font-semibold text-slate-500 dark:text-slate-400">
                     <span className="inline-flex items-center gap-1">
                       <Calendar size={13} />
-                      15 September 2026 – 15 January 2027
+                      Available Immediately
                     </span>
                     <span>•</span>
-                    <span>4 Months</span>
+                    <span>Remote / Hybrid / On-site</span>
                   </div>
                 </div>
               </div>
 
               <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-medium">
-                Gaining hands-on experience building and improving production-oriented applications across frontend and backend systems. Working in a real engineering environment to develop practical full-stack capabilities, understand application lifecycles, and contribute toward reliable software delivery.
+                Actively looking for full-stack developer internships and entry-level engineering opportunities. Eager to contribute practical skills in React, Node.js, Express, MongoDB, and secure API architecture while learning and shipping real-world software within high-impact engineering teams.
               </p>
             </div>
 
             <div className="mt-6 pt-4 border-t border-slate-200 dark:border-emerald-500/15">
               <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Key Focus & Hands-on Practice
+                Key Focus &amp; What I Bring
               </p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {[
-                  "Full Stack Development",
+                  "Full Stack Web Development",
                   "Frontend & Backend Workflows",
                   "API Design & Integration",
                   "Database Connectivity",
-                  "Production Engineering Habits",
+                  "Defensive Coding & Security",
                 ].map((tag) => (
                   <span
                     key={tag}
@@ -411,7 +411,7 @@ const AboutPage = () => {
               </div>
 
               <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-700 dark:text-slate-300 font-medium">
-                Pursuing formal academic grounding in computer applications, data structures, algorithms, database management systems, and software engineering methodologies, supplemented by independent full-stack project building and practical engineering internships.
+                Pursuing formal academic grounding in computer applications, data structures, algorithms, database management systems, and software engineering methodologies, supplemented by independent full-stack project building, cybersecurity labs, and problem-solving practice.
               </p>
             </div>
 
@@ -550,7 +550,7 @@ const AboutPage = () => {
 
               <div className="mt-5 space-y-2.5">
                 {[
-                  "Gain deep production experience during my EVOC Labs internship.",
+                  "Gain deep production experience by contributing to real-world engineering teams and internships.",
                   "Refine API scalability, caching, and database indexing strategies.",
                   "Adopt defensive coding habits across every full-stack layer.",
                   "Build practical portfolio solutions demonstrating real engineering depth.",

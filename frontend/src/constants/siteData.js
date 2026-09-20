@@ -2,7 +2,7 @@ export const SITE_PROFILE = {
   fullName: "Nikhil Agrahari",
   shortName: "Nikhil",
   title: "Nikhil Agrahari Portfolio",
-  headline: "BCA Student (3rd Year) | Full Stack Developer Intern at EVOC Labs",
+  headline: "BCA Student (3rd Year) | Aspiring Full Stack Developer",
   role: "Full Stack Developer",
   education: "BCA (3rd Year), Babu Banarasi Das University, Lucknow",
   location: "Lucknow, India",
@@ -90,7 +90,7 @@ export const LEGAL_LINKS = [
 
 export const ABOUT_STORY = [
   "Hi, I'm Nikhil Agrahari.",
-  "I am a third-year BCA student at Babu Banarasi Das University, Lucknow, and currently working as a Full Stack Developer Intern at EVOC Labs.",
+  "I am a third-year BCA student at Babu Banarasi Das University, Lucknow, and an aspiring Full Stack Developer actively seeking internship and entry-level opportunities.",
   "I build full-stack web applications using React, Node.js, Express, and MongoDB, focusing on clean user interfaces, reliable APIs, and secure database workflows.",
   "Beyond development, I practice cybersecurity on TryHackMe, solve problem-solving challenges on LeetCode, and explore practical AI tools to continuously improve as an engineer.",
 ];

@@ -12,7 +12,6 @@ import SignInModal from "@/components/auth/SignInModal";
 import UserProfileModal from "@/components/auth/UserProfileModal";
 import LenisProvider from "@/components/layout/LenisProvider";
 import RouteErrorBoundary from "@/components/RouteErrorBoundary";
-import NikhilAI from "@/components/ai/NikhilAI";
 import { prewarmBackendForCheckout } from "@/services/payment.service";
 import { prefetchAllRoutesIdle } from "@/utils/prefetchRoute";
 
@@ -228,8 +227,6 @@ function App() {
         </div>
         <SignInModal />
         <UserProfileModal />
-        {/* Nikhil AI — recruiter assistant widget */}
-        <NikhilAI />
         {import.meta.env.PROD ? <Analytics /> : null}
       </div>
     </LenisProvider>
