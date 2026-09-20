@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { ShieldCheck, Code2, Braces } from "lucide-react";
-import SectionTitle from "@/components/ui/SectionTitle";
+import { Link } from "react-router-dom";
+import { ShieldCheck, Code2, Braces, ArrowRight } from "lucide-react";
 import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { MAIN_SKILL_SHOWCASE } from "@/constants/siteData";
@@ -50,11 +50,21 @@ const skillIconMap = {
 const SkillsSection = () => {
   return (
     <section className="section-wrap section-divider pt-12 pb-16">
-      <SectionTitle
-        eyebrow="Core Competencies"
-        title="Technical Skills & Expertise"
-        description="Comprehensive technical capabilities across full-stack software development and application security auditing."
-      />
+      <FadeInUp>
+        <div className="text-center">
+          <p className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3.5 py-1 font-display text-[10px] uppercase tracking-[0.2em] text-green-600 dark:text-green-300 sm:text-xs font-bold mb-3">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
+            Core Competencies
+          </p>
+          <h2 className="font-display text-5xl font-black uppercase tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl">
+            Technical Skills
+            <span className="block text-green-600 dark:text-green-400">&amp; Expertise</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+            Comprehensive technical capabilities across full-stack software development and application security auditing.
+          </p>
+        </div>
+      </FadeInUp>
 
       <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {MAIN_SKILL_SHOWCASE.map((category) => {
@@ -89,6 +99,22 @@ const SkillsSection = () => {
           );
         })}
       </div>
+
+      {/* Show All Skills button redirecting to /skills */}
+      <FadeInUp delay={0.15}>
+        <div className="mt-10 flex justify-center">
+          <Link
+            to="/skills"
+            className="group inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-black transition-all duration-300 hover:-translate-y-1 hover:bg-green-400 hover:shadow-[0_8px_24px_rgba(34,197,94,0.45)]"
+          >
+            Show All Skills{" "}
+            <ArrowRight
+              size={15}
+              className="transition-transform duration-200 group-hover:translate-x-1"
+            />
+          </Link>
+        </div>
+      </FadeInUp>
     </section>
   );
 };
