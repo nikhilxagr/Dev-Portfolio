@@ -78,6 +78,7 @@ Status: Open for Software Engineering, Full Stack & Application Security Roles.`
 
   journey: `Key Milestones & Education:
   • 2024 - 2027 : BCA Degree @ BBD University, Lucknow
+  • 2026        : Open Source Connect India (OSCI) Contributor @ NexFellow
   • 2026        : Nerds Hack Days Hackathon (Built Kanoon-Mate)
   • 2026        : Android Nova 2.0 Workshop @ Cyber Intelligence Community
   • Certs       : Cisco Certified Ethical Hacker (2025)

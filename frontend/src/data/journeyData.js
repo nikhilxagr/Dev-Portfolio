@@ -8,6 +8,7 @@ import {
   Star,
   Cpu,
   Briefcase,
+  GitBranch,
 } from "lucide-react";
 
 export const journeyData = [
@@ -697,14 +698,95 @@ export const journeyData = [
       ],
     },
   },
+  {
+    id: "osci-contributor-2026",
+    year: 2026,
+    category: "Open Source",
+    mode: "Online",
+    title: "Open Source Connect India (OSCI) 2026",
+    subtitle: "Open Source Contributor • Powered by NexFellow",
+    organization: "NexFellow × Open Source Connect India",
+    duration: "2026-09-01",
+    location: "Remote / India",
+    description:
+      "Recognized as an active Open Source Contributor in Open Source Connect India (OSCI) 2026, powered by NexFellow. Contributed to community codebases by fixing bugs, developing UI components, improving documentation, submitting pull requests, and collaborating in peer code reviews.",
+    imageUrl: "/journey/OSCI-Badge-Nikhil Agrahari.png",
+    imageFit: "contain-dark",
+    gallery: [
+      "/journey/OSCI-Badge-Nikhil Agrahari.png",
+    ],
+    hasCertificate: true,
+    certificateUrl: "/journey/OSCI-Badge-Nikhil Agrahari.png",
+    icon: GitBranch,
+    accent: "from-emerald-400 via-teal-400 to-cyan-500",
+    tag: "Open Source",
+    details: {
+      university: "NexFellow (Open Source Connect India)",
+      course: "OSCI 2026 — Open Source Contribution Program",
+      status: "Active Contributor / Badge Earned",
+      journeyTitle: "Open Source Connect India (OSCI) 2026",
+      overview:
+        "Participated as an Open Source Contributor in Open Source Connect India (OSCI) 2026, an initiative powered by NexFellow fostering open-source development across India. Collaborated on public codebases, resolved technical issues, created features, refined documentation, and engaged in Git/GitHub peer review workflows.",
+      problem:
+        "Navigating large-scale open-source projects can be challenging for developers due to complex architectures, strict contribution guidelines, and code review standards that require precision and teamwork.",
+      solution:
+        "Actively tackled open issues by setting up local environments, investigating bugs, creating feature pull requests, writing clear documentation, and adhering to standard Git branching and semantic commit conventions.",
+      objectives:
+        "Make meaningful code contributions to open-source software, collaborate with maintainers and fellow developers across India, and sharpen practical full-stack and version control skills.",
+      outcomes:
+        "Earned the official OSCI 2026 Contributor Badge powered by NexFellow. Successfully submitted and merged pull requests, enhanced codebase maintainability, and deepened expertise in collaborative open-source engineering.",
+      challenge:
+        "Understanding unfamiliar repository conventions and ensuring zero regression while implementing changes. Resolved by closely following repository contributing guides, writing clean modular code, and communicating effectively on GitHub issues.",
+      keyFeatures: [
+        "Open Source Repository Contributions & Bug Fixes",
+        "Git Branching, Forking & Pull Request Workflows",
+        "UI Component Development & Accessibility Enhancements",
+        "Project Documentation, Readme & Setup Guides",
+        "Peer Code Review & Community Collaboration",
+        "Earned Official OSCI 2026 Contributor Badge",
+      ],
+      areasOfStudy: [
+        "Open Source Software Development & Licensing",
+        "Advanced Git & GitHub Collaboration Workflows",
+        "Frontend & Full-Stack Component Engineering",
+        "Issue Triage & Bug Remediation",
+        "Code Documentation & Community Guidelines",
+        "Continuous Integration & PR Review Practices",
+      ],
+      skills: [
+        "Open Source",
+        "Git",
+        "GitHub",
+        "Pull Requests",
+        "Code Review",
+        "JavaScript",
+        "React",
+        "Bug Fixing",
+        "Documentation",
+        "Collaboration",
+      ],
+      technologies: [
+        "Git",
+        "GitHub",
+        "JavaScript",
+        "React",
+        "Node.js",
+        "Markdown",
+      ],
+      gallery: [
+        "/journey/OSCI-Badge-Nikhil Agrahari.png",
+      ],
+    },
+  },
 ];
 
 export const JOURNEY_CATEGORIES = [
   "All",
   "Education",
   "Internships",
-  "Workshops",
+  "Open Source",
   "Hackathons",
+  "Workshops",
   "Academic Programs",
   "Conferences",
   "Certifications",
