@@ -61,54 +61,42 @@ const formatLabel = (value = "") => {
   }
   return value;
 };
-// Fixed year navigator — highlights active year on scroll (exact July 20 commit implementation)
-const FixedYearNav = ({ years, activeYear, onYearClick }) => (
-  <div className="fixed right-6 top-1/2 z-50 hidden -translate-y-1/2 xl:flex xl:flex-col xl:items-center">
-    {/* Capsule container */}
-    <div className="flex flex-col items-center gap-1 rounded-[2rem] border border-slate-200 dark:border-white/10 bg-white/90 dark:bg-zinc-950/95 px-3 py-4 shadow-xl dark:shadow-[0_8px_48px_rgba(0,0,0,0.8)] backdrop-blur-xl">
-      {/* Label */}
-      <p className="mb-3 text-[8px] font-bold uppercase tracking-[0.4em] text-slate-500 dark:text-zinc-600">
-        Years
-      </p>
-
-      {/* Year buttons */}
-      <div className="flex flex-col items-center gap-2.5">
-        {years.map((year) => {
-          const isActive = activeYear === year;
-          return (
-            <button
-              key={year}
-              onClick={(e) => onYearClick(e, year)}
-              aria-label={`Go to year ${year}`}
-              className={`relative flex h-12 w-12 flex-col items-center justify-center rounded-[14px] border text-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-300 ${
-                isActive
-                  ? "scale-110 border-lime-300 bg-lime-300 shadow-[0_0_24px_rgba(163,230,53,0.6),0_0_0_4px_rgba(163,230,53,0.15)]"
-                  : "border-transparent bg-zinc-900/80 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-800 hover:text-zinc-300"
-              }`}
-            >
-              <span
-                className={`text-[9px] font-semibold leading-none ${
-                  isActive ? "text-black/50" : "text-zinc-600"
-                }`}
-              >
-                {String(year).slice(0, 2)}
-              </span>
-              <span
-                className={`text-[14px] font-black leading-none ${
-                  isActive ? "text-black" : ""
-                }`}
-              >
-                {String(year).slice(2)}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  </div>
-);
-
-
+const formatIndexSubtitle = (duration = "", category = "") => {
+  let datePart = "";
+  if (duration) {
+    const parts = duration.split("-");
+    if (parts.length >= 2) {
+      const year = parts[0].slice(2);
+      const monthNum = parts[1];
+      const day = parts[2];
+      const monthNames = {
+        "01": "JAN",
+        "02": "FEB",
+        "03": "MAR",
+        "04": "APR",
+        "05": "MAY",
+        "06": "JUN",
+        "07": "JUL",
+        "08": "AUG",
+        "09": "SEP",
+        "10": "OCT",
+        "11": "NOV",
+        "12": "DEC",
+      };
+      const m = monthNames[monthNum] || monthNum;
+      if (day) {
+        datePart = `${m} ${parseInt(day, 10)}`;
+      } else {
+        datePart = `${m} '${year}`;
+      }
+    } else {
+      datePart = duration;
+    }
+  }
+  const catPart = category ? category.toUpperCase() : "";
+  if (datePart && catPart) return `${datePart} • ${catPart}`;
+  return datePart || catPart;
+};
 
 // GALLERY LIGHTBOX
 const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
@@ -649,6 +637,9 @@ const JourneyPage = () => {
   const [view, setView] = useState("timeline");
   const [activeYear, setActiveYear] = useState(2024);
   const [expandedId, setExpandedId] = useState(null);
+  const [activeItemId, setActiveItemId] = useState(
+    journeyData[0]?.id || "bca-bbd-2024"
+  );
 
   // Scroll to and expand card matching URL hash or search parameter (?selected=id or #id)
   useEffect(() => {
@@ -678,7 +669,6 @@ const JourneyPage = () => {
     return () => clearTimeout(timer);
   }, [location.hash, location.search]);
 
-  const [showFloatingNav, setShowFloatingNav] = useState(false);
   const [showCategoryFilters, setShowCategoryFilters] = useState(true);
   const isScrollingLocked = useRef(false);
 
@@ -812,21 +802,89 @@ const JourneyPage = () => {
   }, [allYears, activeYear]);
 
   
-  useEffect(() => {
-    const onScroll = () => {
-      if (window.scrollY < 150 && allYears.length > 0) {
-        setActiveYear(allYears[0]);
+  const handleItemClick = useCallback(
+    (id, year) => {
+      isScrollingLocked.current = true;
+      setActiveItemId(id);
+      setActiveYear(year);
+
+      const isVisible = filteredData.some((e) => e.id === id);
+      if (!isVisible) {
+        setActiveFilter("All");
+        setSearch("");
       }
-      if (window.scrollY > 300) {
-        setShowFloatingNav(true);
-      } else {
-        setShowFloatingNav(false);
+
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          const header =
+            document.querySelector("header") || document.querySelector("nav");
+          const headerH = header ? header.getBoundingClientRect().height : 80;
+          const top =
+            el.getBoundingClientRect().top + window.scrollY - headerH - 24;
+          window.scrollTo({ top, behavior: "smooth" });
+          el.classList.add(
+            "ring-2",
+            "ring-lime-400",
+            "rounded-2xl",
+            "transition-all",
+            "duration-500"
+          );
+          setTimeout(() => {
+            el.classList.remove("ring-2", "ring-lime-400");
+            isScrollingLocked.current = false;
+          }, 2500);
+        } else {
+          isScrollingLocked.current = false;
+        }
+      }, 50);
+    },
+    [filteredData]
+  );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isScrollingLocked.current) return;
+      const scrollY = window.scrollY;
+      if (scrollY < 120 && filteredData.length > 0) {
+        if (activeItemId !== filteredData[0].id) {
+          setActiveItemId(filteredData[0].id);
+          if (filteredData[0].year) setActiveYear(filteredData[0].year);
+        }
+        return;
+      }
+
+      const triggerY = scrollY + window.innerHeight * 0.38;
+
+      let closestId = null;
+      let minDistance = Infinity;
+
+      filteredData.forEach((event) => {
+        const el = document.getElementById(event.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const top = rect.top + scrollY;
+          const dist = Math.abs(top - triggerY);
+          if (dist < minDistance) {
+            minDistance = dist;
+            closestId = event.id;
+          }
+        }
+      });
+
+      if (closestId && closestId !== activeItemId) {
+        setActiveItemId(closestId);
+        const item = filteredData.find((e) => e.id === closestId);
+        if (item && item.year) {
+          setActiveYear(item.year);
+        }
       }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [allYears]);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [filteredData, activeItemId]);
 
   
   return (
@@ -851,15 +909,8 @@ const JourneyPage = () => {
 
 
       
-      {view === "timeline" && (showFloatingNav || search.trim() !== "") && (
-        <FixedYearNav
-          years={allYears}
-          activeYear={activeYear}
-          onYearClick={handleYearClick}
-        />
-      )}
 
-      <section className="relative overflow-hidden pt-10 pb-16 sm:pt-14 sm:pb-20 bg-white/0">
+      <section id="journey-hero" className="relative overflow-hidden pt-10 pb-16 sm:pt-14 sm:pb-20 bg-white/0">
         {/* Ambient glows */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/3 top-1/3 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-400/5 blur-[120px]" />
