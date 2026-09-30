@@ -361,8 +361,48 @@ const Navbar = () => {
                 </Link>
               </div>
 
-              {/* Mobile right — Search button */}
-              <div className="ml-auto flex items-center gap-1 xl:hidden">
+              {/* Mobile right — User Login / Avatar + Search button */}
+              <div className="ml-auto flex items-center gap-1.5 xl:hidden">
+                {user ? (
+                  <button
+                    type="button"
+                    onClick={openProfileModal}
+                    aria-label="Open user profile"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-emerald-500/40 bg-emerald-500/10"
+                  >
+                    <UserAvatar user={user} className="h-6 w-6 text-[10px]" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openSignInModal({
+                        title: "Sign in with Google",
+                        subtitle: "Sign in or sign up with your Google account.",
+                      })
+                    }
+                    aria-label="Sign in with Google"
+                    title="Sign in with Google"
+                    className={clsx(
+                      "group relative flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200",
+                      isDark
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400"
+                        : "border-emerald-500/30 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-400",
+                    )}
+                  >
+                    <div className="relative flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 dark:bg-slate-800 text-white shadow-xs">
+                      <User size={11} className="text-slate-100" />
+                      <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-white dark:bg-slate-950">
+                        <svg width="7" height="7" viewBox="0 0 18 18" aria-hidden="true">
+                          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                        </svg>
+                      </span>
+                    </div>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={openSearch}
@@ -480,6 +520,91 @@ const Navbar = () => {
               </nav>
 
               <div className={clsx("hidden items-center xl:flex shrink-0", isScrolled ? "gap-1.5 2xl:gap-2 ml-2" : "gap-1.5 2xl:gap-3 ml-2 2xl:ml-6")}>
+                {/* User Auth Control — Just to the left side of the Search bar */}
+                {user ? (
+                  <div className="relative shrink-0" ref={userMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 p-1 pr-2.5 text-xs font-bold text-slate-800 dark:text-slate-100 hover:border-emerald-500 transition shadow-sm"
+                      aria-label="User profile menu"
+                    >
+                      <UserAvatar user={user} className="h-7 w-7 text-xs" />
+                      <span className="hidden xl:inline-block max-w-[65px] 2xl:max-w-[100px] truncate">{user.name.split(" ")[0]}</span>
+                    </button>
+
+                    {userMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl z-50 animate-fadeIn">
+                        <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
+                          <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user.name}</p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
+                            <span className="text-emerald-500 font-bold">G</span> {user.email}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            openProfileModal();
+                          }}
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
+                        >
+                          <User size={14} className="text-emerald-500" /> My Profile
+                        </button>
+                        <Link
+                          to="/receipts"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
+                        >
+                          <Receipt size={14} /> My Receipts
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            logout();
+                            setUserMenuOpen(false);
+                          }}
+                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition"
+                        >
+                          <LogOut size={14} /> Sign Out
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openSignInModal({
+                        title: "Sign in with Google",
+                        subtitle: "Sign in or sign up with your Google account to access your receipts, bookings, and profile.",
+                      })
+                    }
+                    aria-label="Sign in with Google"
+                    title="Sign in with Google"
+                    className={clsx(
+                      "group relative flex items-center gap-1.5 rounded-full border px-2.5 2xl:px-3 py-1.5 text-xs font-bold transition-all duration-200 shrink-0",
+                      isDark
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/20 hover:shadow-[0_0_16px_rgba(52,211,153,0.3)]"
+                        : "border-emerald-500/30 bg-emerald-50 text-emerald-800 hover:border-emerald-500 hover:bg-emerald-100 hover:shadow-[0_0_16px_rgba(52,211,153,0.2)]"
+                    )}
+                  >
+                    {/* Circle User Icon matching Image 1 with Google G indicator */}
+                    <div className="relative flex h-5 w-5 2xl:h-6 2xl:w-6 shrink-0 items-center justify-center rounded-full bg-slate-900 dark:bg-slate-800 text-white shadow-xs group-hover:scale-105 transition-transform">
+                      <User size={12} className="text-slate-100" />
+                      <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5 2xl:h-3 2xl:w-3 items-center justify-center rounded-full bg-white dark:bg-slate-950 shadow-xs">
+                        <svg width="7" height="7" viewBox="0 0 18 18" aria-hidden="true">
+                          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <span className="hidden xl:inline text-xs font-bold tracking-tight">Sign In</span>
+                  </button>
+                )}
+
                 {/* Desktop Search Button */}
                 <button
                   type="button"
@@ -527,58 +652,6 @@ const Navbar = () => {
                     </motion.div>
                   </AnimatePresence>
                 </motion.button>
-
-                {/* User Auth Controls */}
-                {user ? (
-                  <div className="relative shrink-0" ref={userMenuRef}>
-                    <button
-                      type="button"
-                      onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 p-1 pr-2.5 text-xs font-bold text-slate-800 dark:text-slate-100 hover:border-emerald-500 transition shadow-sm"
-                    >
-                      <UserAvatar user={user} className="h-7 w-7 text-xs" />
-                      <span className="hidden xl:inline-block max-w-[65px] 2xl:max-w-[100px] truncate">{user.name.split(" ")[0]}</span>
-                    </button>
-
-                    {userMenuOpen && (
-                      <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl z-50">
-                        <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
-                          <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user.name}</p>
-                          <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
-                            <span className="text-emerald-500 font-bold">G</span> {user.email}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setUserMenuOpen(false);
-                            openProfileModal();
-                          }}
-                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
-                        >
-                          <User size={14} className="text-emerald-500" /> My Profile
-                        </button>
-                        <Link
-                          to="/receipts"
-                          onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
-                        >
-                          <Receipt size={14} /> My Receipts
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            logout();
-                            setUserMenuOpen(false);
-                          }}
-                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition"
-                        >
-                          <LogOut size={14} /> Sign Out
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : null}
 
                 <a
                   href={QUICK_CONTACT.resumeFullStack}

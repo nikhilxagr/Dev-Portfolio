@@ -1,26 +1,5 @@
 const SERVICE_CATALOG = [
   {
-    slug: "mentorship-call",
-    name: "1:1 Mentorship",
-    amountInr: 99,
-    amountPaise: 9900,
-    currency: "INR",
-  },
-  {
-    slug: "resume-review-help",
-    name: "Resume Review and Help",
-    amountInr: 149,
-    amountPaise: 14900,
-    currency: "INR",
-  },
-  {
-    slug: "portfolio-guidance",
-    name: "Portfolio Guidance",
-    amountInr: 99,
-    amountPaise: 9900,
-    currency: "INR",
-  },
-  {
     slug: "frontend-development",
     name: "Frontend Development",
     amountInr: 1499,

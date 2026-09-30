@@ -9,30 +9,6 @@ Nikhil provides freelance web development, cybersecurity, and guidance services.
 
 ## Available Services & Real Pricing
 
-### 1:1 Mentorship
-**Category**: Guidance  
-**Price**: INR 99  
-**Turnaround**: Schedule-based  
-**What you get**: A short student-friendly session for guidance on web development, project direction, learning roadmaps, or portfolio improvement.
-
----
-
-### Resume Review and Help
-**Category**: Career Support  
-**Price**: INR 149  
-**Turnaround**: 1 to 2 days  
-**What you get**: Resume feedback and improvement support for students and freshers who want a cleaner, stronger technical profile. Includes ATS optimization and positioning advice.
-
----
-
-### Portfolio Guidance
-**Category**: Guidance  
-**Price**: INR 99  
-**Turnaround**: 1 to 2 days  
-**What you get**: Guidance for students who want to improve portfolio structure, project presentation, and personal branding.
-
----
-
 ### Frontend Development
 **Category**: Build and Delivery  
 **Price**: INR 1,099 – 1,499  

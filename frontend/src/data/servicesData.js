@@ -1,38 +1,8 @@
 export const SERVICE_OFFERINGS = [
   {
-    slug: "mentorship-call",
-    name: "1:1 Mentorship",
-    category: "Guidance",
-    price: "INR 99",
-    amountInr: 99,
-    turnaround: "Schedule-based",
-    summary:
-      "A short student-friendly session for guidance on web development, project direction, learning roadmaps, or portfolio improvement.",
-  },
-  {
-    slug: "resume-review-help",
-    name: "Resume Review and Help",
-    category: "Career Support",
-    price: "INR 149",
-    amountInr: 149,
-    turnaround: "1 to 2 days",
-    summary:
-      "Resume feedback and improvement support for students and freshers who want a cleaner, stronger technical profile.",
-  },
-  {
-    slug: "portfolio-guidance",
-    name: "Portfolio Guidance",
-    category: "Guidance",
-    price: "INR 99",
-    amountInr: 99,
-    turnaround: "1 to 2 days",
-    summary:
-      "Guidance for students who want to improve portfolio structure, project presentation, and personal branding.",
-  },
-  {
     slug: "frontend-development",
     name: "Frontend Development",
-    category: "Build and Delivery",
+    category: "Frontend",
     price: "INR 1099 - 1499",
     amountInr: 1499,
     turnaround: "3 to 5 days for basic scope",
@@ -42,7 +12,7 @@ export const SERVICE_OFFERINGS = [
   {
     slug: "backend-development",
     name: "Backend Development",
-    category: "Build and Delivery",
+    category: "Backend",
     price: "INR 1299 - 1799",
     amountInr: 1799,
     turnaround: "3 to 6 days",
@@ -52,7 +22,7 @@ export const SERVICE_OFFERINGS = [
   {
     slug: "full-stack-development",
     name: "Full Stack Development",
-    category: "Build and Delivery",
+    category: "Full Stack",
     price: "INR 2999 - 3499",
     amountInr: 3499,
     turnaround: "Depends on scope",

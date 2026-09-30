@@ -4,8 +4,6 @@ import {
   ArrowRight,
   CheckCircle2,
   ShieldCheck,
-  Layers,
-  TimerReset,
   CreditCard,
   HeartHandshake,
   Sparkles,
@@ -60,16 +58,26 @@ const GoogleIcon = () => (
 );
 
 const categoryBadgeStyle = {
-  Guidance:
-    "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-  "Career Support":
+  Frontend:
     "border-cyan-500/30 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300",
+  Backend:
+    "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+  "Full Stack":
+    "border-lime-500/30 bg-lime-500/10 text-lime-700 dark:text-lime-300",
   "Build and Delivery":
     "border-lime-500/30 bg-lime-500/10 text-lime-700 dark:text-lime-300",
 };
 
 const serviceCardAccent = {
-  Guidance: {
+  Frontend: {
+    card: "border-slate-200 dark:border-cyan-500/30 hover:border-cyan-400 dark:hover:border-cyan-400",
+    glow: "bg-cyan-400/10",
+    line: "bg-cyan-500/40",
+    panel:
+      "border-slate-200 bg-slate-50/90 dark:border-cyan-500/20 dark:bg-[#020803]/80",
+    bullet: "text-cyan-600 dark:text-cyan-400",
+  },
+  Backend: {
     card: "border-slate-200 dark:border-emerald-500/30 hover:border-emerald-400 dark:hover:border-emerald-400",
     glow: "bg-emerald-400/10",
     line: "bg-emerald-500/40",
@@ -77,13 +85,13 @@ const serviceCardAccent = {
       "border-slate-200 bg-slate-50/90 dark:border-emerald-500/20 dark:bg-[#020803]/80",
     bullet: "text-emerald-600 dark:text-emerald-400",
   },
-  "Career Support": {
-    card: "border-slate-200 dark:border-cyan-500/30 hover:border-cyan-400 dark:hover:border-cyan-400",
-    glow: "bg-cyan-400/10",
-    line: "bg-cyan-500/40",
+  "Full Stack": {
+    card: "border-slate-200 dark:border-lime-500/30 hover:border-lime-400 dark:hover:border-lime-400",
+    glow: "bg-lime-400/10",
+    line: "bg-lime-500/40",
     panel:
-      "border-slate-200 bg-slate-50/90 dark:border-cyan-500/20 dark:bg-[#020803]/80",
-    bullet: "text-cyan-600 dark:text-cyan-400",
+      "border-slate-200 bg-slate-50/90 dark:border-lime-500/20 dark:bg-[#020803]/80",
+    bullet: "text-lime-600 dark:text-lime-400",
   },
   "Build and Delivery": {
     card: "border-slate-200 dark:border-lime-500/30 hover:border-lime-400 dark:hover:border-lime-400",
@@ -96,12 +104,18 @@ const serviceCardAccent = {
 };
 
 const serviceBadgeMap = {
-  "mentorship-call": { text: "⭐ HIGH VALUE", color: "border-amber-400/40 bg-amber-400/10 text-amber-600 dark:text-amber-300" },
-  "resume-review-help": { text: "⚡ ATS OPTIMIZED", color: "border-cyan-400/40 bg-cyan-400/10 text-cyan-600 dark:text-cyan-300" },
-  "portfolio-guidance": { text: "✨ BRAND BOOST", color: "border-teal-400/40 bg-teal-400/10 text-teal-600 dark:text-teal-300" },
-  "frontend-development": { text: "🎨 PIXEL PERFECT", color: "border-emerald-400/40 bg-emerald-400/10 text-emerald-600 dark:text-emerald-300" },
-  "backend-development": { text: "⚙️ SCALABLE APIS", color: "border-blue-400/40 bg-blue-400/10 text-blue-600 dark:text-blue-300" },
-  "full-stack-development": { text: "🔥 MOST POPULAR", color: "border-lime-400/40 bg-lime-400/10 text-lime-700 dark:text-lime-300 font-extrabold" },
+  "frontend-development": {
+    text: "🎨 PIXEL PERFECT",
+    color: "border-cyan-400/40 bg-cyan-400/10 text-cyan-600 dark:text-cyan-300",
+  },
+  "backend-development": {
+    text: "⚙️ SCALABLE APIS",
+    color: "border-emerald-400/40 bg-emerald-400/10 text-emerald-600 dark:text-emerald-300",
+  },
+  "full-stack-development": {
+    text: "🔥 MOST POPULAR",
+    color: "border-lime-400/40 bg-lime-400/10 text-lime-700 dark:text-lime-300 font-extrabold",
+  },
 };
 
 const defaultServiceDetails = {
@@ -117,39 +131,6 @@ const defaultServiceDetails = {
 };
 
 const serviceDetailMap = {
-  "mentorship-call": {
-    idealFor:
-      "Students, BCA/B.Tech learners, and self-taught devs seeking 1-on-1 career direction, project planning, or DSA strategies.",
-    engagementModel: "60-Minute Live 1:1 Video Session + Action Plan Notes",
-    deliverables: [
-      "Custom 3 to 6-month learning & career roadmap",
-      "Project direction & architectural guidance",
-      "Resume & portfolio enhancement recommendations",
-    ],
-    stack: ["Career Strategy", "Project Architecture", "DSA Guidance", "1:1 Live Call"],
-  },
-  "resume-review-help": {
-    idealFor:
-      "Job seekers and freshers aiming for ATS-friendly resumes that land software engineering interviews.",
-    engagementModel: "Line-by-Line Resume Rewrite + Positioning & Structure Audit",
-    deliverables: [
-      "High-impact, ATS-optimized single-page resume layout",
-      "Stronger technical phrasing for projects, skills, & metrics",
-      "LinkedIn headline & GitHub profile optimization checklist",
-    ],
-    stack: ["ATS Formatting", "Technical Phrasing", "LinkedIn Optimization", "PDF Handover"],
-  },
-  "portfolio-guidance": {
-    idealFor:
-      "Developers who want their personal website to look credible, professional, and visually stunning to recruiters.",
-    engagementModel: "Full UX & Code Review + Section-by-Section Enhancement Roadmap",
-    deliverables: [
-      "UI/UX review of homepage, projects, & contact sections",
-      "Recommendations for showcasing live demos & technical depth",
-      "Lighthouse performance, mobile responsiveness & SEO audit notes",
-    ],
-    stack: ["UI/UX Review", "Branding Strategy", "Lighthouse Audit", "SEO Optimization"],
-  },
   "frontend-development": {
     idealFor:
       "Founders, startups, and creators needing responsive, ultra-fast React or Next.js web applications.",
@@ -185,26 +166,6 @@ const serviceDetailMap = {
   },
 };
 
-const serviceHighlights = [
-  {
-    title: "Execution-First Delivery",
-    summary:
-      "Transparent scope definition, daily progress updates, and clean modular code architecture.",
-    icon: Layers,
-  },
-  {
-    title: "Security-Aware Architecture",
-    summary:
-      "Every build follows OWASP security guidelines, input validation, and defensive programming.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Fast Communication Loop",
-    summary:
-      "Direct 1-on-1 founder communication with rapid turnaround times and post-launch support.",
-    icon: TimerReset,
-  },
-];
 
 const FAQS = [
   {
@@ -386,7 +347,7 @@ const ServicesPage = () => {
     }
   };
 
-  const categories = ["All", "Build and Delivery", "Guidance", "Career Support"];
+  const categories = ["All", "Frontend", "Backend", "Full Stack"];
 
   const filteredOfferings = SERVICE_OFFERINGS.filter((service) => {
     if (selectedCategory === "All") return true;
@@ -396,14 +357,16 @@ const ServicesPage = () => {
   return (
     <>
       <SeoHead
-        title="Professional Services & Custom Development | Nikhil Agrahari"
-        description="Hire Nikhil Agrahari for professional full-stack web development, MERN stack solutions, REST APIs, 1-on-1 mentorship, and technical advisory."
+        title="Professional Development Services | Nikhil Agrahari"
+        description="Hire Nikhil Agrahari for professional frontend, backend, and full-stack web development, MERN stack solutions, scalable REST APIs, and production deployment."
         pathname="/services"
         keywords={[
           "Nikhil Agrahari services",
-          "freelance full stack developer",
+          "freelance frontend developer",
+          "freelance backend developer",
+          "full stack developer",
           "MERN stack development",
-          "1-on-1 developer mentorship",
+          "REST API development",
           "software engineering services",
         ]}
         jsonLd={createBreadcrumbSchema([
@@ -417,17 +380,13 @@ const ServicesPage = () => {
         {/* Header Hero Section */}
         <FadeInUp>
           <div className="text-center max-w-4xl mx-auto mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full border border-lime-400/40 bg-lime-400/10 px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-lime-600 dark:text-lime-300 shadow-sm mb-4">
-              <Sparkles size={14} className="animate-spin-slow text-lime-400" />
-              PROFESSIONAL ADVISORY &amp; CUSTOM ENGINEERING
-            </span>
 
             <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-slate-900 dark:text-white leading-[1.05]">
               PREMIUM DEVELOPMENT &amp; <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">SERVICES</span>
             </h1>
 
             <p className="mt-4 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Transparent service tracks, guaranteed turnaround times, and instant 256-bit secure checkout for custom web builds &amp; 1:1 advisory.
+              Transparent development tracks, guaranteed turnaround times, and instant 256-bit secure checkout for custom web builds.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -441,31 +400,8 @@ const ServicesPage = () => {
           </div>
         </FadeInUp>
 
-        {/* Top Value Highlights Grid */}
-        <div className="grid gap-5 sm:grid-cols-3 mb-14">
-          {serviceHighlights.map((item) => {
-            const Icon = item.icon;
-            return (
-              <article
-                key={item.title}
-                className="group rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-md backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 dark:border-emerald-500/20 dark:bg-[#030d07]/90 dark:hover:border-emerald-400/50"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
-                  <Icon size={22} />
-                </div>
-                <h2 className="mt-4 text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
-                  {item.title}
-                </h2>
-                <p className="mt-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-                  {item.summary}
-                </p>
-              </article>
-            );
-          })}
-        </div>
-
-        {/* Payment & Security Trust Panel */}
-        <PaymentTrustPanel />
+        {/* Unified Payment & Delivery Promise Card */}
+        <PaymentTrustPanel includeHighlights />
 
         {/* Notification Alerts */}
         {paymentError ? (
@@ -483,10 +419,7 @@ const ServicesPage = () => {
 
         {/* Catalog Section Header & Category Filters */}
         <div className="mt-16 mb-10 text-center">
-          <span className="font-mono text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-            // TRANSPARENT SERVICE CATALOG
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mt-1">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
             Service Packages &amp; Deliverables
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium max-w-xl mx-auto mt-2">
@@ -530,12 +463,12 @@ const ServicesPage = () => {
         </div>
 
         {/* Service Catalog Grid */}
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {filteredOfferings.map((service, index) => {
             const isActiveService = activeServiceSlug === service.slug;
             const isProcessing = processingSlug === service.slug;
             const accent =
-              serviceCardAccent[service.category] || serviceCardAccent.Guidance;
+              serviceCardAccent[service.category] || serviceCardAccent["Full Stack"];
             const details =
               serviceDetailMap[service.slug] || defaultServiceDetails;
             const badge = serviceBadgeMap[service.slug] || { text: "PREMIUM", color: "border-slate-400/40 bg-slate-400/10 text-slate-300" };
@@ -543,13 +476,13 @@ const ServicesPage = () => {
             return (
               <article
                 key={service.slug}
-                className={`group relative overflow-hidden rounded-3xl border bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl transition-all duration-300 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] ${
+                className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl border bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl transition-all duration-300 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] ${
                   accent.card
                 } ${
                   isActiveService
                     ? "border-lime-400 dark:border-lime-400 shadow-[0_0_35px_rgba(163,230,53,0.35)] ring-2 ring-lime-400/40"
                     : ""
-                }`}
+                } ${index === 2 ? "md:col-span-2 lg:col-span-1 max-w-xl md:mx-auto lg:max-w-none w-full" : ""}`}
               >
                 {/* Top Accent Line */}
                 <div
@@ -594,7 +527,7 @@ const ServicesPage = () => {
                 </p>
 
                 {/* Price, Turnaround & Engagement Grid */}
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                <div className="mt-6 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                   {/* Price Box */}
                   <div className={`rounded-2xl border p-4 ${accent.panel}`}>
                     <div className="flex items-center justify-between">
@@ -843,10 +776,7 @@ const ServicesPage = () => {
         {/* Frequently Asked Questions (FAQ Accordion) */}
         <div className="mt-20 max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <span className="font-mono text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-              // PRE-CHECKOUT ANSWERS
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
               Frequently Asked Questions
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">

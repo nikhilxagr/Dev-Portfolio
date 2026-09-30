@@ -13,6 +13,33 @@ import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createProjectSchema } from "@/utils/seo";
 import { SIGNATURE_PROJECTS } from "@/data/projectsData";
 
+const parseHighlight = (item) => {
+  if (typeof item !== "string") {
+    return { icon: "⚡", title: "", body: String(item) };
+  }
+  let icon = "⚡";
+  let rest = item;
+  if (item.startsWith("✓✓")) {
+    icon = "✓✓";
+    rest = item.slice(2).trim();
+  } else {
+    const match = item.match(/^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)\s*(.*)$/u);
+    if (match) {
+      icon = match[1];
+      rest = match[2];
+    }
+  }
+  const colonIndex = rest.indexOf(":");
+  if (colonIndex !== -1 && colonIndex < 50) {
+    return {
+      icon,
+      title: rest.slice(0, colonIndex).trim(),
+      body: rest.slice(colonIndex + 1).trim(),
+    };
+  }
+  return { icon, title: "", body: rest };
+};
+
 const ProjectDetailsPage = () => {
   const { slug } = useParams();
   const staticProject = useMemo(
@@ -297,15 +324,30 @@ const ProjectDetailsPage = () => {
                   <h2 className="text-xl font-black text-slate-900 dark:text-cyan-100 flex items-center gap-2">
                     🚀 Key Features
                   </h2>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    {project.highlights.map((item) => (
-                      <div
-                        key={item}
-                        className="flex items-start gap-2.5 rounded-xl border border-slate-200/90 dark:border-white/[0.06] bg-slate-100/90 dark:bg-slate-900/60 p-3.5 text-sm font-semibold text-slate-800 dark:text-slate-200 shadow-xs"
-                      >
-                        <span className="shrink-0">{item}</span>
-                      </div>
-                    ))}
+                  <div className="mt-5 grid gap-3.5 sm:grid-cols-2">
+                    {project.highlights.map((item, idx) => {
+                      const { icon, title, body } = parseHighlight(item);
+                      return (
+                        <div
+                          key={idx}
+                          className="group relative flex items-start gap-3 rounded-xl border border-slate-200/90 dark:border-white/[0.06] bg-slate-100/70 dark:bg-slate-900/60 p-3.5 text-sm transition-all duration-200 hover:border-emerald-500/40 hover:bg-white dark:hover:bg-slate-900/90 shadow-xs min-w-0"
+                        >
+                          <span className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-sm select-none">
+                            {icon}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            {title ? (
+                              <h3 className="font-bold text-slate-900 dark:text-white leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                {title}
+                              </h3>
+                            ) : null}
+                            <p className="mt-0.5 text-xs sm:text-sm font-normal text-slate-600 dark:text-slate-300 leading-relaxed break-words">
+                              {body}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </FadeInUp>
@@ -322,9 +364,9 @@ const ProjectDetailsPage = () => {
                       </h2>
                       <ul className="mt-3 space-y-2.5 text-sm font-medium text-slate-700 dark:text-slate-300">
                         {project.challenges.map((c) => (
-                          <li key={c} className="flex gap-2.5 items-start">
+                          <li key={c} className="flex gap-2.5 items-start min-w-0">
                             <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
-                            <span>{c}</span>
+                            <span className="flex-1 min-w-0 break-words">{c}</span>
                           </li>
                         ))}
                       </ul>
@@ -338,9 +380,9 @@ const ProjectDetailsPage = () => {
                       </h2>
                       <ul className="mt-3 space-y-2.5 text-sm font-medium text-slate-700 dark:text-slate-300">
                         {project.outcomes.map((o) => (
-                          <li key={o} className="flex gap-2.5 items-start">
+                          <li key={o} className="flex gap-2.5 items-start min-w-0">
                             <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-emerald-500 dark:bg-emerald-400" />
-                            <span>{o}</span>
+                            <span className="flex-1 min-w-0 break-words">{o}</span>
                           </li>
                         ))}
                       </ul>

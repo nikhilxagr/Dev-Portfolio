@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Lock, Mail, User as UserIcon, X, LogIn, Sparkles, ArrowRight } from "lucide-react";
+import { Lock, Mail, User as UserIcon, X, LogIn, ArrowRight, UserPlus } from "lucide-react";
 import { useUserAuth } from "@/context/UserAuthContext";
 import {
   getGoogleAuthUrl,
@@ -119,7 +119,7 @@ const SignInModal = () => {
           {/* Header */}
           <div className="text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-              <Sparkles size={22} />
+              <UserPlus size={22} />
             </div>
             <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
               {title}
