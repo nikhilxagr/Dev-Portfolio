@@ -3,31 +3,77 @@ export const SERVICE_OFFERINGS = [
     slug: "frontend-development",
     name: "Frontend Development",
     category: "Frontend",
-    price: "INR 1099 - 1499",
+    price: "INR 1099 - INR 1499",
     amountInr: 1499,
     turnaround: "3 to 5 days for basic scope",
+    badge: "CLIENT FAVORITE",
+    badgeColor: "border-lime-500/40 text-lime-400 bg-lime-500/10",
+    expectedOutcome:
+      "Production-ready responsive frontend modules with clear handover in 3–5 days for basic scope.",
     summary:
-      "Responsive frontend modules or small websites focused on clean UI, usability, and handover clarity.",
+      "Modern, responsive frontend experiences with clean component architecture and performance-focused implementation.",
+    bullets: [
+      "React and Tailwind responsive development",
+      "Responsive layout and interaction design",
+      "Performance and accessibility-first delivery",
+    ],
   },
   {
     slug: "backend-development",
     name: "Backend Development",
     category: "Backend",
-    price: "INR 1299 - 1799",
+    price: "INR 1299 - INR 1799",
     amountInr: 1799,
     turnaround: "3 to 6 days",
+    badge: "SECURE APIS",
+    badgeColor: "border-emerald-500/40 text-emerald-400 bg-emerald-500/10",
+    expectedOutcome:
+      "Ship secure API modules with validation and logging baseline in 3–6 days.",
     summary:
-      "Node.js and Express-based backend support for APIs, validation, routing, and simple data workflows.",
+      "Reliable backend systems with API design, authentication, validation, and production-focused architecture.",
+    bullets: [
+      "REST API development with Node.js and Express",
+      "Database modeling and integration",
+      "Validation, rate limiting, and secure patterns",
+    ],
   },
   {
     slug: "full-stack-development",
     name: "Full Stack Development",
     category: "Full Stack",
-    price: "INR 2999 - 3499",
+    price: "INR 2999 - INR 3499",
     amountInr: 3499,
     turnaround: "Depends on scope",
+    badge: "PREMIUM DELIVERY",
+    badgeColor: "border-amber-500/40 text-amber-400 bg-amber-500/10",
+    expectedOutcome:
+      "Receive a functional full-stack scope with phased milestones and deployment support.",
     summary:
-      "Small full stack builds with frontend, backend, database integration, and basic deployment support.",
+      "End-to-end development from UI to APIs with practical product thinking, deployment support, and production readiness.",
+    bullets: [
+      "Frontend + backend integration",
+      "Authentication and protected workflows",
+      "Deployment-ready project setup",
+    ],
+  },
+  {
+    slug: "security-software-project",
+    name: "Security Software & Project",
+    category: "Security",
+    price: "INR 2499 - INR 2999",
+    amountInr: 2499,
+    turnaround: "Phased Milestones / Custom Scope",
+    badge: "CUSTOM SCOPE",
+    badgeColor: "border-cyan-500/40 text-cyan-400 bg-cyan-500/10",
+    expectedOutcome:
+      "Custom security architecture, vulnerability audit & tailored software scope with milestone delivery.",
+    summary:
+      "Tailored security-focused software engineering, OWASP vulnerability assessments, API hardening, and custom project architecture.",
+    bullets: [
+      "Security architecture review & OWASP auditing",
+      "Custom software engineering & scope discussion",
+      "Defensive coding, rate limiting & auth hardening",
+    ],
   },
 ];
 

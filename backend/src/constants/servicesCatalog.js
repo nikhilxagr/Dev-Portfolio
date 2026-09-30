@@ -20,6 +20,13 @@ const SERVICE_CATALOG = [
     amountPaise: 349900,
     currency: "INR",
   },
+  {
+    slug: "security-software-project",
+    name: "Security Software & Project",
+    amountInr: 2499,
+    amountPaise: 249900,
+    currency: "INR",
+  },
 ];
 
 export const SUPPORT_PAYMENT_CONFIG = Object.freeze({

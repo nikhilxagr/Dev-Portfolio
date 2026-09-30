@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import clsx from "clsx";
 import {
   ArrowRight,
   CheckCircle2,
@@ -59,62 +60,66 @@ const GoogleIcon = () => (
 
 const categoryBadgeStyle = {
   Frontend:
-    "border-cyan-500/30 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300",
+    "border-lime-500/30 bg-lime-500/10 text-lime-400",
   Backend:
-    "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+    "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
   "Full Stack":
-    "border-lime-500/30 bg-lime-500/10 text-lime-700 dark:text-lime-300",
-  "Build and Delivery":
-    "border-lime-500/30 bg-lime-500/10 text-lime-700 dark:text-lime-300",
+    "border-amber-500/30 bg-amber-500/10 text-amber-400",
+  Security:
+    "border-cyan-500/30 bg-cyan-500/10 text-cyan-400",
 };
 
 const serviceCardAccent = {
   Frontend: {
-    card: "border-slate-200 dark:border-cyan-500/30 hover:border-cyan-400 dark:hover:border-cyan-400",
-    glow: "bg-cyan-400/10",
-    line: "bg-cyan-500/40",
-    panel:
-      "border-slate-200 bg-slate-50/90 dark:border-cyan-500/20 dark:bg-[#020803]/80",
-    bullet: "text-cyan-600 dark:text-cyan-400",
-  },
-  Backend: {
-    card: "border-slate-200 dark:border-emerald-500/30 hover:border-emerald-400 dark:hover:border-emerald-400",
+    card: "border-slate-800 dark:border-emerald-500/20 hover:border-emerald-400/60",
     glow: "bg-emerald-400/10",
     line: "bg-emerald-500/40",
     panel:
       "border-slate-200 bg-slate-50/90 dark:border-emerald-500/20 dark:bg-[#020803]/80",
-    bullet: "text-emerald-600 dark:text-emerald-400",
+    bullet: "text-lime-400",
+  },
+  Backend: {
+    card: "border-slate-800 dark:border-emerald-500/20 hover:border-emerald-400/60",
+    glow: "bg-emerald-400/10",
+    line: "bg-emerald-500/40",
+    panel:
+      "border-slate-200 bg-slate-50/90 dark:border-emerald-500/20 dark:bg-[#020803]/80",
+    bullet: "text-emerald-400",
   },
   "Full Stack": {
-    card: "border-slate-200 dark:border-lime-500/30 hover:border-lime-400 dark:hover:border-lime-400",
-    glow: "bg-lime-400/10",
-    line: "bg-lime-500/40",
+    card: "border-amber-800/40 dark:border-amber-600/30 hover:border-amber-500/60",
+    glow: "bg-amber-400/10",
+    line: "bg-amber-500/40",
     panel:
-      "border-slate-200 bg-slate-50/90 dark:border-lime-500/20 dark:bg-[#020803]/80",
-    bullet: "text-lime-600 dark:text-lime-400",
+      "border-slate-200 bg-slate-50/90 dark:border-amber-500/20 dark:bg-[#020803]/80",
+    bullet: "text-amber-400",
   },
-  "Build and Delivery": {
-    card: "border-slate-200 dark:border-lime-500/30 hover:border-lime-400 dark:hover:border-lime-400",
-    glow: "bg-lime-400/10",
-    line: "bg-lime-500/40",
+  Security: {
+    card: "border-cyan-800/40 dark:border-cyan-600/30 hover:border-cyan-400/60",
+    glow: "bg-cyan-400/10",
+    line: "bg-cyan-500/40",
     panel:
-      "border-slate-200 bg-slate-50/90 dark:border-lime-500/20 dark:bg-[#020803]/80",
-    bullet: "text-lime-600 dark:text-lime-400",
+      "border-slate-200 bg-slate-50/90 dark:border-cyan-500/20 dark:bg-[#020803]/80",
+    bullet: "text-cyan-400",
   },
 };
 
 const serviceBadgeMap = {
   "frontend-development": {
-    text: "🎨 PIXEL PERFECT",
-    color: "border-cyan-400/40 bg-cyan-400/10 text-cyan-600 dark:text-cyan-300",
+    text: "CLIENT FAVORITE",
+    color: "border-lime-500/40 bg-lime-500/10 text-lime-400",
   },
   "backend-development": {
-    text: "⚙️ SCALABLE APIS",
-    color: "border-emerald-400/40 bg-emerald-400/10 text-emerald-600 dark:text-emerald-300",
+    text: "SECURE APIS",
+    color: "border-emerald-500/40 bg-emerald-500/10 text-emerald-400",
   },
   "full-stack-development": {
-    text: "🔥 MOST POPULAR",
-    color: "border-lime-400/40 bg-lime-400/10 text-lime-700 dark:text-lime-300 font-extrabold",
+    text: "PREMIUM DELIVERY",
+    color: "border-amber-500/40 bg-amber-500/10 text-amber-400 font-extrabold",
+  },
+  "security-software-project": {
+    text: "CUSTOM SCOPE",
+    color: "border-cyan-500/40 bg-cyan-500/10 text-cyan-400 font-extrabold",
   },
 };
 
@@ -164,6 +169,18 @@ const serviceDetailMap = {
     ],
     stack: ["React / Next.js", "Node.js & Express", "MongoDB Atlas", "Payment Gateways", "Vercel / Render"],
   },
+  "security-software-project": {
+    idealFor:
+      "Founders, enterprises, and developers needing tailored security software, OWASP vulnerability audits, or custom technical project scopes.",
+    engagementModel:
+      "Security Discovery + Custom Scope Architecture + Phased Delivery",
+    deliverables: [
+      "OWASP security architecture review & API defense assessment",
+      "Tailored software build or security modules with rate-limiting & auth hardening",
+      "Direct 1-on-1 scope discussion, tailored roadmap & complete Git handover",
+    ],
+    stack: ["Node.js / Express", "React / Next.js", "Python / Fastify", "OWASP Standards", "Burp Suite"],
+  },
 };
 
 
@@ -200,6 +217,11 @@ const ServicesPage = () => {
   const [processingSlug, setProcessingSlug] = useState("");
   const [paymentError, setPaymentError] = useState("");
   const [paymentInfo, setPaymentInfo] = useState("");
+  const [detailsOpenSlug, setDetailsOpenSlug] = useState("");
+
+  const toggleDetails = (slug) => {
+    setDetailsOpenSlug((prev) => (prev === slug ? "" : slug));
+  };
 
   useEffect(() => {
     if (user) {
@@ -347,7 +369,7 @@ const ServicesPage = () => {
     }
   };
 
-  const categories = ["All", "Frontend", "Backend", "Full Stack"];
+  const categories = ["All", "Frontend", "Backend", "Full Stack", "Security"];
 
   const filteredOfferings = SERVICE_OFFERINGS.filter((service) => {
     if (selectedCategory === "All") return true;
@@ -463,311 +485,344 @@ const ServicesPage = () => {
         </div>
 
         {/* Service Catalog Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2">
           {filteredOfferings.map((service, index) => {
             const isActiveService = activeServiceSlug === service.slug;
+            const isDetailsOpen = detailsOpenSlug === service.slug;
             const isProcessing = processingSlug === service.slug;
             const accent =
               serviceCardAccent[service.category] || serviceCardAccent["Full Stack"];
             const details =
               serviceDetailMap[service.slug] || defaultServiceDetails;
-            const badge = serviceBadgeMap[service.slug] || { text: "PREMIUM", color: "border-slate-400/40 bg-slate-400/10 text-slate-300" };
+            const badge = serviceBadgeMap[service.slug] || {
+              text: "CUSTOM SCOPE",
+              color: "border-cyan-400/40 bg-cyan-400/10 text-cyan-400",
+            };
 
             return (
               <article
                 key={service.slug}
-                className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl border bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl transition-all duration-300 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] ${
-                  accent.card
-                } ${
-                  isActiveService
-                    ? "border-lime-400 dark:border-lime-400 shadow-[0_0_35px_rgba(163,230,53,0.35)] ring-2 ring-lime-400/40"
-                    : ""
-                } ${index === 2 ? "md:col-span-2 lg:col-span-1 max-w-xl md:mx-auto lg:max-w-none w-full" : ""}`}
+                className={clsx(
+                  "group relative flex flex-col justify-between overflow-hidden rounded-3xl border p-6 sm:p-7 shadow-xl backdrop-blur-xl transition-all duration-300",
+                  "bg-white/95 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)]",
+                  accent.card,
+                  isActiveService && "ring-2 ring-lime-400/40 shadow-[0_0_35px_rgba(163,230,53,0.35)]",
+                )}
               >
                 {/* Top Accent Line */}
                 <div
-                  className={`pointer-events-none absolute inset-x-0 top-0 h-[3px] ${accent.line}`}
+                  className={clsx(
+                    "pointer-events-none absolute inset-x-0 top-0 h-[2px]",
+                    accent.line,
+                  )}
                 />
-                
+
                 {/* Background Ambient Glow */}
                 <div
-                  className={`pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full blur-3xl transition-opacity duration-300 ${
-                    accent.glow
-                  } ${isActiveService ? "opacity-100" : "opacity-40"}`}
+                  className={clsx(
+                    "pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full blur-3xl transition-opacity duration-300",
+                    accent.glow,
+                    isActiveService ? "opacity-100" : "opacity-30",
+                  )}
                 />
 
-                {/* Card Header: Number, Category, Badge & Title */}
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500">
-                      PLAN #{String(index + 1).padStart(2, "0")}
-                    </span>
+                <div>
+                  {/* Card Header: Title (Uppercase) & Badge */}
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="font-display text-lg sm:text-xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
+                      {service.name}
+                    </h3>
+
                     <span
-                      className={`rounded-full border px-3 py-1 text-[11px] font-extrabold ${
-                        categoryBadgeStyle[service.category]
-                      }`}
+                      className={clsx(
+                        "rounded-full border px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider font-mono",
+                        service.badgeColor || badge.color,
+                      )}
                     >
-                      {service.category}
+                      {service.badge || badge.text}
                     </span>
                   </div>
 
-                  <span
-                    className={`rounded-full border px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider ${badge.color}`}
-                  >
-                    {badge.text}
-                  </span>
-                </div>
-
-                <h3 className="mt-3 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-                  {service.name}
-                </h3>
-
-                <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-                  {service.summary}
-                </p>
-
-                {/* Price, Turnaround & Engagement Grid */}
-                <div className="mt-6 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                  {/* Price Box */}
-                  <div className={`rounded-2xl border p-4 ${accent.panel}`}>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                        Price
-                      </p>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 uppercase">
-                        <Lock size={10} /> 100% Fixed
-                      </span>
-                    </div>
-                    <p className="mt-1 font-outfit text-3xl font-black text-slate-900 dark:text-white">
+                  {/* Price in Neon Lime Font */}
+                  <div className="mt-3">
+                    <p className="font-outfit text-2xl sm:text-3xl font-black tracking-tight text-lime-600 dark:text-lime-400">
                       {service.price}
                     </p>
-                    <p className="mt-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-300 flex items-center gap-1">
-                      <BadgeCheck size={13} /> Immediate Enrollment
+                    <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">
+                      // SERVER-VERIFIED CASHFREE CHECKOUT
                     </p>
                   </div>
 
-                  {/* Turnaround & Engagement Box */}
-                  <div className="grid gap-3">
-                    <div className={`rounded-2xl border p-3 flex items-center gap-3 ${accent.panel}`}>
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                        <Clock size={18} />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                          Turnaround
-                        </p>
-                        <p className="text-xs font-extrabold text-slate-900 dark:text-white">
-                          {service.turnaround}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className={`rounded-2xl border p-3 ${accent.panel}`}>
-                      <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-                        Engagement Model
-                      </p>
-                      <p className="mt-0.5 text-xs font-semibold text-slate-800 dark:text-slate-200 leading-snug">
-                        {details.engagementModel}
+                  {/* Expected Outcome Inset Box */}
+                  {service.expectedOutcome && (
+                    <div className="mt-4 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.05] p-3.5">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                        // EXPECTED OUTCOME
+                      </span>
+                      <p className="mt-1 text-xs font-semibold text-slate-800 dark:text-emerald-100/90 leading-relaxed">
+                        {service.expectedOutcome}
                       </p>
                     </div>
-                  </div>
-                </div>
+                  )}
 
-                {/* Target Audience / Ideal For */}
-                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/90 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
-                  <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                    <Award size={13} className="text-emerald-500" /> Ideal For
+                  {/* Summary Description */}
+                  <p className="mt-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
+                    {service.summary}
                   </p>
-                  <p className="mt-1 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
-                    {details.idealFor}
-                  </p>
-                </div>
 
-                {/* Deliverables Checklist */}
-                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/90 p-4 dark:border-emerald-500/20 dark:bg-[#020803]/80">
-                  <p className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                    <FileCheck2 size={13} className="text-emerald-500" /> What You Get &amp; Deliverables
-                  </p>
-                  <ul className="mt-2.5 space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200 font-medium">
-                    {details.deliverables.map((item) => (
-                      <li
-                        key={`${service.slug}-${item}`}
-                        className="flex items-start gap-2.5"
-                      >
-                        <CheckCircle2
-                          size={16}
-                          className={`mt-0.5 shrink-0 ${accent.bullet}`}
-                        />
-                        <span className="leading-snug">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Key Stack & Method Pills */}
-                <div className="mt-4 flex flex-wrap items-center gap-1.5">
-                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-400 mr-1">
-                    STACK:
-                  </span>
-                  {details.stack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-[11px] font-bold text-slate-700 dark:border-emerald-500/20 dark:bg-slate-900/60 dark:text-slate-300"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Action Buttons */}
-                <div className="mt-6 flex flex-wrap gap-2.5">
-                  <Button
-                    type="button"
-                    disabled={Boolean(
-                      processingSlug && processingSlug !== service.slug
-                    )}
-                    onClick={() => {
-                      setPaymentError("");
-                      setPaymentInfo("");
-
-                      if (!isActiveService) {
-                        setActiveServiceSlug(service.slug);
-                        return;
-                      }
-
-                      handlePayAndBook(service);
-                    }}
-                    className="flex-1 min-w-[190px]"
-                  >
-                    <CreditCard size={15} />
-                    {isActiveService
-                      ? isProcessing
-                        ? "Opening Cashfree Checkout..."
-                        : "Proceed to Secure Checkout"
-                      : `Pay & Book (INR ${service.amountInr})`}
-                  </Button>
-
-                  <Button
-                    to="/contact"
-                    variant="secondary"
-                    className="flex-1 min-w-[150px]"
-                  >
-                    Custom Scope <ArrowRight size={15} />
-                  </Button>
-                </div>
-
-                {/* Expanded Checkout Drawer inside Card */}
-                {isActiveService ? (
-                  <div className="mt-5 rounded-2xl border border-lime-400/40 bg-lime-400/10 p-5 backdrop-blur-xl animate-fadeIn">
-                    <div className="flex items-center justify-between border-b border-lime-400/20 pb-3">
-                      <div>
-                        <p className="text-xs font-mono font-extrabold uppercase tracking-widest text-lime-700 dark:text-lime-300 flex items-center gap-1.5">
-                          <Lock size={13} /> Step 2: Secure Checkout Verification
-                        </p>
-                        <p className="mt-0.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
-                          Verify details below. Cashfree payment gateway opens in-place with instant receipt generation.
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setActiveServiceSlug("")}
-                        className="rounded-full p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white"
-                      >
-                        <ChevronUp size={18} />
-                      </button>
-                    </div>
-
-                    {!isLoggedIn ? (
-                      <div className="mt-4 rounded-2xl border border-emerald-500/40 bg-white/90 dark:bg-slate-900/90 p-5 text-center shadow-md">
-                        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/20">
-                          <GoogleIcon />
-                        </div>
-                        <p className="mt-2 text-sm font-extrabold text-slate-900 dark:text-white">
-                          Sign In Required to Enroll
-                        </p>
-                        <p className="mt-1 text-xs text-slate-600 dark:text-slate-400 font-medium max-w-sm mx-auto leading-relaxed">
-                          Please sign in with Google first to lock in your enrollment and generate your official payment receipt.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (typeof window !== "undefined") {
-                              sessionStorage.setItem(
-                                "auth_return_url",
-                                window.location.pathname + window.location.search
-                              );
-                            }
-                            window.location.href = getGoogleAuthUrl();
-                          }}
-                          className="mt-4 inline-flex items-center justify-center gap-2.5 rounded-xl bg-slate-900 dark:bg-white px-6 py-2.5 text-xs font-black text-white dark:text-slate-900 shadow-md hover:scale-[1.02] transition"
-                        >
-                          <GoogleIcon />
-                          <span>Continue with Google</span>
-                        </button>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                          <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
-                            Full Name
-                            <input
-                              type="text"
-                              value={buyerForm.customerName}
-                              onChange={(event) =>
-                                updateBuyerForm("customerName", event.target.value)
-                              }
-                              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium text-slate-900 outline-none focus:border-lime-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
-                              placeholder="Your full name"
-                            />
-                          </label>
-
-                          <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
-                            Email <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">(Signed-in Email 🔒)</span>
-                            <input
-                              type="email"
-                              readOnly
-                              value={buyerForm.customerEmail}
-                              className="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/60 px-3.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-not-allowed font-semibold outline-none"
-                              placeholder="you@example.com"
-                            />
-                          </label>
-
-                          <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200 sm:col-span-2">
-                            Phone Number (required for Cashfree OTP &amp; WhatsApp Receipt)
-                            <input
-                              type="text"
-                              value={buyerForm.customerPhone}
-                              onChange={(event) =>
-                                updateBuyerForm("customerPhone", event.target.value)
-                              }
-                              className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium text-slate-900 outline-none focus:border-lime-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
-                              placeholder="e.g. 9876543210"
-                            />
-                          </label>
-                        </div>
-
-                        <div className="mt-4 flex items-center justify-between border-t border-lime-400/20 pt-3 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                          <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
-                            <ShieldCheck size={14} /> 256-bit SSL Encrypted
+                  {/* Bullets List with Green Arrow */}
+                  {service.bullets && (
+                    <ul className="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                      {service.bullets.map((bullet, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-lime-500 dark:text-lime-400 font-bold shrink-0">
+                            →
                           </span>
-                          <span>7-Day Refund Policy Applies</span>
-                        </div>
+                          <span className="leading-snug">{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
+                  {/* In View Details Bar */}
+                  <div className="mt-5 rounded-xl border border-slate-200/80 dark:border-white/5 bg-slate-100/60 dark:bg-white/[0.02] p-2.5">
+                    <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5">
+                      // IN VIEW DETAILS
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-[10px] font-mono font-bold text-slate-600 dark:text-slate-400">
+                      <span className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 px-2 py-0.5">
+                        DELIVERABLES
+                      </span>
+                      <span className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 px-2 py-0.5">
+                        BEST FOR
+                      </span>
+                      <span className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 px-2 py-0.5">
+                        TIMELINE
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Action Buttons & Drawers */}
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/5">
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => toggleDetails(service.slug)}
+                      className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900/80 px-5 py-2.5 text-xs font-bold text-slate-800 dark:text-slate-200 hover:border-emerald-500 hover:text-white transition"
+                    >
+                      {isDetailsOpen ? "HIDE DETAILS" : "VIEW DETAILS"}
+                      <ArrowRight
+                        size={13}
+                        className={clsx(
+                          "transition-transform",
+                          isDetailsOpen && "rotate-90",
+                        )}
+                      />
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={Boolean(
+                        processingSlug && processingSlug !== service.slug,
+                      )}
+                      onClick={() => {
+                        setPaymentError("");
+                        setPaymentInfo("");
+                        if (isActiveService) {
+                          handlePayAndBook(service);
+                        } else {
+                          setActiveServiceSlug(service.slug);
+                        }
+                      }}
+                      className="flex-1 sm:flex-initial inline-flex items-center justify-center rounded-full bg-lime-400 hover:bg-lime-300 px-6 py-2.5 text-xs font-black uppercase tracking-wider text-slate-950 shadow-[0_0_20px_rgba(163,230,53,0.35)] transition-all hover:scale-[1.02]"
+                    >
+                      BOOK NOW
+                    </button>
+                  </div>
+
+                  {/* Custom Scope Discussion Link */}
+                  <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                    <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+                      <Clock size={12} /> {service.turnaround}
+                    </span>
+                    <Link
+                      to="/contact"
+                      className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline hover:text-emerald-500 flex items-center gap-1"
+                    >
+                      Custom Scope Discussion →
+                    </Link>
+                  </div>
+
+                  {/* Expanded View Details Drawer */}
+                  {isDetailsOpen && (
+                    <div className="mt-4 rounded-2xl border border-slate-200 dark:border-emerald-500/20 bg-slate-50 dark:bg-[#020803]/90 p-4 space-y-3 animate-fadeIn text-xs">
+                      <div>
+                        <p className="font-mono text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                          // BEST FOR
+                        </p>
+                        <p className="mt-1 font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
+                          {details.idealFor}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="font-mono text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                          // DELIVERABLES
+                        </p>
+                        <ul className="mt-1.5 space-y-1.5 text-slate-700 dark:text-slate-300">
+                          {details.deliverables.map((item) => (
+                            <li key={item} className="flex items-start gap-2">
+                              <CheckCircle2
+                                size={14}
+                                className="mt-0.5 text-emerald-500 shrink-0"
+                              />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div>
+                        <p className="font-mono text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                          // TECH STACK &amp; TOOLS
+                        </p>
+                        <div className="mt-1.5 flex flex-wrap gap-1">
+                          {details.stack.map((tech) => (
+                            <span
+                              key={tech}
+                              className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 px-2 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-slate-300"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Expanded Checkout Drawer inside Card */}
+                  {isActiveService && (
+                    <div className="mt-5 rounded-2xl border border-lime-400/40 bg-lime-400/10 p-5 backdrop-blur-xl animate-fadeIn">
+                      <div className="flex items-center justify-between border-b border-lime-400/20 pb-3">
+                        <div>
+                          <p className="text-xs font-mono font-extrabold uppercase tracking-widest text-lime-700 dark:text-lime-300 flex items-center gap-1.5">
+                            <Lock size={13} /> Step 2: Secure Checkout Verification
+                          </p>
+                          <p className="mt-0.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                            Verify details below. Cashfree payment gateway opens in-place with instant receipt generation.
+                          </p>
+                        </div>
                         <button
                           type="button"
-                          disabled={isProcessing}
-                          onClick={() => handlePayAndBook(service)}
-                          className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-lime-400 to-emerald-400 py-3 text-xs font-black uppercase tracking-wider text-slate-950 shadow-[0_4px_20px_rgba(163,230,53,0.4)] hover:shadow-[0_6px_28px_rgba(163,230,53,0.6)] hover:scale-[1.01] transition-all"
+                          onClick={() => setActiveServiceSlug("")}
+                          className="rounded-full p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white"
                         >
-                          <CreditCard size={16} />
-                          {isProcessing
-                            ? "Opening Cashfree Gateway..."
-                            : `Complete Payment (INR ${service.amountInr})`}
+                          <ChevronUp size={18} />
                         </button>
-                      </>
-                    )}
-                  </div>
-                ) : null}
+                      </div>
+
+                      {!isLoggedIn ? (
+                        <div className="mt-4 rounded-2xl border border-emerald-500/40 bg-white/90 dark:bg-slate-900/90 p-5 text-center shadow-md">
+                          <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/20">
+                            <GoogleIcon />
+                          </div>
+                          <p className="mt-2 text-sm font-extrabold text-slate-900 dark:text-white">
+                            Sign In Required to Book
+                          </p>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-slate-400 font-medium max-w-sm mx-auto leading-relaxed">
+                            Please sign in with Google first to lock in your enrollment and generate your official payment receipt.
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (typeof window !== "undefined") {
+                                sessionStorage.setItem(
+                                  "auth_return_url",
+                                  window.location.pathname + window.location.search,
+                                );
+                              }
+                              window.location.href = getGoogleAuthUrl();
+                            }}
+                            className="mt-4 inline-flex items-center justify-center gap-2.5 rounded-xl bg-slate-900 dark:bg-white px-6 py-2.5 text-xs font-black text-white dark:text-slate-900 shadow-md hover:scale-[1.02] transition"
+                          >
+                            <GoogleIcon />
+                            <span>Continue with Google</span>
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                            <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                              Full Name
+                              <input
+                                type="text"
+                                value={buyerForm.customerName}
+                                onChange={(event) =>
+                                  updateBuyerForm(
+                                    "customerName",
+                                    event.target.value,
+                                  )
+                                }
+                                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium text-slate-900 outline-none focus:border-lime-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                                placeholder="Your full name"
+                              />
+                            </label>
+
+                            <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                              Email{" "}
+                              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">
+                                (Signed-in Email 🔒)
+                              </span>
+                              <input
+                                type="email"
+                                readOnly
+                                value={buyerForm.customerEmail}
+                                className="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/60 px-3.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-not-allowed font-semibold outline-none"
+                                placeholder="you@example.com"
+                              />
+                            </label>
+
+                            <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200 sm:col-span-2">
+                              Phone Number (required for Cashfree OTP &amp; WhatsApp Receipt)
+                              <input
+                                type="text"
+                                value={buyerForm.customerPhone}
+                                onChange={(event) =>
+                                  updateBuyerForm(
+                                    "customerPhone",
+                                    event.target.value,
+                                  )
+                                }
+                                className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs font-medium text-slate-900 outline-none focus:border-lime-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                                placeholder="e.g. 9876543210"
+                              />
+                            </label>
+                          </div>
+
+                          <div className="mt-4 flex items-center justify-between border-t border-lime-400/20 pt-3 text-[11px] text-slate-600 dark:text-slate-400 font-medium">
+                            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
+                              <ShieldCheck size={14} /> 256-bit SSL Encrypted
+                            </span>
+                            <span>7-Day Refund Policy Applies</span>
+                          </div>
+
+                          <button
+                            type="button"
+                            disabled={isProcessing}
+                            onClick={() => handlePayAndBook(service)}
+                            className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-lime-400 to-emerald-400 py-3 text-xs font-black uppercase tracking-wider text-slate-950 shadow-[0_4px_20px_rgba(163,230,53,0.4)] hover:shadow-[0_6px_28px_rgba(163,230,53,0.6)] hover:scale-[1.01] transition-all"
+                          >
+                            <CreditCard size={16} />
+                            {isProcessing
+                              ? "Opening Cashfree Gateway..."
+                              : `Complete Payment (INR ${service.amountInr})`}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
               </article>
             );
           })}
