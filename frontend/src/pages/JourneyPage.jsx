@@ -198,13 +198,13 @@ const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
 };
 
 // DETAILS PANEL — inline expandable
-const DetailsPanel = ({ d, accent, imageUrl }) => (
+const DetailsPanel = ({ d, accent, imageUrl, onOpenLightbox }) => (
   <div className="border-t border-zinc-200 dark:border-white/[0.07] bg-zinc-50 dark:bg-zinc-950/60 px-5 py-6">
     {/* Meta grid */}
     <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
       {[
-        { label: "Location / Org", value: d.university },
-        { label: "Course / Event", value: d.course },
+        { label: "Location / Org", value: d.university || d.organization },
+        { label: "Course / Event", value: d.course || d.title },
         { label: "Current Status", value: d.status },
         { label: "Expected Graduation", value: d.expectedGraduation },
       ].filter(({ value }) => Boolean(value)).map(({ label, value }) => (
@@ -231,19 +231,32 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
     ].filter(({ text }) => Boolean(text)).map(({ key, label, text }) => (
       <div key={key} className="mb-4">
         <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">{label}</p>
-        <p className="text-[0.8rem] leading-6 text-zinc-600 dark:text-zinc-300">{text}</p>
+        {Array.isArray(text) ? (
+          <ul className="space-y-1.5 mt-1">
+            {text.map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
+                <span className={`mt-[3px] shrink-0 bg-gradient-to-r ${accent} bg-clip-text text-xs font-black text-transparent`}>•</span>
+                <span>{typeof item === "string" ? item : item.name ? `${item.name}: ${item.description}` : item.title || ""}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-[0.8rem] leading-6 text-zinc-600 dark:text-zinc-300">{text}</p>
+        )}
       </div>
     ))}
 
-    {/* Key Features */}
-    {d.keyFeatures?.length > 0 && (
+    {/* Key Features / Event Highlights */}
+    {(d.keyFeatures?.length > 0 || d.eventHighlights?.length > 0) && (
       <div className="mb-4">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Key Features</p>
+        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">
+          // {d.keyFeatures?.length > 0 ? "Key Features" : "Event Highlights"}
+        </p>
         <ul className="space-y-1.5">
-          {d.keyFeatures.map((item, i) => (
+          {(d.keyFeatures || d.eventHighlights).map((item, i) => (
             <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
               <span className={`mt-[3px] shrink-0 bg-gradient-to-r ${accent} bg-clip-text text-xs font-black text-transparent`}>→</span>
-              <span>{item}</span>
+              <span>{typeof item === "string" ? item : item.name ? `${item.name}: ${item.description}` : item.title || ""}</span>
             </li>
           ))}
         </ul>
@@ -258,7 +271,18 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
           {d.areasOfStudy.map((item, i) => (
             <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
               <span className={`mt-[3px] shrink-0 bg-gradient-to-r ${accent} bg-clip-text text-xs font-black text-transparent`}>→</span>
-              <span>{item}</span>
+              <span>
+                {typeof item === "string" ? (
+                  item
+                ) : item.name ? (
+                  <>
+                    <strong className="text-zinc-900 dark:text-zinc-100 font-semibold">{item.name}:</strong>{" "}
+                    {item.description}
+                  </>
+                ) : (
+                  item.description || item.title || ""
+                )}
+              </span>
             </li>
           ))}
         </ul>
@@ -266,37 +290,53 @@ const DetailsPanel = ({ d, accent, imageUrl }) => (
     )}
 
     {/* Gallery */}
-    {d.gallery?.length > 0 && (
+    {(d.gallery?.length > 0 || d.galleryPreview?.length > 0) && (
       <div className="mb-4">
         <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Gallery Preview</p>
-        <div className="flex gap-2">
-          {d.gallery.map((src, i) => (
-            <img key={i} src={src} alt="gallery" className="h-20 w-20 rounded-xl object-cover border border-white/[0.08]" width={80} height={80} loading="lazy" decoding="async" />
+        <div className="flex flex-wrap gap-2">
+          {(d.gallery || d.galleryPreview).map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt={`Gallery preview ${i + 1}`}
+              onClick={() => onOpenLightbox?.(i)}
+              className="h-20 w-20 rounded-xl object-cover border border-zinc-200 dark:border-white/[0.08] cursor-pointer transition-transform duration-200 hover:scale-105 hover:border-lime-300"
+              width={80}
+              height={80}
+              loading="lazy"
+              decoding="async"
+            />
           ))}
         </div>
-        <p className="mt-1 text-[9px] text-zinc-600">{d.gallery.length} Photo{d.gallery.length !== 1 ? "s" : ""}</p>
+        <p className="mt-1 text-[9px] text-zinc-600">
+          {(d.gallery || d.galleryPreview).length} Photo{(d.gallery || d.galleryPreview).length !== 1 ? "s" : ""} • Click any image to view
+        </p>
       </div>
     )}
 
     {/* Skills */}
-    <div className="mb-4">
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Skills Gained</p>
-      <div className="flex flex-wrap gap-1.5">
-        {d.skills.map((s) => (
-          <span key={s} className="rounded-lg border border-zinc-200 dark:border-white/[0.07] bg-zinc-100 dark:bg-zinc-800/60 px-2.5 py-1 text-[10px] font-semibold text-zinc-700 dark:text-zinc-300">{s}</span>
-        ))}
+    {(d.skills?.length > 0 || d.skillsGained?.length > 0) && (
+      <div className="mb-4">
+        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Skills Gained</p>
+        <div className="flex flex-wrap gap-1.5">
+          {(d.skills || d.skillsGained).map((s) => (
+            <span key={s} className="rounded-lg border border-zinc-200 dark:border-white/[0.07] bg-zinc-100 dark:bg-zinc-800/60 px-2.5 py-1 text-[10px] font-semibold text-zinc-700 dark:text-zinc-300">{s}</span>
+          ))}
+        </div>
       </div>
-    </div>
+    )}
 
     {/* Technologies */}
-    <div>
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Technologies Covered</p>
-      <div className="flex flex-wrap gap-1.5">
-        {d.technologies.map((t) => (
-          <span key={t} className={`rounded-lg bg-gradient-to-r ${accent} px-2.5 py-1 text-[10px] font-bold text-black`}>{t}</span>
-        ))}
+    {(d.technologies?.length > 0 || d.technologiesCovered?.length > 0) && (
+      <div>
+        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Technologies Covered</p>
+        <div className="flex flex-wrap gap-1.5">
+          {(d.technologies || d.technologiesCovered).map((t) => (
+            <span key={t} className={`rounded-lg bg-gradient-to-r ${accent} px-2.5 py-1 text-[10px] font-bold text-black`}>{t}</span>
+          ))}
+        </div>
       </div>
-    </div>
+    )}
   </div>
 );
 
@@ -306,6 +346,7 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
   const hasDetails = Boolean(event.details);
   const hasGallery = event.gallery?.length > 0;
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   return (
     <>
@@ -313,7 +354,7 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
       {lightboxOpen && hasGallery && (
         <GalleryLightbox
           images={event.gallery}
-          startIndex={0}
+          startIndex={lightboxIndex}
           onClose={() => setLightboxOpen(false)}
         />
       )}
@@ -333,7 +374,7 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
         {/* Image */}
         <div
           className={`relative h-64 overflow-hidden bg-zinc-800 ${hasGallery ? "cursor-pointer" : ""}`}
-          onClick={hasGallery ? () => setLightboxOpen(true) : undefined}
+          onClick={hasGallery ? () => { setLightboxIndex(0); setLightboxOpen(true); } : undefined}
         >
           <img
             src={event.imageUrl}
@@ -453,7 +494,15 @@ const JourneyCard = ({ event, side = "left", isExpanded, onToggle }) => {
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
               style={{ overflow: "hidden" }}
             >
-              <DetailsPanel d={event.details} accent={event.accent} imageUrl={event.imageUrl} />
+              <DetailsPanel
+                d={event.details}
+                accent={event.accent}
+                imageUrl={event.imageUrl}
+                onOpenLightbox={(idx) => {
+                  setLightboxIndex(idx);
+                  setLightboxOpen(true);
+                }}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -468,6 +517,7 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
   const hasDetails = Boolean(event.details);
   const hasGallery = event.gallery?.length > 0;
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   return (
     <>
@@ -475,7 +525,7 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
       {lightboxOpen && hasGallery && (
         <GalleryLightbox
           images={event.gallery}
-          startIndex={0}
+          startIndex={lightboxIndex}
           onClose={() => setLightboxOpen(false)}
         />
       )}
@@ -492,7 +542,7 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
         {/* Image wrapper */}
         <div
           className={`relative h-48 overflow-hidden bg-zinc-800 ${hasGallery ? "cursor-pointer" : ""}`}
-          onClick={hasGallery ? () => setLightboxOpen(true) : undefined}
+          onClick={hasGallery ? () => { setLightboxIndex(0); setLightboxOpen(true); } : undefined}
         >
           <img
             src={event.imageUrl}
@@ -600,7 +650,15 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
               style={{ overflow: "hidden" }}
             >
-              <DetailsPanel d={event.details} accent={event.accent} imageUrl={event.imageUrl} />
+              <DetailsPanel
+                d={event.details}
+                accent={event.accent}
+                imageUrl={event.imageUrl}
+                onOpenLightbox={(idx) => {
+                  setLightboxIndex(idx);
+                  setLightboxOpen(true);
+                }}
+              />
             </motion.div>
           )}
         </AnimatePresence>

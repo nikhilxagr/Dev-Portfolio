@@ -583,13 +583,13 @@ const Navbar = () => {
                     aria-label="Sign in with Google"
                     title="Sign in with Google"
                     className={clsx(
-                      "group relative flex items-center gap-1.5 rounded-full border px-2.5 2xl:px-3 py-1.5 text-xs font-bold transition-all duration-200 shrink-0",
+                      "group relative flex h-8 w-8 2xl:h-9 2xl:w-9 items-center justify-center rounded-full border transition-all duration-200 shrink-0",
                       isDark
                         ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/20 hover:shadow-[0_0_16px_rgba(52,211,153,0.3)]"
                         : "border-emerald-500/30 bg-emerald-50 text-emerald-800 hover:border-emerald-500 hover:bg-emerald-100 hover:shadow-[0_0_16px_rgba(52,211,153,0.2)]"
                     )}
                   >
-                    {/* Circle User Icon matching Image 1 with Google G indicator */}
+                    {/* Circle User Icon with Google G indicator */}
                     <div className="relative flex h-5 w-5 2xl:h-6 2xl:w-6 shrink-0 items-center justify-center rounded-full bg-slate-900 dark:bg-slate-800 text-white shadow-xs group-hover:scale-105 transition-transform">
                       <User size={12} className="text-slate-100" />
                       <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5 2xl:h-3 2xl:w-3 items-center justify-center rounded-full bg-white dark:bg-slate-950 shadow-xs">
@@ -601,7 +601,6 @@ const Navbar = () => {
                         </svg>
                       </span>
                     </div>
-                    <span className="hidden xl:inline text-xs font-bold tracking-tight">Sign In</span>
                   </button>
                 )}
 

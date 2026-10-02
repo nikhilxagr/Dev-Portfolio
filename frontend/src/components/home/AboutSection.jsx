@@ -55,11 +55,7 @@ const AboutSection = () => {
         {/* Centered Large Section Header outside the div */}
         <FadeInUp>
           <div className="text-center mb-8 sm:mb-10">
-            <p className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3.5 py-1 font-display text-[10px] uppercase tracking-[0.2em] text-green-600 dark:text-green-300 sm:text-xs font-bold">
-              <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
-              About Me
-            </p>
-            <h2 className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
               ABOUT <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">ME</span>
             </h2>
           </div>
