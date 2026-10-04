@@ -21,18 +21,27 @@ export const LenisProvider = ({ children }) => {
       return undefined;
     }
 
+    // Destroy any stale instance from Vite hot module reloading
+    if (window.__activeLenis) {
+      try {
+        window.__activeLenis.destroy();
+      } catch (e) {}
+      window.__activeLenis = null;
+    }
+
     const lenis = new Lenis({
-      duration: 0.75,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 0.18, // Ultra-responsive: stops almost immediately (<180ms)
+      easing: (t) => 1 - Math.pow(1 - t, 4), // Quartic curve: 94% settled in 90ms, locks dead in 180ms
       direction: "vertical",
       gestureDirection: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1.0,
+      wheelMultiplier: 0.78, // Tightly controlled distance per wheel notch
       touchMultiplier: 1.0,
       infinite: false,
     });
 
     lenisRef.current = lenis;
+    window.__activeLenis = lenis;
 
     let rafId = null;
 
@@ -62,6 +71,9 @@ export const LenisProvider = ({ children }) => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       lenis.destroy();
       lenisRef.current = null;
+      if (window.__activeLenis === lenis) {
+        window.__activeLenis = null;
+      }
     };
   }, []);
 
