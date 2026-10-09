@@ -154,16 +154,6 @@ export const SKILL_GROUPS = [
 
 export const MAIN_SKILL_SHOWCASE = [
   {
-    id: "appsec",
-    title: "Application Security",
-    summary:
-      "Applying OWASP Top 10 methodology, Burp Suite workflows, and threat modeling to identify and remediate web vulnerabilities in authorized lab environments.",
-    tags: ["OWASP Top 10", "Burp Suite", "SQLi / XSS", "Threat Modeling"],
-    icon: "ShieldCheck",
-    color: "green",
-    progressPercent: 78,
-  },
-  {
     id: "web-development",
     title: "Full Stack Development",
     summary:
@@ -182,6 +172,16 @@ export const MAIN_SKILL_SHOWCASE = [
     icon: "Braces",
     color: "lime",
     progressPercent: 80,
+  },
+  {
+    id: "cyber-security",
+    title: "Cyber Security Analyst",
+    summary:
+      "Applying OWASP Top 10 methodology, Burp Suite workflows, and threat modeling to identify and remediate web vulnerabilities in authorized lab environments.",
+    tags: ["OWASP Top 10", "Burp Suite", "SQLi / XSS", "Threat Modeling"],
+    icon: "ShieldCheck",
+    color: "cyan",
+    progressPercent: 78,
   },
 ];
 

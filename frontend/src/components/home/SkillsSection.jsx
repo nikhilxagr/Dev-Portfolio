@@ -6,17 +6,6 @@ import FadeInUp from "@/components/animations/FadeInUp";
 import { MAIN_SKILL_SHOWCASE } from "@/constants/siteData";
 
 const skillVisualMap = {
-  "Application Security": {
-    cardClass:
-      "border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-cyan-400/28 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#081e2e] dark:to-[#050d14] dark:shadow-none",
-    orbClass: "bg-cyan-500/10 dark:bg-cyan-400/18",
-    iconWrapClass:
-      "border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:border-cyan-400/40 dark:bg-cyan-400/12 dark:text-cyan-300",
-    iconColorClass: "text-cyan-600 dark:text-cyan-300",
-    titleClass: "text-cyan-700 dark:text-cyan-300",
-    tagClass:
-      "border-cyan-500/20 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 dark:border-cyan-400/35 dark:bg-cyan-950/70 dark:text-cyan-300 dark:hover:bg-cyan-900/70",
-  },
   "Full Stack Development": {
     cardClass:
       "border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-green-400/28 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#082218] dark:to-[#050d14] dark:shadow-none",
@@ -39,12 +28,35 @@ const skillVisualMap = {
     tagClass:
       "border-lime-500/20 bg-lime-50 text-lime-800 hover:bg-lime-100 dark:border-lime-400/35 dark:bg-lime-950/70 dark:text-lime-300 dark:hover:bg-lime-900/70",
   },
+  "Cyber Security Analyst": {
+    cardClass:
+      "border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-cyan-400/28 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#081e2e] dark:to-[#050d14] dark:shadow-none",
+    orbClass: "bg-cyan-500/10 dark:bg-cyan-400/18",
+    iconWrapClass:
+      "border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:border-cyan-400/40 dark:bg-cyan-400/12 dark:text-cyan-300",
+    iconColorClass: "text-cyan-600 dark:text-cyan-300",
+    titleClass: "text-cyan-700 dark:text-cyan-300",
+    tagClass:
+      "border-cyan-500/20 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 dark:border-cyan-400/35 dark:bg-cyan-950/70 dark:text-cyan-300 dark:hover:bg-cyan-900/70",
+  },
+  "Application Security": {
+    cardClass:
+      "border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-cyan-400/28 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#081e2e] dark:to-[#050d14] dark:shadow-none",
+    orbClass: "bg-cyan-500/10 dark:bg-cyan-400/18",
+    iconWrapClass:
+      "border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:border-cyan-400/40 dark:bg-cyan-400/12 dark:text-cyan-300",
+    iconColorClass: "text-cyan-600 dark:text-cyan-300",
+    titleClass: "text-cyan-700 dark:text-cyan-300",
+    tagClass:
+      "border-cyan-500/20 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 dark:border-cyan-400/35 dark:bg-cyan-950/70 dark:text-cyan-300 dark:hover:bg-cyan-900/70",
+  },
 };
 
 const skillIconMap = {
-  "Application Security": ShieldCheck,
   "Full Stack Development": Code2,
   "Languages & Frameworks": Braces,
+  "Cyber Security Analyst": ShieldCheck,
+  "Application Security": ShieldCheck,
 };
 
 const SkillsSection = () => {
