@@ -1359,3 +1359,29 @@ html.light .ai-chat-scroll:hover::-webkit-scrollbar-thumb {
   appearance: none !important;
   -webkit-tap-highlight-color: transparent !important;
 }
+
+/* ========================================================
+   AMBIENT HERO BACKGROUND "BUILDER" DRIFT ANIMATION
+   Smooth, GPU-accelerated infinite right-to-left drift
+   ======================================================== */
+@keyframes marquee-drift-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee-drift {
+  display: flex;
+  width: max-content;
+  animation: marquee-drift-left 65s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-drift {
+    animation-duration: 220s;
+  }
+}

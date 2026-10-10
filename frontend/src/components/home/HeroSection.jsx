@@ -1,5 +1,14 @@
 import { useEffect, useRef, memo } from "react";
-import { ArrowRight, ShieldCheck, Zap } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  ChevronDown,
+  GraduationCap,
+  Layers,
+  Mail,
+  ShieldCheck,
+  Terminal,
+} from "lucide-react";
 import { FaGithub, FaLinkedinIn, FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
@@ -87,8 +96,8 @@ const HeroSection = () => {
         this.radius = Math.random() * 1.5 + 1;
         this.color =
           Math.random() > 0.4
-            ? "rgba(74, 222, 128, 0.40)"
-            : "rgba(56, 189, 248, 0.45)";
+            ? "rgba(52, 211, 153, 0.40)"
+            : "rgba(45, 212, 191, 0.45)";
       }
 
       update() {
@@ -124,7 +133,7 @@ const HeroSection = () => {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+            ctx.strokeStyle = `rgba(52, 211, 153, ${alpha})`;
             ctx.lineWidth = 0.65;
             ctx.stroke();
           }
@@ -193,37 +202,38 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[94vh] flex flex-col justify-center overflow-hidden section-wrap pt-12 pb-20 sm:pt-16 sm:pb-24">
+    <section className="relative w-full min-h-[92vh] flex flex-col justify-center overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-20">
+      {/* Full Bleed Background layer */}
       <div
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+        className="pointer-events-none absolute inset-0 w-full h-full -z-10 overflow-hidden"
         aria-hidden="true"
       >
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full opacity-65 hidden sm:block"
+          className="absolute inset-0 h-full w-full opacity-60 hidden sm:block"
         />
 
+        {/* Ambient subtle glow orbs */}
         <div
-          className="hero-aurora-orb-1 absolute -top-24 -left-24 h-[500px] w-[500px] rounded-full opacity-20"
+          className="hero-aurora-orb-1 absolute -top-24 -left-24 h-[500px] w-[500px] rounded-full opacity-15"
           style={{
             background:
-              "radial-gradient(circle, rgba(56,189,248,0.45) 0%, rgba(14,165,233,0.18) 50%, transparent 72%)",
-            filter: "blur(20px)",
+              "radial-gradient(circle, rgba(52,211,153,0.35) 0%, rgba(20,184,166,0.12) 50%, transparent 72%)",
+            filter: "blur(40px)",
             transform: "translate3d(0, 0, 0)",
-            willChange: "transform",
           }}
         />
         <div
-          className="hero-aurora-orb-2 absolute top-1/3 -right-32 h-[420px] w-[420px] rounded-full opacity-18"
+          className="hero-aurora-orb-2 absolute top-1/3 -right-32 h-[420px] w-[420px] rounded-full opacity-15"
           style={{
             background:
-              "radial-gradient(circle, rgba(34,197,94,0.42) 0%, rgba(74,222,128,0.15) 55%, transparent 72%)",
-            filter: "blur(20px)",
+              "radial-gradient(circle, rgba(16,185,129,0.30) 0%, rgba(52,211,153,0.10) 55%, transparent 72%)",
+            filter: "blur(40px)",
             transform: "translate3d(0, 0, 0)",
-            willChange: "transform",
           }}
         />
 
+        {/* Floating particles */}
         <div className="hidden sm:contents">
           {PARTICLES.map((p, i) => (
             <div
@@ -236,117 +246,148 @@ const HeroSection = () => {
                 height: p.size,
                 background:
                   i % 3 === 0
-                    ? "rgba(56,189,248,0.55)"
-                    : "rgba(74,222,128,0.50)",
+                    ? "rgba(45,212,191,0.5)"
+                    : "rgba(52,211,153,0.45)",
                 animation: `particle-float ${p.dur}s ease-in-out ${p.delay}s infinite`,
-                boxShadow:
-                  i % 3 === 0
-                    ? `0 0 ${p.size * 3}px rgba(56,189,248,0.55)`
-                    : `0 0 ${p.size * 3}px rgba(74,222,128,0.55)`,
+                boxShadow: `0 0 ${p.size * 2}px rgba(52,211,153,0.4)`,
               }}
             />
           ))}
         </div>
       </div>
 
-      <div className="relative grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
-        <div className="order-2 flex flex-col text-center sm:text-left lg:order-1">
-          <motion.div
-            {...fadeUp(0.05)}
-            className="mb-4 flex justify-center sm:justify-start"
-          >
-            <span className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-widest text-green-400">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400 green-glow-pulse" />
-              WELCOME TO MY PORTFOLIO
-            </span>
-          </motion.div>
+      {/* Full Bleed Ambient Moving Transparent Watermark Typography — BUILDER (Connects Edge-to-Edge) */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 w-full flex overflow-hidden select-none -z-10"
+        aria-hidden="true"
+      >
+        <div className="flex w-max animate-marquee-drift">
+          <span className="font-display font-black uppercase tracking-[0.2em] text-[22vw] lg:text-[18vw] xl:text-[250px] leading-none whitespace-nowrap text-white/[0.025] dark:text-emerald-400/[0.035] [-webkit-text-stroke:1.5px_rgba(255,255,255,0.03)] dark:[-webkit-text-stroke:1.5px_rgba(52,211,153,0.045)] pr-16 sm:pr-24">
+            BUILDER • BUILDER • BUILDER • BUILDER •&nbsp;
+          </span>
+          <span className="font-display font-black uppercase tracking-[0.2em] text-[22vw] lg:text-[18vw] xl:text-[250px] leading-none whitespace-nowrap text-white/[0.025] dark:text-emerald-400/[0.035] [-webkit-text-stroke:1.5px_rgba(255,255,255,0.03)] dark:[-webkit-text-stroke:1.5px_rgba(52,211,153,0.045)] pr-16 sm:pr-24">
+            BUILDER • BUILDER • BUILDER • BUILDER •&nbsp;
+          </span>
+        </div>
+      </div>
 
+      {/* Main Content Container (max-w-7xl) */}
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-10">
+        <div className="relative z-10 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-14">
+          {/* Left Column: Text & CTAs */}
+          <div className="order-2 flex flex-col text-center sm:text-left lg:order-1">
+            {/* Eyebrow badge */}
+            <motion.div
+              {...fadeUp(0.05)}
+              className="mb-4 flex justify-center sm:justify-start"
+            >
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3.5 py-1.5 text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-400 shadow-sm backdrop-blur-md">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                WELCOME TO MY PORTFOLIO
+              </span>
+            </motion.div>
+
+          {/* Primary Name Display */}
           <motion.h1
             {...fadeUp(0.12)}
-            className="font-display text-5xl font-black uppercase tracking-tight text-white sm:text-6xl lg:text-[4.6rem] leading-[0.93]"
+            className="font-display text-5xl font-black uppercase tracking-tight text-white sm:text-6xl lg:text-[4.6rem] xl:text-[5.2rem] leading-[0.92] drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]"
           >
-            Nikhil <span className="text-glow-green text-green-400">Agrahari</span>
+            NIKHIL <br />
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-green-400 bg-clip-text text-transparent">
+              AGRAHARI
+            </span>
           </motion.h1>
 
+          {/* Role & Futuristic HUD line */}
           <motion.div
             {...fadeUp(0.18)}
-            className="mt-4 flex justify-center sm:justify-start"
+            className="mt-4 flex items-center justify-center sm:justify-start gap-3"
           >
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-green-300">
+            <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
               // CYBER SECURITY &amp; WEB DEVELOPER
             </span>
+            <div className="hidden sm:flex items-center flex-1 max-w-[110px]">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-emerald-500/50 to-transparent" />
+              <div className="h-2 w-2 rounded-full border border-emerald-400/60 bg-emerald-400/20 flex items-center justify-center">
+                <span className="h-1 w-1 rounded-full bg-emerald-400" />
+              </div>
+            </div>
           </motion.div>
 
+          {/* Technical Tags — Clean Transparent Glass, NO Emojis */}
           <motion.div
             {...fadeUp(0.24)}
-            className="mt-4 flex flex-wrap justify-center gap-2.5 sm:justify-start"
+            className="mt-4 flex flex-wrap justify-center sm:justify-start gap-2.5"
           >
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-1.5 text-xs font-semibold text-slate-200">
+            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
+              <Terminal size={13} className="text-emerald-400" />
               Python
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-1.5 text-xs font-semibold text-slate-200">
+            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
+              <Layers size={13} className="text-teal-400" />
               Full Stack
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-green-500/20 bg-green-500/5 px-3 py-1.5 text-xs font-semibold text-slate-200">
+            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
+              <ShieldCheck size={13} className="text-emerald-400" />
               SOC Analyst
             </span>
           </motion.div>
 
-          <motion.h2
-            {...fadeUp(0.3)}
-            className="font-display mt-6 text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl leading-tight"
-          >
-            Building Secure &amp;<br />
-            <span className="text-green-300">Scalable Applications</span>
-          </motion.h2>
-
+          {/* Academic & Availability Status */}
           <motion.div
-            {...fadeUp(0.36)}
-            className="mt-5 space-y-2.5 text-sm text-slate-400"
+            {...fadeUp(0.3)}
+            className="mt-4 space-y-2 text-xs sm:text-sm text-slate-300 font-medium"
           >
-            <p className="flex items-center justify-center gap-2 sm:justify-start">
-              BCA at BBDU Lucknow, India
+            <p className="flex items-center justify-center sm:justify-start gap-2">
+              <GraduationCap size={15} className="text-emerald-400 shrink-0" />
+              <span>BCA at BBDU Lucknow, India</span>
             </p>
-            <p className="flex items-center justify-center gap-2 sm:justify-start">
-              <span className="inline-flex items-center gap-1.5 rounded-lg border border-green-400/20 bg-green-400/5 px-3 py-1.5 text-xs font-semibold text-green-400">
+            <p className="flex items-center justify-center sm:justify-start gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 Open for Internships &amp; Freelance
               </span>
             </p>
           </motion.div>
 
+          {/* Action CTAs */}
           <motion.div
-            {...fadeUp(0.42)}
-            className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:justify-start"
+            {...fadeUp(0.38)}
+            className="mt-7 flex flex-wrap items-center justify-center sm:justify-start gap-3"
           >
             <a
-              href="/security"
-              className="group inline-flex items-center gap-2 rounded-xl bg-green-500 px-5 py-3 text-xs font-black uppercase tracking-wider text-black transition-all duration-300 hover:-translate-y-1 hover:bg-green-400 hover:shadow-[0_8px_24px_rgba(34,197,94,0.45)]"
-            >
-              <ShieldCheck size={14} />
-              View Cyber Labs
-            </a>
-            <a
               href="/services"
-              className="group inline-flex items-center gap-2 rounded-xl border border-green-400/50 bg-green-400/10 px-5 py-3 text-xs font-black uppercase tracking-wider text-green-400 transition-all duration-300 hover:-translate-y-1 hover:bg-green-400/20"
+              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3 text-xs font-black uppercase tracking-wider text-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(16,185,129,0.4)]"
             >
-              <Zap size={14} />
               Book Service
-            </a>
-            <a
-              href="/projects"
-              className="group inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-xs font-black uppercase tracking-wider text-slate-300 transition-all duration-300 hover:-translate-y-1 hover:border-green-400/30 hover:text-green-300"
-            >
-              View Projects{" "}
               <ArrowRight
                 size={13}
                 className="transition-transform duration-200 group-hover:translate-x-0.5"
               />
             </a>
+            <a
+              href="/projects"
+              className="group inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] backdrop-blur-md px-5 py-3 text-xs font-black uppercase tracking-wider text-slate-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:text-emerald-300 hover:bg-emerald-500/10"
+            >
+              View Projects
+              <ArrowUpRight
+                size={14}
+                className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </a>
+            <a
+              href="/contact"
+              className="group inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] backdrop-blur-md px-5 py-3 text-xs font-black uppercase tracking-wider text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:text-emerald-300 hover:bg-emerald-500/10"
+            >
+              <Mail size={13} />
+              Contact Me
+            </a>
           </motion.div>
 
+          {/* Social Links in Clean Transparent Glass */}
           <motion.div
-            {...fadeUp(0.48)}
-            className="mt-6 flex items-center justify-center gap-2.5"
+            {...fadeUp(0.44)}
+            className="mt-6 flex items-center justify-center sm:justify-start gap-2.5"
           >
             {SOCIAL_ICON_LINKS.map(
               ({ icon: Icon, href, label, hoverClass }) => (
@@ -357,10 +398,10 @@ const HeroSection = () => {
                   rel="noreferrer"
                   aria-label={label}
                   title={label}
-                  className={`group relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition-all duration-300 ${hoverClass}`}
+                  className={`group relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md text-slate-400 transition-all duration-300 ${hoverClass}`}
                 >
                   <Icon
-                    size={17}
+                    size={16}
                     className="transition-transform duration-200 group-hover:scale-110"
                   />
                 </a>
@@ -369,39 +410,56 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
+        {/* Right Column: Avatar Frame with Precision Concentric Orbit Rings */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.25 }}
           className="order-1 mx-auto flex w-full max-w-sm justify-center lg:order-2 lg:max-w-md xl:max-w-lg"
         >
           {SITE_PROFILE.profileImage ? (
-            <div className="relative">
-              <div className="absolute inset-0 -z-10 rounded-full bg-green-500/20 blur-3xl scale-125" />
-              <div className="relative group">
-                <div className="absolute -inset-6 rounded-full border border-dashed border-green-400/25 animate-[spin_40s_linear_infinite]" />
-                <div className="absolute -inset-3 rounded-full border border-green-400/30 shadow-[0_0_50px_rgba(34,197,94,0.2)]" />
-                <div className="relative h-[220px] w-[220px] sm:h-[260px] sm:w-[260px] lg:h-[300px] lg:w-[300px] xl:h-[330px] xl:w-[330px] overflow-hidden rounded-full border-[4px] border-green-500 shadow-[0_0_40px_rgba(34,197,94,0.35)] bg-green-950 transition-transform duration-500 hover:scale-[1.02]">
-                  <img
-                    src={SITE_PROFILE.profileImage}
-                    alt={SITE_PROFILE.profileImageAlt}
-                    className="h-full w-full object-cover object-center"
-                    width={330}
-                    height={330}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                  />
-                </div>
-                <div className="absolute bottom-2 right-6 sm:right-8 rounded-full border-2 border-green-400 bg-green-500 px-5 py-1.5 text-xs sm:text-sm font-black uppercase tracking-wider text-black shadow-[0_6px_25px_rgba(34,197,94,0.6)]">
-                  <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-black animate-pulse" />
-                  AVAILABLE!
-                </div>
+            <div className="relative group">
+              {/* Outer Precision Orbit Ring */}
+              <div className="absolute -inset-5 sm:-inset-6 rounded-full border border-emerald-500/25 sm:block" />
+
+              {/* Radar Orbit Node */}
+              <div className="absolute -left-5 sm:-left-6 top-1/2 -translate-y-1/2 h-3.5 w-3.5 rounded-full border border-emerald-400/60 bg-emerald-400/20 flex items-center justify-center shadow-[0_0_10px_rgba(52,211,153,0.5)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
+              </div>
+
+              {/* Inner Circular Frame */}
+              <div className="relative h-[230px] w-[230px] sm:h-[270px] sm:w-[270px] lg:h-[310px] lg:w-[310px] xl:h-[340px] xl:w-[340px] overflow-hidden rounded-full border-2 border-emerald-400/80 bg-slate-900 shadow-[0_0_35px_rgba(16,185,129,0.25)] transition-transform duration-500 group-hover:scale-[1.02]">
+                <img
+                  src={SITE_PROFILE.profileImage}
+                  alt={SITE_PROFILE.profileImageAlt}
+                  className="h-full w-full object-cover object-center"
+                  width={340}
+                  height={340}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                />
+              </div>
+
+              {/* Available Status Pill */}
+              <div className="absolute bottom-1 right-2 sm:right-4 rounded-full border border-emerald-400/80 bg-emerald-500 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black shadow-[0_4px_20px_rgba(16,185,129,0.5)]">
+                <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-black animate-pulse" />
+                AVAILABLE!
               </div>
             </div>
           ) : null}
         </motion.div>
       </div>
+      </div>
+
+      {/* Scroll Down Indicator */}
+      <motion.div
+        {...fadeUp(0.52)}
+        className="mt-10 hidden lg:flex items-center justify-center gap-2 text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-slate-500"
+      >
+        <span>SCROLL DOWN</span>
+        <ChevronDown size={13} className="animate-bounce text-emerald-400" />
+      </motion.div>
     </section>
   );
 };

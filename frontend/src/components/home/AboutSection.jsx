@@ -9,23 +9,25 @@ const StatsBar = memo(() => {
   useInView(ref, { once: true, margin: "-50px" });
 
   return (
-    <section ref={ref} className="section-wrap section-divider pt-6 pb-6 sm:pt-8 sm:pb-8">
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        {STATS_METRICS.map((item) => (
-          <a
-            key={item.id}
-            href={item.link}
-            target="_blank"
-            rel="noreferrer"
-            className="stat-card-green flex flex-col items-center gap-1 p-4 text-center sm:p-5 group"
-          >
-            <p className={`font-outfit text-2xl font-black sm:text-3xl ${item.accentColor || "text-green-400"}`}>
-              {item.value}
-            </p>
-            <p className="text-xs font-semibold text-slate-200 dark:text-slate-200">{item.label}</p>
-            <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">{item.detail}</p>
-          </a>
-        ))}
+    <section ref={ref} className="w-full border-t border-slate-200/80 dark:border-white/[0.06] pt-6 pb-6 sm:pt-8 sm:pb-8">
+      <div className="section-wrap !py-0">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          {STATS_METRICS.map((item) => (
+            <a
+              key={item.id}
+              href={item.link}
+              target="_blank"
+              rel="noreferrer"
+              className="stat-card-green flex flex-col items-center gap-1 p-4 text-center sm:p-5 group"
+            >
+              <p className={`font-outfit text-2xl font-black sm:text-3xl ${item.accentColor || "text-green-400"}`}>
+                {item.value}
+              </p>
+              <p className="text-xs font-semibold text-slate-200 dark:text-slate-200">{item.label}</p>
+              <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">{item.detail}</p>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -51,63 +53,71 @@ const AboutSection = () => {
   return (
     <>
       <StatsBar />
-      <section className="section-wrap section-divider pt-8 sm:pt-12">
-        {/* Centered Large Section Header outside the div */}
-        <FadeInUp>
-          <div className="text-center mb-8 sm:mb-10">
-            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
-              ABOUT <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">ME</span>
-            </h2>
-          </div>
-        </FadeInUp>
+      <section className="w-full border-t border-slate-200/80 dark:border-white/[0.06] pt-8 sm:pt-12">
+        <div className="section-wrap !py-0">
+          {/* Centered Large Section Header outside the div */}
+          <FadeInUp>
+            <div className="text-center mb-8 sm:mb-10">
+              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
+                ABOUT <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">ME</span>
+              </h2>
+            </div>
+          </FadeInUp>
 
         <FadeInUp delay={0.08}>
-          <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white dark:bg-[#050d14] shadow-xl dark:border-green-400/22 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#082218] dark:to-[#050d14] dark:shadow-none p-6 sm:p-8 mb-8">
-            <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-green-500/10 dark:bg-green-400/10 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-12 -left-12 h-32 w-32 rounded-full bg-emerald-500/8 dark:bg-emerald-400/8 blur-3xl" />
-            <div className="relative">
-              <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
-                <div className="space-y-3.5 max-w-2xl">
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-                    Full Stack Developer &amp; 3rd-Year BCA Student
-                  </h3>
-                  <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-                    I&apos;m a <span className="font-bold text-green-600 dark:text-green-400">third-year BCA student at Babu Banarasi Das University, Lucknow</span> and an <span className="font-bold text-green-600 dark:text-green-400">aspiring Full Stack Developer</span> actively seeking internship opportunities.
-                  </p>
-                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                    I build full-stack web applications using React, Node.js, Express, and MongoDB, with a focus on clean interfaces, reliable APIs, and secure database workflows.
-                  </p>
-                  <div className="pt-2">
-                    <a
-                      href="/about"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 transition-colors"
-                    >
-                      Read More About Me <ArrowRight size={13} />
-                    </a>
-                  </div>
+          <div className="relative py-4 sm:py-6 mb-12">
+            <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+              {/* Left narrative - 7 cols */}
+              <div className="lg:col-span-7 space-y-4">
+                <p className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+                  // Overview &amp; Background
+                </p>
+                <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight">
+                  Full Stack Developer &amp; <br className="hidden sm:inline" />
+                  <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                    3rd-Year BCA Student
+                  </span>
+                </h3>
+                <p className="text-base leading-relaxed text-slate-700 dark:text-slate-300 font-medium">
+                  I&apos;m a <span className="font-bold text-emerald-600 dark:text-emerald-400">third-year BCA student at Babu Banarasi Das University, Lucknow</span> and an <span className="font-bold text-emerald-600 dark:text-emerald-400">aspiring Full Stack Developer</span> actively seeking internship opportunities.
+                </p>
+                <p className="text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-400">
+                  I build full-stack web applications using React, Node.js, Express, and MongoDB, with a focus on clean interfaces, reliable APIs, and secure database workflows.
+                </p>
+                <div className="pt-2">
+                  <a
+                    href="/about"
+                    className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors group"
+                  >
+                    Read More About Me{" "}
+                    <ArrowRight
+                      size={14}
+                      className="transition-transform duration-200 group-hover:translate-x-1"
+                    />
+                  </a>
                 </div>
-                <div className="flex flex-col gap-2 lg:items-end justify-center">
-                  <div className="flex flex-wrap gap-2 lg:flex-col">
-                    {[
-                      { text: "Aspiring Full Stack Dev · Open to Roles", highlight: true },
-                      { text: "BCA (3rd Year) · BBD University", highlight: false },
-                      { text: "Lucknow, India 🇮🇳", highlight: false },
-                      { text: "React · Node · MongoDB", highlight: false },
-                    ].map(({ text, highlight }) => (
-                      <span
-                        key={text}
-                        className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold ${
-                          highlight
-                            ? "border-green-500/40 bg-green-500/15 text-green-700 dark:border-green-400/40 dark:bg-green-500/20 dark:text-green-300 font-bold"
-                            : "border-green-500/30 bg-green-500/10 text-green-700 dark:border-green-400/35 dark:bg-green-500/20 dark:text-green-300"
-                        }`}
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
-                        {text}
-                      </span>
-                    ))}
+              </div>
+
+              {/* Right pill badges - 5 cols */}
+              <div className="lg:col-span-5 flex flex-wrap lg:flex-col gap-2.5 lg:items-end justify-center">
+                {[
+                  { text: "Aspiring Full Stack Dev · Open to Roles", highlight: true },
+                  { text: "BCA (3rd Year) · BBD University", highlight: false },
+                  { text: "Lucknow, India", highlight: false },
+                  { text: "React · Node · MongoDB", highlight: false },
+                ].map(({ text, highlight }) => (
+                  <div
+                    key={text}
+                    className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all ${
+                      highlight
+                        ? "border border-emerald-500/40 bg-emerald-500/15 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-500/20 dark:text-emerald-300 shadow-sm"
+                        : "border border-slate-200 bg-white/70 text-slate-800 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-200 backdrop-blur-md"
+                    }`}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+                    {text}
                   </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -175,6 +185,7 @@ const AboutSection = () => {
             </article>
           </div>
         </FadeInUp>
+        </div>
       </section>
     </>
   );
