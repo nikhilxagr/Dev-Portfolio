@@ -317,10 +317,10 @@ const ALL_ITEMS = buildIndex();
 
 const FEATURED = [
   {
-    id: "feat-intube",
-    label: "InTube",
-    description: "Stateless 4K media utility for YouTube, Instagram & Facebook",
-    to: "/projects/intube",
+    id: "feat-whatsapp",
+    label: "WhatsApp Clone",
+    description: "Real-time messaging platform with Socket.IO, stories & dual OTP",
+    to: "/projects/whatsapp-fullstack-clone",
     icon: Code2,
     type: "project",
     badge: "Full Stack",
@@ -391,7 +391,7 @@ const FEATURED = [
 ];
 
 const SEARCH_CHIPS = [
-  { icon: "▶️", label: "InTube", to: "/projects/intube" },
+  { icon: "💬", label: "WhatsApp Clone", to: "/projects/whatsapp-fullstack-clone" },
   { icon: "📸", label: "Vistagram", to: "/projects/vistagram" },
   { icon: "⚖️", label: "Kanoon-Mate", to: "/projects/kanoon-mate" },
   { icon: "🏆", label: "Nerds Hackathon", to: "/journey#nerds-hack-days-lucknow-2026" },
