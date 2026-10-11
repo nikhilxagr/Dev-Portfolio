@@ -236,30 +236,43 @@ const AboutPage = () => {
                 {/* Right Status Aside (4 cols) */}
                 <aside
                   aria-label="Current role"
-                  className="lg:col-span-4 rounded-xl border border-slate-200 bg-slate-50/80 p-5 sm:p-6 dark:border-emerald-500/20 dark:bg-[#020803]/80 space-y-3"
+                  className="lg:col-span-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:p-6 dark:border-emerald-500/20 dark:bg-[#020803]/80 space-y-4"
                 >
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                    // Current Status
-                  </p>
-                  <p className="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.16em] text-emerald-600 dark:text-emerald-400">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse" />
-                    Open to Opportunities
-                  </p>
-                  <h3 className="font-outfit text-xl font-bold leading-tight text-slate-900 dark:text-white">
-                    Full Stack Developer Roles
-                  </h3>
-                  <p className="text-xs font-medium text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Babu Banarasi Das University, Lucknow
-                  </p>
-                  <div className="pt-2 border-t border-slate-200 dark:border-emerald-500/15 flex flex-col gap-1 text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                    <span className="flex items-center gap-1.5">
-                      <Calendar size={12} className="text-emerald-500" />
-                      Available Immediately
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <MapPin size={12} className="text-emerald-500" />
-                      Remote / Hybrid / On-site
-                    </span>
+                  <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-emerald-500/30 bg-slate-900 shadow-md">
+                    <img
+                      src={SITE_PROFILE.profileImage}
+                      alt={SITE_PROFILE.profileImageAlt}
+                      className="h-56 sm:h-64 w-full object-cover object-top transition-transform duration-500 hover:scale-[1.03]"
+                      width={380}
+                      height={256}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                      // Current Status
+                    </p>
+                    <p className="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.16em] text-emerald-600 dark:text-emerald-400">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse" />
+                      Open to Opportunities
+                    </p>
+                    <h3 className="font-outfit text-xl font-bold leading-tight text-slate-900 dark:text-white">
+                      Full Stack Developer Roles
+                    </h3>
+                    <p className="text-xs font-medium text-slate-600 dark:text-slate-400 leading-relaxed">
+                      Babu Banarasi Das University, Lucknow
+                    </p>
+                    <div className="pt-2 border-t border-slate-200 dark:border-emerald-500/15 flex flex-col gap-1 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar size={12} className="text-emerald-500" />
+                        Available Immediately
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <MapPin size={12} className="text-emerald-500" />
+                        Remote / Hybrid / On-site
+                      </span>
+                    </div>
                   </div>
                 </aside>
               </div>
