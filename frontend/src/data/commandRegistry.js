@@ -10,6 +10,7 @@ export const COMMAND_REGISTRY = [
   { id: "exp-security", label: "Security Labs & Writeups", category: "Experiments", route: "/experiments/security-labs" },
   { id: "exp-terminal", label: "Interactive Dev Terminal", category: "Experiments", route: "/experiments/terminal" },
   { id: "exp-dsa", label: "Data Structure & Algorithm Lab", category: "Experiments", route: "/experiments/dsa" },
+  { id: "exp-system-design", label: "System Design Analysis & Architectures", category: "Experiments", route: "/experiments/system-design" },
   { id: "exp-tools", label: "Cyber Security Tools & Breach Checker", category: "Experiments", route: "/experiments/tools" },
   { id: "exp-methodology", label: "Security Methodology Documentation", category: "Experiments", route: "/experiments/methodology" },
   { id: "action-resume", label: "Download Full-Stack Resume", category: "Actions", action: "DOWNLOAD_RESUME" },

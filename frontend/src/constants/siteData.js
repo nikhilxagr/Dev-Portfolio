@@ -42,6 +42,7 @@ export const NAV_LINKS = [
       { to: "/experiments/security-labs", label: "Security Labs", description: "Cyber security labs & writeups" },
       { to: "/experiments/terminal", label: "Dev Terminal", description: "Interactive CLI & hacker sandbox" },
       { to: "/experiments/dsa", label: "Data Structure Lab", description: "Algorithm & data visualizers" },
+      { to: "/experiments/system-design", label: "System Design Analysis", description: "Architecture breakdowns & real-world backend studies" },
       { to: "/experiments/tools", label: "Cyber Tools", description: "Real security utilities & breach checker" },
       { to: "/experiments/methodology", label: "Document Methodology", description: "Pentesting & security standards" },
     ],

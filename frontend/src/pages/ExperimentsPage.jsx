@@ -6,12 +6,17 @@ import {
   ShieldCheck,
   Terminal,
   Cpu,
+  Network,
   Wrench,
   FileCheck2,
   ArrowRight,
-  Sparkles,
   FlaskConical,
+  Layers,
 } from "lucide-react";
+
+const MotionDiv = motion.div;
+const MotionH1 = motion.h1;
+const MotionP = motion.p;
 
 const EXPERIMENT_MODULES = [
   {
@@ -40,6 +45,15 @@ const EXPERIMENT_MODULES = [
     badge: "Computer Science",
     description:
       "Visual algorithms laboratory demonstrating sorting mechanisms, tree traversals, pathfinding algorithms, and dynamic space-time complexity analysis.",
+  },
+  {
+    id: "system-design",
+    title: "System Design Analysis",
+    to: "/experiments/system-design",
+    icon: Network,
+    badge: "Distributed Systems",
+    description:
+      "Deep-dive architectural breakdowns of real-world scalable systems (URL Shortener, Uber, Zomato, Blinkit) with clean flowcharts, data schemas, and backend engineering notes.",
   },
   {
     id: "cyber-tools",
@@ -82,7 +96,7 @@ const ExperimentsPage = () => {
           
           {/* Centered Hero Header Section (Matching Journey Page style) */}
           <div className="relative mx-auto max-w-4xl text-center mb-12">
-            <motion.div
+            <MotionDiv
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -91,9 +105,9 @@ const ExperimentsPage = () => {
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-400" />
                 INTERACTIVE SANDBOX &amp; SECURITY RESEARCH
               </span>
-            </motion.div>
+            </MotionDiv>
 
-            <motion.h1
+            <MotionH1
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.1 }}
@@ -103,28 +117,28 @@ const ExperimentsPage = () => {
               <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
                 EXPERIMENTS
               </span>
-            </motion.h1>
+            </MotionH1>
 
-            <motion.p
+            <MotionP
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.2 }}
               className="mx-auto mt-4 max-w-2xl text-sm sm:text-base font-medium leading-relaxed text-slate-600 dark:text-slate-300"
             >
               A showcase of hands-on security research, interactive browser terminals, computer science algorithm visualizers, and developer utilities built by Nikhil Agrahari.
-            </motion.p>
+            </MotionP>
 
             {/* Centered Quick Stats Capsule */}
             <FadeInUp delay={0.25} className="mt-8">
               <div className="mx-auto flex flex-wrap items-center justify-center gap-3.5 rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-md backdrop-blur-xl dark:border-emerald-500/20 dark:bg-[#030d07]/90 max-w-2xl">
                 <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
                   <FlaskConical className="h-4 w-4 text-emerald-500" />
-                  <span>5 Specialized Labs</span>
+                  <span>6 Specialized Labs</span>
                 </div>
                 <span className="text-slate-400 dark:text-slate-500">•</span>
                 <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
-                  <Sparkles className="h-4 w-4 text-cyan-400" />
-                  <span>100% Client-Side Sandbox</span>
+                  <Layers className="h-4 w-4 text-cyan-400" />
+                  <span>Architectures &amp; Sandboxes</span>
                 </div>
                 <span className="text-slate-400 dark:text-slate-500">•</span>
                 <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
