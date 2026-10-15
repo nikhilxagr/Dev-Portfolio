@@ -5,6 +5,17 @@ import FadeInUp from "@/components/animations/FadeInUp";
 
 const featuredHomeJourney = [
   {
+    id: "lenovo-leap-hackathon-2026",
+    tag: "HACKATHONS",
+    date: "SEPTEMBER 18, 2026",
+    title: "LENOVO LEAP HACKATHON",
+    subOrg: "// AKTU, LUCKNOW",
+    description:
+      "Attended the Lenovo LEAP Hackathon at AKTU, Lucknow, where I presented TaskNexus, a service marketplace concept connecting clients with skilled freelancers while simplifying task assignment, quality checks, and delivery.",
+    imageUrl: "/images/journey/Lenovo1.jpg",
+    skills: ["Hackathons", "Problem Solving", "Rapid Prototyping"],
+  },
+  {
     id: "nerds-hack-days-lucknow-2026",
     tag: "HACKATHONS",
     date: "JULY 26, 2026",
@@ -16,26 +27,15 @@ const featuredHomeJourney = [
     skills: ["Generative AI", "Google Gemini API", "OCR Integration"],
   },
   {
-    id: "android-nova-2026",
+    id: "qualcomm-ai-hub-heygen-2026",
     tag: "WORKSHOPS",
-    date: "JULY 17, 2026",
-    title: "ANDROID NOVA 2.0",
-    subOrg: "// CYBER INTELLIGENCE COMMUNITY LUCKNOW",
+    date: "SEPTEMBER 27, 2026",
+    title: "QUALCOMM AI HUB MEETUP & HEYGEN COMMUNITY EVENT",
+    subOrg: "// QUALCOMM & HEYGEN LUCKNOW",
     description:
-      "Attended Android Nova 2.0 today, and it was an amazing experience! Great to learn about Android Development, AI, and future technologies, while connecting with passionate.. developers and tech enthusiasts.",
-    imageUrl: "/images/journey/Android2.jpeg",
-    skills: ["Android Development", "AI", "Mobile Development"],
-  },
-  {
-    id: "assocham-samarth-2026",
-    tag: "INTERNSHIP",
-    date: "JUNE 01 - JULY 15, 2026",
-    title: "ASSOCHAM SAMARTH 2.0 INTERNSHIP",
-    subOrg: "// ASSOCHAM UP-UK",
-    description:
-      "Selected for AICTE-supported SAMARTH 2.0 Industry Exposure Internship — gained real-world industry experience under ASSOCHAM guidance.",
-    imageUrl: "/images/journey/Certi1.jpeg",
-    skills: ["Industry Exposure", "Policy Advocacy", "Digital Compliance"],
+      "Attended an AI-focused developer workshop and community event in Lucknow, featuring Qualcomm AI Hub and HeyGen. Explored On-Device AI, Generative AI, and AI agent workflows...",
+    imageUrl: "/images/journey/Qualcum1.jpg",
+    skills: ["On-Device AI", "Generative AI", "AI Agents"],
   },
 ];
 

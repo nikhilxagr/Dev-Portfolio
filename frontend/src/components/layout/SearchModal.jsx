@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -18,6 +18,7 @@ import {
   Mail,
   MessageCircle,
   Milestone,
+  Network,
   Search,
   ShieldCheck,
   Sparkles,
@@ -269,6 +270,28 @@ const buildIndex = () => {
       to: v.to,
       icon: v.icon,
       badge: v.badge,
+      keywords: kw,
+      _corpus: kw.join(" "),
+    });
+  });
+
+  // System Design Topics
+  const systemDesignTopics = [
+    { id: "sys-shortener", label: "URL Shortener System Design", description: "Base62 encoding, Key Generation Service (KGS), Redis LRU caching & high-scale schema", to: "/experiments/system-design", icon: Network, badge: "System Design" },
+    { id: "sys-uber", label: "Uber / Geolocation System Design", description: "Google S2 & Quadtree spatial indexing, driver matching & WebSocket tracking", to: "/experiments/system-design", icon: Network, badge: "System Design" },
+    { id: "sys-zomato", label: "Zomato / Blinkit Logistics Architecture", description: "Hyperlocal dark-store dispatch, order state machine & Redis inventory locks", to: "/experiments/system-design", icon: Network, badge: "System Design" },
+  ];
+
+  systemDesignTopics.forEach((t) => {
+    const kw = tokenise(`${t.label} ${t.description} system design architecture backend distributed systems scalability`);
+    items.push({
+      id: t.id,
+      type: "experiment",
+      label: t.label,
+      description: t.description,
+      to: t.to,
+      icon: t.icon,
+      badge: t.badge,
       keywords: kw,
       _corpus: kw.join(" "),
     });

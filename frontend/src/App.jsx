@@ -26,6 +26,7 @@ const SecurityPage = lazy(() => import("@/pages/SecurityPage.jsx"));
 const TerminalPage = lazy(() => import("@/pages/TerminalPage.jsx"));
 const CyberToolsPage = lazy(() => import("@/pages/CyberToolsPage.jsx"));
 const DsaLabPage = lazy(() => import("@/pages/DsaLabPage.jsx"));
+const SystemDesignPage = lazy(() => import("@/pages/SystemDesignPage.jsx"));
 const MethodologyPage = lazy(() => import("@/pages/MethodologyPage.jsx"));
 const ServicesPage = lazy(() => import("@/pages/ServicesPage.jsx"));
 const SupportPage = lazy(() => import("@/pages/SupportPage.jsx"));
@@ -147,7 +148,7 @@ function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{
-                  duration: 0.15,
+                  duration: prefersReducedMotion ? 0 : 0.15,
                   ease: "easeOut",
                 }}
                 className="transform-gpu"
@@ -175,6 +176,10 @@ function App() {
                       <Route path="/experiments/tools" element={<CyberToolsPage />} />
                       <Route path="/dsa-lab" element={<DsaLabPage />} />
                       <Route path="/experiments/dsa" element={<DsaLabPage />} />
+                      <Route path="/system-design" element={<SystemDesignPage />} />
+                      <Route path="/system-design/:id" element={<SystemDesignPage />} />
+                      <Route path="/experiments/system-design" element={<SystemDesignPage />} />
+                      <Route path="/experiments/system-design/:id" element={<SystemDesignPage />} />
                       <Route path="/methodology" element={<MethodologyPage />} />
                       <Route path="/experiments/methodology" element={<MethodologyPage />} />
                       <Route path="/blog" element={<BlogPage />} />

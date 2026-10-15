@@ -23,6 +23,7 @@ import {
   Menu,
   Milestone,
   Moon,
+  Network,
   Search,
   Shield,
   ShieldCheck,
@@ -44,6 +45,10 @@ import { NAV_LINKS, QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
 import { useTheme } from "@/context/ThemeContext";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { prefetchRoute } from "@/utils/prefetchRoute";
+
+const MotionButton = motion.button;
+const MotionDiv = motion.div;
+const MotionAside = motion.aside;
 
 const NAV_OFFSET_REM = 6;
 const OPPORTUNITY_BANNER_HEIGHT_REM = 2.25;
@@ -69,6 +74,7 @@ const subIconMap = {
   "Security Labs": ShieldCheck,
   "Dev Terminal": Terminal,
   "Data Structure Lab": Cpu,
+  "System Design Analysis": Network,
   "Cyber Tools": Search,
   "Document Methodology": FileText,
 };
@@ -313,7 +319,7 @@ const Navbar = () => {
             )}>
 
               {/* Hamburger Button — LEFT on mobile with smooth icon rotation transition */}
-              <motion.button
+              <MotionButton
                 type="button"
                 onClick={() => setOpen((value) => !value)}
                 whileHover={{ scale: 1.08 }}
@@ -327,7 +333,7 @@ const Navbar = () => {
                 aria-label="Toggle menu"
               >
                 <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
+                  <MotionDiv
                     key={open ? "close" : "menu"}
                     initial={{ rotate: -90, scale: 0.5, opacity: 0 }}
                     animate={{ rotate: 0, scale: 1, opacity: 1 }}
@@ -336,9 +342,9 @@ const Navbar = () => {
                     className="flex items-center justify-center"
                   >
                     {open ? <X size={18} /> : <Menu size={18} />}
-                  </motion.div>
+                  </MotionDiv>
                 </AnimatePresence>
-              </motion.button>
+              </MotionButton>
 
               {/* Logo — CENTERED on mobile via absolute, LEFT on desktop */}
               <div className="absolute left-1/2 -translate-x-1/2 xl:static xl:translate-x-0 xl:mr-6 xl:order-first">
@@ -384,23 +390,26 @@ const Navbar = () => {
                     aria-label="Sign in with Google"
                     title="Sign in with Google"
                     className={clsx(
-                      "group relative flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200",
+                      "group relative flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200 shrink-0",
                       isDark
                         ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400"
-                        : "border-emerald-500/30 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-400",
+                        : "border-emerald-500/35 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 hover:border-emerald-500 shadow-xs",
                     )}
                   >
-                    <div className="relative flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 dark:bg-slate-800 text-white shadow-xs">
-                      <User size={11} className="text-slate-100" />
-                      <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-white dark:bg-slate-950">
-                        <svg width="7" height="7" viewBox="0 0 18 18" aria-hidden="true">
-                          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-                          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-                        </svg>
-                      </span>
-                    </div>
+                    <User size={14} className="transition-transform duration-200 group-hover:scale-110" />
+                    <span
+                      className={clsx(
+                        "absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border shadow-xs transition-transform duration-200 group-hover:scale-105",
+                        isDark ? "bg-slate-900 border-slate-700" : "bg-white border-emerald-500/30",
+                      )}
+                    >
+                      <svg className="w-2.5 h-2.5" viewBox="0 0 18 18" aria-hidden="true">
+                        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                      </svg>
+                    </span>
                   </button>
                 )}
                 <button
@@ -433,6 +442,7 @@ const Navbar = () => {
                       location.pathname.startsWith("/terminal") ||
                       location.pathname.startsWith("/cyber-tools") ||
                       location.pathname.startsWith("/dsa") ||
+                      location.pathname.startsWith("/system-design") ||
                       location.pathname.startsWith("/methodology");
 
                     return (
@@ -586,21 +596,23 @@ const Navbar = () => {
                       "group relative flex h-8 w-8 2xl:h-9 2xl:w-9 items-center justify-center rounded-full border transition-all duration-200 shrink-0",
                       isDark
                         ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/20 hover:shadow-[0_0_16px_rgba(52,211,153,0.3)]"
-                        : "border-emerald-500/30 bg-emerald-50 text-emerald-800 hover:border-emerald-500 hover:bg-emerald-100 hover:shadow-[0_0_16px_rgba(52,211,153,0.2)]"
+                        : "border-emerald-500/35 bg-emerald-50 text-emerald-800 hover:border-emerald-500 hover:bg-emerald-100 hover:shadow-[0_0_16px_rgba(52,211,153,0.22)] shadow-xs",
                     )}
                   >
-                    {/* Circle User Icon with Google G indicator */}
-                    <div className="relative flex h-5 w-5 2xl:h-6 2xl:w-6 shrink-0 items-center justify-center rounded-full bg-slate-900 dark:bg-slate-800 text-white shadow-xs group-hover:scale-105 transition-transform">
-                      <User size={12} className="text-slate-100" />
-                      <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5 2xl:h-3 2xl:w-3 items-center justify-center rounded-full bg-white dark:bg-slate-950 shadow-xs">
-                        <svg width="7" height="7" viewBox="0 0 18 18" aria-hidden="true">
-                          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-                          <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-                        </svg>
-                      </span>
-                    </div>
+                    <User size={15} className="transition-transform duration-200 group-hover:scale-110" />
+                    <span
+                      className={clsx(
+                        "absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 2xl:h-4 2xl:w-4 items-center justify-center rounded-full border shadow-xs transition-transform duration-200 group-hover:scale-105",
+                        isDark ? "bg-slate-900 border-slate-700" : "bg-white border-emerald-500/30",
+                      )}
+                    >
+                      <svg className="w-2.5 h-2.5 2xl:w-3 2xl:h-3" viewBox="0 0 18 18" aria-hidden="true">
+                        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                      </svg>
+                    </span>
                   </button>
                 )}
 
@@ -620,7 +632,7 @@ const Navbar = () => {
                   <Search size={13} />
                   <span className="hidden 2xl:inline">Search</span>
                 </button>
-                <motion.button
+                <MotionButton
                   type="button"
                   onClick={toggleTheme}
                   whileHover={{ scale: 1.12 }}
@@ -635,7 +647,7 @@ const Navbar = () => {
                   title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 >
                   <AnimatePresence mode="wait" initial={false}>
-                    <motion.div
+                    <MotionDiv
                       key={isDark ? "dark" : "light"}
                       initial={{ rotate: -90, scale: 0.3, opacity: 0 }}
                       animate={{ rotate: 0, scale: 1, opacity: 1 }}
@@ -648,9 +660,9 @@ const Navbar = () => {
                       ) : (
                         <Moon size={16} className="text-indigo-600 drop-shadow-[0_0_6px_rgba(99,102,241,0.6)]" />
                       )}
-                    </motion.div>
+                    </MotionDiv>
                   </AnimatePresence>
-                </motion.button>
+                </MotionButton>
 
                 <a
                   href={QUICK_CONTACT.resumeFullStack}
@@ -671,7 +683,7 @@ const Navbar = () => {
         {open && (
           <div className="fixed inset-0 z-50 xl:hidden">
             {/* Smooth fading backdrop */}
-            <motion.div
+            <MotionDiv
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -682,7 +694,7 @@ const Navbar = () => {
             />
 
             {/* Smooth sliding sidebar drawer */}
-            <motion.aside
+            <MotionAside
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -714,7 +726,7 @@ const Navbar = () => {
                   </span>
                 </Link>
                 <div className="flex items-center gap-2">
-                  <motion.button
+                  <MotionButton
                     type="button"
                     onClick={toggleTheme}
                     whileHover={{ scale: 1.12 }}
@@ -728,7 +740,7 @@ const Navbar = () => {
                     aria-label="Toggle theme"
                   >
                     <AnimatePresence mode="wait" initial={false}>
-                      <motion.div
+                      <MotionDiv
                         key={isDark ? "dark" : "light"}
                         initial={{ rotate: -90, scale: 0.3, opacity: 0 }}
                         animate={{ rotate: 0, scale: 1, opacity: 1 }}
@@ -741,9 +753,9 @@ const Navbar = () => {
                         ) : (
                           <Moon size={15} className="text-indigo-600" />
                         )}
-                      </motion.div>
+                      </MotionDiv>
                     </AnimatePresence>
-                  </motion.button>
+                  </MotionButton>
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
@@ -979,7 +991,7 @@ const Navbar = () => {
                   Made with 💚 by Nikhil
                 </p>
               </div>
-            </motion.aside>
+            </MotionAside>
           </div>
         )}
       </AnimatePresence>
