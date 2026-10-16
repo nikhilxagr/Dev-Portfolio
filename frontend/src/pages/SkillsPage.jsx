@@ -22,7 +22,7 @@ import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 import { createBreadcrumbSchema } from "@/utils/seo";
 import { SITE_PROFILE } from "@/constants/siteData";
 
-// ─── Comprehensive Domain Architecture with Project Examples ─────────────
+// # Comprehensive Domain Architecture with Project Examples
 const DOMAIN_SECTIONS = [
   {
     id: "full-stack",
@@ -288,7 +288,7 @@ const SkillsPage = () => {
 
       <section className="section-wrap pt-6 pb-28">
 
-        {/* ── Page Header (Matching ServicesPage Layout & Typography) ───── */}
+        {/* # Page Header (Matching ServicesPage Layout & Typography) */}
         <FadeInUp>
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
@@ -317,7 +317,7 @@ const SkillsPage = () => {
           </div>
         </FadeInUp>
 
-        {/* ── Engineering Architecture Overview Bar ───────────────────── */}
+        {/* # Engineering Architecture Overview Bar */}
         <div className="rounded-2xl border border-slate-200 bg-white/95 dark:border-slate-800 dark:bg-slate-900/60 p-6 sm:p-8 shadow-xl dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] backdrop-blur-sm mb-16">
           <div className="grid gap-6 lg:grid-cols-12 lg:items-center">
             
@@ -362,7 +362,7 @@ const SkillsPage = () => {
           </div>
         </div>
 
-        {/* ── Domain Navigation / Category Filter Tabs ─────────────────── */}
+        {/* # Domain Navigation / Category Filter Tabs */}
         <div className="mb-10">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
@@ -410,7 +410,7 @@ const SkillsPage = () => {
           <div className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
         </div>
 
-        {/* ── Complete Domain Cards with Real Project Examples ─────────── */}
+        {/* # Complete Domain Cards with Real Project Examples */}
         <div className="space-y-12">
           {filteredDomains.map((domain) => {
             const DomainIcon = domain.icon;
@@ -552,7 +552,7 @@ const SkillsPage = () => {
           })}
         </div>
 
-        {/* ── Bottom CTA Banner (Matching Services CTA) ─────────────────── */}
+        {/* # Bottom CTA Banner (Matching Services CTA) */}
         <div className="mt-24 rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/70 dark:border-emerald-500/25 dark:bg-gradient-to-br dark:from-slate-900 dark:to-emerald-950/30 p-8 sm:p-10 text-center shadow-lg dark:shadow-none">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-100 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 px-4 py-1.5 text-xs font-bold uppercase tracking-widest mb-5">
             <Globe size={13} /> Ready for Production Work

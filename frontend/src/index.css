@@ -1033,9 +1033,7 @@ html.light :focus-visible {
   outline-offset: 2px !important;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────── */
-/* PREMIUM SCROLL & ANIMATION SYSTEM                                           */
-/* ─────────────────────────────────────────────────────────────────────────── */
+/* # PREMIUM SCROLL & ANIMATION SYSTEM */
 
 /* GPU-acceleration hints — applied to any element that animates via Framer Motion */
 .will-change-transform {
@@ -1057,7 +1055,7 @@ html.light :focus-visible {
   -webkit-backface-visibility: hidden;
 }
 
-/* ─── Scroll smoothness ────────────────────────────────────────────────────── */
+/* # Scroll smoothness */
 /* Fine-grain scroll behaviour — already set but reinforced here for specificity */
 html {
   scroll-behavior: smooth;
@@ -1070,7 +1068,7 @@ html {
   contain: layout style;
 }
 
-/* ─── @keyframes for shimmer / skeleton loading ───────────────────────────── */
+/* # @keyframes for shimmer / skeleton loading */
 @keyframes shimmer {
   0% {
     background-position: -200% center;
@@ -1090,7 +1088,7 @@ html {
   animation: shimmer 2.4s linear infinite;
 }
 
-/* ─── @keyframes for gradient-text animate ────────────────────────────────── */
+/* # @keyframes for gradient-text animate */
 @keyframes gradient-shift {
   0% {
     background-position: 0% 50%;
@@ -1110,7 +1108,7 @@ html {
   animation: gradient-shift 5s ease infinite;
 }
 
-/* ─── @keyframes for subtle floating elements ─────────────────────────────── */
+/* # @keyframes for subtle floating elements */
 @keyframes float-slow {
 
   0%,
@@ -1143,7 +1141,7 @@ html {
   animation: float-medium 4s ease-in-out infinite;
 }
 
-/* ─── Scroll snap (optional, for full-page sections) ─────────────────────── */
+/* # Scroll snap (optional, for full-page sections) */
 .snap-container {
   scroll-snap-type: y proximity;
 }
@@ -1152,7 +1150,7 @@ html {
   scroll-snap-align: start;
 }
 
-/* ─── Reveal animation base (CSS fallback for no-JS) ─────────────────────── */
+/* # Reveal animation base (CSS fallback for no-JS) */
 @media (prefers-reduced-motion: reduce) {
 
   *,
@@ -1165,7 +1163,7 @@ html {
   }
 }
 
-/* ─── Custom scrollbar — premium thin style ───────────────────────────────── */
+/* # Custom scrollbar — premium thin style */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -1203,13 +1201,13 @@ html.light * {
   scrollbar-color: rgba(14, 165, 233, 0.25) transparent;
 }
 
-/* ─── Page transition smoothness ─────────────────────────────────────────── */
+/* # Page transition smoothness */
 /* Prevent layout shift during Framer Motion AnimatePresence transitions */
 [data-framer-motion-layout] {
   contain: layout;
 }
 
-/* ─── Lenis Smooth Scroll CSS Resets & GPU Optimization ──────────────────── */
+/* # Lenis Smooth Scroll CSS Resets & GPU Optimization */
 html.lenis,
 html.lenis body {
   height: auto;
@@ -1231,7 +1229,7 @@ html.lenis body {
   pointer-events: none;
 }
 
-/* ─── GPU Hardware Acceleration Utilities ────────────────────────────────── */
+/* # GPU Hardware Acceleration Utilities */
 .transform-gpu {
   transform: translate3d(0, 0, 0);
   will-change: transform;
@@ -1257,7 +1255,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* ─── Hardcoded Light Mode Contrast & Readability Fixes ──────────────────── */
+/* # Hardcoded Light Mode Contrast & Readability Fixes */
 html.light .cta-enterprise-banner,
 html:not(.dark) .cta-enterprise-banner {
   background-color: #ffffff !important;

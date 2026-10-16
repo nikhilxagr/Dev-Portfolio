@@ -275,18 +275,16 @@ const buildIndex = () => {
     });
   });
 
-  // System Design Topics
+  // System Design Topics (Part of Engineering Docs)
   const systemDesignTopics = [
-    { id: "sys-shortener", label: "URL Shortener System Design", description: "Base62 encoding, Key Generation Service (KGS), Redis LRU caching & high-scale schema", to: "/experiments/system-design", icon: Network, badge: "System Design" },
-    { id: "sys-uber", label: "Uber / Geolocation System Design", description: "Google S2 & Quadtree spatial indexing, driver matching & WebSocket tracking", to: "/experiments/system-design", icon: Network, badge: "System Design" },
-    { id: "sys-zomato", label: "Zomato / Blinkit Logistics Architecture", description: "Hyperlocal dark-store dispatch, order state machine & Redis inventory locks", to: "/experiments/system-design", icon: Network, badge: "System Design" },
+    { id: "sys-shortener", label: "URL Shortener System Design", description: "Base62 encoding, Key Generation Service (KGS), Redis LRU caching & high-scale schema", to: "/blog/url-shortener", icon: Network, badge: "System Design" },
   ];
 
   systemDesignTopics.forEach((t) => {
     const kw = tokenise(`${t.label} ${t.description} system design architecture backend distributed systems scalability`);
     items.push({
       id: t.id,
-      type: "experiment",
+      type: "blog",
       label: t.label,
       description: t.description,
       to: t.to,

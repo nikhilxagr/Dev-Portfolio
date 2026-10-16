@@ -37,7 +37,7 @@ import { useUserAuth } from "@/context/UserAuthContext";
 import { getGoogleAuthUrl } from "@/services/userAuth.service";
 import { SERVICE_OFFERINGS } from "@/data/servicesData";
 
-// ─── Google Sign‑In Icon ───────────────────────────────────────────────────
+// # Google Sign‑In Icon
 const GoogleIcon = () => (
   <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -47,7 +47,7 @@ const GoogleIcon = () => (
   </svg>
 );
 
-// ─── Per‑category config ───────────────────────────────────────────────────
+// # Per‑category config
 const CATEGORY_CONFIG = {
   Frontend: {
     icon: Monitor,
@@ -83,7 +83,7 @@ const CATEGORY_CONFIG = {
   },
 };
 
-// ─── Expanded detail content per service ──────────────────────────────────
+// # Expanded detail content per service
 const SERVICE_DETAILS = {
   "frontend-development": {
     idealFor: "Founders, startups, and creators needing responsive, ultra-fast React or Next.js web applications.",
@@ -127,7 +127,7 @@ const SERVICE_DETAILS = {
   },
 };
 
-// ─── FAQ data ─────────────────────────────────────────────────────────────
+// # FAQ data
 const FAQS = [
   {
     q: "How does the payment and booking process work?",
@@ -147,7 +147,7 @@ const FAQS = [
   },
 ];
 
-// ─── Main Component ────────────────────────────────────────────────────────
+// # Main Component
 const ServicesPage = () => {
   const navigate = useNavigate();
   const { user, isLoggedIn } = useUserAuth();
@@ -290,7 +290,7 @@ const ServicesPage = () => {
 
       <section className="section-wrap pt-6 pb-28">
 
-        {/* ── Page Header ─────────────────────────────────────────────── */}
+        {/* # Page Header */}
         <FadeInUp>
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
@@ -319,10 +319,10 @@ const ServicesPage = () => {
           </div>
         </FadeInUp>
 
-        {/* ── Trust / Payment Panel ────────────────────────────────────── */}
+        {/* # Trust / Payment Panel */}
         <PaymentTrustPanel includeHighlights />
 
-        {/* ── Status Alerts ────────────────────────────────────────────── */}
+        {/* # Status Alerts */}
         {paymentError && (
           <div className="mt-6 flex items-start gap-3 rounded-2xl border border-rose-400/40 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-400">
             <Zap size={16} className="mt-0.5 shrink-0" />
@@ -336,7 +336,7 @@ const ServicesPage = () => {
           </div>
         )}
 
-        {/* ── Section Header + Category Filters ───────────────────────── */}
+        {/* # Section Header + Category Filters */}
         <div className="mt-20 mb-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
@@ -385,7 +385,7 @@ const ServicesPage = () => {
           <div className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
         </div>
 
-        {/* ── Service Cards Grid ───────────────────────────────────────── */}
+        {/* # Service Cards Grid */}
         <div className="grid gap-6 md:grid-cols-2">
           {filteredOfferings.map((service) => {
             const cfg = CATEGORY_CONFIG[service.category] || CATEGORY_CONFIG["Full Stack"];
@@ -404,7 +404,7 @@ const ServicesPage = () => {
                   isActive && "ring-2 ring-emerald-500/40"
                 )}
               >
-                {/* ── Card Top stripe ──────────────────────────────── */}
+                {/* # Card Top stripe */}
                 <div className={clsx("h-1.5 w-full rounded-t-2xl bg-gradient-to-r", cfg.headerGradient)} />
 
                 <div className="p-6 sm:p-7">
@@ -479,7 +479,7 @@ const ServicesPage = () => {
                     </div>
                   )}
 
-                  {/* ── Expandable Details Drawer ───────────────────── */}
+                  {/* # Expandable Details Drawer */}
                   {isDetailsOpen && (
                     <div className="mt-5 space-y-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-800/50 p-4 text-xs">
                       <div>
@@ -521,7 +521,7 @@ const ServicesPage = () => {
                     </div>
                   )}
 
-                  {/* ── Checkout Drawer ─────────────────────────────── */}
+                  {/* # Checkout Drawer */}
                   {isActive && (
                     <div className="mt-5 rounded-xl border border-emerald-500/30 bg-emerald-50/80 dark:bg-emerald-500/5 p-5">
                       <div className="flex items-center justify-between mb-4">
@@ -625,7 +625,7 @@ const ServicesPage = () => {
                   )}
                 </div>
 
-                {/* ── Card Footer ──────────────────────────────────────── */}
+                {/* # Card Footer */}
                 <div className="border-t border-slate-100 dark:border-white/5 px-6 sm:px-7 py-4 flex items-center justify-between gap-3">
                   <button
                     type="button"
@@ -667,7 +667,7 @@ const ServicesPage = () => {
           })}
         </div>
 
-        {/* ── FAQ Section ──────────────────────────────────────────────── */}
+        {/* # FAQ Section */}
         <div className="mt-24 max-w-3xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
@@ -711,7 +711,7 @@ const ServicesPage = () => {
           </div>
         </div>
 
-        {/* ── Bottom CTA Banner ─────────────────────────────────────────── */}
+        {/* # Bottom CTA Banner */}
         <div className="mt-20 rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/70 dark:border-emerald-500/25 dark:bg-gradient-to-br dark:from-slate-900 dark:to-emerald-950/30 p-8 sm:p-10 text-center shadow-lg dark:shadow-none">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-100 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 px-4 py-1.5 text-xs font-bold uppercase tracking-widest mb-5">
             <Globe size={13} /> Custom Enterprise Build &amp; Auditing

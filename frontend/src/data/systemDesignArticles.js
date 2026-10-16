@@ -28,7 +28,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       { id: "checklist", label: "11. Interview Cheat Sheet & Key Takeaways" },
     ],
 
-    // ── SECTION 1: OVERVIEW ──
+    // # SECTION 1: OVERVIEW
     overview: {
       lead: "Why is designing a URL shortener like TinyURL or Bitly one of the most classic system design interview questions? On the surface, it sounds like a weekend project: take a long link like 'https://example.com/very/long/article/slug?param=123', convert it into a short string like 'https://short.ly/aB3x9Qz', and redirect visitors when they click it. But once you scale it to real-world production—handling 1 billion redirects every day, keeping response times under 2 milliseconds, and ensuring no two users ever clash for the same code—it tests almost every foundational pillar of backend architecture.",
       keyPoints: [
@@ -47,7 +47,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       ],
     },
 
-    // ── SECTION 2: REQUIREMENTS ──
+    // # SECTION 2: REQUIREMENTS
     requirements: {
       intro: "Whenever you approach a system design problem, always divide expectations into functional requirements (what features the app provides) and non-functional requirements (the performance and reliability SLAs).",
       functional: [
@@ -106,7 +106,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       ],
     },
 
-    // ── SECTION 3: CAPACITY ESTIMATION ──
+    // # SECTION 3: CAPACITY ESTIMATION
     capacity: {
       intro: "Before picking databases or writing code, we need a quick reality check on the numbers. This is known as 'back-of-the-envelope calculation'. It tells us how much RAM we need for caching and how much hard disk space we need over 5 years.",
       traffic: [
@@ -140,7 +140,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       ],
     },
 
-    // ── SECTION 4 & 5: HLD & REQUEST FLOW WITH FIGURES ──
+    // # SECTION 4 & 5: HLD & REQUEST FLOW WITH FIGURES
     figures: [
       {
         id: "figure-1",
@@ -294,7 +294,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       ],
     },
 
-    // ── SECTION 6: DATA MODEL & SCHEMA ──
+    // # SECTION 6: DATA MODEL & SCHEMA
     dataModel: {
       rationale: "When choosing a database for a URL shortener, look at how the data is queried: 99% of queries are simple key-value lookups: 'Given short_code, return original_url'. There are no complex multi-table joins on the critical redirect path. A relational database (PostgreSQL with B-Tree indexes) or a distributed NoSQL store (DynamoDB or Cassandra) works wonderfully. Below is the relational schema design.",
       tables: [
@@ -337,7 +337,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       ],
     },
 
-    // ── SECTION 7: API DESIGN ──
+    // # SECTION 7: API DESIGN
     apis: [
       {
         method: "POST",
@@ -412,7 +412,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       },
     ],
 
-    // ── SECTION 8: ALGORITHMS & LLD ──
+    // # SECTION 8: ALGORITHMS & LLD
     algorithms: {
       base62Math: {
         title: "Why Base62? The Simple Math Behind 7 Characters",
@@ -452,7 +452,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       ],
     },
 
-    // ── SECTION 9: SCALABILITY & CACHING ──
+    // # SECTION 9: SCALABILITY & CACHING
     scalabilityNotes: [
       {
         title: "The Big Debate: HTTP 301 vs. HTTP 302 Redirection",
@@ -481,7 +481,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       },
     ],
 
-    // ── SECTION 10: BOTTLENECKS & FAILURE MODES ──
+    // # SECTION 10: BOTTLENECKS & FAILURE MODES
     bottlenecks: [
       {
         problem: "1. The Cache Stampede (Dog-Piling Effect)",
@@ -505,7 +505,7 @@ export const SYSTEM_DESIGN_ARTICLES = {
       },
     ],
 
-    // ── SECTION 11: INTERVIEW SUMMARY ──
+    // # SECTION 11: INTERVIEW SUMMARY
     interviewSummary: {
       keyTakeaways: [
         "Separate the Write Path (URL creation) from the Read Path (URL redirection) to prevent traffic spikes from choking the system.",

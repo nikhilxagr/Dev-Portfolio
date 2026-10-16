@@ -29,24 +29,36 @@ import {
 } from "@/data/systemDesignData";
 import SystemDesignArticleView from "@/components/system-design/SystemDesignArticleView";
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * 1. DETAIL VIEW: RENDERED WHEN A SPECIFIC SYSTEM ROUTE IS OPENED (:id)
- * ───────────────────────────────────────────────────────────────────────────── */
-const SystemDesignDetailView = ({ system }) => {
+// # 1. DETAIL VIEW: RENDERED WHEN A SPECIFIC SYSTEM ROUTE IS OPENED (:id)
+export const SystemDesignDetailView = ({
+  system,
+  prevSystem: externalPrev,
+  nextSystem: externalNext,
+  backUrl = "/blog",
+  backLabel = "Back to Engineering Docs",
+  baseRoute = "/blog",
+}) => {
   const Icon = system.icon;
   const currentIndex = SYSTEM_DESIGNS.findIndex((s) => s.id === system.id);
-  const prevSystem = currentIndex > 0 ? SYSTEM_DESIGNS[currentIndex - 1] : null;
+  const prevSystem =
+    externalPrev !== undefined
+      ? externalPrev
+      : currentIndex > 0
+        ? SYSTEM_DESIGNS[currentIndex - 1]
+        : null;
   const nextSystem =
-    currentIndex < SYSTEM_DESIGNS.length - 1
-      ? SYSTEM_DESIGNS[currentIndex + 1]
-      : null;
+    externalNext !== undefined
+      ? externalNext
+      : currentIndex < SYSTEM_DESIGNS.length - 1
+        ? SYSTEM_DESIGNS[currentIndex + 1]
+        : null;
 
   return (
     <>
       <SeoHead
         title={`${system.title} | System Design Notes`}
         description={system.summary}
-        pathname={`/experiments/system-design/${system.id}`}
+        pathname={`${baseRoute}/${system.id}`}
         keywords={[
           system.title,
           system.tag,
@@ -56,9 +68,8 @@ const SystemDesignDetailView = ({ system }) => {
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", url: "/" },
-          { name: "Experiments", url: "/experiments" },
-          { name: "System Design", url: "/experiments/system-design" },
-          { name: system.title, url: `/experiments/system-design/${system.id}` },
+          { name: "Blog", url: "/blog" },
+          { name: system.title, url: `${baseRoute}/${system.id}` },
         ])}
       />
 
@@ -73,11 +84,11 @@ const SystemDesignDetailView = ({ system }) => {
           {/* Top Bar: Back to All Systems + Domain Badge */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <Link
-              to="/experiments/system-design"
+              to={backUrl}
               className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/60 px-4 py-2 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:border-lime-400 hover:text-zinc-950 dark:hover:text-white transition shadow-xs"
             >
               <ArrowLeft size={14} />
-              <span>Back to All System Designs</span>
+              <span>{backLabel}</span>
             </Link>
 
             <span
@@ -134,7 +145,7 @@ const SystemDesignDetailView = ({ system }) => {
             </div>
           )}
 
-          {/* ── Architecture Data Flow Block ── */}
+          {/* # Architecture Data Flow Block */}
           <div className="mb-12 overflow-hidden rounded-[1.6rem] border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/70 p-6 sm:p-8 shadow-[0_8px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.5)]">
             <div
               className={clsx(
@@ -174,7 +185,7 @@ const SystemDesignDetailView = ({ system }) => {
             </div>
           </div>
 
-          {/* ── Backend Engineering Deep-Dive Notes (GFG / W3Schools style) ── */}
+          {/* # Backend Engineering Deep-Dive Notes (GFG / W3Schools style) */}
           <div className="mb-12 space-y-4">
             <div className="mb-6">
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">
@@ -210,7 +221,7 @@ const SystemDesignDetailView = ({ system }) => {
             </div>
           </div>
 
-          {/* ── Key Technologies Block ── */}
+          {/* # Key Technologies Block */}
           <div className="mb-12 rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-6 shadow-sm dark:shadow-none">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 mb-3">
               // Key Technologies &amp; Primitives
@@ -227,11 +238,11 @@ const SystemDesignDetailView = ({ system }) => {
             </div>
           </div>
 
-          {/* ── Bottom Pagination: Jump to Other Systems ── */}
+          {/* # Bottom Pagination: Jump to Other Systems */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-zinc-200 dark:border-white/[0.08]">
             {prevSystem ? (
               <Link
-                to={`/experiments/system-design/${prevSystem.id}`}
+                to={`${baseRoute}/${prevSystem.id}`}
                 className="group flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition"
               >
                 <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -245,15 +256,15 @@ const SystemDesignDetailView = ({ system }) => {
             )}
 
             <Link
-              to="/experiments/system-design"
+              to={backUrl}
               className="inline-flex items-center gap-2 rounded-xl bg-lime-300 text-slate-950 px-5 py-2.5 text-xs font-black uppercase tracking-wider hover:bg-lime-200 shadow-sm transition"
             >
-              All System Designs
+              {backLabel}
             </Link>
 
             {nextSystem ? (
               <Link
-                to={`/experiments/system-design/${nextSystem.id}`}
+                to={`${baseRoute}/${nextSystem.id}`}
                 className="group flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition"
               >
                 <div className="text-right">
@@ -272,9 +283,7 @@ const SystemDesignDetailView = ({ system }) => {
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * 2. LIST VIEW: RENDERED WHEN ON MAIN /experiments/system-design ROUTE
- * ───────────────────────────────────────────────────────────────────────────── */
+// # 2. LIST VIEW: RENDERED WHEN ON MAIN /experiments/system-design ROUTE
 const SystemDesignListView = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -316,208 +325,168 @@ const SystemDesignListView = () => {
         ])}
       />
 
-      {/* ── HERO BANNER (MATCHING JOURNEY PAGE STYLE & TYPOGRAPHY) ───── */}
-      <section
-        id="system-design-hero"
-        className="relative overflow-hidden pt-12 pb-14 sm:pt-16 sm:pb-20 bg-white/0"
-      >
-        {/* Ambient Subtle Glows */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/3 top-1/3 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-400/5 blur-[120px]" />
-          <div className="absolute right-1/3 top-2/3 h-72 w-72 translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/5 blur-[100px]" />
-        </div>
-
-        <div className="relative mx-auto max-w-5xl px-6 text-center">
-          {/* Top Pill Badge matching Journey Page */}
-          <div className="mb-4">
-            <span className="inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
-              Distributed Systems &amp; Backend Engineering
-            </span>
+      <section className="section-wrap pt-6 sm:pt-10 pb-24">
+        {/* Category Pills & Search Controls Bar */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-8 border-b border-slate-200/80 dark:border-white/[0.08]">
+          {/* Category Filter Pills */}
+          <div
+            className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={clsx(
+                  "shrink-0 rounded-full px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 border",
+                  activeCategory === cat
+                    ? "border-lime-500 bg-lime-400 text-slate-950 font-black shadow-[0_0_15px_rgba(163,230,53,0.3)]"
+                    : "border-slate-200 bg-white/60 text-slate-600 hover:border-lime-400/40 hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:border-lime-400/40 dark:hover:text-white"
+                )}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
 
-          {/* Heading with exact Journey Page Font & Sizing */}
-          <h1 className="mt-2 font-display text-[7.5vw] sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.05] tracking-tight text-zinc-900 dark:text-white">
-            SYSTEM DESIGN
-            <br />
-            <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
-              ANALYSIS
-            </span>
-          </h1>
-
-          {/* Subtitle with exact Journey Page typography */}
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-zinc-500 dark:text-zinc-400 sm:text-base">
-            Clean, practical architectural breakdowns of real-world distributed
-            backends (URL Shortener, Uber, Zomato, Blinkit, Instagram, WhatsApp).
-            Click any card to open its dedicated architecture route and deep-dive notes.
-          </p>
-
-          {/* Search & Filter Controls */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-2xl mx-auto">
-            <div className="relative w-full sm:w-80">
-              <Search
-                size={14}
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400"
-              />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search systems (e.g. Redis, Uber, Cache)..."
-                className="w-full rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 pl-9 pr-4 py-2.5 text-xs text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:border-lime-400 shadow-sm dark:shadow-none"
-              />
-            </div>
-
-            <div
-              className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1"
-              style={{ scrollbarWidth: "none" }}
-            >
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveCategory(cat)}
-                  className={clsx(
-                    "shrink-0 rounded-full border px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] transition-all duration-300",
-                    activeCategory === cat
-                      ? "border-lime-400 bg-lime-400 text-black font-black shadow-[0_0_12px_rgba(163,230,53,0.35)]"
-                      : "border-slate-300 dark:border-white/[0.07] bg-white/90 dark:bg-zinc-900/60 text-slate-700 dark:text-zinc-400 hover:border-slate-400 dark:hover:border-white/[0.15] hover:text-slate-950 dark:hover:text-zinc-200 shadow-xs"
-                  )}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+          {/* Search Box */}
+          <div className="relative w-full md:w-80 shrink-0">
+            <Search
+              size={15}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-500"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search systems (e.g. Redis, Uber, Cache)..."
+              className="w-full rounded-2xl border border-slate-300/80 bg-white/80 dark:border-white/10 dark:bg-zinc-900/60 pl-9 pr-4 py-2 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 outline-none backdrop-blur-md focus:border-lime-400 dark:focus:border-lime-400 shadow-sm transition-all"
+            />
           </div>
         </div>
-      </section>
 
-      {/* ── CARD-WISE SYSTEM DESIGN GRID (ENTIRE CARD IS CLICKABLE) ──── */}
-      <section className="section-wrap pb-24">
-        <div className="mx-auto max-w-6xl">
+        {/* Hero Title Section matching Reference Layout */}
+        <div className="pt-8 sm:pt-12 pb-6">
+          <FadeInUp delay={0.05}>
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div>
+                <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-lime-600 dark:text-lime-400 mb-2">
+                  LATEST BLUEPRINTS
+                </p>
+                <h1 className="font-outfit text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                  System Design Analysis
+                </h1>
+                <p className="mt-2 text-xs sm:text-sm font-medium text-slate-600 dark:text-zinc-400 max-w-2xl">
+                  Clean, practical architectural breakdowns of real-world distributed backends (URL Shortener, Uber, Zomato, Blinkit, Instagram, WhatsApp) with high-level blueprints and deep-dive notes.
+                </p>
+              </div>
+
+              {/* Counter on Right */}
+              <p className="font-mono text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500 shrink-0 self-start sm:self-end">
+                {String(filteredDesigns.length).padStart(2, "0")} BLUEPRINTS
+              </p>
+            </div>
+          </FadeInUp>
+        </div>
+
+        {/* Full-width Horizontal Cards List */}
+        <div className="mt-2 divide-y divide-transparent">
           {filteredDesigns.length === 0 ? (
             <div className="py-24 text-center text-sm font-semibold text-zinc-500">
               No system design architectures match your search filter.
             </div>
           ) : (
-            <div className="grid gap-8 lg:grid-cols-2 items-stretch">
-              {filteredDesigns.map((system) => {
-                const Icon = system.icon;
+            <div>
+              {filteredDesigns.map((system, index) => {
+                const indexStr = String(index + 1).padStart(2, "0");
+                const primaryStat = system.stats
+                  ? `${system.stats.latency} · ${system.stats.traffic}`
+                  : system.readiness;
 
                 return (
                   <Link
                     key={system.id}
                     to={`/experiments/system-design/${system.id}`}
                     aria-label={`Open architecture study for ${system.title}`}
-                    className="group relative flex flex-col justify-between overflow-hidden rounded-[1.6rem] border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/70 shadow-[0_8px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-all duration-300 hover:border-lime-400/60 dark:hover:border-lime-400/50 hover:-translate-y-1 hover:shadow-xl p-6 sm:p-7 cursor-pointer"
+                    className="group block w-full py-8 sm:py-10 border-b border-slate-200/80 dark:border-white/[0.08] transition-all duration-300 hover:bg-slate-500/[0.02] dark:hover:bg-white/[0.02] rounded-2xl px-3 sm:px-5 -mx-3 sm:-mx-5"
                   >
-                    {/* Top Accent Stripe matching Journey page */}
-                    <div
-                      className={clsx(
-                        "absolute inset-x-0 top-0 h-[2.5px] bg-gradient-to-r",
-                        system.accent
-                      )}
-                    />
-
-                    <div>
-                      {/* Header Row: Domain Tag & Icon */}
-                      <div className="flex items-center justify-between gap-3 mb-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-800 dark:border-zinc-800 dark:bg-zinc-800/50 dark:text-white shadow-xs group-hover:scale-105 transition-transform">
-                            <Icon
-                              size={18}
-                              className="text-lime-500 dark:text-lime-400"
-                            />
-                          </div>
-                          <div>
-                            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-500 dark:text-zinc-400 block">
-                              {system.subtitle}
-                            </span>
-                            <span className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">
-                              {system.domain}
-                            </span>
-                          </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+                      {/* Left Column: Number Index + Architecture Info (7 cols on lg) */}
+                      <div className="lg:col-span-7 flex items-start gap-4 sm:gap-6">
+                        {/* Index 01 — */}
+                        <div className="shrink-0 flex flex-col items-center pt-1">
+                          <span className="font-mono text-xs sm:text-sm font-bold text-slate-400 dark:text-zinc-500">
+                            {indexStr}
+                          </span>
+                          <span className="w-3.5 h-[1.5px] bg-slate-300 dark:bg-zinc-700 mt-1" />
                         </div>
 
-                        <span
-                          className={clsx(
-                            "rounded-full border px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider",
-                            system.badgeColor
-                          )}
-                        >
-                          {system.tag}
-                        </span>
-                      </div>
+                        {/* Details */}
+                        <div className="flex-1 min-w-0">
+                          {/* Category / Domain Eyebrow */}
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-lime-600 dark:text-lime-400">
+                              {system.domain || system.category}
+                            </span>
+                            <span className="text-zinc-400 dark:text-zinc-600 text-xs">•</span>
+                            <span className="font-mono text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                              {system.tag}
+                            </span>
+                          </div>
 
-                      {/* Main Title */}
-                      <h2 className="font-display text-xl sm:text-2xl font-black text-zinc-900 dark:text-white leading-snug group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors">
-                        {system.title}
-                      </h2>
+                          {/* Title in Clean Font Outfit Title Case */}
+                          <h2 className="mt-1.5 font-outfit text-xl sm:text-2xl lg:text-[26px] font-bold text-slate-900 dark:text-white leading-snug tracking-tight group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors">
+                            {system.title}
+                          </h2>
 
-                      {/* Human-Friendly Summary */}
-                      <p className="mt-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed font-normal">
-                        {system.summary}
-                      </p>
+                          {/* Summary in Clean Font Jakarta */}
+                          <p className="mt-2.5 font-jakarta text-xs sm:text-sm text-slate-600 dark:text-zinc-400 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3">
+                            {system.summary}
+                          </p>
 
-                      {/* ── Architecture Flow Box ──────────────────────── */}
-                      <div className="mt-5 rounded-2xl border border-zinc-200 dark:border-white/[0.06] bg-zinc-50/80 dark:bg-zinc-950/50 p-4 space-y-3">
-                        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
-                          // Architecture Data Flow
-                        </p>
-
-                        <div className="space-y-2">
-                          {system.architectureSteps.map((step) => (
-                            <div
-                              key={step.step}
-                              className="flex items-start gap-2.5 text-xs"
-                            >
-                              <span className="mt-0.5 font-mono text-[10px] font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-1.5 py-0.5 rounded">
-                                {step.step}
+                          {/* Key Technologies Chips */}
+                          <div className="mt-4 flex flex-wrap gap-1.5">
+                            {system.technologies.slice(0, 4).map((tech) => (
+                              <span
+                                key={tech}
+                                className="rounded-lg border border-slate-200 dark:border-white/[0.08] bg-slate-100 dark:bg-zinc-800/60 px-2 py-0.5 font-mono text-[10px] font-medium text-slate-700 dark:text-zinc-300"
+                              >
+                                {tech}
                               </span>
-                              <div className="leading-snug">
-                                <strong className="text-zinc-900 dark:text-white font-bold">
-                                  {step.name}:{" "}
-                                </strong>
-                                <span className="text-zinc-600 dark:text-zinc-300">
-                                  {step.detail}
-                                </span>
-                              </div>
+                            ))}
+                          </div>
+
+                          {/* Bottom Meta & Action */}
+                          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-white/[0.04]">
+                            <div className="flex items-center gap-2 font-mono text-[11px] sm:text-xs text-slate-500 dark:text-zinc-400">
+                              <span className="h-1.5 w-1.5 rounded-full bg-lime-500 animate-pulse" />
+                              <span>{primaryStat}</span>
                             </div>
-                          ))}
+
+                            <div className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-slate-800 dark:text-zinc-200 group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors">
+                              <span>Read breakdown</span>
+                              <ArrowRight
+                                size={14}
+                                className="transition-transform duration-200 group-hover:translate-x-1.5"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* ── Technologies Pill Bar ─────────────────────── */}
-                      <div className="mt-5">
-                        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">
-                          // Key Technologies &amp; Primitives
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {system.technologies.map((tech) => (
-                            <span
-                              key={tech}
-                              className="rounded-lg border border-zinc-200 dark:border-white/[0.07] bg-zinc-100 dark:bg-zinc-800/60 px-2.5 py-1 text-[10px] font-semibold text-zinc-700 dark:text-zinc-300"
-                            >
-                              {tech}
-                            </span>
-                          ))}
+                      {/* Right Column: Blueprint Architecture Image Frame (5 cols on lg) */}
+                      <div className="lg:col-span-5 w-full">
+                        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-slate-200/90 dark:border-white/[0.08] bg-slate-900/95 shadow-sm group-hover:border-lime-500/40 dark:group-hover:border-lime-400/40 group-hover:shadow-md transition-all duration-300">
+                          <img
+                            src={system.imageUrl || "/images/system-design/url-shortener-hld.webp"}
+                            alt={`${system.title} architecture blueprint`}
+                            className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Card Footer: Status & Direct Action Link */}
-                    <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-white/[0.06] flex items-center justify-between text-xs">
-                      <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-zinc-500 dark:text-zinc-400">
-                        <span className="h-1.5 w-1.5 rounded-full bg-lime-500 animate-pulse" />
-                        {system.readiness}
-                      </span>
-
-                      <div className="inline-flex items-center gap-1.5 font-bold text-xs text-lime-600 group-hover:text-lime-700 dark:text-lime-400 dark:group-hover:text-lime-300 transition">
-                        <span>Open Architecture Route</span>
-                        <ArrowRight
-                          size={14}
-                          className="group-hover:translate-x-1 transition-transform"
-                        />
                       </div>
                     </div>
                   </Link>
@@ -528,14 +497,14 @@ const SystemDesignListView = () => {
         </div>
       </section>
 
-      {/* ── CLOSING BANNER ───────────────────────────────────────────── */}
+      {/* # CLOSING BANNER */}
       <section className="section-wrap pb-20">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-8 sm:p-12 text-center backdrop-blur-xl shadow-sm dark:shadow-none">
           <span className="inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300 mb-4">
             <Network size={12} /> Systems Engineering
           </span>
 
-          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="font-outfit text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-zinc-900 dark:text-white">
             Want to Discuss System Architectures?
           </h2>
 
@@ -564,9 +533,7 @@ const SystemDesignListView = () => {
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * 3. MAIN COMPONENT ROUTER (SWITCHES BASED ON :id URL PARAMETER)
- * ───────────────────────────────────────────────────────────────────────────── */
+// # 3. MAIN COMPONENT ROUTER (SWITCHES BASED ON :id URL PARAMETER)
 const SystemDesignPage = () => {
   const { id } = useParams();
 

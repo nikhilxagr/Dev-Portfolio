@@ -17,9 +17,7 @@ import {
 import SeoHead from "@/components/seo/SeoHead";
 import { createBreadcrumbSchema } from "@/utils/seo";
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * 1. CLEAN ARCHITECTURE FIGURE DISPLAY (SIMPLE, INLINE, NO EXPAND OVERLAYS)
- * ───────────────────────────────────────────────────────────────────────────── */
+// # 1. CLEAN ARCHITECTURE FIGURE DISPLAY (SIMPLE, INLINE, NO EXPAND OVERLAYS)
 const FigureCard = ({ figure }) => {
   if (!figure) return null;
   return (
@@ -41,9 +39,7 @@ const FigureCard = ({ figure }) => {
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * 2. CODE BLOCK WITH COPY BUTTON
- * ───────────────────────────────────────────────────────────────────────────── */
+// # 2. CODE BLOCK WITH COPY BUTTON
 const CodeSnippet = ({ code, language = "json", statusBadge = null }) => {
   const [copied, setCopied] = useState(false);
 
@@ -103,10 +99,16 @@ const CodeSnippet = ({ code, language = "json", statusBadge = null }) => {
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────────────────
- * 3. MAIN SYSTEM DESIGN ARTICLE VIEW
- * ───────────────────────────────────────────────────────────────────────────── */
-export default function SystemDesignArticleView({ system, article, prevSystem, nextSystem }) {
+// # 3. MAIN SYSTEM DESIGN ARTICLE VIEW
+export default function SystemDesignArticleView({
+  system,
+  article,
+  prevSystem,
+  nextSystem,
+  backUrl = "/blog",
+  backLabel = "Back to Engineering Docs",
+  baseRoute = "/blog",
+}) {
   const [activePipeline, setActivePipeline] = useState("write");
   const [activeTocId, setActiveTocId] = useState("overview");
 
@@ -142,7 +144,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
       <SeoHead
         title={`${article.title} | System Design Notes & Architecture Guide`}
         description={`Comprehensive architectural breakdown of ${article.title}: high-level design, capacity calculations, database schema, request flow, and low-level Base62 algorithms.`}
-        pathname={`/experiments/system-design/${system.id}`}
+        pathname={`${baseRoute}/${system.id}`}
         keywords={[
           article.title,
           "system design notes",
@@ -154,9 +156,8 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", url: "/" },
-          { name: "Experiments", url: "/experiments" },
-          { name: "System Design", url: "/experiments/system-design" },
-          { name: article.title, url: `/experiments/system-design/${system.id}` },
+          { name: "Blog", url: "/blog" },
+          { name: article.title, url: `${baseRoute}/${system.id}` },
         ])}
       />
 
@@ -171,11 +172,11 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
           {/* Top Bar: Back to All Systems + Meta Badges */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
             <Link
-              to="/experiments/system-design"
+              to={backUrl}
               className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/70 px-4 py-2 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:border-lime-400 hover:text-zinc-950 dark:hover:text-white transition shadow-xs"
             >
               <ArrowLeft size={14} />
-              <span>Back to All System Designs</span>
+              <span>{backLabel}</span>
             </Link>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -189,7 +190,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
             </div>
           </div>
 
-          {/* ── ARTICLE HERO SECTION (JOURNEY PAGE TYPOGRAPHY) ── */}
+          {/* # ARTICLE HERO SECTION (JOURNEY PAGE TYPOGRAPHY) */}
           <div className="mb-10 max-w-4xl">
             <div className="flex items-center gap-2 mb-3">
               <span className="font-mono text-xs font-black uppercase tracking-[0.2em] text-lime-500">
@@ -227,9 +228,9 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
             </div>
           </div>
 
-          {/* ── TWO-COLUMN LAYOUT: STICKY TOC ON LEFT + FULL ARTICLE ON RIGHT ── */}
+          {/* # TWO-COLUMN LAYOUT: STICKY TOC ON LEFT + FULL ARTICLE ON RIGHT */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* ── STICKY TABLE OF CONTENTS (COL 1-3) ── */}
+            {/* # STICKY TABLE OF CONTENTS (COL 1-3) */}
             <aside className="lg:col-span-3 lg:sticky lg:top-24 space-y-4">
               <div className="rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/60 p-4 shadow-sm backdrop-blur-md">
                 <p className="font-display text-xs font-black uppercase tracking-wider text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
@@ -295,11 +296,9 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
               )}
             </aside>
 
-            {/* ── ARTICLE MAIN CONTENT (COL 4-12) ── */}
+            {/* # ARTICLE MAIN CONTENT (COL 4-12) */}
             <main className="lg:col-span-9 space-y-16">
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 1: THE CORE PROBLEM
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 1: THE CORE PROBLEM */}
               <section id="overview" className="scroll-mt-24 space-y-4">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -331,9 +330,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 2: WHAT THE SYSTEM NEEDS TO DO (REQUIREMENTS)
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 2: WHAT THE SYSTEM NEEDS TO DO (REQUIREMENTS) */}
               <section id="requirements" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -403,9 +400,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 3: SIZING UP THE SYSTEM (CAPACITY ESTIMATION)
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 3: SIZING UP THE SYSTEM (CAPACITY ESTIMATION) */}
               <section id="capacity" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -462,9 +457,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 4: THE BIG PICTURE: HIGH-LEVEL ARCHITECTURE (HLD)
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 4: THE BIG PICTURE: HIGH-LEVEL ARCHITECTURE (HLD) */}
               <section id="hld" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -506,9 +499,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 5: TWO LIFECYCLES: CREATION VS REDIRECTION
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 5: TWO LIFECYCLES: CREATION VS REDIRECTION */}
               <section id="request-flow" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -581,9 +572,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 6: HOW WE STORE THE DATA (DATABASE SCHEMA)
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 6: HOW WE STORE THE DATA (DATABASE SCHEMA) */}
               <section id="data-model" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -653,9 +642,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 7: REST API DESIGN & CONTRACTS
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 7: REST API DESIGN & CONTRACTS */}
               <section id="api-design" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -719,9 +706,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 8: THE KEY SECRET: HOW 7 CHARACTERS GIVE 3.5 TRILLION URLS
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 8: THE KEY SECRET: HOW 7 CHARACTERS GIVE 3.5 TRILLION URLS */}
               <section id="algorithms" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -805,9 +790,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 9: SCALING UP: REDIS, SHARDING & HTTP 302
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 9: SCALING UP: REDIS, SHARDING & HTTP 302 */}
               <section id="scalability" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -849,9 +832,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 10: REAL-WORLD DISASTERS & EDGE CASES
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 10: REAL-WORLD DISASTERS & EDGE CASES */}
               <section id="bottlenecks" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -883,9 +864,7 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * SECTION 11: INTERVIEW SUMMARY & KEY TAKEAWAYS
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # SECTION 11: INTERVIEW SUMMARY & KEY TAKEAWAYS */}
               <section id="checklist" className="scroll-mt-24 space-y-6">
                 <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
                   <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
@@ -933,13 +912,11 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 </div>
               </section>
 
-              {/* ─────────────────────────────────────────────────────────────
-               * BOTTOM NAVIGATION: PREVIOUS & NEXT SYSTEM
-               * ───────────────────────────────────────────────────────────── */}
+              {/* # BOTTOM NAVIGATION: PREVIOUS & NEXT SYSTEM */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-zinc-200 dark:border-white/[0.08]">
                 {prevSystem ? (
                   <Link
-                    to={`/experiments/system-design/${prevSystem.id}`}
+                    to={`${baseRoute}/${prevSystem.id}`}
                     className="group flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition"
                   >
                     <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -953,15 +930,15 @@ export default function SystemDesignArticleView({ system, article, prevSystem, n
                 )}
 
                 <Link
-                  to="/experiments/system-design"
+                  to={backUrl}
                   className="inline-flex items-center gap-2 rounded-xl bg-lime-300 text-slate-950 px-5 py-2.5 text-xs font-black uppercase tracking-wider hover:bg-lime-200 shadow-sm transition"
                 >
-                  All System Designs
+                  {backLabel}
                 </Link>
 
                 {nextSystem ? (
                   <Link
-                    to={`/experiments/system-design/${nextSystem.id}`}
+                    to={`${baseRoute}/${nextSystem.id}`}
                     className="group flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition"
                   >
                     <div className="text-right">

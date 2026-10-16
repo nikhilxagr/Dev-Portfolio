@@ -1,5 +1,20 @@
 export const BLOG_POSTS = [
   {
+    slug: "url-shortener",
+    title: "URL Shortener System Design: Base62 Math, Redis LRU & KGS Architecture",
+    subtitle: "Building a scalable link shortening engine handling 20,000 QPS with sub-2ms cache redirect latency.",
+    source: "System Design",
+    url: "",
+    excerpt: "Deep dive into TinyURL/Bitly architecture: Base62 encoding math (62⁷ ≈ 3.52 Trillion combinations), decoupled Key Generation Service (KGS), Redis LRU caching, and horizontal database sharding.",
+    imageUrl: "/images/system-design/url-shortener-hld.webp",
+    publishedAt: "2026-10-14T09:00:00.000Z",
+    readTime: "8 min read",
+    content: "A complete architectural breakdown of a distributed URL shortening service. Key design challenges include generating compact collision-free 7-character tokens, maintaining sub-2ms HTTP 302 redirects via Redis Least Recently Used (LRU) caching, handling 20,000 read QPS, and sharding persistent database storage using consistent hashing.",
+    tags: ["System Design", "Distributed Systems", "Redis", "Key-Value Store"],
+    category: "System Design",
+    featured: true,
+  },
+  {
     slug: "learning-cybersecurity-web-development-and-ai-together",
     title:
       "How I'm Learning Cybersecurity, Web Development, and AI Together as a BCA Student",
@@ -15,7 +30,8 @@ export const BLOG_POSTS = [
     content:
       "This article shares how I combine cybersecurity, web development, and AI learning without burnout. I focus on consistency over speed, build small projects that connect theory to practice, and track what actually improves my skills over time.",
     tags: ["Cybersecurity", "Web Development", "AI", "Student Journey"],
-    featured: true,
+    category: "Cybersecurity",
+    featured: false,
   },
   {
     slug: "chatbots-and-the-mindset-of-college-students",
@@ -33,6 +49,7 @@ export const BLOG_POSTS = [
     content:
       "Chatbots are changing how students think, learn, and solve problems. The article explores both sides: faster doubt resolution and learning support, but also overdependence, shallow understanding, and reduced critical thinking if used without discipline.",
     tags: ["AI", "Education", "College Students"],
+    category: "AI",
     featured: false,
   },
   {
@@ -51,6 +68,7 @@ export const BLOG_POSTS = [
     content:
       "This breakdown explains token allocation, automatic fare collection, signaling, and the evolution toward driverless metro trains. It connects the passenger experience with the underlying system design and safety technology.",
     tags: ["Technology", "Infrastructure", "Innovation"],
+    category: "Technology",
     featured: false,
   },
   {
@@ -69,15 +87,17 @@ export const BLOG_POSTS = [
     content:
       "The article compares a marks-first education pattern with innovation-first ecosystems. It highlights the need for project-based learning, research culture, creative risk-taking, and problem-solving skills beyond exams.",
     tags: ["Education", "Innovation", "Student Perspective"],
+    category: "Education",
     featured: false,
   },
 ];
 
 export const BLOG_CATEGORIES = [
   "All",
+  "System Design",
+  "AI",
   "Cybersecurity",
   "Web Development",
-  "AI",
   "Education",
   "Technology",
 ];

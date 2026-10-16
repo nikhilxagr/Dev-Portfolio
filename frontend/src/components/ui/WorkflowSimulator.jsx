@@ -149,7 +149,7 @@ const WorkflowSimulator = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* ── Top Step Timeline Bar (1 -> 2 -> 3 -> 4 -> 5) ─────────────── */}
+      {/* # Top Step Timeline Bar (1 -> 2 -> 3 -> 4 -> 5) */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
         {WORKFLOW_STEPS.map((step, index) => {
           const isActive = activeStep === index;
@@ -220,7 +220,7 @@ const WorkflowSimulator = () => {
         })}
       </div>
 
-      {/* ── Active Step Interactive Showcase Card ─────────────────────── */}
+      {/* # Active Step Interactive Showcase Card */}
       <div className="relative rounded-3xl border border-slate-200 bg-white/95 dark:border-slate-800 dark:bg-slate-900/60 backdrop-blur-sm shadow-xl dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] overflow-hidden">
         {/* Top Stripe Gradient */}
         <div className={clsx("h-2 w-full bg-gradient-to-r", currentStep.gradient)} />

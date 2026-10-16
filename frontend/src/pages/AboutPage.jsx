@@ -147,7 +147,7 @@ const AboutPage = () => {
       <main className="relative min-h-screen w-full overflow-hidden pt-6 pb-28 sm:pt-8">
         <div className="section-wrap space-y-20 sm:space-y-24">
           
-          {/* ── Top Header Hero Banner (Matching Services & Skills Pages) ── */}
+          {/* # Top Header Hero Banner (Matching Services & Skills Pages) */}
           <FadeInUp>
             <div className="text-center max-w-3xl mx-auto mb-10">
               <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
@@ -179,7 +179,7 @@ const AboutPage = () => {
             </div>
           </FadeInUp>
 
-          {/* ── Section 1: Hero Bio Card ───────────────────────────────── */}
+          {/* # Section 1: Hero Bio Card */}
           <FadeInUp>
             <article className="relative rounded-3xl border border-slate-200 bg-white/95 dark:border-slate-800 dark:bg-slate-900/60 backdrop-blur-sm shadow-xl dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] overflow-hidden">
               {/* Top Stripe Gradient */}
@@ -296,7 +296,7 @@ const AboutPage = () => {
             </article>
           </FadeInUp>
 
-          {/* ── Section 2: Current Chapter ─────────────────────────────── */}
+          {/* # Section 2: Current Chapter */}
           <FadeInUp delay={0.06}>
             <section aria-labelledby="current-chapter-title">
               <div className="mb-8">
@@ -391,7 +391,7 @@ const AboutPage = () => {
             </section>
           </FadeInUp>
 
-          {/* ── Section 3: What I Build ────────────────────────────────── */}
+          {/* # Section 3: What I Build */}
           <FadeInUp delay={0.1}>
             <section aria-labelledby="what-i-build-title">
               <div className="mb-8">
@@ -465,7 +465,7 @@ const AboutPage = () => {
             </section>
           </FadeInUp>
 
-          {/* ── Section 4: How I Work (Interactive Simulated Workflow) ─── */}
+          {/* # Section 4: How I Work (Interactive Simulated Workflow) */}
           <FadeInUp delay={0.14}>
             <section aria-labelledby="workflow-title">
               <div className="mb-8">
@@ -491,7 +491,7 @@ const AboutPage = () => {
             </section>
           </FadeInUp>
 
-          {/* ── Section 5: Consistency in Practice ─────────────────────── */}
+          {/* # Section 5: Consistency in Practice */}
           <FadeInUp delay={0.16}>
             <section aria-labelledby="consistency-title">
               <div className="mb-8">
@@ -527,7 +527,7 @@ const AboutPage = () => {
             </section>
           </FadeInUp>
 
-          {/* ── Section 6: Closing CTA Banner (Matching Services CTA) ──── */}
+          {/* # Section 6: Closing CTA Banner (Matching Services CTA) */}
           <FadeInUp delay={0.18}>
             <section
               aria-labelledby="about-cta-title"

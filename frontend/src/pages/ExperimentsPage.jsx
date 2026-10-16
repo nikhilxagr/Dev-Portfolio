@@ -47,15 +47,6 @@ const EXPERIMENT_MODULES = [
       "Visual algorithms laboratory demonstrating sorting mechanisms, tree traversals, pathfinding algorithms, and dynamic space-time complexity analysis.",
   },
   {
-    id: "system-design",
-    title: "System Design Analysis",
-    to: "/experiments/system-design",
-    icon: Network,
-    badge: "Distributed Systems",
-    description:
-      "Deep-dive architectural breakdowns of real-world scalable systems (URL Shortener, Uber, Zomato, Blinkit) with clean flowcharts, data schemas, and backend engineering notes.",
-  },
-  {
     id: "cyber-tools",
     title: "Cyber Security Utilities & Tools",
     to: "/experiments/tools",

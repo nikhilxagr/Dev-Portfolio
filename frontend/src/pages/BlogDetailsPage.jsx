@@ -12,9 +12,58 @@ import { getErrorMessage } from "@/services/api";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBlogPostingSchema, createBreadcrumbSchema } from "@/utils/seo";
 import { BLOG_POSTS as BLOG_LINKS } from "@/data/blogsData";
+import SystemDesignArticleView from "@/components/system-design/SystemDesignArticleView";
+import { SystemDesignDetailView } from "@/pages/SystemDesignPage";
+import {
+  SYSTEM_DESIGNS,
+  getSystemDesignById,
+  getSystemDesignArticleById,
+} from "@/data/systemDesignData";
 
 const BlogDetailsPage = () => {
   const { slug } = useParams();
+
+  // Check if current article is a System Design topic
+  const system = useMemo(() => {
+    return getSystemDesignById(slug) || null;
+  }, [slug]);
+
+  // If viewing a System Design article from the blog, render the comprehensive architecture study view
+  if (system) {
+    const article = getSystemDesignArticleById(system.id);
+    const currentIndex = SYSTEM_DESIGNS.findIndex((s) => s.id === system.id);
+    const prevSystem = currentIndex > 0 ? SYSTEM_DESIGNS[currentIndex - 1] : null;
+    const nextSystem =
+      currentIndex < SYSTEM_DESIGNS.length - 1
+        ? SYSTEM_DESIGNS[currentIndex + 1]
+        : null;
+
+    if (article) {
+      return (
+        <SystemDesignArticleView
+          system={system}
+          article={article}
+          prevSystem={prevSystem}
+          nextSystem={nextSystem}
+          backUrl="/blog"
+          backLabel="Back to Engineering Docs"
+          baseRoute="/blog"
+        />
+      );
+    }
+
+    return (
+      <SystemDesignDetailView
+        system={system}
+        prevSystem={prevSystem}
+        nextSystem={nextSystem}
+        backUrl="/blog"
+        backLabel="Back to Engineering Docs"
+        baseRoute="/blog"
+      />
+    );
+  }
+
   const staticBlog = useMemo(
     () => BLOG_LINKS.find((item) => item.slug === slug) || null,
     [slug],

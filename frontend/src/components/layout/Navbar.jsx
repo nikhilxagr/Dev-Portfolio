@@ -442,7 +442,6 @@ const Navbar = () => {
                       location.pathname.startsWith("/terminal") ||
                       location.pathname.startsWith("/cyber-tools") ||
                       location.pathname.startsWith("/dsa") ||
-                      location.pathname.startsWith("/system-design") ||
                       location.pathname.startsWith("/methodology");
 
                     return (
