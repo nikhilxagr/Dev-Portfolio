@@ -8,6 +8,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import userAuthRoutes from "./routes/userAuthRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
+import newsletterRoutes from "./routes/newsletterRoutes.js";
 import { applySecurityMiddleware } from "./middleware/securityMiddleware.js";
 import {
   generalLimiter,
@@ -105,6 +106,7 @@ app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/newsletter", newsletterRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

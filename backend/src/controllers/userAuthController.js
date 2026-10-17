@@ -5,6 +5,10 @@ import User from "../models/User.js";
 import ApiError from "../utils/ApiError.js";
 import { env } from "../config/env.js";
 import { sendResponse } from "../utils/apiResponse.js";
+import {
+  sendNewUserWelcomeEmail,
+  sendUserWelcomeBackEmail,
+} from "../services/mailer.service.js";
 
 const parseCookieHeader = (cookieHeader) => {
   if (!cookieHeader) return {};
@@ -140,6 +144,7 @@ export const handleGoogleCallback = async (req, res) => {
     let user = await User.findOne({
       $or: [{ googleId: googleUser.id }, { email: googleUser.email.toLowerCase() }],
     });
+    const isNewUser = !user;
 
     if (user) {
       if (!user.googleId) {
@@ -160,6 +165,17 @@ export const handleGoogleCallback = async (req, res) => {
         isEmailVerified: true,
         lastLoginAt: new Date(),
       });
+    }
+
+    // Trigger Welcome or Welcome Back email in background
+    if (isNewUser) {
+      sendNewUserWelcomeEmail({ email: user.email, name: user.name }).catch((e) =>
+        console.error("[UserAuth] Error sending welcome email:", e.message),
+      );
+    } else {
+      sendUserWelcomeBackEmail({ email: user.email, name: user.name }).catch((e) =>
+        console.error("[UserAuth] Error sending welcome back email:", e.message),
+      );
     }
 
     const token = generateUserToken(user);
@@ -202,6 +218,7 @@ export const handleGoogleCredential = async (req, res, next) => {
     let user = await User.findOne({
       $or: [{ googleId: googleUser.sub }, { email: googleUser.email.toLowerCase() }],
     });
+    const isNewUser = !user;
 
     if (user) {
       if (!user.googleId) {
@@ -222,6 +239,16 @@ export const handleGoogleCredential = async (req, res, next) => {
         isEmailVerified: true,
         lastLoginAt: new Date(),
       });
+    }
+
+    if (isNewUser) {
+      sendNewUserWelcomeEmail({ email: user.email, name: user.name }).catch((e) =>
+        console.error("[UserAuth] Error sending welcome email:", e.message),
+      );
+    } else {
+      sendUserWelcomeBackEmail({ email: user.email, name: user.name }).catch((e) =>
+        console.error("[UserAuth] Error sending welcome back email:", e.message),
+      );
     }
 
     const token = generateUserToken(user);
@@ -276,6 +303,10 @@ export const registerUser = async (req, res, next) => {
       lastLoginAt: new Date(),
     });
 
+    sendNewUserWelcomeEmail({ email: user.email, name: user.name }).catch((e) =>
+      console.error("[UserAuth] Error sending welcome email:", e.message),
+    );
+
     const token = generateUserToken(user);
 
     sendResponse(res, 201, "Account created successfully", {
@@ -324,6 +355,10 @@ export const loginUser = async (req, res, next) => {
 
     user.lastLoginAt = new Date();
     await user.save();
+
+    sendUserWelcomeBackEmail({ email: user.email, name: user.name }).catch((e) =>
+      console.error("[UserAuth] Error sending welcome back email:", e.message),
+    );
 
     const token = generateUserToken(user);
 

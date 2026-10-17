@@ -5,6 +5,7 @@ import { ensurePaymentTransactionIndexes } from "./models/PaymentTransaction.js"
 import { loadKnowledge } from "./ai/knowledge/knowledge.loader.js";
 import { initializeRag } from "./ai/rag/rag.index.js";
 
+// Server entrypoint - auto-reloaded
 let server;
 let reconnectTimerId = null;
 

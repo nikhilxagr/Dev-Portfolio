@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import { sendResponse } from "../utils/apiResponse.js";
 import { env } from "../config/env.js";
 import { logSecurityEvent } from "../utils/securityAudit.js";
+import { sendAdminLoginNotificationEmail } from "../services/mailer.service.js";
 
 export const loginAdmin = async (req, res, next) => {
   try {
@@ -50,6 +51,14 @@ export const loginAdmin = async (req, res, next) => {
     logSecurityEvent("ADMIN_LOGIN_SUCCESS", req, {
       email: normalizedEmail,
     });
+
+    sendAdminLoginNotificationEmail({
+      email: env.adminEmail,
+      ip: req.ip || req.connection?.remoteAddress,
+      userAgent: req.headers["user-agent"],
+    }).catch((e) =>
+      console.error("[AdminAuth] Error sending admin login email:", e.message),
+    );
 
     sendResponse(res, 200, "Admin login successful", {
       token,

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
 import BlogCard from "@/components/ui/BlogCard";
+import NewsletterSubscriptionCard from "@/components/ui/NewsletterSubscriptionCard";
 import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { getBlogs } from "@/services/blogs.service";
@@ -274,6 +275,11 @@ const BlogPage = () => {
               />
             </div>
           )}
+        </div>
+
+        {/* Newsletter Subscription Section */}
+        <div className="mt-16 sm:mt-24">
+          <NewsletterSubscriptionCard />
         </div>
       </section>
     </>

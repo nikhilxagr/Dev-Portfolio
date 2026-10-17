@@ -174,6 +174,14 @@ export const env = {
     readOptionalVariable("FRONTEND_URL", ["CLIENT_URL"]) ||
     (isDevelopment ? "http://localhost:5173" : "https://nikhilxagr.vercel.app"),
   geminiApiKey: readOptionalVariable("GEMINI_API_KEY"),
+  smtpHost: readOptionalVariable("SMTP_HOST") || "smtp.gmail.com",
+  smtpPort: parseNumber(process.env.SMTP_PORT, 465),
+  smtpSecure: parseBoolean(process.env.SMTP_SECURE, true),
+  smtpUser: readOptionalVariable("SMTP_USER") || adminEmail,
+  smtpPass: readOptionalVariable("SMTP_PASS", ["GMAIL_APP_PASSWORD", "EMAIL_APP_PASSWORD", "MAIL_PASSWORD"]),
+  emailFrom:
+    readOptionalVariable("EMAIL_FROM") ||
+    `"Nikhil Agrahari" <${readOptionalVariable("SMTP_USER") || adminEmail}>`,
 };
 
 if (!isDevelopment) {
