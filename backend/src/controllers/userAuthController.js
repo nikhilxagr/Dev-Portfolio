@@ -655,10 +655,67 @@ export const getUserActivity = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .lean();
 
-    // 2. Fetch article interactions (comments, likes)
-    const interactions = await ArticleInteraction.find({ userId })
-      .sort({ createdAt: -1 })
-      .lean();
+    // 2. Fetch article interactions (likes and comments)
+    const interactionDocs = await ArticleInteraction.find({
+      $or: [
+        { likes: userId },
+        { "comments.userId": userId },
+      ],
+    }).lean();
+
+    const getArticleTitle = (articleId) => {
+      if (!articleId) return "System Design Article";
+      if (articleId === "url-shortener") return "URL Shortener System Design";
+      return articleId
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+    };
+
+    const userLikes = [];
+    const userComments = [];
+
+    interactionDocs.forEach((doc) => {
+      const articleTitle = getArticleTitle(doc.articleId);
+
+      // Check if user liked this article
+      if (
+        Array.isArray(doc.likes) &&
+        doc.likes.some((id) => id && id.toString() === userId.toString())
+      ) {
+        userLikes.push({
+          id: `like-${doc.articleId}`,
+          type: "like",
+          articleId: doc.articleId,
+          title: `Liked: ${articleTitle}`,
+          description: `Supported and bookmarked ${articleTitle} in System Design lab.`,
+          timestamp: doc.updatedAt || doc.createdAt,
+          link: `/experiments/system-design/${doc.articleId}`,
+        });
+      }
+
+      // Check comments by this user
+      if (Array.isArray(doc.comments)) {
+        doc.comments.forEach((c) => {
+          if (c.userId && c.userId.toString() === userId.toString()) {
+            userComments.push({
+              id: `comment-${c._id}`,
+              type: "comment",
+              articleId: doc.articleId,
+              commentId: c._id,
+              title: `Commented on: ${articleTitle}`,
+              description: c.content,
+              timestamp: c.createdAt,
+              link: `/experiments/system-design/${doc.articleId}`,
+            });
+          }
+        });
+      }
+    });
+
+    // Unified Likes & Comments array sorted descending
+    const likesAndComments = [...userLikes, ...userComments].sort(
+      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+    );
 
     // 3. Aggregate metrics
     const successfulPayments = payments.filter((p) => p.status === "SUCCESS");
@@ -689,27 +746,9 @@ export const getUserActivity = async (req, res, next) => {
       });
     });
 
-    // Add article interactions to activities
-    interactions.forEach((item) => {
-      if (item.type === "comment") {
-        activities.push({
-          id: `comment-${item._id}`,
-          type: "comment",
-          title: "Commented on URL Shortener System Design",
-          description: item.comment,
-          timestamp: item.createdAt,
-          link: `/system-design/${item.articleId}`,
-        });
-      } else if (item.type === "like") {
-        activities.push({
-          id: `like-${item._id}`,
-          type: "like",
-          title: "Supported System Design Article",
-          description: "Left heart appreciation for the URL Shortener Deep Dive",
-          timestamp: item.createdAt,
-          link: `/system-design/${item.articleId}`,
-        });
-      }
+    // Add likes & comments to activities
+    likesAndComments.forEach((item) => {
+      activities.push(item);
     });
 
     // Add sign-ins to activities
@@ -736,6 +775,9 @@ export const getUserActivity = async (req, res, next) => {
         receiptsCount,
         supportTotalInr,
         signInsCount,
+        likesCount: userLikes.length,
+        commentsCount: userComments.length,
+        likesAndCommentsCount: likesAndComments.length,
       },
       payments: payments.map((p) => ({
         id: p._id,
@@ -745,13 +787,10 @@ export const getUserActivity = async (req, res, next) => {
         receiptNumber: p.receiptNumber,
         createdAt: p.createdAt,
       })),
-      interactions: interactions.map((i) => ({
-        id: i._id,
-        type: i.type,
-        comment: i.comment,
-        articleId: i.articleId,
-        createdAt: i.createdAt,
-      })),
+      interactions: likesAndComments,
+      likes: userLikes,
+      comments: userComments,
+      likesAndComments,
       signIns: (req.user.loginHistory || []).map((s) => ({
         id: s._id,
         ip: s.ip,
@@ -759,7 +798,7 @@ export const getUserActivity = async (req, res, next) => {
         userAgent: s.userAgent,
         loggedInAt: s.loggedInAt,
       })),
-      activities: activities.slice(0, 30),
+      activities: activities.slice(0, 50),
     });
   } catch (error) {
     next(error);

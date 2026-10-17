@@ -192,20 +192,20 @@ const UserProfileModal = () => {
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950 p-6 sm:p-8 shadow-2xl z-10 text-slate-900 dark:text-zinc-100 my-8"
+          className="relative w-full max-w-xl max-h-[85vh] sm:max-h-[88vh] flex flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950 shadow-2xl z-10 text-slate-900 dark:text-zinc-100 my-auto"
         >
-          {/* Close Button */}
-          <button
-            type="button"
-            onClick={closeProfileModal}
-            className="absolute right-5 top-5 rounded-full p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition"
-            aria-label="Close modal"
-          >
-            <X size={18} />
-          </button>
-
           {/* Header */}
-          <div className="border-b border-slate-100 dark:border-white/[0.08] pb-4">
+          <div className="relative border-b border-slate-100 dark:border-white/[0.08] px-6 py-5 sm:px-8 sm:py-6 shrink-0">
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={closeProfileModal}
+              className="absolute right-5 top-5 rounded-full p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
+              aria-label="Close modal"
+            >
+              <X size={18} />
+            </button>
+
             <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
               ACCOUNT PROFILE
             </p>
@@ -215,7 +215,7 @@ const UserProfileModal = () => {
           </div>
 
           {savedSuccess ? (
-            <div className="my-8 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-6 text-center space-y-2">
+            <div className="p-8 my-auto rounded-2xl border border-emerald-500/40 bg-emerald-500/10 m-6 text-center space-y-2">
               <div className="h-12 w-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <Check size={24} />
               </div>
@@ -227,199 +227,202 @@ const UserProfileModal = () => {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSave} className="mt-6 space-y-5">
-              {errorMsg && (
-                <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 flex items-center gap-2.5 text-xs font-semibold text-rose-500 dark:text-rose-400">
-                  <AlertCircle size={16} className="shrink-0" />
-                  <span>{errorMsg}</span>
-                </div>
-              )}
+            <form onSubmit={handleSave} className="flex flex-col flex-1 overflow-hidden min-h-0">
+              {/* Scrollable Form Body with Hover-Activated Scrollbar */}
+              <div className="flex-1 overflow-y-auto px-6 py-5 sm:px-8 sm:py-6 space-y-5 profile-modal-scroll">
+                {errorMsg && (
+                  <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 flex items-center gap-2.5 text-xs font-semibold text-rose-500 dark:text-rose-400">
+                    <AlertCircle size={16} className="shrink-0" />
+                    <span>{errorMsg}</span>
+                  </div>
+                )}
 
-              {/* Profile Image Section */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4 sm:p-5">
-                <div className="relative group shrink-0">
-                  <UserAvatar
-                    user={mockUserForAvatar}
-                    className="h-16 w-16 text-2xl font-black border-2 border-lime-400 shadow-md ring-4 ring-lime-400/10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-150 cursor-pointer"
-                    title="Upload new image"
-                  >
-                    <Camera size={18} />
-                  </button>
-                </div>
-
-                <div className="flex-1 space-y-2">
-                  <p className="text-xs font-bold text-slate-900 dark:text-white">
-                    Profile image
-                  </p>
-                  <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
-                    JPEG, PNG, or WebP. Maximum 5 MB. Images are automatically cropped to a square.
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2 pt-1">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp,image/gif"
-                      onChange={handleImageChange}
-                      className="hidden"
+                {/* Profile Image Section */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4 sm:p-5">
+                  <div className="relative group shrink-0">
+                    <UserAvatar
+                      user={mockUserForAvatar}
+                      className="h-16 w-16 text-2xl font-black border-2 border-lime-400 shadow-md ring-4 ring-lime-400/10"
                     />
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-zinc-800 px-3.5 py-1.5 text-xs font-bold text-slate-800 dark:text-zinc-200 hover:border-lime-500 hover:text-lime-600 dark:hover:text-lime-400 transition shadow-xs"
+                      className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-150 cursor-pointer"
+                      title="Upload new image"
                     >
-                      <Camera size={13} />
-                      <span>{avatarPreview ? "Change image" : "Upload image"}</span>
+                      <Camera size={18} />
                     </button>
+                  </div>
 
-                    {avatarPreview && (
+                  <div className="flex-1 space-y-2">
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">
+                      Profile image
+                    </p>
+                    <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
+                      JPEG, PNG, or WebP. Maximum 5 MB. Images are automatically cropped to a square.
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
                       <button
                         type="button"
-                        onClick={handleRemoveAvatar}
-                        className="inline-flex items-center gap-1 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-500 hover:bg-rose-500/20 transition"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-zinc-800 px-3.5 py-1.5 text-xs font-bold text-slate-800 dark:text-zinc-200 hover:border-lime-500 hover:text-lime-600 dark:hover:text-lime-400 transition shadow-xs cursor-pointer"
                       >
-                        <Trash2 size={12} />
-                        <span>Remove</span>
+                        <Camera size={13} />
+                        <span>{avatarPreview ? "Change image" : "Upload image"}</span>
                       </button>
-                    )}
+
+                      {avatarPreview && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveAvatar}
+                          className="inline-flex items-center gap-1 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-500 hover:bg-rose-500/20 transition cursor-pointer"
+                        >
+                          <Trash2 size={12} />
+                          <span>Remove</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Display Name */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
-                  Display name <span className="text-rose-500">*</span>
-                </label>
-                <div className="relative flex items-center">
-                  <User size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
-                  <input
-                    type="text"
-                    required
-                    maxLength={120}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Your Display Name"
-                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
-                  />
-                </div>
-              </div>
-
-              {/* Bio with Character Counter */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
-                    Bio
-                  </label>
-                  <span className="font-mono text-[10px] text-slate-400 dark:text-zinc-500">
-                    {bio.length}/180
-                  </span>
-                </div>
-                <textarea
-                  rows={2}
-                  maxLength={180}
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  placeholder="A short note about you, your tech stack, or interests..."
-                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition resize-none"
-                />
-              </div>
-
-              {/* Location & Website Grid */}
-              <div className="grid gap-3.5 sm:grid-cols-2">
+                {/* Display Name */}
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
-                    Location
+                    Display name <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative flex items-center">
-                    <MapPin size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
+                    <User size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
                     <input
                       type="text"
-                      maxLength={100}
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      placeholder="e.g. Lucknow, India"
-                      className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
+                      required
+                      maxLength={120}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your Display Name"
+                      className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
                     />
                   </div>
                 </div>
 
+                {/* Bio with Character Counter */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                      Bio
+                    </label>
+                    <span className="font-mono text-[10px] text-slate-400 dark:text-zinc-500">
+                      {bio.length}/180
+                    </span>
+                  </div>
+                  <textarea
+                    rows={2}
+                    maxLength={180}
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder="A short note about you, your tech stack, or interests..."
+                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition resize-none"
+                  />
+                </div>
+
+                {/* Location & Website Grid */}
+                <div className="grid gap-3.5 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                      Location
+                    </label>
+                    <div className="relative flex items-center">
+                      <MapPin size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
+                      <input
+                        type="text"
+                        maxLength={100}
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        placeholder="e.g. Lucknow, India"
+                        className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                      Website / Social
+                    </label>
+                    <div className="relative flex items-center">
+                      <Globe size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
+                      <input
+                        type="url"
+                        maxLength={200}
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                        placeholder="https://example.com"
+                        className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Phone Number (Optional) */}
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
-                    Website / Social
+                    Phone number <span className="text-[10px] text-slate-400 dark:text-zinc-500">(Optional)</span>
                   </label>
                   <div className="relative flex items-center">
-                    <Globe size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
+                    <Phone size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
                     <input
-                      type="url"
-                      maxLength={200}
-                      value={website}
-                      onChange={(e) => setWebsite(e.target.value)}
-                      placeholder="https://example.com"
+                      type="tel"
+                      maxLength={30}
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+91 98765 43210"
                       className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Phone Number (Optional) */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
-                  Phone number <span className="text-[10px] text-slate-400 dark:text-zinc-500">(Optional)</span>
-                </label>
-                <div className="relative flex items-center">
-                  <Phone size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
-                  <input
-                    type="tel"
-                    maxLength={30}
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 98765 43210"
-                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
-                  />
-                </div>
-              </div>
-
-              {/* Google account email (Locked) */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300 flex items-center gap-1.5">
-                  <span>Google account email</span>
-                  <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono">🔒</span>
-                </label>
-                <div className="relative flex items-center">
-                  <div className="absolute left-3.5">
-                    <GoogleIcon />
+                {/* Google account email (Locked) */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300 flex items-center gap-1.5">
+                    <span>Google account email</span>
+                    <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono">🔒</span>
+                  </label>
+                  <div className="relative flex items-center">
+                    <div className="absolute left-3.5">
+                      <GoogleIcon />
+                    </div>
+                    <input
+                      type="email"
+                      readOnly
+                      value={user.email || ""}
+                      className="w-full rounded-xl border border-slate-200 dark:border-white/5 bg-slate-100/70 dark:bg-zinc-900/40 pl-10 pr-3.5 py-2.5 text-xs text-slate-500 dark:text-zinc-400 cursor-not-allowed font-medium outline-none"
+                    />
                   </div>
-                  <input
-                    type="email"
-                    readOnly
-                    value={user.email || ""}
-                    className="w-full rounded-xl border border-slate-200 dark:border-white/5 bg-slate-100/70 dark:bg-zinc-900/40 pl-10 pr-3.5 py-2.5 text-xs text-slate-500 dark:text-zinc-400 cursor-not-allowed font-medium outline-none"
-                  />
+                  <p className="text-[10px] text-slate-400 dark:text-zinc-500">
+                    Managed by Google and locked for account security.
+                  </p>
                 </div>
-                <p className="text-[10px] text-slate-400 dark:text-zinc-500">
-                  Managed by Google and locked for account security.
-                </p>
               </div>
 
-              {/* Action Buttons */}
-              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-white/[0.08]">
+              {/* Action Buttons Pinned at Footer */}
+              <div className="px-6 py-4 sm:px-8 sm:py-4 border-t border-slate-100 dark:border-white/[0.08] bg-slate-50/70 dark:bg-zinc-900/60 backdrop-blur-sm shrink-0 flex items-center justify-end gap-3 rounded-b-3xl">
                 <button
                   type="button"
                   onClick={closeProfileModal}
                   disabled={saving}
-                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900 px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition disabled:opacity-50"
+                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900 px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving || !name.trim()}
-                  className="inline-flex items-center gap-2 rounded-xl bg-lime-400 px-6 py-2.5 text-xs font-bold text-slate-950 hover:bg-lime-300 shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-2 rounded-xl bg-lime-400 px-6 py-2.5 text-xs font-bold text-slate-950 hover:bg-lime-300 shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                   {saving ? (
                     <>

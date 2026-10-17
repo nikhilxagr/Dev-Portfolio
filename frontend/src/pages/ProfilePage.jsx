@@ -67,7 +67,8 @@ const formatDateTime = (dateStr) => {
 export default function ProfilePage() {
   const { user, isLoggedIn, loading: authLoading, openSignInModal, openProfileModal } = useUserAuth();
 
-  const [activeTab, setActiveTab] = useState("overview"); // "overview" | "payments" | "signins" | "activity"
+  const [activeTab, setActiveTab] = useState("overview"); // "overview" | "payments" | "signins" | "likes-comments" | "activity"
+  const [likeCommentFilter, setLikeCommentFilter] = useState("all"); // "all" | "likes" | "comments"
   const [activityData, setActivityData] = useState(null);
   const [loadingActivity, setLoadingActivity] = useState(false);
   const [activityError, setActivityError] = useState("");
@@ -93,14 +94,48 @@ export default function ProfilePage() {
     }
   }, [isLoggedIn, fetchActivity]);
 
+  const likesList = useMemo(() => {
+    return activityData?.likes || [];
+  }, [activityData]);
+
+  const commentsList = useMemo(() => {
+    return activityData?.comments || [];
+  }, [activityData]);
+
+  const likesAndCommentsList = useMemo(() => {
+    if (Array.isArray(activityData?.likesAndComments)) {
+      return activityData.likesAndComments;
+    }
+    if (Array.isArray(activityData?.interactions)) {
+      return activityData.interactions;
+    }
+    return [...likesList, ...commentsList].sort(
+      (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+    );
+  }, [activityData, likesList, commentsList]);
+
+  const filteredLikesComments = useMemo(() => {
+    if (likeCommentFilter === "likes") {
+      return likesAndCommentsList.filter((item) => item.type === "like");
+    }
+    if (likeCommentFilter === "comments") {
+      return likesAndCommentsList.filter((item) => item.type === "comment");
+    }
+    return likesAndCommentsList;
+  }, [likesAndCommentsList, likeCommentFilter]);
+
   const metrics = useMemo(() => {
     return {
       paymentsCount: activityData?.metrics?.paymentsCount || 0,
       receiptsCount: activityData?.metrics?.receiptsCount || 0,
       supportTotalInr: activityData?.metrics?.supportTotalInr || 0,
       signInsCount: activityData?.metrics?.signInsCount || user?.loginCount || 1,
+      likesCount: activityData?.metrics?.likesCount || likesList.length,
+      commentsCount: activityData?.metrics?.commentsCount || commentsList.length,
+      likesAndCommentsCount:
+        activityData?.metrics?.likesAndCommentsCount || likesAndCommentsList.length,
     };
-  }, [activityData, user]);
+  }, [activityData, user, likesList.length, commentsList.length, likesAndCommentsList.length]);
 
   return (
     <>
@@ -357,7 +392,7 @@ export default function ProfilePage() {
                     type="button"
                     onClick={() => setActiveTab("signins")}
                     className={clsx(
-                      "rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition flex items-center gap-1.5",
+                      "rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition flex items-center gap-1.5 cursor-pointer",
                       activeTab === "signins"
                         ? "bg-lime-400 text-slate-950 shadow-xs"
                         : "text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-900"
@@ -371,9 +406,35 @@ export default function ProfilePage() {
 
                   <button
                     type="button"
+                    onClick={() => setActiveTab("likes-comments")}
+                    className={clsx(
+                      "rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition flex items-center gap-1.5 cursor-pointer",
+                      activeTab === "likes-comments"
+                        ? "bg-lime-400 text-slate-950 shadow-xs"
+                        : "text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-900"
+                    )}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Heart
+                        size={12}
+                        className={
+                          activeTab === "likes-comments"
+                            ? "text-slate-950 fill-slate-950"
+                            : "text-rose-500 fill-rose-500/30"
+                        }
+                      />
+                      <span>Like &amp; Comments</span>
+                    </span>
+                    <span className="font-mono text-xs opacity-75">
+                      {likesAndCommentsList.length}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
                     onClick={() => setActiveTab("activity")}
                     className={clsx(
-                      "rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition flex items-center gap-1.5",
+                      "rounded-xl px-4 py-2 text-xs sm:text-sm font-bold transition flex items-center gap-1.5 cursor-pointer",
                       activeTab === "activity"
                         ? "bg-lime-400 text-slate-950 shadow-xs"
                         : "text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-900"
@@ -677,15 +738,174 @@ export default function ProfilePage() {
                 </div>
               )}
 
-              {/* 4. ACTIVITY & INTERACTIONS TAB */}
+              {/* 4. LIKES & COMMENTS TAB */}
+              {activeTab === "likes-comments" && (
+                <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 p-6 sm:p-8 shadow-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/[0.06]">
+                    <div>
+                      <h3 className="font-jakarta text-lg font-bold text-slate-950 dark:text-white flex items-center gap-2">
+                        <span>Likes &amp; Comments Activity</span>
+                        <span className="rounded-full bg-lime-400/20 text-lime-700 dark:text-lime-400 px-2.5 py-0.5 text-xs font-mono font-bold">
+                          {likesAndCommentsList.length}
+                        </span>
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                        System design articles you have liked and discussions you've participated in.
+                      </p>
+                    </div>
+
+                    {/* Sub-Filter Pills */}
+                    <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-zinc-800/80 p-1 rounded-xl self-start sm:self-auto border border-slate-200/50 dark:border-white/5">
+                      <button
+                        type="button"
+                        onClick={() => setLikeCommentFilter("all")}
+                        className={clsx(
+                          "px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer",
+                          likeCommentFilter === "all"
+                            ? "bg-white dark:bg-zinc-900 text-slate-950 dark:text-white shadow-xs"
+                            : "text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white"
+                        )}
+                      >
+                        All ({likesAndCommentsList.length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLikeCommentFilter("likes")}
+                        className={clsx(
+                          "px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer",
+                          likeCommentFilter === "likes"
+                            ? "bg-white dark:bg-zinc-900 text-rose-500 dark:text-rose-400 shadow-xs"
+                            : "text-slate-600 dark:text-zinc-400 hover:text-rose-500"
+                        )}
+                      >
+                        <Heart size={11} className="fill-current" />
+                        <span>Likes ({likesList.length})</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLikeCommentFilter("comments")}
+                        className={clsx(
+                          "px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer",
+                          likeCommentFilter === "comments"
+                            ? "bg-white dark:bg-zinc-900 text-sky-500 dark:text-sky-400 shadow-xs"
+                            : "text-slate-600 dark:text-zinc-400 hover:text-sky-500"
+                        )}
+                      >
+                        <MessageSquare size={11} />
+                        <span>Comments ({commentsList.length})</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {filteredLikesComments && filteredLikesComments.length > 0 ? (
+                    <div className="space-y-3">
+                      {filteredLikesComments.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-col sm:flex-row sm:items-start justify-between gap-3.5 p-4 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-zinc-900/40 hover:border-lime-500/30 transition group"
+                        >
+                          <div className="flex items-start gap-3.5 min-w-0">
+                            <div
+                              className={clsx(
+                                "h-9 w-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5",
+                                item.type === "like"
+                                  ? "bg-rose-500/10 text-rose-500 border border-rose-500/20"
+                                  : "bg-sky-500/10 text-sky-500 border border-sky-500/20"
+                              )}
+                            >
+                              {item.type === "like" ? (
+                                <Heart size={16} className="fill-current" />
+                              ) : (
+                                <MessageSquare size={16} />
+                              )}
+                            </div>
+
+                            <div className="space-y-1 min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <p className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
+                                  {item.title}
+                                </p>
+                                <span
+                                  className={clsx(
+                                    "font-mono text-[9px] uppercase font-bold px-2 py-0.5 rounded-md",
+                                    item.type === "like"
+                                      ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
+                                      : "bg-sky-500/10 text-sky-600 dark:text-sky-400"
+                                  )}
+                                >
+                                  {item.type === "like" ? "Appreciation" : "Discussion"}
+                                </span>
+                              </div>
+
+                              {item.type === "comment" ? (
+                                <div className="rounded-lg bg-white/60 dark:bg-black/20 p-2.5 border border-slate-200/50 dark:border-white/5 my-1.5">
+                                  <p className="text-xs text-slate-700 dark:text-zinc-300 italic leading-relaxed">
+                                    "{item.description || item.comment}"
+                                  </p>
+                                </div>
+                              ) : (
+                                <p className="text-xs text-slate-600 dark:text-zinc-400">
+                                  {item.description}
+                                </p>
+                              )}
+
+                              <p className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono pt-0.5">
+                                {formatDateTime(item.timestamp)}
+                              </p>
+                            </div>
+                          </div>
+
+                          {item.link && (
+                            <Link
+                              to={item.link}
+                              className="self-end sm:self-center inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-800 px-3.5 py-1.5 text-xs font-bold text-slate-800 dark:text-zinc-200 hover:border-lime-500 hover:text-lime-600 dark:hover:text-lime-400 transition shadow-2xs shrink-0 cursor-pointer"
+                            >
+                              <span>{item.type === "like" ? "View Article" : "View Discussion"}</span>
+                              <ArrowUpRight size={13} />
+                            </Link>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 px-4 rounded-2xl border border-dashed border-slate-200 dark:border-white/10 space-y-3 bg-slate-50/40 dark:bg-zinc-900/20">
+                      <div className="flex items-center justify-center gap-2 text-slate-400 dark:text-zinc-500 mx-auto">
+                        <Heart size={26} className="text-rose-400/80" />
+                        <MessageSquare size={26} className="text-sky-400/80" />
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                        {likeCommentFilter === "likes"
+                          ? "No liked articles yet"
+                          : likeCommentFilter === "comments"
+                            ? "No comments posted yet"
+                            : "No likes or comments yet"}
+                      </h4>
+                      <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-sm mx-auto leading-relaxed">
+                        Read through our production System Design case studies, hit the heart button to show love, or drop your technical questions in the discussion thread.
+                      </p>
+                      <div className="pt-2">
+                        <Link
+                          to="/experiments/system-design"
+                          className="inline-flex items-center gap-2 rounded-xl bg-lime-400 px-5 py-2.5 text-xs font-bold text-slate-950 hover:bg-lime-300 shadow-sm transition cursor-pointer"
+                        >
+                          <Sparkles size={14} />
+                          <span>Explore System Design Articles</span>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 5. ALL ACTIVITY & INTERACTIONS TAB */}
               {activeTab === "activity" && (
                 <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 p-6 sm:p-8 shadow-sm space-y-4">
                   <div className="pb-3 border-b border-slate-100 dark:border-white/[0.06]">
                     <h3 className="font-jakarta text-lg font-bold text-slate-950 dark:text-white">
-                      Community &amp; Article Activity ({activityData?.activities?.length || 0})
+                      Community &amp; Account Activity ({activityData?.activities?.length || 0})
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-zinc-400">
-                      Comments posted, system design likes, and community discussions.
+                      Unified timeline of payments, article likes, discussions, and account access.
                     </p>
                   </div>
 
@@ -694,14 +914,25 @@ export default function ProfilePage() {
                       {activityData.activities.map((item) => (
                         <div
                           key={item.id}
-                          className="flex items-start justify-between gap-3 p-4 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-zinc-900/40"
+                          className="flex items-start justify-between gap-3 p-4 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-zinc-900/40 hover:border-lime-500/20 transition"
                         >
                           <div className="flex items-start gap-3 min-w-0">
-                            <div className="h-8 w-8 rounded-lg bg-lime-500/10 text-lime-600 dark:text-lime-400 flex items-center justify-center shrink-0 mt-0.5">
+                            <div
+                              className={clsx(
+                                "h-8 w-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5",
+                                item.type === "comment"
+                                  ? "bg-sky-500/10 text-sky-500"
+                                  : item.type === "like"
+                                    ? "bg-rose-500/10 text-rose-500"
+                                    : item.type === "payment"
+                                      ? "bg-emerald-500/10 text-emerald-500"
+                                      : "bg-lime-500/10 text-lime-600 dark:text-lime-400"
+                              )}
+                            >
                               {item.type === "comment" ? (
                                 <MessageSquare size={15} />
                               ) : item.type === "like" ? (
-                                <Heart size={15} />
+                                <Heart size={15} className="fill-current" />
                               ) : item.type === "payment" ? (
                                 <CreditCard size={15} />
                               ) : (
@@ -737,7 +968,7 @@ export default function ProfilePage() {
                     <div className="text-center py-10 space-y-2">
                       <MessageSquare size={28} className="mx-auto text-slate-400" />
                       <p className="text-sm font-semibold text-slate-700 dark:text-zinc-300">
-                        No community interactions yet
+                        No activity recorded yet
                       </p>
                       <p className="text-xs text-slate-400">
                         Leave a comment or support an article in our System Design lab!
