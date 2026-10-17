@@ -51,6 +51,36 @@ const userSchema = new mongoose.Schema(
       enum: ["user"],
       default: "user",
     },
+    bio: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 250,
+    },
+    location: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 100,
+    },
+    website: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 200,
+    },
+    loginCount: {
+      type: Number,
+      default: 1,
+    },
+    loginHistory: [
+      {
+        ip: { type: String, default: "" },
+        userAgent: { type: String, default: "" },
+        device: { type: String, default: "" },
+        loggedInAt: { type: Date, default: Date.now },
+      },
+    ],
     lastLoginAt: {
       type: Date,
       default: Date.now,

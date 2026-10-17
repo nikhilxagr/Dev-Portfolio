@@ -8,6 +8,7 @@ import {
   loginUser,
   getCurrentUser,
   updateCurrentUser,
+  getUserActivity,
 } from "../controllers/userAuthController.js";
 import { userAuthMiddleware } from "../middleware/userAuthMiddleware.js";
 import validateRequest from "../middleware/validateRequest.js";
@@ -50,8 +51,9 @@ router.post(
   loginUser,
 );
 
-// Profile endpoints
+// Profile and Activity endpoints
 router.get("/me", userProfileLimiter, userAuthMiddleware, getCurrentUser);
 router.put("/me", userProfileLimiter, userAuthMiddleware, updateCurrentUser);
+router.get("/activity", userProfileLimiter, userAuthMiddleware, getUserActivity);
 
 export default router;

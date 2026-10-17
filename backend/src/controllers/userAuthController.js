@@ -2,6 +2,8 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import PaymentTransaction from "../models/PaymentTransaction.js";
+import ArticleInteraction from "../models/ArticleInteraction.js";
 import ApiError from "../utils/ApiError.js";
 import { env } from "../config/env.js";
 import { sendResponse } from "../utils/apiResponse.js";
@@ -9,6 +11,41 @@ import {
   sendNewUserWelcomeEmail,
   sendUserWelcomeBackEmail,
 } from "../services/mailer.service.js";
+
+const recordUserLoginSession = (user, req) => {
+  try {
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      req.socket?.remoteAddress ||
+      req.ip ||
+      "127.0.0.1";
+    const userAgent = req.headers["user-agent"] || "Web Browser";
+
+    user.loginCount = (user.loginCount || 0) + 1;
+    user.lastLoginAt = new Date();
+
+    if (!Array.isArray(user.loginHistory)) {
+      user.loginHistory = [];
+    }
+
+    user.loginHistory.unshift({
+      ip,
+      userAgent,
+      device: userAgent.includes("Mobile")
+        ? "Mobile Device"
+        : userAgent.includes("Tablet")
+          ? "Tablet"
+          : "Desktop",
+      loggedInAt: new Date(),
+    });
+
+    if (user.loginHistory.length > 25) {
+      user.loginHistory = user.loginHistory.slice(0, 25);
+    }
+  } catch (err) {
+    console.error("[UserAuth] Error recording login session:", err);
+  }
+};
 
 const parseCookieHeader = (cookieHeader) => {
   if (!cookieHeader) return {};
@@ -296,18 +333,19 @@ export const handleGoogleCallback = async (req, res) => {
       user.avatar = user.avatar || googleUser.picture || "";
       user.name = user.name || googleUser.name || "User";
       user.isEmailVerified = true;
-      user.lastLoginAt = new Date();
+      recordUserLoginSession(user, req);
       await user.save();
     } else {
-      user = await User.create({
+      user = new User({
         googleId: googleUser.id,
         email: googleUser.email.toLowerCase(),
         name: googleUser.name || "User",
         avatar: googleUser.picture || "",
         authProvider: "google",
         isEmailVerified: true,
-        lastLoginAt: new Date(),
       });
+      recordUserLoginSession(user, req);
+      await user.save();
     }
 
     // Trigger Welcome or Welcome Back email with delivery verification
@@ -362,18 +400,19 @@ export const handleGoogleCredential = async (req, res, next) => {
       user.avatar = user.avatar || googleUser.picture || "";
       user.name = user.name || googleUser.name || "User";
       user.isEmailVerified = true;
-      user.lastLoginAt = new Date();
+      recordUserLoginSession(user, req);
       await user.save();
     } else {
-      user = await User.create({
+      user = new User({
         googleId: googleUser.sub,
         email: googleUser.email.toLowerCase(),
         name: googleUser.name || "User",
         avatar: googleUser.picture || "",
         authProvider: "google",
         isEmailVerified: true,
-        lastLoginAt: new Date(),
       });
+      recordUserLoginSession(user, req);
+      await user.save();
     }
 
     // Trigger Welcome or Welcome Back email with delivery verification
@@ -422,14 +461,15 @@ export const registerUser = async (req, res, next) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
+    const user = new User({
       name: name.trim(),
       email: normalizedEmail,
       passwordHash,
       authProvider: "local",
       isEmailVerified: false,
-      lastLoginAt: new Date(),
     });
+    recordUserLoginSession(user, req);
+    await user.save();
 
     dispatchWelcomeEmail(true, user);
 
@@ -442,8 +482,15 @@ export const registerUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         phone: user.phone || "",
-        avatar: user.avatar,
+        avatar: user.avatar || "",
+        bio: user.bio || "",
+        location: user.location || "",
+        website: user.website || "",
         authProvider: user.authProvider,
+        isEmailVerified: user.isEmailVerified,
+        loginCount: user.loginCount || 1,
+        lastLoginAt: user.lastLoginAt || user.createdAt,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {
@@ -479,7 +526,7 @@ export const loginUser = async (req, res, next) => {
       throw new ApiError(401, "Invalid email or password");
     }
 
-    user.lastLoginAt = new Date();
+    recordUserLoginSession(user, req);
     await user.save();
 
     dispatchWelcomeEmail(false, user);
@@ -493,8 +540,15 @@ export const loginUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         phone: user.phone || "",
-        avatar: user.avatar,
+        avatar: user.avatar || "",
+        bio: user.bio || "",
+        location: user.location || "",
+        website: user.website || "",
         authProvider: user.authProvider,
+        isEmailVerified: user.isEmailVerified,
+        loginCount: user.loginCount || 1,
+        lastLoginAt: user.lastLoginAt || user.createdAt,
+        createdAt: user.createdAt,
       },
     });
   } catch (error) {
@@ -510,8 +564,14 @@ export const getCurrentUser = async (req, res) => {
       name: req.user.name,
       email: req.user.email,
       phone: req.user.phone || "",
-      avatar: req.user.avatar,
+      avatar: req.user.avatar || "",
+      bio: req.user.bio || "",
+      location: req.user.location || "",
+      website: req.user.website || "",
       authProvider: req.user.authProvider,
+      isEmailVerified: req.user.isEmailVerified,
+      loginCount: req.user.loginCount || 1,
+      lastLoginAt: req.user.lastLoginAt || req.user.createdAt,
       createdAt: req.user.createdAt,
     },
   });
@@ -520,7 +580,7 @@ export const getCurrentUser = async (req, res) => {
 // 7. Update Current User Profile
 export const updateCurrentUser = async (req, res, next) => {
   try {
-    const { name, phone } = req.body;
+    const { name, phone, bio, location, website, avatar } = req.body;
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -530,13 +590,29 @@ export const updateCurrentUser = async (req, res, next) => {
     if (typeof name === "string") {
       const trimmedName = name.trim();
       if (!trimmedName) {
-        throw new ApiError(400, "Full name cannot be empty");
+        throw new ApiError(400, "Display name cannot be empty");
       }
       user.name = trimmedName;
     }
 
     if (typeof phone === "string") {
       user.phone = phone.trim();
+    }
+
+    if (typeof bio === "string") {
+      user.bio = bio.trim().slice(0, 250);
+    }
+
+    if (typeof location === "string") {
+      user.location = location.trim().slice(0, 100);
+    }
+
+    if (typeof website === "string") {
+      user.website = website.trim().slice(0, 200);
+    }
+
+    if (typeof avatar === "string") {
+      user.avatar = avatar.trim();
     }
 
     await user.save();
@@ -547,10 +623,143 @@ export const updateCurrentUser = async (req, res, next) => {
         name: user.name,
         email: user.email,
         phone: user.phone || "",
-        avatar: user.avatar,
+        avatar: user.avatar || "",
+        bio: user.bio || "",
+        location: user.location || "",
+        website: user.website || "",
         authProvider: user.authProvider,
+        isEmailVerified: user.isEmailVerified,
+        loginCount: user.loginCount || 1,
+        lastLoginAt: user.lastLoginAt || user.createdAt,
         createdAt: user.createdAt,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// 8. Get User Activity (Payments, Sign-Ins, Article Interactions, and Aggregated Metrics)
+export const getUserActivity = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const userEmail = req.user.email ? req.user.email.toLowerCase() : "";
+
+    // 1. Fetch payments for this user
+    const payments = await PaymentTransaction.find({
+      $or: [
+        { userId },
+        ...(userEmail ? [{ customerEmail: userEmail }] : []),
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // 2. Fetch article interactions (comments, likes)
+    const interactions = await ArticleInteraction.find({ userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    // 3. Aggregate metrics
+    const successfulPayments = payments.filter((p) => p.status === "SUCCESS");
+    const paymentsCount = payments.length;
+    const receiptsCount = successfulPayments.filter((p) => p.receiptNumber).length;
+    const supportTotalInr = successfulPayments.reduce(
+      (sum, p) => sum + (p.amountInr || 0),
+      0,
+    );
+    const signInsCount =
+      req.user.loginCount || (req.user.loginHistory?.length || 1);
+
+    // 4. Build unified chronological activity feed
+    const activities = [];
+
+    // Add payments to activities
+    payments.forEach((p) => {
+      activities.push({
+        id: `payment-${p._id}`,
+        type: "payment",
+        title: p.serviceName || "Service Payment",
+        description: `${p.status === "SUCCESS" ? "Completed contribution of" : "Initiated payment of"} INR ${p.amountInr} (${p.status})`,
+        amountInr: p.amountInr,
+        status: p.status,
+        receiptNumber: p.receiptNumber,
+        timestamp: p.createdAt,
+        link: p.receiptNumber ? `/receipts` : `/services`,
+      });
+    });
+
+    // Add article interactions to activities
+    interactions.forEach((item) => {
+      if (item.type === "comment") {
+        activities.push({
+          id: `comment-${item._id}`,
+          type: "comment",
+          title: "Commented on URL Shortener System Design",
+          description: item.comment,
+          timestamp: item.createdAt,
+          link: `/system-design/${item.articleId}`,
+        });
+      } else if (item.type === "like") {
+        activities.push({
+          id: `like-${item._id}`,
+          type: "like",
+          title: "Supported System Design Article",
+          description: "Left heart appreciation for the URL Shortener Deep Dive",
+          timestamp: item.createdAt,
+          link: `/system-design/${item.articleId}`,
+        });
+      }
+    });
+
+    // Add sign-ins to activities
+    if (Array.isArray(req.user.loginHistory)) {
+      req.user.loginHistory.forEach((s, idx) => {
+        activities.push({
+          id: `signin-${s._id || idx}`,
+          type: "signin",
+          title: "Account Sign-In",
+          description: `Logged in via ${req.user.authProvider === "google" ? "Google Account" : "Email & Password"}${s.ip ? ` (${s.ip})` : ""}`,
+          timestamp: s.loggedInAt,
+          device: s.device || "Browser",
+          ip: s.ip,
+        });
+      });
+    }
+
+    // Sort descending by timestamp
+    activities.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    sendResponse(res, 200, "User activity fetched successfully", {
+      metrics: {
+        paymentsCount,
+        receiptsCount,
+        supportTotalInr,
+        signInsCount,
+      },
+      payments: payments.map((p) => ({
+        id: p._id,
+        serviceName: p.serviceName,
+        amountInr: p.amountInr,
+        status: p.status,
+        receiptNumber: p.receiptNumber,
+        createdAt: p.createdAt,
+      })),
+      interactions: interactions.map((i) => ({
+        id: i._id,
+        type: i.type,
+        comment: i.comment,
+        articleId: i.articleId,
+        createdAt: i.createdAt,
+      })),
+      signIns: (req.user.loginHistory || []).map((s) => ({
+        id: s._id,
+        ip: s.ip,
+        device: s.device,
+        userAgent: s.userAgent,
+        loggedInAt: s.loggedInAt,
+      })),
+      activities: activities.slice(0, 30),
     });
   } catch (error) {
     next(error);

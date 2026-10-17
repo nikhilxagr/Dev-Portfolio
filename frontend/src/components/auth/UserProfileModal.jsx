@@ -1,12 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { User, Phone, Check, X, ShieldCheck, Loader2 } from "lucide-react";
+import {
+  User,
+  Phone,
+  Check,
+  X,
+  Camera,
+  MapPin,
+  Globe,
+  Loader2,
+  Trash2,
+  AlertCircle,
+} from "lucide-react";
 import { useUserAuth } from "@/context/UserAuthContext";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { updateUserProfileService } from "@/services/userAuth.service";
 
 const GoogleIcon = () => (
-  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
     <path
       fill="#4285F4"
       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -30,47 +41,125 @@ const UserProfileModal = () => {
   const { user, isProfileModalOpen, closeProfileModal, updateUser } = useUserAuth();
 
   const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
+  const [location, setLocation] = useState("");
+  const [website, setWebsite] = useState("");
   const [phone, setPhone] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState("");
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [savedSuccess, setSavedSuccess] = useState(false);
 
+  const fileInputRef = useRef(null);
+
+  // Sync state with active user object whenever modal opens
   useEffect(() => {
     if (user) {
       setName(user.name || "");
+      setBio(user.bio || "");
+      setLocation(user.location || "");
+      setWebsite(user.website || "");
       setPhone(user.phone || "");
+      setAvatar(user.avatar || "");
+      setAvatarPreview(user.avatar || "");
+      setErrorMsg("");
+      setSavedSuccess(false);
     }
-  }, [user]);
+  }, [user, isProfileModalOpen]);
 
-  if (!isProfileModalOpen || !user) return null;
+  // Handle client-side image compression and square crop to crisp WebP/JPEG data URL
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setErrorMsg("Please select a valid image file (JPEG, PNG, or WebP).");
+      return;
+    }
+
+    // Maximum 5 MB check
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg("Image size exceeds 5 MB. Please select a smaller photo.");
+      return;
+    }
+
+    setErrorMsg("");
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const size = 256; // 256x256 square crop for crystal clarity
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+
+          // Calculate center crop
+          const minDim = Math.min(img.width, img.height);
+          const startX = (img.width - minDim) / 2;
+          const startY = (img.height - minDim) / 2;
+
+          ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, size, size);
+
+          // Convert to efficient WebP (or JPEG fallback)
+          const dataUrl = canvas.toDataURL("image/webp", 0.88);
+          setAvatar(dataUrl);
+          setAvatarPreview(dataUrl);
+        } catch {
+          // If canvas fails, fallback to raw reader result
+          setAvatar(event.target.result);
+          setAvatarPreview(event.target.result);
+        }
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatar("");
+    setAvatarPreview("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      setErrorMsg("Display name cannot be empty.");
+      return;
+    }
 
     setSaving(true);
     setErrorMsg("");
 
     try {
-      const updatedUser = await updateUserProfileService({
+      const payload = {
         name: name.trim(),
-        phone: phone.trim(),
-      });
+        bio: bio.trim().slice(0, 250),
+        location: location.trim().slice(0, 100),
+        website: website.trim().slice(0, 200),
+        phone: phone.trim().slice(0, 30),
+        avatar: avatar,
+      };
+
+      const updatedUser = await updateUserProfileService(payload);
 
       if (updatedUser) {
         updateUser(updatedUser);
       } else {
-        updateUser({
-          name: name.trim(),
-          phone: phone.trim(),
-        });
+        updateUser(payload);
       }
 
       setSavedSuccess(true);
       setTimeout(() => {
         setSavedSuccess(false);
         closeProfileModal();
-      }, 1200);
+      }, 1100);
     } catch (err) {
       setErrorMsg(err.message || "Failed to save profile changes.");
     } finally {
@@ -78,16 +167,24 @@ const UserProfileModal = () => {
     }
   };
 
+  if (!isProfileModalOpen || !user) return null;
+
+  const mockUserForAvatar = {
+    ...user,
+    name: name || user.name,
+    avatar: avatarPreview,
+  };
+
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeProfileModal}
-          className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+          className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
         />
 
         {/* Modal Window */}
@@ -95,124 +192,242 @@ const UserProfileModal = () => {
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-md overflow-hidden rounded-3xl border border-emerald-500/30 bg-slate-900 p-6 shadow-2xl z-10 text-slate-100"
+          className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950 p-6 sm:p-8 shadow-2xl z-10 text-slate-900 dark:text-zinc-100 my-8"
         >
           {/* Close Button */}
           <button
             type="button"
             onClick={closeProfileModal}
-            className="absolute right-4 top-4 rounded-full p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition"
+            className="absolute right-5 top-5 rounded-full p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white transition"
+            aria-label="Close modal"
           >
             <X size={18} />
           </button>
 
           {/* Header */}
-          <div className="flex items-center gap-3">
-            <UserAvatar user={user} className="h-14 w-14 text-xl font-black border-2 border-emerald-400 shadow-md" />
-
-            <div>
-              <h3 className="text-lg font-extrabold text-white flex items-center gap-1.5">
-                My Account Profile
-                <ShieldCheck size={16} className="text-emerald-400" />
-              </h3>
-              <p className="text-xs text-slate-400 font-medium">
-                Manage your portfolio account profile
-              </p>
-            </div>
+          <div className="border-b border-slate-100 dark:border-white/[0.08] pb-4">
+            <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+              ACCOUNT PROFILE
+            </p>
+            <h3 className="font-jakarta text-2xl font-black text-slate-950 dark:text-white mt-1">
+              Edit your profile
+            </h3>
           </div>
 
           {savedSuccess ? (
-            <div className="mt-6 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-center">
-              <Check className="mx-auto text-emerald-400 h-8 w-8" />
-              <p className="mt-2 text-sm font-extrabold text-emerald-300">
+            <div className="my-8 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-6 text-center space-y-2">
+              <div className="h-12 w-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                <Check size={24} />
+              </div>
+              <h4 className="text-base font-bold text-emerald-400">
                 Profile Updated Successfully!
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-zinc-400">
+                Your public profile and account details have been saved.
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSave} className="mt-6 space-y-4">
+            <form onSubmit={handleSave} className="mt-6 space-y-5">
               {errorMsg && (
-                <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-center text-xs font-bold text-rose-300">
-                  {errorMsg}
+                <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 flex items-center gap-2.5 text-xs font-semibold text-rose-500 dark:text-rose-400">
+                  <AlertCircle size={16} className="shrink-0" />
+                  <span>{errorMsg}</span>
                 </div>
               )}
 
-              {/* Full Name (Editable) */}
-              <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Full Name
+              {/* Profile Image Section */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4 sm:p-5">
+                <div className="relative group shrink-0">
+                  <UserAvatar
+                    user={mockUserForAvatar}
+                    className="h-16 w-16 text-2xl font-black border-2 border-lime-400 shadow-md ring-4 ring-lime-400/10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-150 cursor-pointer"
+                    title="Upload new image"
+                  >
+                    <Camera size={18} />
+                  </button>
+                </div>
+
+                <div className="flex-1 space-y-2">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white">
+                    Profile image
+                  </p>
+                  <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
+                    JPEG, PNG, or WebP. Maximum 5 MB. Images are automatically cropped to a square.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-zinc-800 px-3.5 py-1.5 text-xs font-bold text-slate-800 dark:text-zinc-200 hover:border-lime-500 hover:text-lime-600 dark:hover:text-lime-400 transition shadow-xs"
+                    >
+                      <Camera size={13} />
+                      <span>{avatarPreview ? "Change image" : "Upload image"}</span>
+                    </button>
+
+                    {avatarPreview && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveAvatar}
+                        className="inline-flex items-center gap-1 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-500 hover:bg-rose-500/20 transition"
+                      >
+                        <Trash2 size={12} />
+                        <span>Remove</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Display Name */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                  Display name <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative flex items-center">
-                  <User size={16} className="absolute left-3 text-slate-400" />
+                  <User size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
                   <input
                     type="text"
                     required
+                    maxLength={120}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950/80 pl-9 pr-3 py-2.5 text-xs text-white outline-none focus:border-emerald-500 transition"
-                    placeholder="Your Full Name"
+                    placeholder="Your Display Name"
+                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
                   />
                 </div>
               </div>
 
-              {/* Email (Locked / Google Email) */}
-              <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1 flex items-center gap-1.5">
-                  Account Email <span className="text-[10px] text-emerald-400 font-bold">(Google Mail 🔒)</span>
+              {/* Bio with Character Counter */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                    Bio
+                  </label>
+                  <span className="font-mono text-[10px] text-slate-400 dark:text-zinc-500">
+                    {bio.length}/180
+                  </span>
+                </div>
+                <textarea
+                  rows={2}
+                  maxLength={180}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="A short note about you, your tech stack, or interests..."
+                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition resize-none"
+                />
+              </div>
+
+              {/* Location & Website Grid */}
+              <div className="grid gap-3.5 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                    Location
+                  </label>
+                  <div className="relative flex items-center">
+                    <MapPin size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
+                    <input
+                      type="text"
+                      maxLength={100}
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      placeholder="e.g. Lucknow, India"
+                      className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                    Website / Social
+                  </label>
+                  <div className="relative flex items-center">
+                    <Globe size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
+                    <input
+                      type="url"
+                      maxLength={200}
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                      placeholder="https://example.com"
+                      className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Phone Number (Optional) */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                  Phone number <span className="text-[10px] text-slate-400 dark:text-zinc-500">(Optional)</span>
                 </label>
                 <div className="relative flex items-center">
-                  <div className="absolute left-3">
+                  <Phone size={15} className="absolute left-3.5 text-slate-400 dark:text-zinc-500" />
+                  <input
+                    type="tel"
+                    maxLength={30}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition"
+                  />
+                </div>
+              </div>
+
+              {/* Google account email (Locked) */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300 flex items-center gap-1.5">
+                  <span>Google account email</span>
+                  <span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono">🔒</span>
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-3.5">
                     <GoogleIcon />
                   </div>
                   <input
                     type="email"
                     readOnly
                     value={user.email || ""}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-950/40 pl-9 pr-3 py-2.5 text-xs text-slate-400 cursor-not-allowed font-medium outline-none"
+                    className="w-full rounded-xl border border-slate-200 dark:border-white/5 bg-slate-100/70 dark:bg-zinc-900/40 pl-10 pr-3.5 py-2.5 text-xs text-slate-500 dark:text-zinc-400 cursor-not-allowed font-medium outline-none"
                   />
                 </div>
-                <p className="mt-1 text-[10px] text-slate-500">
-                  Email is linked to your Google Account and cannot be modified.
+                <p className="text-[10px] text-slate-400 dark:text-zinc-500">
+                  Managed by Google and locked for account security.
                 </p>
               </div>
 
-              {/* Phone (Editable) */}
-              <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Phone Number (Optional)
-                </label>
-                <div className="relative flex items-center">
-                  <Phone size={16} className="absolute left-3 text-slate-400" />
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950/80 pl-9 pr-3 py-2.5 text-xs text-white outline-none focus:border-emerald-500 transition"
-                    placeholder="9876543210"
-                  />
-                </div>
-              </div>
-
               {/* Action Buttons */}
-              <div className="pt-2 flex items-center gap-3">
+              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-white/[0.08]">
                 <button
                   type="button"
                   onClick={closeProfileModal}
                   disabled={saving}
-                  className="flex-1 rounded-xl border border-slate-700 bg-slate-800 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700 transition disabled:opacity-50"
+                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900 px-5 py-2.5 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800 transition disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={saving}
-                  className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-2.5 text-xs font-extrabold text-slate-950 shadow-md hover:brightness-110 transition flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  disabled={saving || !name.trim()}
+                  className="inline-flex items-center gap-2 rounded-xl bg-lime-400 px-6 py-2.5 text-xs font-bold text-slate-950 hover:bg-lime-300 shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? (
                     <>
-                      <Loader2 className="animate-spin h-4 w-4" /> Saving...
+                      <Loader2 className="animate-spin h-3.5 w-3.5" />
+                      <span>Saving...</span>
                     </>
                   ) : (
-                    "Save Profile"
+                    <span>Save profile</span>
                   )}
                 </button>
               </div>

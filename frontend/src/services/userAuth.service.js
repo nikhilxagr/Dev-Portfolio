@@ -78,19 +78,40 @@ export const getCurrentUserProfileService = async () => {
   }
 };
 
-export const updateUserProfileService = async ({ name, phone }) => {
+export const updateUserProfileService = async ({
+  name,
+  phone,
+  bio,
+  location,
+  website,
+  avatar,
+}) => {
   const token = getStoredUserToken();
   if (!token) throw new Error("Authentication required");
 
   try {
     const response = await api.put(
       "/user-auth/me",
-      { name, phone },
+      { name, phone, bio, location, website, avatar },
       { headers: { Authorization: `Bearer ${token}` } },
     );
     return response.data?.data?.user || null;
   } catch (error) {
     throw new Error(getErrorMessage(error, "Failed to update profile"));
+  }
+};
+
+export const getUserActivityService = async () => {
+  const token = getStoredUserToken();
+  if (!token) throw new Error("Authentication required");
+
+  try {
+    const response = await api.get("/user-auth/activity", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data?.data || null;
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Failed to fetch user activity"));
   }
 };
 

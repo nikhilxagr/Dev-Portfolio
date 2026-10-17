@@ -23,6 +23,7 @@ const routeImportMap = {
   "/contact": () => import("@/pages/ContactPage.jsx"),
   "/how-i-build": () => import("@/pages/HowIBuildPage.jsx"),
   "/support": () => import("@/pages/SupportPage.jsx"),
+  "/profile": () => import("@/pages/ProfilePage.jsx"),
 };
 
 const prefetchedRoutes = new Set();

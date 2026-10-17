@@ -32,6 +32,7 @@ const ServicesPage = lazy(() => import("@/pages/ServicesPage.jsx"));
 const SupportPage = lazy(() => import("@/pages/SupportPage.jsx"));
 const PaymentSuccessPage = lazy(() => import("@/pages/PaymentSuccessPage.jsx"));
 const ReceiptPortalPage = lazy(() => import("@/pages/ReceiptPortalPage.jsx"));
+const ProfilePage = lazy(() => import("@/pages/ProfilePage.jsx"));
 const RefundPolicyPage = lazy(() => import("@/pages/RefundPolicyPage.jsx"));
 const PrivacyPolicyPage = lazy(() => import("@/pages/PrivacyPolicyPage.jsx"));
 const TermsPage = lazy(() => import("@/pages/TermsPage.jsx"));
@@ -190,6 +191,8 @@ function App() {
                       <Route path="/payment-success" element={<LegacyRedirect to="/payment/success" />} />
                       <Route path="/receipts" element={<ReceiptPortalPage />} />
                       <Route path="/receipt-portal" element={<LegacyRedirect to="/receipts" />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="/activity" element={<LegacyRedirect to="/profile" />} />
                       <Route path="/refund-policy" element={<RefundPolicyPage />} />
                       <Route
                         path="/privacy-policy"
