@@ -561,43 +561,43 @@ const Navbar = () => {
                     <AnimatePresence>
                       {userMenuOpen && (
                         <motion.div
-                          initial={{ opacity: 0, scale: 0.95, y: -6 }}
+                          initial={{ opacity: 0, scale: 0.96, y: -4 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.95, y: -6 }}
-                          transition={{ duration: 0.18, ease: "easeOut" }}
-                          className="absolute left-1/2 -translate-x-1/2 mt-3 w-76 sm:w-80 rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl p-2.5 shadow-2xl shadow-black/40 z-50 text-slate-900 dark:text-zinc-100"
+                          exit={{ opacity: 0, scale: 0.96, y: -4 }}
+                          transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                          className="absolute left-0 mt-2.5 w-[265px] sm:w-[275px] rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl p-2 shadow-2xl shadow-black/40 z-50 text-slate-900 dark:text-zinc-100"
                         >
-                          {/* Top Subtle Glow Accent */}
-                          <div className="absolute -top-[1px] left-1/2 -translate-x-1/2 h-[2px] w-24 bg-gradient-to-r from-transparent via-lime-400 to-transparent rounded-full pointer-events-none" />
+                          {/* Top Subtle Glow Accent directly under avatar icon */}
+                          <div className="absolute -top-[1px] left-2 h-[2px] w-14 bg-gradient-to-r from-transparent via-lime-400 to-transparent rounded-full pointer-events-none" />
 
-                          {/* Pointer Notch */}
-                          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-zinc-950 border-t border-l border-slate-200/90 dark:border-white/10 rotate-45 pointer-events-none" />
+                          {/* Pointer Notch aligned with profile avatar center (18px) */}
+                          <div className="absolute -top-1.5 left-[18px] -translate-x-1/2 w-3 h-3 bg-white dark:bg-zinc-950 border-t border-l border-slate-200/90 dark:border-white/10 rotate-45 pointer-events-none" />
 
                           {/* User Info Header Card */}
-                          <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50/90 dark:bg-zinc-900/80 border border-slate-100 dark:border-white/[0.06] mb-2 shadow-2xs">
+                          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50/90 dark:bg-zinc-900/80 border border-slate-100 dark:border-white/[0.05] mb-1.5 shadow-2xs">
                             <div className="relative shrink-0">
                               <UserAvatar
                                 user={user}
-                                className="h-11 w-11 text-base font-black border-2 border-lime-400 shadow-sm ring-4 ring-lime-400/10"
+                                className="h-8 w-8 text-xs font-black border border-lime-400 shadow-xs ring-2 ring-lime-400/15"
                               />
                               <span
-                                className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-950 shadow-xs"
+                                className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 border border-white dark:border-zinc-950 shadow-xs"
                                 title="Active Google Session"
                               />
                             </div>
 
                             <div className="min-w-0 flex-1 space-y-0.5">
-                              <div className="flex items-center justify-between gap-1.5">
-                                <p className="font-jakarta text-sm sm:text-base font-extrabold text-slate-950 dark:text-white truncate tracking-tight">
+                              <div className="flex items-center justify-between gap-1">
+                                <p className="font-jakarta text-[13px] font-extrabold text-slate-950 dark:text-white truncate tracking-tight">
                                   {user.name}
                                 </p>
-                                <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 bg-lime-400/15 dark:bg-lime-400/10 px-1.5 py-0.5 rounded border border-lime-400/30 shrink-0">
+                                <span className="font-mono text-[8px] font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 bg-lime-400/15 dark:bg-lime-400/10 px-1 py-0.2 rounded border border-lime-400/25 shrink-0">
                                   Active
                                 </span>
                               </div>
 
-                              <p className="text-xs text-slate-500 dark:text-zinc-400 truncate flex items-center gap-1.5 font-medium">
-                                <span className="h-4 w-4 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black flex items-center justify-center text-[10px] shrink-0 border border-emerald-500/20">
+                              <p className="text-[11px] text-slate-500 dark:text-zinc-400 truncate flex items-center gap-1 font-medium">
+                                <span className="h-3.5 w-3.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black flex items-center justify-center text-[9px] shrink-0 border border-emerald-500/20">
                                   G
                                 </span>
                                 <span className="truncate">{user.email}</span>
@@ -606,29 +606,29 @@ const Navbar = () => {
                           </div>
 
                           {/* Menu Actions */}
-                          <div className="space-y-1">
+                          <div className="space-y-0.5">
                             {/* 1. My Profile & Activity */}
                             <Link
                               to="/profile"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-200 group cursor-pointer border border-transparent hover:border-slate-200/60 dark:hover:border-white/[0.08]"
+                              className="flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-180 group cursor-pointer border border-transparent hover:border-slate-200/50 dark:hover:border-white/[0.06]"
                             >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="h-9 w-9 rounded-xl bg-lime-400/15 text-lime-600 dark:text-lime-400 flex items-center justify-center shrink-0 group-hover:bg-lime-400 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
-                                  <User size={16} />
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="h-7 w-7 rounded-lg bg-lime-400/15 text-lime-600 dark:text-lime-400 flex items-center justify-center shrink-0 group-hover:bg-lime-400 group-hover:text-slate-950 transition-all duration-180 shadow-2xs">
+                                  <User size={14} />
                                 </div>
                                 <div className="min-w-0 text-left">
-                                  <p className="font-jakarta text-sm font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
+                                  <p className="font-jakarta text-xs font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
                                     My Profile &amp; Activity
                                   </p>
-                                  <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
+                                  <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
                                     Likes, comments &amp; timeline
                                   </p>
                                 </div>
                               </div>
                               <ChevronRight
-                                size={15}
-                                className="text-slate-400 dark:text-zinc-500 group-hover:text-lime-500 group-hover:translate-x-1 transition-all duration-200 shrink-0"
+                                size={13}
+                                className="text-slate-400 dark:text-zinc-500 group-hover:text-lime-500 group-hover:translate-x-0.5 transition-all duration-180 shrink-0"
                               />
                             </Link>
 
@@ -639,24 +639,24 @@ const Navbar = () => {
                                 setUserMenuOpen(false);
                                 openProfileModal();
                               }}
-                              className="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-200 group cursor-pointer border border-transparent hover:border-slate-200/60 dark:hover:border-white/[0.08]"
+                              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-180 group cursor-pointer border border-transparent hover:border-slate-200/50 dark:hover:border-white/[0.06]"
                             >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="h-9 w-9 rounded-xl bg-sky-500/15 text-sky-500 flex items-center justify-center shrink-0 group-hover:bg-sky-500 group-hover:text-white transition-all duration-200 shadow-2xs">
-                                  <Edit3 size={16} />
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="h-7 w-7 rounded-lg bg-sky-500/15 text-sky-500 flex items-center justify-center shrink-0 group-hover:bg-sky-500 group-hover:text-white transition-all duration-180 shadow-2xs">
+                                  <Edit3 size={14} />
                                 </div>
                                 <div className="min-w-0 text-left">
-                                  <p className="font-jakarta text-sm font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
+                                  <p className="font-jakarta text-xs font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
                                     Edit Profile
                                   </p>
-                                  <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
+                                  <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
                                     Photo, bio, location &amp; socials
                                   </p>
                                 </div>
                               </div>
                               <ChevronRight
-                                size={15}
-                                className="text-slate-400 dark:text-zinc-500 group-hover:text-sky-500 group-hover:translate-x-1 transition-all duration-200 shrink-0"
+                                size={13}
+                                className="text-slate-400 dark:text-zinc-500 group-hover:text-sky-500 group-hover:translate-x-0.5 transition-all duration-180 shrink-0"
                               />
                             </button>
 
@@ -664,24 +664,24 @@ const Navbar = () => {
                             <Link
                               to="/receipts"
                               onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-200 group cursor-pointer border border-transparent hover:border-slate-200/60 dark:hover:border-white/[0.08]"
+                              className="flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-180 group cursor-pointer border border-transparent hover:border-slate-200/50 dark:hover:border-white/[0.06]"
                             >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="h-9 w-9 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
-                                  <Receipt size={16} />
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="h-7 w-7 rounded-lg bg-amber-500/15 text-amber-500 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all duration-180 shadow-2xs">
+                                  <Receipt size={14} />
                                 </div>
                                 <div className="min-w-0 text-left">
-                                  <p className="font-jakarta text-sm font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
+                                  <p className="font-jakarta text-xs font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
                                     My Receipts
                                   </p>
-                                  <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
+                                  <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
                                     Verified access codes &amp; bills
                                   </p>
                                 </div>
                               </div>
                               <ChevronRight
-                                size={15}
-                                className="text-slate-400 dark:text-zinc-500 group-hover:text-amber-500 group-hover:translate-x-1 transition-all duration-200 shrink-0"
+                                size={13}
+                                className="text-slate-400 dark:text-zinc-500 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all duration-180 shrink-0"
                               />
                             </Link>
 
@@ -695,24 +695,24 @@ const Navbar = () => {
                                 logout();
                                 setUserMenuOpen(false);
                               }}
-                              className="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-rose-500/10 dark:hover:bg-rose-500/15 transition-all duration-200 group cursor-pointer border border-transparent hover:border-rose-500/20"
+                              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-rose-500/10 dark:hover:bg-rose-500/15 transition-all duration-180 group cursor-pointer border border-transparent hover:border-rose-500/20"
                             >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div className="h-9 w-9 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0 group-hover:bg-rose-500 group-hover:text-white transition-all duration-200 shadow-2xs">
-                                  <LogOut size={16} />
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="h-7 w-7 rounded-lg bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0 group-hover:bg-rose-500 group-hover:text-white transition-all duration-180 shadow-2xs">
+                                  <LogOut size={14} />
                                 </div>
                                 <div className="min-w-0 text-left">
-                                  <p className="font-jakarta text-sm font-bold text-rose-600 dark:text-rose-400 group-hover:text-rose-500 transition">
+                                  <p className="font-jakarta text-xs font-bold text-rose-600 dark:text-rose-400 group-hover:text-rose-500 transition">
                                     Sign Out
                                   </p>
-                                  <p className="text-[11px] text-slate-400 dark:text-zinc-500 leading-tight">
+                                  <p className="text-[10px] text-slate-400 dark:text-zinc-500 leading-tight">
                                     Safely end session on this device
                                   </p>
                                 </div>
                               </div>
                               <ChevronRight
-                                size={15}
-                                className="text-slate-400 dark:text-zinc-500 group-hover:text-rose-500 group-hover:translate-x-1 transition-all duration-200 shrink-0"
+                                size={13}
+                                className="text-slate-400 dark:text-zinc-500 group-hover:text-rose-500 group-hover:translate-x-0.5 transition-all duration-180 shrink-0"
                               />
                             </button>
                           </div>
