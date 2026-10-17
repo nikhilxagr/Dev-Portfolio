@@ -1001,10 +1001,6 @@ export const requestReceiptAccessCode = async (req, res, next) => {
       hasReceipts: Boolean(hasReceipts),
     };
 
-    if (env.nodeEnv === "development") {
-      responseData.debugCode = code;
-    }
-
     if (emailResult.skipped && !emailResult.sent) {
       sendResponse(
         res,

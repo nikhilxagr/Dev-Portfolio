@@ -66,7 +66,6 @@ const ReceiptPortalPage = () => {
   const [portalToken, setPortalToken] = useState("");
   const [receipts, setReceipts] = useState([]);
   const [currentStep, setCurrentStep] = useState(1); // 1: Email, 2: Code, 3: Verified Receipts
-  const [devCode, setDevCode] = useState("");
   const [resendCooldown, setResendCooldown] = useState(0);
 
   const [message, setMessage] = useState("");
@@ -109,11 +108,6 @@ const ReceiptPortalPage = () => {
 
     try {
       const response = await requestReceiptAccessCode(targetEmail);
-      const code = response?.data?.debugCode || "";
-      if (code) {
-        setDevCode(code);
-      }
-
       const backendMessage =
         response?.message ||
         "A 6-digit access code has been dispatched to your email.";
@@ -132,15 +126,15 @@ const ReceiptPortalPage = () => {
     }
   };
 
-  const handleVerifyCode = async (event, explicitCode) => {
+  const handleVerifyCode = async (event) => {
     if (event) event.preventDefault();
     setError("");
     setMessage("");
 
-    const codeToVerify = (explicitCode || accessCode).trim();
+    const codeToVerify = accessCode.trim();
 
     if (!/^\d{6}$/.test(codeToVerify)) {
-      setError("Please enter the complete 6-digit access code.");
+      setError("Please enter the complete 6-digit access code sent to your email.");
       return;
     }
 
@@ -169,18 +163,12 @@ const ReceiptPortalPage = () => {
       setError(
         getErrorMessage(
           verifyError,
-          "Invalid or expired access code. Please check and try again.",
+          "Invalid or expired access code. Please check your email and try again.",
         ),
       );
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleFillDevCode = () => {
-    if (!devCode) return;
-    setAccessCode(devCode);
-    handleVerifyCode(null, devCode);
   };
 
   const refreshHistory = async () => {
@@ -523,25 +511,6 @@ const ReceiptPortalPage = () => {
                       </button>
                     )}
                   </div>
-
-                  {/* Dev Code Quick Auto-Fill Banner */}
-                  {devCode && currentStep === 2 && (
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-500/30 bg-amber-950/30 p-3 text-xs text-amber-200">
-                      <div className="flex items-center gap-2">
-                        <Sparkles size={15} className="text-amber-400" />
-                        <span>
-                          Test Mode Detected: Code is <strong className="font-mono text-white text-sm tracking-widest">{devCode}</strong>
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleFillDevCode}
-                        className="rounded-lg bg-amber-400 px-2.5 py-1 font-bold text-slate-950 hover:bg-amber-300 transition"
-                      >
-                        Auto-fill Code
-                      </button>
-                    </div>
-                  )}
 
                   <form onSubmit={handleVerifyCode} className="mt-4 space-y-4">
                     <div>
