@@ -172,6 +172,14 @@ export const getReceiptHistory = async (token) => {
   return data;
 };
 
+export const sendReceiptToEmail = async (receiptNumber, token) => {
+  const { data } = await api.post(
+    `/payments/receipts/${encodeURIComponent(receiptNumber)}/email`,
+    { token },
+  );
+  return data;
+};
+
 export const persistLatestReceipt = (receiptPayload) => {
   if (!canUseStorage()) {
     return;

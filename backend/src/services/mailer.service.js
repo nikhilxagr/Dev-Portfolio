@@ -532,7 +532,7 @@ export const sendAdminLoginNotificationEmail = async ({ email, ip, userAgent }) 
 };
 
 // Base sendMail function
-const sendMail = async ({ to, subject, html }) => {
+export const sendMail = async ({ to, subject, html, attachments = [] }) => {
   const transporter = getTransporter();
 
   if (!transporter) {
@@ -548,10 +548,11 @@ const sendMail = async ({ to, subject, html }) => {
 
   try {
     const info = await transporter.sendMail({
-      from: env.emailFrom,
+      from: env.emailFrom || `"Nikhil Agrahari" <${env.smtpUser}>`,
       to,
       subject,
       html,
+      attachments,
     });
 
     console.log(`[Mailer] Real email sent to: ${to} | MessageId: ${info.messageId}`);

@@ -4,6 +4,7 @@ import {
   createSupportPaymentOrder,
   createPaymentOrder,
   downloadReceipt,
+  emailReceipt,
   getPaymentConfigStatus,
   getReceiptHistory,
   handleCashfreeWebhook,
@@ -151,6 +152,18 @@ router.get(
   [query("token").trim().notEmpty().withMessage("Portal token is required")],
   validateRequest,
   getReceiptHistory,
+);
+
+router.post(
+  "/receipts/:receiptNumber/email",
+  [
+    param("receiptNumber")
+      .trim()
+      .isLength({ min: 8, max: 64 })
+      .withMessage("Invalid receipt number"),
+  ],
+  validateRequest,
+  emailReceipt,
 );
 
 export default router;

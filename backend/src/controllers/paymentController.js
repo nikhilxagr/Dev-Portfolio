@@ -962,19 +962,6 @@ export const requestReceiptAccessCode = async (req, res, next) => {
       status: { $in: ["paid", "refunded"] },
     });
 
-    if (!hasReceipts) {
-      logSecurityEvent("RECEIPT_ACCESS_REQUESTED", req, {
-        email: normalizedEmail,
-        hasReceipts: false,
-      });
-      sendResponse(
-        res,
-        200,
-        "If matching receipts exist, an access code has been sent.",
-      );
-      return;
-    }
-
     const code = createOtp();
     const codeHash = createOtpHash(normalizedEmail, code);
     const expiresAt = new Date(
@@ -1003,7 +990,7 @@ export const requestReceiptAccessCode = async (req, res, next) => {
 
     logSecurityEvent("RECEIPT_ACCESS_REQUESTED", req, {
       email: normalizedEmail,
-      hasReceipts: true,
+      hasReceipts: Boolean(hasReceipts),
       emailDeliverySkipped: Boolean(emailResult.skipped),
       emailDeliverySent: Boolean(emailResult.sent),
     });
@@ -1011,17 +998,18 @@ export const requestReceiptAccessCode = async (req, res, next) => {
     const responseData = {
       email: normalizedEmail,
       expiresInMinutes: env.paymentAccessCodeTtlMinutes,
+      hasReceipts: Boolean(hasReceipts),
     };
 
-    if (env.nodeEnv === "development" && !emailResult.sent) {
+    if (env.nodeEnv === "development") {
       responseData.debugCode = code;
     }
 
-    if (emailResult.skipped) {
+    if (emailResult.skipped && !emailResult.sent) {
       sendResponse(
         res,
         200,
-        "If matching receipts exist, receipt access email is temporarily unavailable. Contact billing support.",
+        "Receipt access code generated, but email delivery is temporarily unavailable. Contact support or use development code.",
         {
           ...responseData,
           emailDeliveryAvailable: false,
@@ -1034,7 +1022,7 @@ export const requestReceiptAccessCode = async (req, res, next) => {
     sendResponse(
       res,
       200,
-      "If matching receipts exist, an access code has been sent.",
+      "A 6-digit access code has been sent to your email. Please check your inbox or spam folder.",
       {
         ...responseData,
         emailDeliveryAvailable: true,
@@ -1137,6 +1125,8 @@ export const getReceiptHistory = async (req, res, next) => {
       currency: transaction.currency,
       status: transaction.status,
       paidAt: transaction.paidAt,
+      customerName: transaction.customerName,
+      customerEmail: transaction.customerEmail,
       orderId: transaction.cashfreeOrderId,
       paymentId: transaction.cashfreePaymentId,
       downloadUrl: buildDownloadUrl(transaction),
@@ -1150,3 +1140,69 @@ export const getReceiptHistory = async (req, res, next) => {
     next(error);
   }
 };
+
+export const emailReceipt = async (req, res, next) => {
+  try {
+    if (!isDatabaseReady(req)) {
+      throw new ApiError(503, "Receipt service is temporarily unavailable");
+    }
+
+    const { receiptNumber } = req.params;
+    const token = String(req.query.token || req.body.token || "").trim();
+
+    let authorizedEmail = null;
+    const portalRes = verifyPortalToken(token);
+    if (portalRes.valid && portalRes.payload.scope === "receipt-history") {
+      authorizedEmail = portalRes.payload.email;
+    } else {
+      const downloadRes = verifyDownloadToken(token);
+      if (
+        downloadRes.valid &&
+        downloadRes.payload.scope === "receipt-download" &&
+        downloadRes.payload.receiptNumber === receiptNumber
+      ) {
+        authorizedEmail = downloadRes.payload.email;
+      }
+    }
+
+    if (!authorizedEmail) {
+      throw new ApiError(401, "Invalid or expired authorization token");
+    }
+
+    const transaction = await PaymentTransaction.findOne({ receiptNumber });
+    if (!transaction) {
+      throw new ApiError(404, "Receipt not found");
+    }
+
+    if (transaction.customerEmail !== authorizedEmail) {
+      throw new ApiError(403, "You are not authorized to email this receipt");
+    }
+
+    const pdfBuffer = await buildReceiptPdfBuffer(transaction);
+    const downloadUrl = `${getBaseUrl(req)}${buildDownloadUrl(transaction)}`;
+
+    const sendRes = await sendReceiptEmail({
+      customerName: transaction.customerName,
+      customerEmail: transaction.customerEmail,
+      receiptNumber: transaction.receiptNumber,
+      serviceName: transaction.serviceName,
+      amountInr: transaction.amountInr,
+      paidAt: transaction.paidAt,
+      downloadUrl,
+      pdfBuffer,
+    });
+
+    sendResponse(
+      res,
+      200,
+      `Receipt #${receiptNumber} has been dispatched to ${transaction.customerEmail}`,
+      {
+        sent: Boolean(sendRes.sent),
+        deliveredTo: transaction.customerEmail,
+      },
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
