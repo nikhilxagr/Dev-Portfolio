@@ -127,7 +127,7 @@ function App() {
 
   return (
     <LenisProvider>
-      <div className="relative min-h-screen overflow-x-hidden">
+      <div className="relative min-h-screen overflow-x-clip">
         <ScrollProgressBar />
         <AnimatePresence mode="wait">
           {showLoader ? (
@@ -145,13 +145,13 @@ function App() {
               <MotionDiv
                 key={location.pathname}
                 initial={{ opacity: 1 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{
                   duration: prefersReducedMotion ? 0 : 0.15,
                   ease: "easeOut",
                 }}
-                className="transform-gpu"
+                className="w-full"
               >
                 {/* Route-Level Error Boundary + Invisible Suspense Fallback (Zero Dotted Flash) */}
                 <RouteErrorBoundary>

@@ -7,6 +7,7 @@ import {
   Database,
   ChevronRight,
   ChevronLeft,
+  ChevronUp,
   Zap,
   Server,
   Layers,
@@ -61,31 +62,56 @@ export default function SystemDesignArticleView({
 }) {
   const [activeTocId, setActiveTocId] = useState("overview");
   const [activePipeline, setActivePipeline] = useState("write");
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Track active section for table of contents
+  // Reliable viewport-based scroll tracking for Table of Contents + Lenis integration
   useEffect(() => {
     const handleScroll = () => {
-      const sectionElements = SECTIONS.map((s) => document.getElementById(s.id));
-      const scrollPosition = window.scrollY + 180;
+      // Show back to top button after 400px of scrolling
+      setShowScrollTop(window.scrollY > 400);
 
-      for (let i = sectionElements.length - 1; i >= 0; i--) {
-        const el = sectionElements[i];
-        if (el && el.offsetTop <= scrollPosition) {
-          setActiveTocId(SECTIONS[i].id);
-          break;
+      // Trigger point relative to viewport
+      const triggerPoint = 200;
+      let currentActive = SECTIONS[0].id;
+
+      for (const sec of SECTIONS) {
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= triggerPoint) {
+            currentActive = sec.id;
+          }
         }
       }
+      setActiveTocId(currentActive);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    
+    // Also listen to Lenis scroll event for frame-accurate updates
+    if (window.__activeLenis) {
+      window.__activeLenis.on("scroll", handleScroll);
+    }
+
+    handleScroll();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (window.__activeLenis) {
+        window.__activeLenis.off("scroll", handleScroll);
+      }
+    };
   }, []);
 
   const scrollToSection = (id) => {
+    setActiveTocId(id);
     const el = document.getElementById(id);
     if (el) {
-      const topOffset = el.getBoundingClientRect().top + window.pageYOffset - 90;
-      window.scrollTo({ top: topOffset, behavior: "smooth" });
+      if (window.__activeLenis) {
+        window.__activeLenis.scrollTo(el, { offset: -90, duration: 0.6 });
+      } else {
+        const topOffset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: topOffset, behavior: "smooth" });
+      }
     }
   };
 
@@ -110,14 +136,15 @@ export default function SystemDesignArticleView({
         ])}
       />
 
-      <article className="relative overflow-hidden pt-6 pb-24 sm:pt-10 sm:pb-32 font-sans">
-        {/* Subtle Ambient Glows */}
-        <div className="pointer-events-none absolute inset-0">
+      <article className="relative pt-6 pb-24 sm:pt-10 sm:pb-32 font-sans">
+        {/* Subtle Ambient Glows with isolated overflow clipping to prevent breaking sticky elements */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute left-1/4 top-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-400/5 blur-[120px]" />
           <div className="absolute right-1/4 top-1/2 h-80 w-80 translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/5 blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* Expansive, Broad Container Covering More Screen Width */}
+        <div className="relative mx-auto max-w-[1560px] 2xl:max-w-[1680px] px-4 sm:px-8 lg:px-10 xl:px-12 w-full">
           {/* Breadcrumb Navigation (Image 2 Style - Clean & Minimal) */}
           <nav className="flex items-center gap-2 text-xs font-medium text-slate-400 dark:text-zinc-500 mb-8">
             <Link to="/" className="hover:text-slate-900 dark:hover:text-white transition">
@@ -131,8 +158,8 @@ export default function SystemDesignArticleView({
             <span className="text-slate-600 dark:text-zinc-300">Engineering Deep Dives</span>
           </nav>
 
-          {/* Article Header (Image 2 Style - Clean, Bold, Editorial Sans Typography) */}
-          <header className="mb-12 max-w-4xl">
+          {/* Article Header (Image 2 Style - Broad, Bold, Editorial Sans Typography) */}
+          <header className="mb-12 max-w-6xl">
             {/* Category Eyebrow without // */}
             <p className="font-mono text-xs font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 mb-4">
               ENGINEERING DEEP DIVES
@@ -144,7 +171,7 @@ export default function SystemDesignArticleView({
             </h1>
 
             {/* Subtitle / 1-2 Line Definition */}
-            <p className="text-base sm:text-lg text-slate-600 dark:text-zinc-400 leading-relaxed font-normal max-w-3xl mb-6">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-zinc-400 leading-relaxed font-normal max-w-5xl mb-6">
               How to design a scalable URL shortener like TinyURL or Bitly — handling 1 billion redirects daily with sub-2ms response times, zero key collisions, and resilient caching.
             </p>
 
@@ -188,10 +215,10 @@ export default function SystemDesignArticleView({
             </div>
           </div>
 
-          {/* TWO-COLUMN LAYOUT: MAIN CONTENT (LEFT) + FIXED "ON THIS PAGE" TOC (RIGHT - IMAGE 3 STYLE) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* MAIN ARTICLE CONTENT (Left 8 Cols) */}
-            <main className="lg:col-span-8 space-y-16">
+          {/* TWO-COLUMN LAYOUT: BROAD MAIN CONTENT (LEFT) + ROCK-SOLID STICKY TOC (RIGHT) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start relative">
+            {/* MAIN ARTICLE CONTENT (9 Columns for broad, spacious layout) */}
+            <main className="lg:col-span-9 space-y-16 min-w-0">
               {/* SECTION 1: THE CORE PROBLEM */}
               <section id="overview" className="scroll-mt-28 space-y-4">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
@@ -204,7 +231,7 @@ export default function SystemDesignArticleView({
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3 mt-4">
-                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <div className="flex items-center gap-2 mb-2 text-lime-600 dark:text-lime-400 font-bold text-sm">
                       <Zap size={16} />
                       <span>100:1 Read-Heavy</span>
@@ -214,7 +241,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <div className="flex items-center gap-2 mb-2 text-cyan-600 dark:text-cyan-400 font-bold text-sm">
                       <Zap size={16} />
                       <span>Sub-2ms Redirection</span>
@@ -224,7 +251,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <div className="flex items-center gap-2 mb-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
                       <CheckCircle2 size={16} />
                       <span>Zero Collisions</span>
@@ -258,32 +285,32 @@ export default function SystemDesignArticleView({
                   </p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
                       Link Creation (Writes)
                     </p>
-                    <p className="font-mono text-lg font-black text-slate-900 dark:text-white mt-1">
+                    <p className="font-mono text-xl font-black text-slate-900 dark:text-white mt-1">
                       10M URLs / Day
                     </p>
                     <p className="text-xs text-slate-500 mt-1 font-medium">~116 writes/sec (Peak: ~580/s)</p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
                       Redirection Traffic (Reads)
                     </p>
-                    <p className="font-mono text-lg font-black text-lime-600 dark:text-lime-400 mt-1">
+                    <p className="font-mono text-xl font-black text-lime-600 dark:text-lime-400 mt-1">
                       1B Clicks / Day
                     </p>
                     <p className="text-xs text-slate-500 mt-1 font-medium">~11,574 reads/sec (Peak: ~60k/s)</p>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
                       5-Year Storage &amp; RAM
                     </p>
-                    <p className="font-mono text-lg font-black text-cyan-600 dark:text-cyan-400 mt-1">
+                    <p className="font-mono text-xl font-black text-cyan-600 dark:text-cyan-400 mt-1">
                       9.15 TB &bull; 100 GB RAM
                     </p>
                     <p className="text-xs text-slate-500 mt-1 font-medium">Top 20% hot links cached in memory</p>
@@ -291,7 +318,7 @@ export default function SystemDesignArticleView({
                 </div>
 
                 {/* Callout Box (Image 3 Style with green left border) */}
-                <div className="border-l-2 border-lime-400 bg-slate-50/70 dark:bg-white/[0.02] pl-4 py-3 rounded-r-xl text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
+                <div className="border-l-2 border-lime-400 bg-slate-50/70 dark:bg-white/[0.02] pl-5 py-3.5 rounded-r-xl text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
                   <strong className="text-slate-900 dark:text-white block font-bold mb-1">
                     The 80/20 Pareto Principle in System Design:
                   </strong>
@@ -322,7 +349,7 @@ export default function SystemDesignArticleView({
                 </div>
 
                 {/* Callout Box */}
-                <div className="border-l-2 border-lime-400 bg-slate-50/70 dark:bg-white/[0.02] pl-4 py-3 rounded-r-xl text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
+                <div className="border-l-2 border-lime-400 bg-slate-50/70 dark:bg-white/[0.02] pl-5 py-3.5 rounded-r-xl text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
                   <strong className="text-slate-900 dark:text-white block font-bold mb-1">
                     Decoupled Read &amp; Write Architecture
                   </strong>
@@ -337,8 +364,8 @@ export default function SystemDesignArticleView({
                 />
 
                 {/* 4 Core Component Cards */}
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-5">
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Server size={14} className="text-lime-500" />
                       <span>1. Global CDN &amp; Load Balancer</span>
@@ -348,7 +375,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-5">
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Cpu size={14} className="text-cyan-400" />
                       <span>2. Key Generation Service (KGS)</span>
@@ -358,7 +385,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-5">
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Zap size={14} className="text-emerald-500" />
                       <span>3. In-Memory Redis Cache Cluster</span>
@@ -368,7 +395,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-5">
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       <Database size={14} className="text-amber-500" />
                       <span>4. Sharded Persistent Database</span>
@@ -438,7 +465,7 @@ export default function SystemDesignArticleView({
                     </button>
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-4 sm:grid-cols-2">
                     {activePipeline === "write" ? (
                       <>
                         <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
@@ -591,7 +618,7 @@ export default function SystemDesignArticleView({
                   <h3 className="font-jakarta text-sm font-bold text-slate-900 dark:text-white">
                     Three Ways to Generate Short Codes (And Why KGS Wins)
                   </h3>
-                  <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-4 sm:grid-cols-3">
                     <div className="rounded-xl border border-red-500/20 bg-red-500/[0.04] p-4 text-xs">
                       <h4 className="font-bold text-slate-900 dark:text-white mb-1">
                         1. MD5 Hash Truncation
@@ -662,7 +689,7 @@ export default function SystemDesignArticleView({
 
                 {/* Database Architecture Breakdown */}
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                       <Database size={15} className="text-lime-500" />
                       <span>What We Store in Every Record (~500 Bytes)</span>
@@ -676,7 +703,7 @@ export default function SystemDesignArticleView({
                     </ul>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                       <Layers size={15} className="text-cyan-500" />
                       <span>NoSQL vs. Relational (SQL) Trade-Off</span>
@@ -722,8 +749,8 @@ export default function SystemDesignArticleView({
                 />
 
                 {/* 3 Core Decisions */}
-                <div className="space-y-3">
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                <div className="space-y-4">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
                       <span className="flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-lime-500" />
@@ -738,7 +765,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
                       <span className="flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-cyan-400" />
@@ -753,7 +780,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
                       <span className="flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -793,8 +820,8 @@ export default function SystemDesignArticleView({
                 </div>
 
                 {/* 4 Edge Cases Cards */}
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 space-y-2 text-xs">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-5 space-y-2 text-xs">
                     <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                       <AlertTriangle size={14} className="text-amber-500" />
                       <span>1. The Cache Stampede (Dog-Piling)</span>
@@ -807,7 +834,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 space-y-2 text-xs">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-5 space-y-2 text-xs">
                     <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                       <AlertTriangle size={14} className="text-amber-500" />
                       <span>2. Single Point of Failure on KGS</span>
@@ -820,7 +847,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 space-y-2 text-xs">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-5 space-y-2 text-xs">
                     <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                       <AlertTriangle size={14} className="text-amber-500" />
                       <span>3. Phishing Scams &amp; Malware Links</span>
@@ -833,7 +860,7 @@ export default function SystemDesignArticleView({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 space-y-2 text-xs">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-5 space-y-2 text-xs">
                     <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                       <AlertTriangle size={14} className="text-amber-500" />
                       <span>4. Database Bloat from Expired Links</span>
@@ -852,7 +879,7 @@ export default function SystemDesignArticleView({
                   <h3 className="font-jakarta text-sm font-bold text-slate-900 dark:text-white">
                     Summary Checklist to Remember
                   </h3>
-                  <div className="grid gap-2 sm:grid-cols-2 text-xs">
+                  <div className="grid gap-2.5 sm:grid-cols-2 text-xs">
                     <div className="flex items-start gap-2">
                       <CheckCircle2 size={14} className="text-lime-500 shrink-0 mt-0.5" />
                       <span className="text-slate-700 dark:text-zinc-300">
@@ -922,13 +949,18 @@ export default function SystemDesignArticleView({
               </div>
             </main>
 
-            {/* STICKY RIGHT SIDEBAR: "ON THIS PAGE" (Image 3 Style - Stays fixed on scroll) */}
-            <aside className="hidden lg:block lg:col-span-4 lg:sticky lg:top-28">
-              <div className="pl-6 border-l border-slate-200 dark:border-white/[0.08]">
-                <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500 mb-4">
-                  ON THIS PAGE
-                </p>
-                <nav className="space-y-3 text-xs">
+            {/* STICKY RIGHT SIDEBAR: "ON THIS PAGE" (ALWAYS FIXED AND VISIBLE ON SCROLL) */}
+            <aside className="hidden lg:block lg:col-span-3 sticky top-28 self-start h-fit max-h-[calc(100vh-8.5rem)] overflow-y-auto z-20">
+              <div className="pl-5 border-l border-slate-200 dark:border-white/[0.08]">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">
+                    ON THIS PAGE
+                  </p>
+                  <span className="text-[10px] font-mono text-lime-500/80 uppercase font-semibold">
+                    8 sections
+                  </span>
+                </div>
+                <nav className="space-y-1.5 text-xs">
                   {SECTIONS.map((sec) => {
                     const isActive = activeTocId === sec.id;
                     return (
@@ -937,13 +969,16 @@ export default function SystemDesignArticleView({
                         type="button"
                         onClick={() => scrollToSection(sec.id)}
                         className={clsx(
-                          "block w-full text-left transition-colors duration-150 leading-relaxed font-normal",
+                          "group flex items-center justify-between w-full text-left px-3 py-2 rounded-xl border transition-all duration-150 leading-relaxed",
                           isActive
-                            ? "text-slate-950 dark:text-white font-bold"
-                            : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300"
+                            ? "border-lime-500/50 bg-lime-500/10 text-lime-400 font-bold shadow-sm shadow-lime-500/10"
+                            : "border-transparent text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 hover:bg-slate-100/60 dark:hover:bg-white/[0.04]"
                         )}
                       >
-                        {sec.label}
+                        <span className="truncate">{sec.label}</span>
+                        {isActive && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-lime-400 shrink-0 ml-2" />
+                        )}
                       </button>
                     );
                   })}
@@ -952,6 +987,19 @@ export default function SystemDesignArticleView({
             </aside>
           </div>
         </div>
+
+        {/* Floating Quick Back-To-Top Button (Image 3 Style) */}
+        {showScrollTop && (
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="fixed bottom-8 right-8 z-40 p-3 rounded-full bg-slate-900/90 dark:bg-zinc-900/90 text-white shadow-2xl hover:bg-lime-400 hover:text-slate-950 border border-slate-700/60 dark:border-white/10 hover:border-lime-400 transition-all duration-200 hover:scale-110"
+            title="Scroll to top"
+            aria-label="Scroll to top"
+          >
+            <ChevronUp size={20} />
+          </button>
+        )}
       </article>
     </>
   );
