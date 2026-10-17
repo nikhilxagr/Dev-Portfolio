@@ -1,9 +1,11 @@
-const CACHE_NAME = "nikhil-portfolio-v2";
+const CACHE_NAME = "nikhil-portfolio-v3";
 const STATIC_ASSETS = [
   "/",
   "/favicon.svg",
   "/favicon.ico",
   "/favicon-48x48.png",
+  "/favicon-32x32.png",
+  "/icon-192.png",
   "/images/profile/nikhil-upload-hero.webp",
 ];
 

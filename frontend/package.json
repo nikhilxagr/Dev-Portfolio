@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "favicon:generate": "node scripts/generate-favicons.js",
     "seo:assets": "node scripts/generate-seo-assets.js",
-    "prebuild": "npm run seo:assets",
+    "prebuild": "npm run favicon:generate && npm run seo:assets",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
