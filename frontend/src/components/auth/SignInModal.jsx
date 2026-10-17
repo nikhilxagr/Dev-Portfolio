@@ -49,14 +49,14 @@ const SignInModal = () => {
   } = signInModalOptions;
 
   const handleGoogleSignIn = () => {
-    // Store return URL in sessionStorage so callback page knows where to navigate
+    const returnUrl =
+      typeof window !== "undefined"
+        ? window.location.pathname + window.location.search
+        : "/";
     if (typeof window !== "undefined") {
-      sessionStorage.setItem(
-        "auth_return_url",
-        window.location.pathname + window.location.search,
-      );
+      sessionStorage.setItem("auth_return_url", returnUrl);
     }
-    window.location.href = getGoogleAuthUrl();
+    window.location.href = getGoogleAuthUrl(returnUrl);
   };
 
   const handleSubmit = async (e) => {

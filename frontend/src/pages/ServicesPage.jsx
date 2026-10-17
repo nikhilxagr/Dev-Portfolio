@@ -209,10 +209,11 @@ const ServicesPage = () => {
     setPaymentInfo("");
 
     if (!isLoggedIn) {
+      const returnUrl = window.location.pathname + window.location.search;
       if (typeof window !== "undefined") {
-        sessionStorage.setItem("auth_return_url", window.location.pathname + window.location.search);
+        sessionStorage.setItem("auth_return_url", returnUrl);
       }
-      window.location.href = getGoogleAuthUrl();
+      window.location.href = getGoogleAuthUrl(returnUrl);
       return;
     }
 

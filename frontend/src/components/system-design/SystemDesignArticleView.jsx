@@ -9,97 +9,51 @@ import {
   Database,
   ChevronRight,
   ChevronLeft,
-  Copy,
-  Check,
   Zap,
   ListChecks,
+  Server,
+  Layers,
+  Cpu,
+  Compass,
 } from "lucide-react";
 import SeoHead from "@/components/seo/SeoHead";
 import { createBreadcrumbSchema } from "@/utils/seo";
 
-// # 1. CLEAN ARCHITECTURE FIGURE DISPLAY (SIMPLE, INLINE, NO EXPAND OVERLAYS)
-const FigureCard = ({ figure }) => {
-  if (!figure) return null;
+// Clean inline architecture diagram display
+const DiagramCard = ({ src, alt, caption }) => {
+  if (!src) return null;
   return (
-    <figure className="overflow-hidden rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/80 shadow-sm">
-      <div className="bg-zinc-950 p-4 sm:p-6 flex items-center justify-center min-h-[260px]">
+    <figure className="overflow-hidden rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/80 shadow-md">
+      <div className="bg-zinc-950 p-4 sm:p-8 flex items-center justify-center min-h-[260px]">
         <img
-          src={figure.src}
-          alt={figure.alt || figure.title || "Architecture diagram"}
-          className="max-h-[480px] w-auto max-w-full rounded-lg object-contain"
+          src={src}
+          alt={alt || "Architecture diagram"}
+          className="max-h-[500px] w-auto max-w-full rounded-xl object-contain shadow-lg"
           loading="lazy"
         />
       </div>
-      {figure.caption && (
-        <figcaption className="p-3.5 sm:p-4 border-t border-zinc-100 dark:border-white/[0.06] text-xs text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed">
-          {figure.caption}
+      {caption && (
+        <figcaption className="p-3.5 sm:p-4 border-t border-slate-100 dark:border-white/[0.06] text-xs text-slate-600 dark:text-zinc-400 font-medium leading-relaxed bg-slate-50/50 dark:bg-zinc-950/40">
+          <span className="font-bold text-slate-900 dark:text-white mr-1.5">Figure:</span>
+          {caption}
         </figcaption>
       )}
     </figure>
   );
 };
 
-// # 2. CODE BLOCK WITH COPY BUTTON
-const CodeSnippet = ({ code, language = "json", statusBadge = null }) => {
-  const [copied, setCopied] = useState(false);
+// 8 Clean, Focused Documentation Sections
+const SECTIONS = [
+  { id: "overview", number: "01", shortLabel: "Overview", label: "01. What is a URL Shortener?" },
+  { id: "capacity", number: "02", shortLabel: "Capacity", label: "02. Traffic & Storage Sizing" },
+  { id: "hld", number: "03", shortLabel: "Architecture", label: "03. High-Level Architecture (HLD)" },
+  { id: "request-flow", number: "04", shortLabel: "Lifecycles", label: "04. Request Lifecycles" },
+  { id: "algorithms", number: "05", shortLabel: "Base62 Math", label: "05. Base62 Math (3.5T URLs)" },
+  { id: "data-model", number: "06", shortLabel: "Storage", label: "06. Database & Storage Strategy" },
+  { id: "scalability", number: "07", shortLabel: "Redis Scaling", label: "07. Redis Caching & Scaling" },
+  { id: "edge-cases", number: "08", shortLabel: "Edge Cases", label: "08. Edge Cases & Takeaways" },
+];
 
-  const handleCopy = () => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  return (
-    <div className="relative overflow-hidden rounded-xl border border-zinc-200 dark:border-white/[0.08] bg-zinc-950 text-zinc-100 font-mono text-xs shadow-md">
-      <div className="flex items-center justify-between border-b border-white/[0.08] bg-zinc-900/90 px-4 py-2">
-        <div className="flex items-center gap-2">
-          <div className="flex gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-500/80 inline-block" />
-            <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80 inline-block" />
-            <span className="h-2.5 w-2.5 rounded-full bg-green-500/80 inline-block" />
-          </div>
-          <span className="text-[10px] uppercase font-bold text-zinc-400 ml-2 tracking-wider">
-            {language}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {statusBadge && (
-            <span className="rounded-md bg-lime-500/20 px-2 py-0.5 text-[10px] font-bold text-lime-300 font-mono">
-              {statusBadge}
-            </span>
-          )}
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="flex items-center gap-1 rounded-md bg-white/5 hover:bg-white/10 px-2.5 py-1 text-[11px] text-zinc-300 transition"
-            title="Copy code"
-          >
-            {copied ? (
-              <>
-                <Check size={12} className="text-lime-400" />
-                <span className="text-lime-400">Copied</span>
-              </>
-            ) : (
-              <>
-                <Copy size={12} />
-                <span>Copy</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
-      <pre className="p-4 overflow-x-auto text-xs leading-relaxed text-zinc-200 selection:bg-lime-500/30">
-        <code>{code}</code>
-      </pre>
-    </div>
-  );
-};
-
-// # 3. MAIN SYSTEM DESIGN ARTICLE VIEW
 export default function SystemDesignArticleView({
   system,
   article,
@@ -109,19 +63,19 @@ export default function SystemDesignArticleView({
   backLabel = "Back to Engineering Docs",
   baseRoute = "/blog",
 }) {
-  const [activePipeline, setActivePipeline] = useState("write");
   const [activeTocId, setActiveTocId] = useState("overview");
+  const [activePipeline, setActivePipeline] = useState("write");
 
   // Track active section for table of contents
   useEffect(() => {
     const handleScroll = () => {
-      const sections = article.tableOfContents.map((t) => document.getElementById(t.id));
-      const scrollPosition = window.scrollY + 200;
+      const sectionElements = SECTIONS.map((s) => document.getElementById(s.id));
+      const scrollPosition = window.scrollY + 220;
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const sec = sections[i];
-        if (sec && sec.offsetTop <= scrollPosition) {
-          setActiveTocId(article.tableOfContents[i].id);
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        const el = sectionElements[i];
+        if (el && el.offsetTop <= scrollPosition) {
+          setActiveTocId(SECTIONS[i].id);
           break;
         }
       }
@@ -129,30 +83,37 @@ export default function SystemDesignArticleView({
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [article.tableOfContents]);
+  }, []);
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) {
-      const topOffset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+      const topOffset = el.getBoundingClientRect().top + window.pageYOffset - 110;
       window.scrollTo({ top: topOffset, behavior: "smooth" });
     }
+  };
+
+  const getNextSectionId = (currentId) => {
+    const currentIndex = SECTIONS.findIndex((s) => s.id === currentId);
+    if (currentIndex >= 0 && currentIndex < SECTIONS.length - 1) {
+      return SECTIONS[currentIndex + 1];
+    }
+    return null;
   };
 
   return (
     <>
       <SeoHead
         title={`${article.title} | System Design Notes & Architecture Guide`}
-        description={`Comprehensive architectural breakdown of ${article.title}: high-level design, capacity calculations, database schema, request flow, and low-level Base62 algorithms.`}
+        description="A clean, clear engineering guide to URL Shortener system design (TinyURL / Bitly): High-Level Design, Base62 math, request flows, Redis caching, and real-world trade-offs."
         pathname={`${baseRoute}/${system.id}`}
         keywords={[
-          article.title,
-          "system design notes",
-          "URL shortener system design",
-          "TinyURL architecture",
-          "Base62 encoding",
-          "distributed key generation service",
-          "Nikhil Agrahari system design",
+          "URL Shortener System Design",
+          "TinyURL Architecture",
+          "Base62 Math",
+          "Distributed Key Generation Service",
+          "Redis Caching Strategy",
+          "Nikhil Agrahari System Design",
         ]}
         jsonLd={createBreadcrumbSchema([
           { name: "Home", url: "/" },
@@ -161,19 +122,19 @@ export default function SystemDesignArticleView({
         ])}
       />
 
-      <article className="relative overflow-hidden pt-8 pb-20 sm:pt-12 sm:pb-28">
-        {/* Subtle Ambient Background Gradients */}
+      <article className="relative overflow-hidden pt-6 pb-24 sm:pt-10 sm:pb-32 font-sans">
+        {/* Subtle Ambient Glows */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/4 top-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime-400/5 blur-[120px]" />
           <div className="absolute right-1/4 top-1/2 h-80 w-80 translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/5 blur-[100px]" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Top Bar: Back to All Systems + Meta Badges */}
+          {/* Top Bar Navigation */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
             <Link
               to={backUrl}
-              className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/70 px-4 py-2 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:border-lime-400 hover:text-zinc-950 dark:hover:text-white transition shadow-xs"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/70 px-4 py-2 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:border-lime-500 hover:text-slate-950 dark:hover:text-white transition shadow-xs"
             >
               <ArrowLeft size={14} />
               <span>{backLabel}</span>
@@ -182,64 +143,96 @@ export default function SystemDesignArticleView({
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-lime-500/30 bg-lime-500/10 px-3 py-1 font-mono text-[10px] font-bold text-lime-600 dark:text-lime-300">
                 <Clock size={11} />
-                {article.readingTime}
+                <span>10 min read</span>
               </span>
-              <span className="rounded-full border border-zinc-200 dark:border-white/[0.08] bg-zinc-100 dark:bg-zinc-800/80 px-3 py-1 font-mono text-[10px] font-bold text-zinc-600 dark:text-zinc-300">
-                {article.level}
+              <span className="rounded-full border border-slate-200 dark:border-white/[0.08] bg-slate-100 dark:bg-zinc-800/80 px-3 py-1 font-mono text-[10px] font-bold text-slate-600 dark:text-zinc-300">
+                System Design • HLD &amp; Architecture
               </span>
             </div>
           </div>
 
-          {/* # ARTICLE HERO SECTION (JOURNEY PAGE TYPOGRAPHY) */}
-          <div className="mb-10 max-w-4xl">
+          {/* Article Header (Clean, High-Readability Typography) */}
+          <header className="mb-10 max-w-4xl">
             <div className="flex items-center gap-2 mb-3">
-              <span className="font-mono text-xs font-black uppercase tracking-[0.2em] text-lime-500">
-                // SYSTEM ARCHITECTURE STUDY NOTES
+              <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-lime-600 dark:text-lime-400">
+                // SYSTEM ARCHITECTURE STUDY GUIDE
               </span>
-              <span className="text-zinc-400">•</span>
-              <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                Updated {article.lastUpdated}
+              <span className="text-slate-300 dark:text-zinc-600">•</span>
+              <span className="text-xs font-medium text-slate-500 dark:text-zinc-400">
+                Production-Ready Blueprint
               </span>
             </div>
 
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
-              {article.title}
+            <h1 className="font-jakarta text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-[1.15]">
+              URL Shortener System Design (TinyURL / Bitly)
             </h1>
 
-            <p className="mt-4 text-base sm:text-lg leading-relaxed text-zinc-600 dark:text-zinc-300 font-normal">
-              {article.overview.lead}
+            {/* Simple 1 to 2 line definition */}
+            <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-700 dark:text-zinc-300 font-normal">
+              A URL shortener converts long, cumbersome web addresses into compact 7-character links and redirects visitors in under 2 milliseconds. At scale, it acts as a high-throughput, distributed key-value redirection engine serving billions of requests with zero collisions.
             </p>
 
-            {/* Author & Context Strip */}
-            <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white/70 dark:bg-zinc-900/50 p-4 text-xs text-zinc-600 dark:text-zinc-300 shadow-xs">
+            {/* Quick Author & Context Strip */}
+            <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/50 p-4 text-xs text-slate-600 dark:text-zinc-300 shadow-xs">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-lime-500 animate-pulse" />
-                <span className="font-bold text-zinc-900 dark:text-white">Curated by:</span>
-                <span>{article.author}</span>
+                <span className="font-bold text-slate-900 dark:text-white">Author:</span>
+                <span>Nikhil Agrahari</span>
               </div>
-              <span className="text-zinc-400 hidden sm:inline">•</span>
-              <span className="text-zinc-500 dark:text-zinc-400">
-                {article.authorRole}
-              </span>
-              <span className="text-zinc-400 hidden sm:inline">•</span>
-              <span className="text-zinc-500 dark:text-zinc-400">
-                A clean, practical engineering guide for production systems &amp; interviews
-              </span>
+              <span className="text-slate-300 dark:text-zinc-600 hidden sm:inline">•</span>
+              <span className="text-slate-500 dark:text-zinc-400">Full-Stack &amp; Distributed Systems</span>
+              <span className="text-slate-300 dark:text-zinc-600 hidden sm:inline">•</span>
+              <span className="text-slate-500 dark:text-zinc-400">Core Concepts &amp; Architecture Notes</span>
+            </div>
+          </header>
+
+          {/* STICKY HORIZONTAL SECTION BAR (Visible on all screens at all times) */}
+          <div className="sticky top-16 z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 mb-8 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-y border-slate-200 dark:border-white/[0.08] shadow-xs">
+            <div className="flex items-center justify-between gap-3 max-w-7xl mx-auto">
+              <div className="flex items-center gap-2 shrink-0 text-slate-400 dark:text-zinc-500 font-mono text-[11px] font-bold uppercase tracking-wider hidden sm:flex">
+                <Compass size={14} className="text-lime-500" />
+                <span>Jump To:</span>
+              </div>
+
+              <div
+                className="flex items-center gap-2 overflow-x-auto w-full py-0.5"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {SECTIONS.map((sec) => {
+                  const isActive = activeTocId === sec.id;
+                  return (
+                    <button
+                      key={sec.id}
+                      type="button"
+                      onClick={() => scrollToSection(sec.id)}
+                      className={clsx(
+                        "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all duration-200 border",
+                        isActive
+                          ? "border-lime-500 bg-lime-400 text-slate-950 shadow-xs font-black"
+                          : "border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-white/[0.04] text-slate-600 dark:text-zinc-300 hover:border-lime-400/40 hover:text-slate-950 dark:hover:text-white"
+                      )}
+                    >
+                      <span className="font-mono text-[10px] opacity-70 mr-1.5">{sec.number}</span>
+                      <span>{sec.shortLabel}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          {/* # TWO-COLUMN LAYOUT: STICKY TOC ON LEFT + FULL ARTICLE ON RIGHT */}
+          {/* TWO-COLUMN LAYOUT: STICKY TOC ON LEFT (ALWAYS VISIBLE ON DESKTOP) + CLEAN DOCS ON RIGHT */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* # STICKY TABLE OF CONTENTS (COL 1-3) */}
-            <aside className="lg:col-span-3 lg:sticky lg:top-24 space-y-4">
-              <div className="rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/60 p-4 shadow-sm backdrop-blur-md">
-                <p className="font-display text-xs font-black uppercase tracking-wider text-zinc-900 dark:text-white mb-3 flex items-center gap-2">
+            {/* STICKY SIDEBAR (Appears all the time as you scroll on desktop) */}
+            <aside className="hidden lg:block lg:col-span-3 lg:sticky lg:top-28 space-y-4">
+              <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/60 p-4 shadow-sm backdrop-blur-md">
+                <p className="font-jakarta text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                   <ListChecks size={14} className="text-lime-500" />
-                  <span>Table of Contents</span>
+                  <span>Document Sections</span>
                 </p>
 
                 <nav className="space-y-1">
-                  {article.tableOfContents.map((toc) => {
+                  {SECTIONS.map((toc) => {
                     const isActive = activeTocId === toc.id;
                     return (
                       <button
@@ -247,10 +240,10 @@ export default function SystemDesignArticleView({
                         type="button"
                         onClick={() => scrollToSection(toc.id)}
                         className={clsx(
-                          "w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 block truncate",
+                          "w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 block truncate",
                           isActive
-                            ? "bg-lime-500/15 text-lime-700 dark:text-lime-300 font-bold border-l-2 border-lime-500 pl-2"
-                            : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+                            ? "bg-lime-500/15 text-lime-700 dark:text-lime-300 font-bold border-l-2 border-lime-500 pl-2.5"
+                            : "text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-zinc-100 hover:bg-slate-100/70 dark:hover:bg-zinc-800/50"
                         )}
                       >
                         {toc.label}
@@ -260,266 +253,264 @@ export default function SystemDesignArticleView({
                 </nav>
               </div>
 
-              {/* Quick Jump Stats */}
-              {system.stats && (
-                <div className="hidden lg:block rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/60 p-4 shadow-sm">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-2">
-                    Key SLA Metrics
-                  </p>
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between border-b border-zinc-100 dark:border-white/[0.05] pb-1.5">
-                      <span className="text-zinc-500">Read QPS:</span>
-                      <span className="font-mono font-bold text-zinc-900 dark:text-white">
-                        {system.stats.traffic}
-                      </span>
-                    </div>
-                    <div className="flex justify-between border-b border-zinc-100 dark:border-white/[0.05] pb-1.5">
-                      <span className="text-zinc-500">Cache Latency:</span>
-                      <span className="font-mono font-bold text-lime-600 dark:text-lime-400">
-                        {system.stats.latency}
-                      </span>
-                    </div>
-                    <div className="flex justify-between border-b border-zinc-100 dark:border-white/[0.05] pb-1.5">
-                      <span className="text-zinc-500">Storage (5Y):</span>
-                      <span className="font-mono font-bold text-zinc-900 dark:text-white">
-                        {system.stats.storage}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-zinc-500">Redis Cache:</span>
-                      <span className="font-mono font-bold text-zinc-900 dark:text-white">
-                        {system.stats.cache}
-                      </span>
-                    </div>
+              {/* Quick Metrics Capsule */}
+              <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/60 p-4 shadow-sm">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 mb-2">
+                  System Scale Targets
+                </p>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between border-b border-slate-100 dark:border-white/[0.05] pb-1.5">
+                    <span className="text-slate-500">Read QPS:</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white">~60,000/s Peak</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-100 dark:border-white/[0.05] pb-1.5">
+                    <span className="text-slate-500">Redirect Latency:</span>
+                    <span className="font-mono font-bold text-lime-600 dark:text-lime-400">&lt; 2ms (RAM)</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-100 dark:border-white/[0.05] pb-1.5">
+                    <span className="text-slate-500">5-Year Storage:</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white">~9.15 TB</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Redis Cache:</span>
+                    <span className="font-mono font-bold text-slate-900 dark:text-white">100 GB (Top 20%)</span>
                   </div>
                 </div>
-              )}
+              </div>
             </aside>
 
-            {/* # ARTICLE MAIN CONTENT (COL 4-12) */}
+            {/* MAIN ARTICLE CONTENT */}
             <main className="lg:col-span-9 space-y-16">
-              {/* # SECTION 1: THE CORE PROBLEM */}
-              <section id="overview" className="scroll-mt-24 space-y-4">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
+              {/* # SECTION 01: THE CORE PROBLEM */}
+              <section id="overview" className="scroll-mt-32 space-y-4">
+                <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
                     // SECTION 01
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    The Core Problem: Why is this challenging?
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
+                    What is a URL Shortener? (The Core Problem)
                   </h2>
+                  {/* 1 to 2 line definition */}
+                  <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    A URL shortener accepts any long destination URL, generates an ultra-compact 7-character alias, and redirects visitors in under 2 milliseconds while logging analytics in the background.
+                  </p>
                 </div>
-
-                <p className="text-sm sm:text-base leading-relaxed text-zinc-600 dark:text-zinc-300">
-                  On the surface, URL shortening sounds like a trivial 10-line coding problem. You take a long URL string, generate an alias, save it in a dictionary, and look it up on request. But in real-world systems, millions of users click links simultaneously, links are shared on global networks, and downtime immediately breaks marketing campaigns, SMS notifications, and social posts.
-                </p>
 
                 <div className="grid gap-4 sm:grid-cols-3 mt-4">
-                  {article.overview.keyPoints.map((pt, i) => (
-                    <div
-                      key={i}
-                      className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm"
-                    >
-                      <h3 className="font-bold text-sm text-zinc-900 dark:text-white mb-1.5">
-                        {pt.title}
-                      </h3>
-                      <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                        {pt.desc}
-                      </p>
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2 text-lime-600 dark:text-lime-400 font-bold text-sm">
+                      <Zap size={16} />
+                      <span>100:1 Read-Heavy</span>
                     </div>
-                  ))}
+                    <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      For every 1 link created by a user, over 100 people click on it. The system is overwhelmingly read-heavy, making in-memory caching the #1 performance priority.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2 text-cyan-600 dark:text-cyan-400 font-bold text-sm">
+                      <Clock size={16} />
+                      <span>Sub-2ms Redirection</span>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      Users expect immediate redirects. If redirection takes 200ms, the user experience suffers and marketing analytics time out.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+                      <CheckCircle2 size={16} />
+                      <span>Zero Collisions</span>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      Two different users shortening different URLs must never receive the same alias. Uniqueness is guaranteed at generation time.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Next Section Button */}
+                <div className="pt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("capacity")}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
+                  >
+                    <span>Next: 02. Traffic &amp; Storage Sizing</span>
+                    <ChevronRight size={14} />
+                  </button>
                 </div>
               </section>
 
-              {/* # SECTION 2: WHAT THE SYSTEM NEEDS TO DO (REQUIREMENTS) */}
-              <section id="requirements" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
+              {/* # SECTION 02: CAPACITY ESTIMATION */}
+              <section id="capacity" className="scroll-mt-32 space-y-6">
+                <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
                     // SECTION 02
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    What the System Needs to Do (Requirements)
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
+                    Sizing Up the System: Traffic &amp; Storage Sizing
                   </h2>
+                  {/* 1 to 2 line definition */}
+                  <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    Back-of-the-envelope calculations estimate that 1 Billion daily redirects and 10 Million new URLs require ~100 GB RAM for caching and ~9.15 TB disk storage over 5 years.
+                  </p>
                 </div>
-
-                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  {article.requirements.intro}
-                </p>
-
-                <div className="grid gap-6 md:grid-cols-2">
-                  {/* Functional Requirements */}
-                  <div className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
-                    <h3 className="font-display text-base font-black text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
-                      <CheckCircle2 size={16} className="text-lime-500" />
-                      <span>Functional Requirements</span>
-                    </h3>
-                    <div className="space-y-3">
-                      {article.requirements.functional.map((fr, idx) => (
-                        <div key={idx} className="border-b border-zinc-100 dark:border-white/[0.04] pb-2.5 last:border-0 last:pb-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs font-bold text-zinc-900 dark:text-white">
-                              {fr.title}
-                            </span>
-                            <span
-                              className={clsx(
-                                "rounded-md px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider",
-                                fr.mustHave
-                                  ? "bg-lime-500/15 text-lime-700 dark:text-lime-300"
-                                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
-                              )}
-                            >
-                              {fr.mustHave ? "Core" : "Optional"}
-                            </span>
-                          </div>
-                          <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400 leading-normal">
-                            {fr.desc}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Non-Functional Requirements */}
-                  <div className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm">
-                    <h3 className="font-display text-base font-black text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
-                      <Zap size={16} className="text-cyan-400" />
-                      <span>Non-Functional Requirements</span>
-                    </h3>
-                    <div className="space-y-3">
-                      {article.requirements.nonFunctional.map((nfr, idx) => (
-                        <div key={idx} className="border-b border-zinc-100 dark:border-white/[0.04] pb-2.5 last:border-0 last:pb-0">
-                          <span className="text-xs font-bold text-zinc-900 dark:text-white block">
-                            {nfr.title}
-                          </span>
-                          <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400 leading-normal">
-                            {nfr.desc}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* # SECTION 3: SIZING UP THE SYSTEM (CAPACITY ESTIMATION) */}
-              <section id="capacity" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 03
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    Sizing Up the System: Traffic, Storage &amp; Cache
-                  </h2>
-                </div>
-
-                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  {article.capacity.intro}
-                </p>
 
                 <div className="grid gap-3 sm:grid-cols-3">
-                  {article.capacity.traffic.map((t, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm"
-                    >
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                        {t.metric}
-                      </p>
-                      <p className="font-mono text-lg font-black text-lime-600 dark:text-lime-400 mt-1">
-                        {t.value}
-                      </p>
-                      <p className="text-xs text-zinc-500 mt-1 font-medium">{t.detail}</p>
-                    </div>
-                  ))}
-                </div>
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+                      Link Creation (Writes)
+                    </p>
+                    <p className="font-mono text-lg font-black text-slate-900 dark:text-white mt-1">
+                      10M URLs / Day
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1 font-medium">~116 writes/sec (Peak: ~580/s)</p>
+                  </div>
 
-                <div className="space-y-4">
-                  {article.capacity.calculations.map((calc, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-zinc-50/70 dark:bg-zinc-900/50 p-4 sm:p-5"
-                    >
-                      <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
-                        {calc.title}
-                      </h3>
-                      <div className="mt-2 rounded-xl bg-zinc-950 px-3.5 py-2 font-mono text-xs text-lime-300">
-                        {calc.formula}
-                      </div>
-                      {calc.breakdown && (
-                        <pre className="mt-2 text-xs font-mono text-zinc-600 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap">
-                          {calc.breakdown}
-                        </pre>
-                      )}
-                      <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-                        💡 <strong>Key Takeaway:</strong> {calc.note}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </section>
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+                      Redirection Traffic (Reads)
+                    </p>
+                    <p className="font-mono text-lg font-black text-lime-600 dark:text-lime-400 mt-1">
+                      1B Clicks / Day
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1 font-medium">~11,574 reads/sec (Peak: ~60k/s)</p>
+                  </div>
 
-              {/* # SECTION 4: THE BIG PICTURE: HIGH-LEVEL ARCHITECTURE (HLD) */}
-              <section id="hld" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 04
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    The Big Picture: High-Level Architecture (HLD)
-                  </h2>
-                </div>
-
-                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                  Here is the full architectural blueprint. A visitor clicking a link touches the fastest in-memory caching layer, while creators generating new links interact with an isolated token allocation service.
-                </p>
-
-                {/* Figure 1 Card */}
-                <FigureCard figure={article.figures[0]} />
-
-                {/* HLD Core Components Breakdown */}
-                <div className="space-y-3">
-                  <h3 className="font-display text-base font-black text-zinc-900 dark:text-white">
-                    Breaking Down the Components
-                  </h3>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {article.hldComponents.map((comp, idx) => (
-                      <div
-                        key={idx}
-                        className="rounded-xl border border-zinc-200/80 dark:border-white/[0.06] bg-zinc-50/70 dark:bg-zinc-900/50 p-3.5"
-                      >
-                        <h4 className="text-xs font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
-                          <span className="h-1.5 w-1.5 rounded-full bg-lime-500" />
-                          <span>{comp.name}</span>
-                        </h4>
-                        <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                          {comp.role}
-                        </p>
-                      </div>
-                    ))}
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500">
+                      5-Year Storage &amp; RAM
+                    </p>
+                    <p className="font-mono text-lg font-black text-cyan-600 dark:text-cyan-400 mt-1">
+                      9.15 TB &bull; 100 GB RAM
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1 font-medium">Top 20% hot links cached in memory</p>
                   </div>
                 </div>
-              </section>
 
-              {/* # SECTION 5: TWO LIFECYCLES: CREATION VS REDIRECTION */}
-              <section id="request-flow" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 05
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    Two Lifecycles: Creating a Link vs. Redirecting
-                  </h2>
+                <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 sm:p-5 text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
+                  <strong className="text-slate-900 dark:text-white block font-bold mb-1">
+                    💡 The 80/20 Pareto Principle in System Design:
+                  </strong>
+                  In production, 20% of the links generate 80% of all redirect traffic (viral posts, trending news, brand campaigns). By caching only this hot 20% in a 100 GB Redis cluster, over 80% to 90% of requests are resolved directly from fast RAM without ever touching the persistent disk database!
                 </div>
 
-                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                  The golden rule in high-scale systems is <strong>separation of concerns</strong>. We never run URL creation and redirection on the same servers, because a sudden viral spike in clicks must never slow down link creation.
-                </p>
+                {/* Next Section Button */}
+                <div className="pt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("hld")}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
+                  >
+                    <span>Next: 03. High-Level Architecture (HLD)</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </section>
 
-                {/* Figure 2 Card */}
-                <FigureCard figure={article.figures[1]} />
+              {/* # SECTION 03: HIGH-LEVEL ARCHITECTURE */}
+              <section id="hld" className="scroll-mt-32 space-y-6">
+                <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+                    // SECTION 03
+                  </span>
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
+                    High-Level Architecture (The Big Picture)
+                  </h2>
+                  {/* 1 to 2 line definition */}
+                  <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    The architecture strictly decouples link generation from link redirection so that viral traffic spikes on existing links never block or slow down new link creation.
+                  </p>
+                </div>
 
-                {/* Pipeline Tabs (Write vs Read) */}
+                {/* Diagram 1: High Level Architecture */}
+                <DiagramCard
+                  src="/images/system-design/url-shortener-hld.webp"
+                  alt="High-Level Architecture Diagram for URL Shortener"
+                  caption="Global architecture: Clients access DNS/CDN edges, traffic is balanced across stateless app nodes, tokens are claimed from Key Generation Service (KGS), and redirects resolve in sub-2ms via Redis."
+                />
+
+                {/* 4 Core Component Cards */}
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Server size={14} className="text-lime-500" />
+                      <span>1. Global CDN &amp; Load Balancer</span>
+                    </h4>
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      Terminates SSL/TLS connections at edge locations close to users and routes HTTP requests across stateless web application nodes.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Cpu size={14} className="text-cyan-400" />
+                      <span>2. Key Generation Service (KGS)</span>
+                    </h4>
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      A standalone service that pre-computes unique 7-character tokens offline and keeps them in memory. Assigns tokens in microseconds with zero database lock contention.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Zap size={14} className="text-emerald-500" />
+                      <span>3. In-Memory Redis Cache Cluster</span>
+                    </h4>
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      Stores the most active short-to-long URL mappings in RAM with Least Recently Used (LRU) eviction, answering over 90% of requests in ~1.2ms.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <Database size={14} className="text-amber-500" />
+                      <span>4. Sharded Persistent Database</span>
+                    </h4>
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      Distributed Key-Value or sharded relational database maintaining the source of truth for all URL records, creation timestamps, and ownership metadata.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Next Section Button */}
+                <div className="pt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("request-flow")}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
+                  >
+                    <span>Next: 04. Request Lifecycles</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </section>
+
+              {/* # SECTION 04: REQUEST LIFECYCLES */}
+              <section id="request-flow" className="scroll-mt-32 space-y-6">
+                <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+                    // SECTION 04
+                  </span>
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
+                    Request Lifecycles: Creating a Link vs. Redirecting
+                  </h2>
+                  {/* 1 to 2 line definition */}
+                  <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    Writing and reading follow two separate lifecycles: link creation claims a pre-allocated token from memory, while redirection resolves in under 2ms via Redis.
+                  </p>
+                </div>
+
+                {/* Diagram 2: Request Flow */}
+                <DiagramCard
+                  src="/images/system-design/url-shortener-request-flow.webp"
+                  alt="Request Flow Sequence for Creating and Redirecting URLs"
+                  caption="Sequence diagram comparing the write path (token assignment, database write, cache warming) against the read path (cache hit, HTTP 302 redirect, async analytics logging)."
+                />
+
+                {/* Interactive Lifecycle Switcher */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-white/[0.08] pb-2">
+                  <div className="flex items-center gap-2 border-b border-slate-200 dark:border-white/[0.08] pb-2">
                     <button
                       type="button"
                       onClick={() => setActivePipeline("write")}
@@ -527,10 +518,10 @@ export default function SystemDesignArticleView({
                         "rounded-xl px-4 py-2 text-xs font-bold transition",
                         activePipeline === "write"
                           ? "bg-lime-400 text-slate-950 font-black shadow-xs"
-                          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                          : "text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white"
                       )}
                     >
-                      Write Pipeline (Short URL Creation)
+                      Creation Lifecycle (Write Path)
                     </button>
                     <button
                       type="button"
@@ -539,389 +530,486 @@ export default function SystemDesignArticleView({
                         "rounded-xl px-4 py-2 text-xs font-bold transition",
                         activePipeline === "read"
                           ? "bg-lime-400 text-slate-950 font-black shadow-xs"
-                          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white"
+                          : "text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white"
                       )}
                     >
-                      Read Pipeline (Sub-2ms Redirection)
+                      Redirection Lifecycle (Read Path)
                     </button>
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {(activePipeline === "write"
-                      ? article.requestFlowSteps.writeFlow
-                      : article.requestFlowSteps.readFlow
-                    ).map((st) => (
-                      <div
-                        key={st.step}
-                        className="rounded-2xl border border-zinc-200/80 dark:border-white/[0.06] bg-zinc-50/70 dark:bg-zinc-900/50 p-4"
-                      >
-                        <div className="flex items-center gap-2 mb-1.5">
+                    {activePipeline === "write" ? (
+                      <>
+                        <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
                           <span className="font-mono text-xs font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
-                            {st.step}
+                            Step 1
                           </span>
-                          <h4 className="text-xs font-bold text-zinc-900 dark:text-white">
-                            {st.title}
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1.5">
+                            Submit Long Destination URL
                           </h4>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                            Client issues a POST request with the destination URL. Rate limiters and threat detection filters inspect the URL asynchronously.
+                          </p>
                         </div>
-                        <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                          {st.desc}
-                        </p>
-                      </div>
-                    ))}
+
+                        <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                          <span className="font-mono text-xs font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
+                            Step 2
+                          </span>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1.5">
+                            Assign Token from Memory
+                          </h4>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                            The application server takes an unused 7-character Base62 key from its local pre-allocated KGS memory buffer. Zero database locks!
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                          <span className="font-mono text-xs font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
+                            Step 3
+                          </span>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1.5">
+                            Persist &amp; Warm Cache
+                          </h4>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                            Saves the mapping to the persistent database and simultaneously writes to Redis so early clicks resolve immediately from RAM.
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                          <span className="font-mono text-xs font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
+                            Step 4
+                          </span>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1.5">
+                            Return Compact Short Link
+                          </h4>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                            The user receives their short URL (e.g. <code>short.ly/aB3x9Qz</code>) in under 15ms.
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                          <span className="font-mono text-xs font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
+                            Step 1
+                          </span>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1.5">
+                            Visitor Taps Short Link
+                          </h4>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                            HTTP GET request for <code>short.ly/aB3x9Qz</code> arrives at the nearest edge load balancer.
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                          <span className="font-mono text-xs font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
+                            Step 2
+                          </span>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1.5">
+                            Instant Redis In-Memory Lookup
+                          </h4>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                            Server checks Redis for key <code>aB3x9Qz</code>. Over 90% of requests hit the cache and resolve in under 1.2ms.
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                          <span className="font-mono text-xs font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
+                            Step 3
+                          </span>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1.5">
+                            HTTP 302 Redirection Sent
+                          </h4>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                            Returns an HTTP 302 (Found) header with <code>Location: https://example.com/very/long/destination</code>.
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.06] bg-slate-50/70 dark:bg-zinc-900/50 p-4">
+                          <span className="font-mono text-xs font-black text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
+                            Step 4
+                          </span>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1.5">
+                            Asynchronous Analytics Logging
+                          </h4>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                            Click metrics (country, browser, referrer) are emitted asynchronously to a message broker (Kafka/Queue) without delaying the redirect.
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
-              </section>
 
-              {/* # SECTION 6: HOW WE STORE THE DATA (DATABASE SCHEMA) */}
-              <section id="data-model" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 06
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    How We Store the Data: Database Schema Design
-                  </h2>
-                </div>
-
-                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                  {article.dataModel.rationale}
-                </p>
-
-                {/* Figure 3 Card */}
-                <FigureCard figure={article.figures[2]} />
-
-                {/* SQL Schema Tables */}
-                <div className="space-y-6">
-                  {article.dataModel.tables.map((tbl) => (
-                    <div
-                      key={tbl.name}
-                      className="overflow-hidden rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 shadow-sm"
-                    >
-                      <div className="border-b border-zinc-200 dark:border-white/[0.08] bg-zinc-50/80 dark:bg-zinc-950/40 px-5 py-3 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Database size={14} className="text-lime-500" />
-                          <span className="font-mono text-sm font-bold text-zinc-900 dark:text-white">
-                            Table: {tbl.name}
-                          </span>
-                        </div>
-                        <span className="text-xs text-zinc-500">{tbl.description}</span>
-                      </div>
-
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs">
-                          <thead className="border-b border-zinc-200 dark:border-white/[0.06] bg-zinc-100/50 dark:bg-zinc-800/40 text-[10px] uppercase font-bold text-zinc-500">
-                            <tr>
-                              <th className="py-2.5 px-4 font-mono">Column</th>
-                              <th className="py-2.5 px-4 font-mono">Type</th>
-                              <th className="py-2.5 px-4 font-mono">Constraint &amp; Index</th>
-                              <th className="py-2.5 px-4">Description</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-zinc-100 dark:divide-white/[0.04]">
-                            {tbl.columns.map((col) => (
-                              <tr key={col.name} className="hover:bg-zinc-50/50 dark:hover:bg-white/[0.02]">
-                                <td className="py-2.5 px-4 font-mono font-bold text-lime-600 dark:text-lime-400">
-                                  {col.name}
-                                </td>
-                                <td className="py-2.5 px-4 font-mono text-zinc-600 dark:text-zinc-300">
-                                  {col.type}
-                                </td>
-                                <td className="py-2.5 px-4 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
-                                  {col.constraint}
-                                </td>
-                                <td className="py-2.5 px-4 text-zinc-600 dark:text-zinc-400">
-                                  {col.desc}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  ))}
+                {/* Next Section Button */}
+                <div className="pt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("algorithms")}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
+                  >
+                    <span>Next: 05. Base62 Math (3.5T URLs)</span>
+                    <ChevronRight size={14} />
+                  </button>
                 </div>
               </section>
 
-              {/* # SECTION 7: REST API DESIGN & CONTRACTS */}
-              <section id="api-design" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 07
+              {/* # SECTION 05: BASE62 MATH */}
+              <section id="algorithms" className="scroll-mt-32 space-y-6">
+                <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+                    // SECTION 05
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    REST API Design &amp; Contracts
-                  </h2>
-                </div>
-
-                <div className="space-y-6">
-                  {article.apis.map((api, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 p-5 shadow-sm space-y-4"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex items-center gap-2.5">
-                          <span
-                            className={clsx(
-                              "rounded-lg px-2.5 py-1 font-mono text-xs font-black",
-                              api.method === "POST"
-                                ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
-                                : "bg-blue-500/20 text-blue-600 dark:text-blue-400"
-                            )}
-                          >
-                            {api.method}
-                          </span>
-                          <span className="font-mono text-sm font-bold text-zinc-900 dark:text-white">
-                            {api.endpoint}
-                          </span>
-                        </div>
-                        <span className="text-xs font-medium text-zinc-500">{api.title}</span>
-                      </div>
-
-                      <p className="text-xs text-zinc-600 dark:text-zinc-400">{api.desc}</p>
-
-                      {api.requestBody && (
-                        <div>
-                          <p className="text-[10px] font-mono font-bold uppercase text-zinc-400 mb-1.5">
-                            Request Body (JSON):
-                          </p>
-                          <CodeSnippet code={api.requestBody} language="json" />
-                        </div>
-                      )}
-
-                      {api.responseBody && (
-                        <div>
-                          <p className="text-[10px] font-mono font-bold uppercase text-zinc-400 mb-1.5">
-                            Response Payload:
-                          </p>
-                          <CodeSnippet
-                            code={api.responseBody}
-                            language="json"
-                            statusBadge={api.responseStatus}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* # SECTION 8: THE KEY SECRET: HOW 7 CHARACTERS GIVE 3.5 TRILLION URLS */}
-              <section id="algorithms" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 08
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
                     The Key Secret: How 7 Characters Give 3.5 Trillion URLs
                   </h2>
+                  {/* 1 to 2 line definition */}
+                  <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    By combining letters [a-z, A-Z] and digits [0-9], we get 62 possible characters per slot, creating over 3.52 Trillion combinations in just 7 characters.
+                  </p>
                 </div>
 
-                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                  How do services like Bitly or TinyURL generate a short 7-character code that never repeats and never locks the database? Here is the math, followed by the comparison of three approaches.
-                </p>
-
-                {/* Figure 4 Card */}
-                <FigureCard figure={article.figures[3]} />
-
-                {/* Base62 Math Card */}
-                <div className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm space-y-3">
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                {/* Base62 Formula Card */}
+                <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 p-5 shadow-sm space-y-3">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <span className="text-lime-500 font-mono">01.</span>
-                    <span>{article.algorithms.base62Math.title}</span>
+                    <span>The Math Behind Base62 Encoding</span>
                   </h3>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                    {article.algorithms.base62Math.explanation}
+                  <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">
+                    Base62 uses 10 numbers [0-9] + 26 lowercase letters [a-z] + 26 uppercase letters [A-Z] = 62 characters. Unlike Base64, which contains &apos;+&apos; and &apos;/&apos; characters that require URL-encoding, every single Base62 character is 100% URL-safe without escape codes.
                   </p>
-                  <pre className="rounded-xl bg-zinc-950 p-3.5 font-mono text-xs text-lime-300 leading-relaxed whitespace-pre-wrap">
-                    {article.algorithms.base62Math.mathProof}
-                  </pre>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    ✅ <strong>Verdict:</strong> {article.algorithms.base62Math.conclusion}
+                  <div className="rounded-xl bg-zinc-950 p-4 font-mono text-xs text-lime-400 space-y-1">
+                    <p className="text-slate-400">// Combinations Formula: 62^Length</p>
+                    <p>&bull; 6 Characters: 62^6 = 56,800,235,584 (~56.8 Billion URLs)</p>
+                    <p className="font-bold text-lime-300">&bull; 7 Characters: 62^7 = 3,521,614,606,208 (~3.52 Trillion URLs!)</p>
+                    <p>&bull; 8 Characters: 62^8 = 218,340,105,584,896 (~218 Trillion URLs)</p>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400">
+                    ✅ <strong>Verdict:</strong> A 7-character string gives 3.52 Trillion unique links. Even generating 10 Million new URLs every day, it takes more than <strong>964 years</strong> to exhaust the key space!
                   </p>
                 </div>
 
-                {/* Algorithm Approaches Comparison */}
+                {/* Comparison of 3 Approaches */}
                 <div className="space-y-3">
-                  <h3 className="font-display text-base font-black text-zinc-900 dark:text-white">
-                    Three Ways to Generate Short Codes (And Why Only One Works at Scale)
+                  <h3 className="font-jakarta text-sm font-bold text-slate-900 dark:text-white">
+                    Three Ways to Generate Short Codes (And Why KGS Wins)
                   </h3>
-                  <div className="space-y-3">
-                    {article.algorithms.approachesComparison.map((app, idx) => (
-                      <div
-                        key={idx}
-                        className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-zinc-50/70 dark:bg-zinc-900/50 p-4 sm:p-5 space-y-2 text-xs"
-                      >
-                        <h4 className="font-bold text-sm text-zinc-900 dark:text-white">
-                          {app.approach}
-                        </h4>
-                        <p className="text-zinc-600 dark:text-zinc-300">{app.howItWorks}</p>
-                        <div className="grid gap-2 sm:grid-cols-2 pt-1">
-                          <div className="rounded-lg bg-emerald-500/10 p-2.5 text-emerald-800 dark:text-emerald-300">
-                            <strong>Pros:</strong> {app.pros}
-                          </div>
-                          <div className="rounded-lg bg-red-500/10 p-2.5 text-red-800 dark:text-red-300">
-                            <strong>Cons:</strong> {app.cons}
-                          </div>
-                        </div>
-                        <p className="font-semibold text-zinc-700 dark:text-zinc-300 pt-1">
-                          {app.verdict}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* SOLID Principles */}
-                <div className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm space-y-3">
-                  <h3 className="text-base font-bold text-zinc-900 dark:text-white">
-                    Writing Clean Code: SOLID Principles in URL Shortener Design
-                  </h3>
-                  <div className="space-y-2">
-                    {article.algorithms.solidPrinciples.map((sp, idx) => (
-                      <div key={idx} className="border-l-2 border-lime-500 pl-3 text-xs">
-                        <strong className="text-zinc-900 dark:text-white block font-bold">
-                          {sp.principle}
-                        </strong>
-                        <span className="text-zinc-600 dark:text-zinc-400">{sp.desc}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              {/* # SECTION 9: SCALING UP: REDIS, SHARDING & HTTP 302 */}
-              <section id="scalability" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 09
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    Scaling Up: Redis Caching, Sharding &amp; HTTP 302
-                  </h2>
-                </div>
-
-                <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
-                  How does the system serve 60,000 requests per second without breaking a sweat? Here are the four crucial scaling decisions.
-                </p>
-
-                {/* Figure 5 Card */}
-                <FigureCard figure={article.figures[4]} />
-
-                {/* Scalability Engineering Notes */}
-                <div className="space-y-3">
-                  {article.scalabilityNotes.map((note, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 sm:p-5 shadow-sm space-y-2"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <h4 className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                          <span className="text-lime-500 font-bold">→</span>
-                          <span>{note.title}</span>
-                        </h4>
-                        <span className="rounded-md border border-lime-500/30 bg-lime-500/10 px-2 py-0.5 font-mono text-[10px] font-bold text-lime-600 dark:text-lime-300">
-                          {note.badge}
-                        </span>
-                      </div>
-                      <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed whitespace-pre-line pl-4">
-                        {note.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* # SECTION 10: REAL-WORLD DISASTERS & EDGE CASES */}
-              <section id="bottlenecks" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 10
-                  </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    Real-World Disasters &amp; Edge Cases (Cache Stampede, Phishing)
-                  </h2>
-                </div>
-
-                <div className="space-y-4">
-                  {article.bottlenecks.map((bn, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-zinc-50/70 dark:bg-zinc-900/50 p-4 sm:p-5 space-y-2 text-xs"
-                    >
-                      <h4 className="font-bold text-sm text-zinc-900 dark:text-white flex items-center gap-2">
-                        <AlertTriangle size={15} className="text-amber-500" />
-                        <span>{bn.problem}</span>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <div className="rounded-xl border border-red-500/20 bg-red-500/[0.04] p-4 text-xs">
+                      <h4 className="font-bold text-slate-900 dark:text-white mb-1">
+                        1. MD5 Hash Truncation
                       </h4>
-                      <p className="text-red-700 dark:text-red-400 font-medium">
-                        ⚠️ <strong>The Danger:</strong> {bn.impact}
+                      <p className="text-slate-600 dark:text-zinc-400 leading-relaxed">
+                        Hash the URL with MD5 and take the first 7 characters.
                       </p>
-                      <p className="text-emerald-800 dark:text-emerald-300 font-medium">
-                        🛡️ <strong>How to Solve It:</strong> {bn.solution}
+                      <p className="mt-2 text-red-600 dark:text-red-400 font-semibold">
+                        ❌ Fatal Flaw: Hash Collisions! High write lock contention under concurrency.
                       </p>
                     </div>
-                  ))}
+
+                    <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-4 text-xs">
+                      <h4 className="font-bold text-slate-900 dark:text-white mb-1">
+                        2. Auto-Increment ID Base62
+                      </h4>
+                      <p className="text-slate-600 dark:text-zinc-400 leading-relaxed">
+                        Assign sequential numbers (1, 2, 3...) and convert to Base62.
+                      </p>
+                      <p className="mt-2 text-amber-600 dark:text-amber-400 font-semibold">
+                        ⚠️ Flaw: Predictable sequences. Competitors can scrape all links in order.
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/[0.05] p-4 text-xs">
+                      <h4 className="font-bold text-slate-900 dark:text-white mb-1">
+                        3. Key Generation Service (KGS)
+                      </h4>
+                      <p className="text-slate-600 dark:text-zinc-400 leading-relaxed">
+                        Pre-generate random unique 7-char keys offline into key pools.
+                      </p>
+                      <p className="mt-2 text-emerald-600 dark:text-emerald-400 font-semibold">
+                        ✅ Production Choice: Guaranteed unique, instant microsecond token claiming.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Next Section Button */}
+                <div className="pt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("data-model")}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
+                  >
+                    <span>Next: 06. Database &amp; Storage Strategy</span>
+                    <ChevronRight size={14} />
+                  </button>
                 </div>
               </section>
 
-              {/* # SECTION 11: INTERVIEW SUMMARY & KEY TAKEAWAYS */}
-              <section id="checklist" className="scroll-mt-24 space-y-6">
-                <div className="border-b border-zinc-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-lime-500">
-                    // SECTION 11
+              {/* # SECTION 06: DATABASE & STORAGE STRATEGY */}
+              <section id="data-model" className="scroll-mt-32 space-y-6">
+                <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+                    // SECTION 06
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white mt-1">
-                    System Design Interview Summary &amp; Key Takeaways
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
+                    How We Store the Data: Database &amp; Storage Strategy
                   </h2>
+                  {/* 1 to 2 line definition */}
+                  <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    Because URL shortening is purely key-to-value lookups with no table joins, distributed NoSQL or sharded relational databases provide high throughput and zero bottlenecks.
+                  </p>
                 </div>
 
-                <div className="rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-5 shadow-sm space-y-4">
-                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white">
-                    Quick Mental Checklist (If Asked in an Interview)
-                  </h3>
-                  <div className="space-y-2">
-                    {article.interviewSummary.keyTakeaways.map((takeaway, idx) => (
-                      <div key={idx} className="flex items-start gap-2 text-xs">
-                        <CheckCircle2 size={14} className="text-lime-500 shrink-0 mt-0.5" />
-                        <span className="text-zinc-700 dark:text-zinc-300 font-medium">
-                          {takeaway}
-                        </span>
-                      </div>
-                    ))}
+                {/* Diagram 3: Data Model */}
+                <DiagramCard
+                  src="/images/system-design/url-shortener-data-model.webp"
+                  alt="Database Schema & Data Model Diagram"
+                  caption="Data model: Clean key-value mappings storing short code, destination URL, creator ID, expiration date, and aggregated click statistics."
+                />
+
+                {/* Database Architecture Breakdown */}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                      <Database size={15} className="text-lime-500" />
+                      <span>What We Store in Every Record (~500 Bytes)</span>
+                    </h3>
+                    <ul className="space-y-1.5 text-xs text-slate-600 dark:text-zinc-400">
+                      <li>&bull; <strong className="text-slate-800 dark:text-zinc-200">short_code:</strong> Unique 7-character string (Indexed B-Tree key)</li>
+                      <li>&bull; <strong className="text-slate-800 dark:text-zinc-200">original_url:</strong> Destination link (up to 2,048 chars)</li>
+                      <li>&bull; <strong className="text-slate-800 dark:text-zinc-200">user_id:</strong> Creator account identifier (nullable for anonymous links)</li>
+                      <li>&bull; <strong className="text-slate-800 dark:text-zinc-200">created_at / expires_at:</strong> Timestamp for link lifespan &amp; TTL purging</li>
+                      <li>&bull; <strong className="text-slate-800 dark:text-zinc-200">is_active:</strong> Soft-kill boolean flag to disable abusive URLs instantly</li>
+                    </ul>
                   </div>
 
-                  <h3 className="font-bold text-sm text-zinc-900 dark:text-white pt-3 border-t border-zinc-100 dark:border-white/[0.06]">
-                    Core Architectural Trade-Offs (Why We Made Each Choice)
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                      <Layers size={15} className="text-cyan-500" />
+                      <span>NoSQL vs. Relational (SQL) Trade-Off</span>
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed mb-2">
+                      Since we only do simple lookups like <code>GET original_url WHERE short_code = &apos;xyz&apos;</code> without relational foreign key joins:
+                    </p>
+                    <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      &bull; <strong>Distributed NoSQL / Key-Value</strong> (Cassandra, DynamoDB, MongoDB) scales horizontally with zero maintenance.<br />
+                      &bull; <strong>Sharded SQL</strong> (PostgreSQL / MySQL) with consistent hashing on <code>short_code</code> also handles the 9 TB volume easily.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Next Section Button */}
+                <div className="pt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("scalability")}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
+                  >
+                    <span>Next: 07. Redis Caching &amp; Scaling</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </section>
+
+              {/* # SECTION 07: SCALING WITH REDIS */}
+              <section id="scalability" className="scroll-mt-32 space-y-6">
+                <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+                    // SECTION 07
+                  </span>
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
+                    Scaling Up: Redis Caching &amp; Redirection Protocol
+                  </h2>
+                  {/* 1 to 2 line definition */}
+                  <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    Following the 80/20 Pareto principle, caching the top 20% viral links in a Redis cluster absorbs over 90% of all redirect traffic directly from fast RAM in ~1.2ms.
+                  </p>
+                </div>
+
+                {/* Diagram 4: Scalability Architecture */}
+                <DiagramCard
+                  src="/images/system-design/url-shortener-scalability.webp"
+                  alt="System Scalability, Redis Caching & Sharding Architecture"
+                  caption="Scalability topology: Traffic passes through global Edge CDNs to regional Redis in-memory clusters, while an asynchronous event stream logs analytics without adding latency."
+                />
+
+                {/* 3 Core Decisions */}
+                <div className="space-y-3">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-lime-500" />
+                        <span>1. Cache Eviction Policy: Redis LRU (Least Recently Used)</span>
+                      </span>
+                      <span className="font-mono text-[10px] text-lime-600 dark:text-lime-400 bg-lime-500/10 px-2 py-0.5 rounded">
+                        Cache-Aside
+                      </span>
+                    </h4>
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      When the 100 GB cache reaches capacity, Redis automatically discards the links that haven&apos;t been clicked recently. Popular links stay permanently in memory, serving users at lightning speed.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-cyan-400" />
+                        <span>2. Redirection Status Code: HTTP 302 (Found) vs. HTTP 301</span>
+                      </span>
+                      <span className="font-mono text-[10px] text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">
+                        Protocol Trade-Off
+                      </span>
+                    </h4>
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      <strong>HTTP 301 (Moved Permanently)</strong> is cached by the visitor&apos;s browser forever, meaning future clicks bypass your servers and analytics are lost. <strong>HTTP 302 (Found)</strong> forces every click to reach our servers, preserving 100% accurate click analytics and allowing link revocation.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                        <span>3. Decoupled Click Analytics via Message Queue</span>
+                      </span>
+                      <span className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                        Zero Latency
+                      </span>
+                    </h4>
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      Updating click counters synchronously in the database on every click creates massive lock contention. Instead, web servers push a lightweight click event to an asynchronous queue (Kafka / RabbitMQ), which background workers batch-process without delaying user redirects.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Next Section Button */}
+                <div className="pt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection("edge-cases")}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
+                  >
+                    <span>Next: 08. Edge Cases &amp; Takeaways</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </section>
+
+              {/* # SECTION 08: EDGE CASES & TAKEAWAYS */}
+              <section id="edge-cases" className="scroll-mt-32 space-y-6">
+                <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
+                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+                    // SECTION 08
+                  </span>
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
+                    Real-World Edge Cases &amp; Key Takeaways
+                  </h2>
+                  {/* 1 to 2 line definition */}
+                  <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
+                    Production systems must withstand sudden cache stampedes, eliminate single points of failure on key generators, and actively block phishing abuse.
+                  </p>
+                </div>
+
+                {/* 4 Edge Cases Cards */}
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 space-y-2 text-xs">
+                    <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <AlertTriangle size={14} className="text-amber-500" />
+                      <span>1. The Cache Stampede (Dog-Piling)</span>
+                    </h4>
+                    <p className="text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      <strong>The Danger:</strong> When a viral short link with 100k requests/sec expires from Redis, all 100k concurrent requests miss the cache at the exact same millisecond and crash the database.
+                    </p>
+                    <p className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                      🛡️ <strong>Solution:</strong> Use distributed mutex locks (Redlock) or XFetch probabilistic early expiration so only 1 worker queries the DB to refresh the cache.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 space-y-2 text-xs">
+                    <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <AlertTriangle size={14} className="text-amber-500" />
+                      <span>2. Single Point of Failure on KGS</span>
+                    </h4>
+                    <p className="text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      <strong>The Danger:</strong> If the Key Generation Service goes down, new URL creation halts completely across the system.
+                    </p>
+                    <p className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                      🛡️ <strong>Solution:</strong> Deploy an active-passive standby KGS replica with ZooKeeper, and have application servers maintain a buffer of 10,000 pre-fetched keys in local memory.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 space-y-2 text-xs">
+                    <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <AlertTriangle size={14} className="text-amber-500" />
+                      <span>3. Phishing Scams &amp; Malware Links</span>
+                    </h4>
+                    <p className="text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      <strong>The Danger:</strong> Spammers shorten malicious phishing links to mask destination URLs and cause domain blacklisting.
+                    </p>
+                    <p className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                      🛡️ <strong>Solution:</strong> Validate destination URLs against Google Safe Browsing API asynchronously and provide an instant soft-kill flag (<code>is_active = false</code>) to disable flagged links globally.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 space-y-2 text-xs">
+                    <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <AlertTriangle size={14} className="text-amber-500" />
+                      <span>4. Database Bloat from Expired Links</span>
+                    </h4>
+                    <p className="text-slate-600 dark:text-zinc-400 leading-relaxed">
+                      <strong>The Danger:</strong> Billions of abandoned or expired links bloat index sizes and degrade lookup query performance over time.
+                    </p>
+                    <p className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                      🛡️ <strong>Solution:</strong> Use lazy deletion during lookup (if expired, delete immediately and return 404) and run nocturnal batch purge jobs during off-peak traffic hours.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Final Checklist Card */}
+                <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-zinc-900/60 p-5 shadow-sm space-y-3">
+                  <h3 className="font-jakarta text-sm font-bold text-slate-900 dark:text-white">
+                    Summary Checklist to Remember
                   </h3>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {article.interviewSummary.tradeoffs.map((to, idx) => (
-                      <div
-                        key={idx}
-                        className="rounded-xl border border-zinc-200 dark:border-white/[0.06] bg-zinc-50 dark:bg-zinc-950/40 p-3 text-xs"
-                      >
-                        <span className="font-bold text-zinc-900 dark:text-white block">
-                          {to.topic}
-                        </span>
-                        <span className="mt-1 font-mono text-[11px] font-bold text-lime-600 dark:text-lime-400 block">
-                          Choice: {to.winner}
-                        </span>
-                        <p className="mt-1 text-zinc-500 text-[11px]">{to.reason}</p>
-                      </div>
-                    ))}
+                  <div className="grid gap-2 sm:grid-cols-2 text-xs">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 size={14} className="text-lime-500 shrink-0 mt-0.5" />
+                      <span className="text-slate-700 dark:text-zinc-300">
+                        <strong>Token Math:</strong> 62^7 gives 3.52 Trillion URLs (964 years of headroom).
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 size={14} className="text-lime-500 shrink-0 mt-0.5" />
+                      <span className="text-slate-700 dark:text-zinc-300">
+                        <strong>KGS Key Pooling:</strong> Offline pre-generation eliminates database write locks.
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 size={14} className="text-lime-500 shrink-0 mt-0.5" />
+                      <span className="text-slate-700 dark:text-zinc-300">
+                        <strong>Redis Caching:</strong> 100 GB in-memory RAM handles 80-90% of all viral redirect traffic.
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 size={14} className="text-lime-500 shrink-0 mt-0.5" />
+                      <span className="text-slate-700 dark:text-zinc-300">
+                        <strong>HTTP 302 Protocol:</strong> Ensures full click tracking and analytics measurement.
+                      </span>
+                    </div>
                   </div>
                 </div>
               </section>
 
-              {/* # BOTTOM NAVIGATION: PREVIOUS & NEXT SYSTEM */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-zinc-200 dark:border-white/[0.08]">
+              {/* BOTTOM NAVIGATION: PREVIOUS & NEXT SYSTEM */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-slate-200 dark:border-white/[0.08]">
                 {prevSystem ? (
                   <Link
                     to={`${baseRoute}/${prevSystem.id}`}
-                    className="group flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition"
+                    className="group flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white transition"
                   >
                     <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                     <div className="text-left">
-                      <span className="text-[9px] uppercase tracking-wider block text-zinc-400">Previous System</span>
+                      <span className="text-[9px] uppercase tracking-wider block text-slate-400">Previous</span>
                       <span>{prevSystem.title}</span>
                     </div>
                   </Link>
@@ -931,7 +1019,7 @@ export default function SystemDesignArticleView({
 
                 <Link
                   to={backUrl}
-                  className="inline-flex items-center gap-2 rounded-xl bg-lime-300 text-slate-950 px-5 py-2.5 text-xs font-black uppercase tracking-wider hover:bg-lime-200 shadow-sm transition"
+                  className="inline-flex items-center gap-2 rounded-xl bg-lime-400 text-slate-950 px-5 py-2.5 text-xs font-bold hover:bg-lime-300 shadow-sm transition"
                 >
                   {backLabel}
                 </Link>
@@ -939,10 +1027,10 @@ export default function SystemDesignArticleView({
                 {nextSystem ? (
                   <Link
                     to={`${baseRoute}/${nextSystem.id}`}
-                    className="group flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition"
+                    className="group flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white transition"
                   >
                     <div className="text-right">
-                      <span className="text-[9px] uppercase tracking-wider block text-zinc-400">Next System</span>
+                      <span className="text-[9px] uppercase tracking-wider block text-slate-400">Next</span>
                       <span>{nextSystem.title}</span>
                     </div>
                     <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />

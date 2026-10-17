@@ -94,6 +94,11 @@ export const updateUserProfileService = async ({ name, phone }) => {
   }
 };
 
-export const getGoogleAuthUrl = () => {
-  return `${API_BASE_URL.replace(/\/+$/, "")}/user-auth/google`;
+export const getGoogleAuthUrl = (returnUrl) => {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const params = new URLSearchParams();
+  if (origin) params.set("origin", origin);
+  if (returnUrl) params.set("returnUrl", returnUrl);
+  const qs = params.toString();
+  return `${API_BASE_URL.replace(/\/+$/, "")}/user-auth/google${qs ? `?${qs}` : ""}`;
 };

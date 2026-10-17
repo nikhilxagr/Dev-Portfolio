@@ -16,11 +16,13 @@ const AuthCallbackPage = () => {
     const errorParam = searchParams.get("error");
 
     if (errorParam) {
-      setError(
-        errorParam === "access_denied"
-          ? "Google sign-in was canceled."
-          : "Google authentication failed. Please try again.",
-      );
+      let friendlyError = "Google authentication failed. Please try again.";
+      if (errorParam === "access_denied") {
+        friendlyError = "Google sign-in was canceled.";
+      } else if (errorParam === "invalid_state") {
+        friendlyError = "Authentication session expired or invalid. Please try signing in again.";
+      }
+      setError(friendlyError);
       return;
     }
 
@@ -37,7 +39,7 @@ const AuthCallbackPage = () => {
         if (user) {
           login(token, user);
           const returnUrl =
-            sessionStorage.getItem("auth_return_url") || "/support";
+            sessionStorage.getItem("auth_return_url") || "/";
           sessionStorage.removeItem("auth_return_url");
           navigate(returnUrl, { replace: true });
         } else {
@@ -49,12 +51,18 @@ const AuthCallbackPage = () => {
     })();
   }, [searchParams, login, navigate]);
 
+  const handleRetry = () => {
+    const returnUrl = sessionStorage.getItem("auth_return_url") || "/";
+    sessionStorage.removeItem("auth_return_url");
+    navigate(returnUrl, { replace: true });
+  };
+
   return (
     <section className="section-wrap pt-20 pb-20">
       {error ? (
         <ErrorState
           message={error}
-          onRetry={() => navigate("/support", { replace: true })}
+          onRetry={handleRetry}
         />
       ) : (
         <LoadingState message="Completing Google Sign-In..." cards={1} />

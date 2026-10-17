@@ -37,8 +37,74 @@ const generateUserToken = (user) => {
   );
 };
 
+// Validate allowed frontend origins for safe redirects
+export const isAllowedFrontendOrigin = (origin) => {
+  if (!origin || typeof origin !== "string") return false;
+  try {
+    const url = new URL(origin);
+    const host = url.hostname;
+    // Allow localhost or 127.0.0.1 on any port (e.g., 5173, 5174, etc.)
+    if (host === "localhost" || host === "127.0.0.1") return true;
+    // Allow production domain and Vercel preview domains
+    if (host === "nikhilxagr.vercel.app" || host.endsWith(".vercel.app")) return true;
+    // Allow any explicitly allowed origins
+    if (env.allowedOrigins && env.allowedOrigins.some((o) => o.includes(host))) return true;
+    return false;
+  } catch {
+    return false;
+  }
+};
+
+// Create a cryptographically signed, tamper-proof state containing origin & redirectUri
+const createSignedState = (targetOrigin, redirectUri) => {
+  const payload = {
+    nonce: crypto.randomBytes(16).toString("hex"),
+    origin: targetOrigin,
+    redirectUri,
+    ts: Date.now(),
+  };
+  const jsonStr = JSON.stringify(payload);
+  const base64Data = Buffer.from(jsonStr).toString("base64url");
+  const signature = crypto
+    .createHmac("sha256", env.jwtSecret)
+    .update(base64Data)
+    .digest("base64url");
+  return `${base64Data}.${signature}`;
+};
+
+// Verify the signed state parameter
+const verifySignedState = (stateParam) => {
+  if (!stateParam || typeof stateParam !== "string") return null;
+  const parts = stateParam.split(".");
+  if (parts.length !== 2) return null;
+  const [base64Data, signature] = parts;
+  const expectedSignature = crypto
+    .createHmac("sha256", env.jwtSecret)
+    .update(base64Data)
+    .digest("base64url");
+
+  if (
+    signature.length !== expectedSignature.length ||
+    !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))
+  ) {
+    return null;
+  }
+
+  try {
+    const jsonStr = Buffer.from(base64Data, "base64url").toString("utf8");
+    const payload = JSON.parse(jsonStr);
+    // 15-minute expiration window to prevent replay attacks
+    if (Date.now() - payload.ts > 15 * 60 * 1000) {
+      return null;
+    }
+    return payload;
+  } catch {
+    return null;
+  }
+};
+
 // 1. Google OAuth — Redirect to Google consent screen
-export const initiateGoogleAuth = (_req, res) => {
+export const initiateGoogleAuth = (req, res) => {
   if (!env.googleClientId) {
     res.status(400).json({
       success: false,
@@ -48,17 +114,44 @@ export const initiateGoogleAuth = (_req, res) => {
     return;
   }
 
-  const state = crypto.randomBytes(32).toString("hex");
+  // Detect initiating frontend origin (localhost:5173 vs nikhilxagr.vercel.app)
+  let requestedOrigin = req.query.origin;
+  if (!requestedOrigin && req.headers.referer) {
+    try {
+      requestedOrigin = new URL(req.headers.referer).origin;
+    } catch {
+      // ignore
+    }
+  }
+
+  const targetOrigin =
+    requestedOrigin && isAllowedFrontendOrigin(requestedOrigin)
+      ? requestedOrigin
+      : env.frontendUrl;
+
+  // Determine Google callback URI based on current request host
+  const host = req.headers.host || "";
+  const isLocalHost = host.includes("localhost") || host.includes("127.0.0.1");
+  let redirectUri = env.googleCallbackUrl;
+  if (isLocalHost) {
+    const protocol = req.protocol === "https" ? "https" : "http";
+    redirectUri = `${protocol}://${host}/api/user-auth/google/callback`;
+  }
+
+  // Create tamper-proof signed state carrying origin and redirectUri
+  const state = createSignedState(targetOrigin, redirectUri);
+
+  // Set cookie as well for backward compatibility
   res.cookie("g_oauth_state", state, {
     httpOnly: true,
     secure: env.nodeEnv === "production",
     sameSite: "lax",
-    maxAge: 10 * 60 * 1000, // 10 minutes
+    maxAge: 15 * 60 * 1000,
   });
 
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const options = {
-    redirect_uri: env.googleCallbackUrl,
+    redirect_uri: redirectUri,
     client_id: env.googleClientId,
     access_type: "offline",
     response_type: "code",
@@ -80,23 +173,40 @@ export const handleGoogleCallback = async (req, res) => {
   const error = req.query.error;
   const state = req.query.state;
 
+  const statePayload = verifySignedState(state);
   const cookies = req.cookies || parseCookieHeader(req.headers.cookie);
   const cookieState = cookies.g_oauth_state;
 
   res.clearCookie("g_oauth_state");
 
-  if (error || !code || !state || !cookieState || state !== cookieState) {
+  // Determine target frontend to redirect back to (e.g. http://localhost:5173 or https://nikhilxagr.vercel.app)
+  let targetFrontend = env.frontendUrl;
+  if (statePayload?.origin && isAllowedFrontendOrigin(statePayload.origin)) {
+    targetFrontend = statePayload.origin;
+  }
+
+  // Use the exact redirect_uri that was sent to Google during initialization
+  const redirectUri = statePayload?.redirectUri || env.googleCallbackUrl;
+
+  const isStateValid = Boolean(
+    statePayload || (state && cookieState && state === cookieState)
+  );
+
+  if (error || !code || !isStateValid) {
     console.error("[UserAuth] Google Callback state or CSRF error:", {
       hasCode: Boolean(code),
       hasState: Boolean(state),
-      stateMatched: Boolean(state && state === cookieState),
+      signedStateValid: Boolean(statePayload),
+      cookieMatched: Boolean(state && state === cookieState),
+      targetFrontend,
     });
-    res.redirect(`${env.frontendUrl}/auth/callback?error=invalid_state`);
+    const errCode = error === "access_denied" ? "access_denied" : "invalid_state";
+    res.redirect(`${targetFrontend}/auth/callback?error=${errCode}`);
     return;
   }
 
   try {
-    // Exchange auth code for tokens
+    // Exchange auth code for tokens with matching redirect_uri
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -104,7 +214,7 @@ export const handleGoogleCallback = async (req, res) => {
         code: String(code),
         client_id: env.googleClientId,
         client_secret: env.googleClientSecret,
-        redirect_uri: env.googleCallbackUrl,
+        redirect_uri: redirectUri,
         grant_type: "authorization_code",
       }),
     });
@@ -116,7 +226,7 @@ export const handleGoogleCallback = async (req, res) => {
       const errDetail = encodeURIComponent(
         tokenData.error_description || tokenData.error || "token_exchange_failed",
       );
-      res.redirect(`${env.frontendUrl}/auth/callback?error=${errDetail}`);
+      res.redirect(`${targetFrontend}/auth/callback?error=${errDetail}`);
       return;
     }
 
@@ -136,7 +246,7 @@ export const handleGoogleCallback = async (req, res) => {
       googleUser.email_verified === "true";
 
     if (!profileResponse.ok || !googleUser.email || !isEmailVerified) {
-      res.redirect(`${env.frontendUrl}/auth/callback?error=profile_fetch_failed`);
+      res.redirect(`${targetFrontend}/auth/callback?error=profile_fetch_failed`);
       return;
     }
 
@@ -179,10 +289,10 @@ export const handleGoogleCallback = async (req, res) => {
     }
 
     const token = generateUserToken(user);
-    res.redirect(`${env.frontendUrl}/auth/callback?token=${encodeURIComponent(token)}`);
+    res.redirect(`${targetFrontend}/auth/callback?token=${encodeURIComponent(token)}`);
   } catch (err) {
     console.error("[UserAuth] Google Callback Exception:", err.message);
-    res.redirect(`${env.frontendUrl}/auth/callback?error=server_error`);
+    res.redirect(`${targetFrontend}/auth/callback?error=server_error`);
   }
 };
 
