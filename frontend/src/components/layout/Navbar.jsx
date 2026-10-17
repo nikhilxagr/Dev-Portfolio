@@ -530,63 +530,195 @@ const Navbar = () => {
               </nav>
 
               <div className={clsx("hidden items-center xl:flex shrink-0", isScrolled ? "gap-1.5 2xl:gap-2 ml-2" : "gap-1.5 2xl:gap-3 ml-2 2xl:ml-6")}>
-                {/* User Auth Control — Just to the left side of the Search bar */}
+                {/* User Auth Control — Symmetrically aligned under pill button */}
                 {user ? (
                   <div className="relative shrink-0" ref={userMenuRef}>
                     <button
                       type="button"
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 p-1 pr-2.5 text-xs font-bold text-slate-800 dark:text-slate-100 hover:border-emerald-500 transition shadow-sm"
+                      className={clsx(
+                        "flex items-center gap-2 rounded-full border p-1 pr-3 text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer",
+                        userMenuOpen
+                          ? "border-emerald-400 bg-emerald-500/20 text-emerald-300 ring-2 ring-emerald-400/25"
+                          : "border-emerald-500/40 bg-emerald-500/10 text-slate-800 dark:text-slate-100 hover:border-emerald-400 hover:bg-emerald-500/15"
+                      )}
                       aria-label="User profile menu"
+                      aria-expanded={userMenuOpen}
                     >
-                      <UserAvatar user={user} className="h-7 w-7 text-xs" />
-                      <span className="hidden xl:inline-block max-w-[65px] 2xl:max-w-[100px] truncate">{user.name.split(" ")[0]}</span>
+                      <UserAvatar user={user} className="h-7 w-7 text-xs ring-1 ring-lime-400/30" />
+                      <span className="hidden xl:inline-block max-w-[75px] 2xl:max-w-[110px] truncate font-jakarta font-bold">
+                        {user.name.split(" ")[0]}
+                      </span>
+                      <ChevronDown
+                        size={12}
+                        className={clsx(
+                          "text-slate-400 dark:text-zinc-400 transition-transform duration-200",
+                          userMenuOpen && "rotate-180 text-emerald-400"
+                        )}
+                      />
                     </button>
 
-                    {userMenuOpen && (
-                      <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-2xl z-50 animate-fadeIn">
-                        <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
-                          <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user.name}</p>
-                          <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
-                            <span className="text-emerald-500 font-bold">G</span> {user.email}
-                          </p>
-                        </div>
-                        <Link
-                          to="/profile"
-                          onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
+                    <AnimatePresence>
+                      {userMenuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95, y: -6 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95, y: -6 }}
+                          transition={{ duration: 0.18, ease: "easeOut" }}
+                          className="absolute left-1/2 -translate-x-1/2 mt-3 w-76 sm:w-80 rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl p-2.5 shadow-2xl shadow-black/40 z-50 text-slate-900 dark:text-zinc-100"
                         >
-                          <User size={14} className="text-lime-500" /> My Profile &amp; Activity
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setUserMenuOpen(false);
-                            openProfileModal();
-                          }}
-                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
-                        >
-                          <Edit3 size={14} className="text-cyan-400" /> Edit Profile
-                        </button>
-                        <Link
-                          to="/receipts"
-                          onClick={() => setUserMenuOpen(false)}
-                          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 transition"
-                        >
-                          <Receipt size={14} /> My Receipts
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            logout();
-                            setUserMenuOpen(false);
-                          }}
-                          className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition"
-                        >
-                          <LogOut size={14} /> Sign Out
-                        </button>
-                      </div>
-                    )}
+                          {/* Top Subtle Glow Accent */}
+                          <div className="absolute -top-[1px] left-1/2 -translate-x-1/2 h-[2px] w-24 bg-gradient-to-r from-transparent via-lime-400 to-transparent rounded-full pointer-events-none" />
+
+                          {/* Pointer Notch */}
+                          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-zinc-950 border-t border-l border-slate-200/90 dark:border-white/10 rotate-45 pointer-events-none" />
+
+                          {/* User Info Header Card */}
+                          <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50/90 dark:bg-zinc-900/80 border border-slate-100 dark:border-white/[0.06] mb-2 shadow-2xs">
+                            <div className="relative shrink-0">
+                              <UserAvatar
+                                user={user}
+                                className="h-11 w-11 text-base font-black border-2 border-lime-400 shadow-sm ring-4 ring-lime-400/10"
+                              />
+                              <span
+                                className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-950 shadow-xs"
+                                title="Active Google Session"
+                              />
+                            </div>
+
+                            <div className="min-w-0 flex-1 space-y-0.5">
+                              <div className="flex items-center justify-between gap-1.5">
+                                <p className="font-jakarta text-sm sm:text-base font-extrabold text-slate-950 dark:text-white truncate tracking-tight">
+                                  {user.name}
+                                </p>
+                                <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 bg-lime-400/15 dark:bg-lime-400/10 px-1.5 py-0.5 rounded border border-lime-400/30 shrink-0">
+                                  Active
+                                </span>
+                              </div>
+
+                              <p className="text-xs text-slate-500 dark:text-zinc-400 truncate flex items-center gap-1.5 font-medium">
+                                <span className="h-4 w-4 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black flex items-center justify-center text-[10px] shrink-0 border border-emerald-500/20">
+                                  G
+                                </span>
+                                <span className="truncate">{user.email}</span>
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Menu Actions */}
+                          <div className="space-y-1">
+                            {/* 1. My Profile & Activity */}
+                            <Link
+                              to="/profile"
+                              onClick={() => setUserMenuOpen(false)}
+                              className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-200 group cursor-pointer border border-transparent hover:border-slate-200/60 dark:hover:border-white/[0.08]"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="h-9 w-9 rounded-xl bg-lime-400/15 text-lime-600 dark:text-lime-400 flex items-center justify-center shrink-0 group-hover:bg-lime-400 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                                  <User size={16} />
+                                </div>
+                                <div className="min-w-0 text-left">
+                                  <p className="font-jakarta text-sm font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
+                                    My Profile &amp; Activity
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
+                                    Likes, comments &amp; timeline
+                                  </p>
+                                </div>
+                              </div>
+                              <ChevronRight
+                                size={15}
+                                className="text-slate-400 dark:text-zinc-500 group-hover:text-lime-500 group-hover:translate-x-1 transition-all duration-200 shrink-0"
+                              />
+                            </Link>
+
+                            {/* 2. Edit Profile */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUserMenuOpen(false);
+                                openProfileModal();
+                              }}
+                              className="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-200 group cursor-pointer border border-transparent hover:border-slate-200/60 dark:hover:border-white/[0.08]"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="h-9 w-9 rounded-xl bg-sky-500/15 text-sky-500 flex items-center justify-center shrink-0 group-hover:bg-sky-500 group-hover:text-white transition-all duration-200 shadow-2xs">
+                                  <Edit3 size={16} />
+                                </div>
+                                <div className="min-w-0 text-left">
+                                  <p className="font-jakarta text-sm font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
+                                    Edit Profile
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
+                                    Photo, bio, location &amp; socials
+                                  </p>
+                                </div>
+                              </div>
+                              <ChevronRight
+                                size={15}
+                                className="text-slate-400 dark:text-zinc-500 group-hover:text-sky-500 group-hover:translate-x-1 transition-all duration-200 shrink-0"
+                              />
+                            </button>
+
+                            {/* 3. My Receipts */}
+                            <Link
+                              to="/receipts"
+                              onClick={() => setUserMenuOpen(false)}
+                              className="flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-200 group cursor-pointer border border-transparent hover:border-slate-200/60 dark:hover:border-white/[0.08]"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="h-9 w-9 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all duration-200 shadow-2xs">
+                                  <Receipt size={16} />
+                                </div>
+                                <div className="min-w-0 text-left">
+                                  <p className="font-jakarta text-sm font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
+                                    My Receipts
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
+                                    Verified access codes &amp; bills
+                                  </p>
+                                </div>
+                              </div>
+                              <ChevronRight
+                                size={15}
+                                className="text-slate-400 dark:text-zinc-500 group-hover:text-amber-500 group-hover:translate-x-1 transition-all duration-200 shrink-0"
+                              />
+                            </Link>
+
+                            {/* Divider */}
+                            <div className="my-1 border-t border-slate-100 dark:border-white/[0.06]" />
+
+                            {/* 4. Sign Out */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                logout();
+                                setUserMenuOpen(false);
+                              }}
+                              className="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-rose-500/10 dark:hover:bg-rose-500/15 transition-all duration-200 group cursor-pointer border border-transparent hover:border-rose-500/20"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div className="h-9 w-9 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0 group-hover:bg-rose-500 group-hover:text-white transition-all duration-200 shadow-2xs">
+                                  <LogOut size={16} />
+                                </div>
+                                <div className="min-w-0 text-left">
+                                  <p className="font-jakarta text-sm font-bold text-rose-600 dark:text-rose-400 group-hover:text-rose-500 transition">
+                                    Sign Out
+                                  </p>
+                                  <p className="text-[11px] text-slate-400 dark:text-zinc-500 leading-tight">
+                                    Safely end session on this device
+                                  </p>
+                                </div>
+                              </div>
+                              <ChevronRight
+                                size={15}
+                                className="text-slate-400 dark:text-zinc-500 group-hover:text-rose-500 group-hover:translate-x-1 transition-all duration-200 shrink-0"
+                              />
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 ) : (
                   <button
@@ -940,40 +1072,43 @@ const Navbar = () => {
 
                 {/* User Profile Card on Mobile */}
                 {user ? (
-                  <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3">
+                  <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 space-y-3">
                     <div className="flex items-center gap-3">
-                      <UserAvatar user={user} className="h-9 w-9 text-sm font-black" />
+                      <UserAvatar user={user} className="h-10 w-10 text-sm font-black border-2 border-lime-400 ring-2 ring-lime-400/20" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{user.name}</p>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
+                        <p className="font-jakarta text-sm font-extrabold text-slate-900 dark:text-white truncate">{user.name}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate flex items-center gap-1 font-medium">
                           <span className="text-emerald-500 font-bold">G</span> {user.email}
                         </p>
                       </div>
                     </div>
-                    <div className="mt-2.5 flex items-center gap-2 pt-2 border-t border-emerald-500/20">
+                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-emerald-500/20">
                       <Link
                         to="/profile"
                         onClick={() => setOpen(false)}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 text-xs font-bold text-slate-800 dark:text-slate-200"
+                        className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 text-xs font-bold text-slate-800 dark:text-slate-200"
                       >
                         <User size={13} className="text-lime-500" /> Profile
                       </Link>
-                      <Link
-                        to="/receipts"
-                        onClick={() => setOpen(false)}
-                        className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 text-xs font-bold text-slate-800 dark:text-slate-200"
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setOpen(false);
+                          openProfileModal();
+                        }}
+                        className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 text-xs font-bold text-slate-800 dark:text-slate-200"
                       >
-                        <Receipt size={13} /> Receipts
-                      </Link>
+                        <Edit3 size={13} className="text-sky-400" /> Edit
+                      </button>
                       <button
                         type="button"
                         onClick={() => {
                           logout();
                           setOpen(false);
                         }}
-                        className="flex items-center justify-center gap-1 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-bold text-rose-600 dark:text-rose-400"
+                        className="flex items-center justify-center gap-1 rounded-xl border border-rose-500/30 bg-rose-500/10 py-2 text-xs font-bold text-rose-600 dark:text-rose-400"
                       >
-                        <LogOut size={13} /> Sign Out
+                        <LogOut size={13} /> Exit
                       </button>
                     </div>
                   </div>
