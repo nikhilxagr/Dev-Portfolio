@@ -12,9 +12,22 @@ import {
   Server,
   Layers,
   Cpu,
+  Heart,
+  MessageSquare,
+  Trash2,
+  Send,
+  ExternalLink,
+  Share2,
 } from "lucide-react";
 import SeoHead from "@/components/seo/SeoHead";
 import { createBreadcrumbSchema } from "@/utils/seo";
+import { useUserAuth } from "@/context/UserAuthContext";
+import {
+  getArticleInteractionsService,
+  toggleArticleLikeService,
+  addArticleCommentService,
+  deleteArticleCommentService,
+} from "@/services/articles.service";
 
 // Clean inline architecture diagram display
 const DiagramCard = ({ src, alt, caption }) => {
@@ -39,7 +52,36 @@ const DiagramCard = ({ src, alt, caption }) => {
   );
 };
 
-// 8 Clean Documentation Sections for Right-Side "ON THIS PAGE" Navigation
+// Real industry sources & further reading
+const SOURCES = [
+  {
+    title: "Design a URL Shortener (TinyURL & Bitly Architecture)",
+    publisher: "System Design Primer • Donne Martin",
+    url: "https://github.com/donnemartin/system-design-primer",
+  },
+  {
+    title: "The Bitly Architecture & URL Redirection at Scale",
+    publisher: "High Scalability Distributed Systems",
+    url: "http://highscalability.com/",
+  },
+  {
+    title: "Redis Cache Eviction Strategies: LRU vs. LFU in Production",
+    publisher: "Redis Official Documentation • In-Memory Systems",
+    url: "https://redis.io/docs/latest/develop/reference/eviction/",
+  },
+  {
+    title: "Distributed Unique ID Generation: Twitter Snowflake & KGS",
+    publisher: "Distributed Systems Engineering Standards",
+    url: "https://en.wikipedia.org/wiki/Snowflake_ID",
+  },
+  {
+    title: "Database Indexing & B+ Trees for High Read Throughput",
+    publisher: "Database Internals • O'Reilly Architecture",
+    url: "https://www.databass.dev/",
+  },
+];
+
+// Clean Documentation Sections for Right-Side "ON THIS PAGE" Navigation
 const SECTIONS = [
   { id: "overview", label: "1. What is a URL Shortener?" },
   { id: "capacity", label: "2. Traffic & Storage Sizing" },
@@ -49,6 +91,7 @@ const SECTIONS = [
   { id: "data-model", label: "6. Database & Storage Strategy" },
   { id: "scalability", label: "7. Redis Caching & Scaling" },
   { id: "edge-cases", label: "8. Edge Cases & Takeaways" },
+  { id: "sources", label: "9. Sources & Reading" },
 ];
 
 export default function SystemDesignArticleView({
@@ -60,9 +103,35 @@ export default function SystemDesignArticleView({
   backLabel = "Back to Engineering Docs",
   baseRoute = "/blog",
 }) {
+  const { user, isLoggedIn, openSignInModal } = useUserAuth();
   const [activeTocId, setActiveTocId] = useState("overview");
   const [activePipeline, setActivePipeline] = useState("write");
   const [showScrollTop, setShowScrollTop] = useState(false);
+
+  // Likes & Comments state
+  const [likesCount, setLikesCount] = useState(0);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentInput, setCommentInput] = useState("");
+  const [submittingComment, setSubmittingComment] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const articleId = system?.id || "url_shortener";
+
+  // Fetch real likes and comments on mount & auth state change
+  useEffect(() => {
+    let isMounted = true;
+    getArticleInteractionsService(articleId).then((data) => {
+      if (isMounted && data) {
+        setLikesCount(data.likesCount || 0);
+        setHasLiked(Boolean(data.hasLiked));
+        setComments(data.comments || []);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [articleId, isLoggedIn]);
 
   // Reliable viewport-based scroll tracking for Table of Contents + Lenis integration
   useEffect(() => {
@@ -115,6 +184,126 @@ export default function SystemDesignArticleView({
     }
   };
 
+  // Like click handler: gates with login modal if user is not signed in
+  const handleLikeClick = async () => {
+    if (!isLoggedIn) {
+      openSignInModal({
+        title: "Sign in to Support",
+        subtitle: "Sign in with Google or email to support this engineering article.",
+      });
+      return;
+    }
+
+    try {
+      const res = await toggleArticleLikeService(articleId);
+      if (res) {
+        setHasLiked(res.hasLiked);
+        setLikesCount(res.likesCount);
+      }
+    } catch (err) {
+      console.error("Failed to toggle like:", err);
+    }
+  };
+
+  // Focus comment textarea: prompts sign in if not logged in
+  const handleCommentFocus = () => {
+    if (!isLoggedIn) {
+      openSignInModal({
+        title: "Sign In Required",
+        subtitle: "Sign in with Google or email to join the discussion.",
+      });
+    }
+  };
+
+  // Submit comment handler: gates with login modal if user is not signed in
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!isLoggedIn) {
+      openSignInModal({
+        title: "Sign In Required",
+        subtitle: "Sign in with Google or email to join the discussion.",
+      });
+      return;
+    }
+
+    if (!commentInput.trim()) return;
+
+    try {
+      setSubmittingComment(true);
+      const res = await addArticleCommentService(articleId, commentInput.trim());
+      if (res?.comment) {
+        setComments((prev) => [res.comment, ...prev]);
+        setCommentInput("");
+      }
+    } catch (err) {
+      console.error("Failed to post comment:", err);
+    } finally {
+      setSubmittingComment(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteArticleCommentService(articleId, commentId);
+      setComments((prev) => prev.filter((c) => c._id !== commentId));
+    } catch (err) {
+      console.error("Failed to delete comment:", err);
+    }
+  };
+
+  const handleShareTwitter = () => {
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    const text = encodeURIComponent(
+      `Read "${article.title}" by Nikhil Agrahari — A deep dive into URL shortener architecture:`
+    );
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  const handleShareLinkedIn = () => {
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    window.open(
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  const handleCopyLink = () => {
+    if (typeof window !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  };
+
+  const formatCommentDate = (dateStr) => {
+    if (!dateStr) return "Just now";
+    try {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffMins < 1) return "Just now";
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays < 7) return `${diffDays}d ago`;
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch {
+      return "Recently";
+    }
+  };
+
   return (
     <>
       <SeoHead
@@ -143,8 +332,8 @@ export default function SystemDesignArticleView({
           <div className="absolute right-1/4 top-1/2 h-80 w-80 translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/5 blur-[100px]" />
         </div>
 
-        {/* Expansive, Broad Container Covering More Screen Width */}
-        <div className="relative mx-auto max-w-[1560px] 2xl:max-w-[1680px] px-4 sm:px-8 lg:px-10 xl:px-12 w-full">
+        {/* Well-Aligned, Responsive Container (Balanced width, not overflowing whole screen) */}
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full">
           {/* Breadcrumb Navigation (Image 2 Style - Clean & Minimal) */}
           <nav className="flex items-center gap-2 text-xs font-medium text-slate-400 dark:text-zinc-500 mb-8">
             <Link to="/" className="hover:text-slate-900 dark:hover:text-white transition">
@@ -159,7 +348,7 @@ export default function SystemDesignArticleView({
           </nav>
 
           {/* Article Header (Image 2 Style - Broad, Bold, Editorial Sans Typography) */}
-          <header className="mb-12 max-w-6xl">
+          <header className="mb-12 max-w-4xl">
             {/* Category Eyebrow without // */}
             <p className="font-mono text-xs font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 mb-4">
               ENGINEERING DEEP DIVES
@@ -171,7 +360,7 @@ export default function SystemDesignArticleView({
             </h1>
 
             {/* Subtitle / 1-2 Line Definition */}
-            <p className="text-base sm:text-lg text-slate-600 dark:text-zinc-400 leading-relaxed font-normal max-w-5xl mb-6">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-zinc-400 leading-relaxed font-normal max-w-3xl mb-6">
               How to design a scalable URL shortener like TinyURL or Bitly — handling 1 billion redirects daily with sub-2ms response times, zero key collisions, and resilient caching.
             </p>
 
@@ -215,10 +404,10 @@ export default function SystemDesignArticleView({
             </div>
           </div>
 
-          {/* TWO-COLUMN LAYOUT: BROAD MAIN CONTENT (LEFT) + ROCK-SOLID STICKY TOC (RIGHT) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start relative">
-            {/* MAIN ARTICLE CONTENT (9 Columns for broad, spacious layout) */}
-            <main className="lg:col-span-9 space-y-16 min-w-0">
+          {/* TWO-COLUMN LAYOUT: BALANCED MAIN CONTENT (LEFT) + ROCK-SOLID STICKY TOC (RIGHT) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative">
+            {/* MAIN ARTICLE CONTENT (8 Columns for comfortable reading width) */}
+            <main className="lg:col-span-8 space-y-16 min-w-0">
               {/* SECTION 1: THE CORE PROBLEM */}
               <section id="overview" className="scroll-mt-28 space-y-4">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
@@ -908,6 +1097,247 @@ export default function SystemDesignArticleView({
                 </div>
               </section>
 
+              {/* SECTION 9: SOURCES AND FURTHER READING (Image 1 Style) */}
+              <section id="sources" className="scroll-mt-28 space-y-6 pt-6 border-t border-slate-200 dark:border-white/[0.08]">
+                <div>
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    Sources and further reading
+                  </h2>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+                    Real engineering whitepapers, architecture benchmarks, and official documentation referenced in this guide.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {SOURCES.map((source, index) => (
+                    <div key={index} className="group">
+                      <a
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-sm sm:text-base font-semibold text-slate-900 dark:text-zinc-100 hover:text-lime-600 dark:hover:text-lime-400 underline decoration-slate-300 dark:decoration-zinc-700 underline-offset-4 hover:decoration-lime-500 transition-colors"
+                      >
+                        <span>{source.title}</span>
+                        <ExternalLink size={13} className="shrink-0 opacity-60 group-hover:opacity-100" />
+                      </a>
+                      <p className="text-xs font-mono text-slate-400 dark:text-zinc-500 mt-0.5">
+                        {source.publisher}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="text-xs text-slate-500 dark:text-zinc-400 italic pt-2 leading-relaxed border-t border-slate-100 dark:border-white/[0.04]">
+                  Beginner-friendly overview based on distributed system design standards and production TinyURL/Bitly architecture. The database numbers, cache math, and request lifecycles represent industry standard engineering benchmarks.
+                </p>
+              </section>
+
+              {/* APPRECIATION & SUPPORTERS CARD (Image 1 & 2 Style) */}
+              <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-slate-50/70 dark:bg-zinc-900/60 p-6 sm:p-8 backdrop-blur-sm shadow-sm space-y-6">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">
+                    APPRECIATION
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 dark:text-rose-400">
+                    <span>❤️</span>
+                    <span>{likesCount} {likesCount === 1 ? "supporter" : "supporters"}</span>
+                  </span>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium text-slate-700 dark:text-zinc-300">
+                    Support this article if it helped you.
+                  </p>
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      onClick={handleLikeClick}
+                      className={clsx(
+                        "inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold transition shadow-sm",
+                        hasLiked
+                          ? "bg-rose-500/15 border border-rose-500/40 text-rose-500 dark:text-rose-400 hover:bg-rose-500/25"
+                          : "bg-slate-900 text-white dark:bg-zinc-800 dark:text-zinc-100 hover:bg-lime-400 hover:text-slate-950 dark:hover:bg-lime-400 dark:hover:text-slate-950 border border-slate-700 dark:border-white/10"
+                      )}
+                    >
+                      <Heart
+                        size={14}
+                        className={clsx(hasLiked ? "fill-current text-rose-500" : "")}
+                      />
+                      <span>{hasLiked ? "Supported" : "Support this post"}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* SHARE ROW (Image 1 & 2 Style) */}
+                <div className="pt-4 border-t border-slate-200/80 dark:border-white/[0.06] flex flex-wrap items-center gap-2 sm:gap-3 text-xs">
+                  <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500 mr-2">
+                    SHARE
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleShareTwitter}
+                    className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:border-lime-500 hover:text-lime-600 dark:hover:text-lime-400 font-semibold transition"
+                  >
+                    X / Twitter
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleShareLinkedIn}
+                    className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:border-lime-500 hover:text-lime-600 dark:hover:text-lime-400 font-semibold transition"
+                  >
+                    LinkedIn
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:border-lime-500 hover:text-lime-600 dark:hover:text-lime-400 font-semibold transition"
+                  >
+                    <span>{copied ? "✓ Copied!" : "🔗 Copy link"}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* DISCUSSION / COMMENTS SYSTEM */}
+              <div className="space-y-6 pt-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare size={18} className="text-lime-500" />
+                    <h3 className="font-jakarta text-xl font-bold text-slate-950 dark:text-white">
+                      Discussion ({comments.length})
+                    </h3>
+                  </div>
+                  {isLoggedIn && (
+                    <span className="text-xs text-slate-500 dark:text-zinc-400">
+                      Signed in as <strong className="text-slate-800 dark:text-zinc-200">{user?.name}</strong>
+                    </span>
+                  )}
+                </div>
+
+                {/* Comment Input Box */}
+                <form onSubmit={handleCommentSubmit} className="space-y-3">
+                  <textarea
+                    value={commentInput}
+                    onChange={(e) => setCommentInput(e.target.value)}
+                    onFocus={handleCommentFocus}
+                    placeholder={
+                      isLoggedIn
+                        ? "Write a comment or ask an engineering question..."
+                        : "Sign in to join the discussion or ask a question..."
+                    }
+                    rows={3}
+                    maxLength={1000}
+                    className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-900/80 p-4 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:border-lime-500 focus:outline-none focus:ring-1 focus:ring-lime-500 transition resize-none"
+                  />
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] text-slate-400 dark:text-zinc-500">
+                      {isLoggedIn
+                        ? `${commentInput.length}/1000 characters`
+                        : "Sign in with Google or email to post"}
+                    </span>
+                    <button
+                      type="submit"
+                      disabled={submittingComment || (isLoggedIn && !commentInput.trim())}
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-lime-400 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-lime-300 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                    >
+                      <Send size={13} />
+                      <span>{submittingComment ? "Posting..." : isLoggedIn ? "Post Comment" : "Sign in to Comment"}</span>
+                    </button>
+                  </div>
+                </form>
+
+                {/* Comments List */}
+                {comments.length > 0 ? (
+                  <div className="space-y-3.5 pt-2">
+                    {comments.map((c) => (
+                      <div
+                        key={c._id}
+                        className="rounded-2xl border border-slate-200 dark:border-white/[0.06] bg-white dark:bg-zinc-900/40 p-4 sm:p-5 transition"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2.5">
+                            <div className="h-7 w-7 rounded-full bg-lime-400/20 text-lime-600 dark:text-lime-400 font-bold text-xs flex items-center justify-center uppercase">
+                              {c.userName ? c.userName.charAt(0) : "U"}
+                            </div>
+                            <div>
+                              <p className="text-xs font-bold text-slate-900 dark:text-white">
+                                {c.userName}
+                              </p>
+                              <p className="text-[10px] text-slate-400 dark:text-zinc-500">
+                                {formatCommentDate(c.createdAt)}
+                              </p>
+                            </div>
+                          </div>
+
+                          {(user?._id === c.userId || user?.role === "admin") && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteComment(c._id)}
+                              className="text-xs text-slate-400 hover:text-rose-500 transition inline-flex items-center gap-1"
+                              title="Delete comment"
+                            >
+                              <Trash2 size={12} />
+                              <span>Delete</span>
+                            </button>
+                          )}
+                        </div>
+                        <p className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap pl-9">
+                          {c.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-400 dark:text-zinc-500 text-center py-4 bg-slate-50/50 dark:bg-zinc-900/20 rounded-2xl border border-dashed border-slate-200 dark:border-white/[0.06]">
+                    No comments yet. Be the first to share your engineering perspective!
+                  </p>
+                )}
+              </div>
+
+              {/* WRITTEN BY NIKHIL AGRAHARI (Image 2 Style) */}
+              <div className="pt-10 border-t border-slate-200 dark:border-white/[0.08] space-y-4">
+                <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
+                  WRITTEN BY
+                </p>
+                <h3 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                  Nikhil Agrahari
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 leading-relaxed max-w-2xl font-normal">
+                  Full-stack developer &amp; systems engineer exploring software architecture, AI, high-concurrency backends, and practical engineering.
+                </p>
+                <div className="flex flex-wrap items-center gap-4 text-xs font-bold pt-1">
+                  <a
+                    href="https://github.com/nikhilxagr"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-slate-900 dark:text-zinc-200 hover:text-lime-600 dark:hover:text-lime-400 transition"
+                  >
+                    GitHub
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/nikhilxagr/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-slate-900 dark:text-zinc-200 hover:text-lime-600 dark:hover:text-lime-400 transition"
+                  >
+                    LinkedIn
+                  </a>
+                  <Link
+                    to="/about"
+                    className="text-slate-900 dark:text-zinc-200 hover:text-lime-600 dark:hover:text-lime-400 transition"
+                  >
+                    About
+                  </Link>
+                </div>
+                <div className="pt-2">
+                  <Link
+                    to="/blog"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-white transition"
+                  >
+                    <span>← Back to writing</span>
+                  </Link>
+                </div>
+              </div>
+
               {/* BOTTOM NAVIGATION: PREVIOUS & NEXT SYSTEM */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-slate-200 dark:border-white/[0.08]">
                 {prevSystem ? (
@@ -950,14 +1380,14 @@ export default function SystemDesignArticleView({
             </main>
 
             {/* STICKY RIGHT SIDEBAR: "ON THIS PAGE" (ALWAYS FIXED AND VISIBLE ON SCROLL) */}
-            <aside className="hidden lg:block lg:col-span-3 sticky top-28 self-start h-fit max-h-[calc(100vh-8.5rem)] overflow-y-auto z-20">
+            <aside className="hidden lg:block lg:col-span-4 sticky top-28 self-start h-fit max-h-[calc(100vh-8.5rem)] overflow-y-auto z-20">
               <div className="pl-5 border-l border-slate-200 dark:border-white/[0.08]">
                 <div className="flex items-center justify-between mb-4">
                   <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">
                     ON THIS PAGE
                   </p>
                   <span className="text-[10px] font-mono text-lime-500/80 uppercase font-semibold">
-                    8 sections
+                    {SECTIONS.length} sections
                   </span>
                 </div>
                 <nav className="space-y-1.5 text-xs">

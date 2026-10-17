@@ -9,6 +9,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import userAuthRoutes from "./routes/userAuthRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import newsletterRoutes from "./routes/newsletterRoutes.js";
+import articleInteractionRoutes from "./routes/articleInteractionRoutes.js";
 import { applySecurityMiddleware } from "./middleware/securityMiddleware.js";
 import {
   generalLimiter,
@@ -77,7 +78,7 @@ app.use("/api", (req, res, next) => {
     "/payments/config-status",
   ];
   const allowReadFallbackWithoutDb =
-    req.method === "GET" && /^\/(projects|blogs)\/?$/.test(req.path);
+    req.method === "GET" && /^\/(projects|blogs|articles)\b/.test(req.path);
   // AI routes never need DB — always allow
   const isAiRoute = req.path.startsWith("/ai");
 
@@ -102,6 +103,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user-auth", userAuthRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/articles", articleInteractionRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/payments", paymentRoutes);
