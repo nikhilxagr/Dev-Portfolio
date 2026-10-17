@@ -52,6 +52,34 @@ const UserProfileModal = () => {
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const fileInputRef = useRef(null);
+  const scrollContainerRef = useRef(null);
+
+  // Prevent background scrolling and stop Lenis smooth scroll while modal is open
+  useEffect(() => {
+    if (isProfileModalOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      if (typeof window !== "undefined" && window.__activeLenis) {
+        window.__activeLenis.stop();
+      }
+      return () => {
+        document.body.style.overflow = prevOverflow;
+        if (typeof window !== "undefined" && window.__activeLenis) {
+          window.__activeLenis.start();
+        }
+      };
+    }
+  }, [isProfileModalOpen]);
+
+  // When mouse wheel fires anywhere on the modal card, ensure the profile form body scrolls
+  const handleCardWheel = (e) => {
+    e.stopPropagation();
+    if (scrollContainerRef.current) {
+      if (!scrollContainerRef.current.contains(e.target)) {
+        scrollContainerRef.current.scrollTop += e.deltaY;
+      }
+    }
+  };
 
   // Sync state with active user object whenever modal opens
   useEffect(() => {
@@ -177,13 +205,18 @@ const UserProfileModal = () => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-hidden"
+        data-lenis-prevent="true"
+        data-lenis-prevent-touch="true"
+      >
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeProfileModal}
+          data-lenis-prevent="true"
           className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
         />
 
@@ -192,6 +225,9 @@ const UserProfileModal = () => {
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
+          data-lenis-prevent="true"
+          data-lenis-prevent-touch="true"
+          onWheel={handleCardWheel}
           className="relative w-full max-w-xl max-h-[85vh] sm:max-h-[88vh] flex flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-zinc-950 shadow-2xl z-10 text-slate-900 dark:text-zinc-100 my-auto"
         >
           {/* Header */}
@@ -229,7 +265,13 @@ const UserProfileModal = () => {
           ) : (
             <form onSubmit={handleSave} className="flex flex-col flex-1 overflow-hidden min-h-0">
               {/* Scrollable Form Body with Hover-Activated Scrollbar */}
-              <div className="flex-1 overflow-y-auto px-6 py-5 sm:px-8 sm:py-6 space-y-5 profile-modal-scroll">
+              <div
+                ref={scrollContainerRef}
+                data-lenis-prevent="true"
+                data-lenis-prevent-touch="true"
+                onWheel={(e) => e.stopPropagation()}
+                className="flex-1 overflow-y-auto px-6 py-5 sm:px-8 sm:py-6 space-y-5 profile-modal-scroll min-h-0"
+              >
                 {errorMsg && (
                   <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 flex items-center gap-2.5 text-xs font-semibold text-rose-500 dark:text-rose-400">
                     <AlertCircle size={16} className="shrink-0" />
