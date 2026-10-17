@@ -2,19 +2,15 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import {
-  ArrowLeft,
-  Clock,
   CheckCircle2,
   AlertTriangle,
   Database,
   ChevronRight,
   ChevronLeft,
   Zap,
-  ListChecks,
   Server,
   Layers,
   Cpu,
-  Compass,
 } from "lucide-react";
 import SeoHead from "@/components/seo/SeoHead";
 import { createBreadcrumbSchema } from "@/utils/seo";
@@ -42,16 +38,16 @@ const DiagramCard = ({ src, alt, caption }) => {
   );
 };
 
-// 8 Clean, Focused Documentation Sections
+// 8 Clean Documentation Sections for Right-Side "ON THIS PAGE" Navigation
 const SECTIONS = [
-  { id: "overview", number: "01", shortLabel: "Overview", label: "01. What is a URL Shortener?" },
-  { id: "capacity", number: "02", shortLabel: "Capacity", label: "02. Traffic & Storage Sizing" },
-  { id: "hld", number: "03", shortLabel: "Architecture", label: "03. High-Level Architecture (HLD)" },
-  { id: "request-flow", number: "04", shortLabel: "Lifecycles", label: "04. Request Lifecycles" },
-  { id: "algorithms", number: "05", shortLabel: "Base62 Math", label: "05. Base62 Math (3.5T URLs)" },
-  { id: "data-model", number: "06", shortLabel: "Storage", label: "06. Database & Storage Strategy" },
-  { id: "scalability", number: "07", shortLabel: "Redis Scaling", label: "07. Redis Caching & Scaling" },
-  { id: "edge-cases", number: "08", shortLabel: "Edge Cases", label: "08. Edge Cases & Takeaways" },
+  { id: "overview", label: "1. What is a URL Shortener?" },
+  { id: "capacity", label: "2. Traffic & Storage Sizing" },
+  { id: "hld", label: "3. High-Level Architecture (HLD)" },
+  { id: "request-flow", label: "4. Request Lifecycles" },
+  { id: "algorithms", label: "5. Base62 Math (3.5T URLs)" },
+  { id: "data-model", label: "6. Database & Storage Strategy" },
+  { id: "scalability", label: "7. Redis Caching & Scaling" },
+  { id: "edge-cases", label: "8. Edge Cases & Takeaways" },
 ];
 
 export default function SystemDesignArticleView({
@@ -70,7 +66,7 @@ export default function SystemDesignArticleView({
   useEffect(() => {
     const handleScroll = () => {
       const sectionElements = SECTIONS.map((s) => document.getElementById(s.id));
-      const scrollPosition = window.scrollY + 220;
+      const scrollPosition = window.scrollY + 180;
 
       for (let i = sectionElements.length - 1; i >= 0; i--) {
         const el = sectionElements[i];
@@ -88,17 +84,9 @@ export default function SystemDesignArticleView({
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) {
-      const topOffset = el.getBoundingClientRect().top + window.pageYOffset - 110;
+      const topOffset = el.getBoundingClientRect().top + window.pageYOffset - 90;
       window.scrollTo({ top: topOffset, behavior: "smooth" });
     }
-  };
-
-  const getNextSectionId = (currentId) => {
-    const currentIndex = SECTIONS.findIndex((s) => s.id === currentId);
-    if (currentIndex >= 0 && currentIndex < SECTIONS.length - 1) {
-      return SECTIONS[currentIndex + 1];
-    }
-    return null;
   };
 
   return (
@@ -129,168 +117,87 @@ export default function SystemDesignArticleView({
           <div className="absolute right-1/4 top-1/2 h-80 w-80 translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/5 blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Top Bar Navigation */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
-            <Link
-              to={backUrl}
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/70 px-4 py-2 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:border-lime-500 hover:text-slate-950 dark:hover:text-white transition shadow-xs"
-            >
-              <ArrowLeft size={14} />
-              <span>{backLabel}</span>
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          {/* Breadcrumb Navigation (Image 2 Style - Clean & Minimal) */}
+          <nav className="flex items-center gap-2 text-xs font-medium text-slate-400 dark:text-zinc-500 mb-8">
+            <Link to="/" className="hover:text-slate-900 dark:hover:text-white transition">
+              Home
             </Link>
+            <span>/</span>
+            <Link to="/blog" className="hover:text-slate-900 dark:hover:text-white transition">
+              Blog
+            </Link>
+            <span>/</span>
+            <span className="text-slate-600 dark:text-zinc-300">Engineering Deep Dives</span>
+          </nav>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-lime-500/30 bg-lime-500/10 px-3 py-1 font-mono text-[10px] font-bold text-lime-600 dark:text-lime-300">
-                <Clock size={11} />
-                <span>10 min read</span>
-              </span>
-              <span className="rounded-full border border-slate-200 dark:border-white/[0.08] bg-slate-100 dark:bg-zinc-800/80 px-3 py-1 font-mono text-[10px] font-bold text-slate-600 dark:text-zinc-300">
-                System Design • HLD &amp; Architecture
-              </span>
-            </div>
-          </div>
-
-          {/* Article Header (Clean, High-Readability Typography) */}
-          <header className="mb-10 max-w-4xl">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-lime-600 dark:text-lime-400">
-                // SYSTEM ARCHITECTURE STUDY GUIDE
-              </span>
-              <span className="text-slate-300 dark:text-zinc-600">•</span>
-              <span className="text-xs font-medium text-slate-500 dark:text-zinc-400">
-                Production-Ready Blueprint
-              </span>
-            </div>
-
-            <h1 className="font-jakarta text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-[1.15]">
-              URL Shortener System Design (TinyURL / Bitly)
-            </h1>
-
-            {/* Simple 1 to 2 line definition */}
-            <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-700 dark:text-zinc-300 font-normal">
-              A URL shortener converts long, cumbersome web addresses into compact 7-character links and redirects visitors in under 2 milliseconds. At scale, it acts as a high-throughput, distributed key-value redirection engine serving billions of requests with zero collisions.
+          {/* Article Header (Image 2 Style - Clean, Bold, Editorial Sans Typography) */}
+          <header className="mb-12 max-w-4xl">
+            {/* Category Eyebrow without // */}
+            <p className="font-mono text-xs font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 mb-4">
+              ENGINEERING DEEP DIVES
             </p>
 
-            {/* Quick Author & Context Strip */}
-            <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/50 p-4 text-xs text-slate-600 dark:text-zinc-300 shadow-xs">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-lime-500 animate-pulse" />
-                <span className="font-bold text-slate-900 dark:text-white">Author:</span>
-                <span>Nikhil Agrahari</span>
-              </div>
-              <span className="text-slate-300 dark:text-zinc-600 hidden sm:inline">•</span>
-              <span className="text-slate-500 dark:text-zinc-400">Full-Stack &amp; Distributed Systems</span>
-              <span className="text-slate-300 dark:text-zinc-600 hidden sm:inline">•</span>
-              <span className="text-slate-500 dark:text-zinc-400">Core Concepts &amp; Architecture Notes</span>
+            {/* Main Title */}
+            <h1 className="font-jakarta text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-[1.12] mb-5">
+              URL Shortener System Design: A Complete Guide to Scalable Architecture
+            </h1>
+
+            {/* Subtitle / 1-2 Line Definition */}
+            <p className="text-base sm:text-lg text-slate-600 dark:text-zinc-400 leading-relaxed font-normal max-w-3xl mb-6">
+              How to design a scalable URL shortener like TinyURL or Bitly — handling 1 billion redirects daily with sub-2ms response times, zero key collisions, and resilient caching.
+            </p>
+
+            {/* Author, Date, Reading Time Metadata Row */}
+            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 dark:text-zinc-500 pb-8 border-b border-slate-200 dark:border-white/[0.08]">
+              <span className="font-semibold text-slate-800 dark:text-zinc-200">Nikhil Agrahari</span>
+              <span>•</span>
+              <span>Oct 2026</span>
+              <span>•</span>
+              <span>10 min read</span>
             </div>
           </header>
 
-          {/* STICKY HORIZONTAL SECTION BAR (Visible on all screens at all times) */}
-          <div className="sticky top-16 z-30 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 mb-8 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-y border-slate-200 dark:border-white/[0.08] shadow-xs">
-            <div className="flex items-center justify-between gap-3 max-w-7xl mx-auto">
-              <div className="flex items-center gap-2 shrink-0 text-slate-400 dark:text-zinc-500 font-mono text-[11px] font-bold uppercase tracking-wider hidden sm:flex">
-                <Compass size={14} className="text-lime-500" />
-                <span>Jump To:</span>
-              </div>
-
-              <div
-                className="flex items-center gap-2 overflow-x-auto w-full py-0.5"
-                style={{ scrollbarWidth: "none" }}
-              >
-                {SECTIONS.map((sec) => {
-                  const isActive = activeTocId === sec.id;
-                  return (
-                    <button
-                      key={sec.id}
-                      type="button"
-                      onClick={() => scrollToSection(sec.id)}
-                      className={clsx(
-                        "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all duration-200 border",
-                        isActive
-                          ? "border-lime-500 bg-lime-400 text-slate-950 shadow-xs font-black"
-                          : "border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-white/[0.04] text-slate-600 dark:text-zinc-300 hover:border-lime-400/40 hover:text-slate-950 dark:hover:text-white"
-                      )}
-                    >
-                      <span className="font-mono text-[10px] opacity-70 mr-1.5">{sec.number}</span>
-                      <span>{sec.shortLabel}</span>
-                    </button>
-                  );
-                })}
-              </div>
+          {/* Mobile / Tablet Quick Section Selector (Hidden on Desktop) */}
+          <div className="lg:hidden sticky top-16 z-30 -mx-4 px-4 py-3 mb-8 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-y border-slate-200 dark:border-white/[0.08]">
+            <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 mb-2">
+              ON THIS PAGE
+            </p>
+            <div
+              className="flex items-center gap-2 overflow-x-auto py-0.5"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {SECTIONS.map((sec) => {
+                const isActive = activeTocId === sec.id;
+                return (
+                  <button
+                    key={sec.id}
+                    type="button"
+                    onClick={() => scrollToSection(sec.id)}
+                    className={clsx(
+                      "shrink-0 rounded-full px-3 py-1 text-xs font-medium border transition",
+                      isActive
+                        ? "border-lime-500 bg-lime-400 text-slate-950 font-bold"
+                        : "border-slate-200 dark:border-white/10 text-slate-600 dark:text-zinc-400"
+                    )}
+                  >
+                    {sec.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* TWO-COLUMN LAYOUT: STICKY TOC ON LEFT (ALWAYS VISIBLE ON DESKTOP) + CLEAN DOCS ON RIGHT */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* STICKY SIDEBAR (Appears all the time as you scroll on desktop) */}
-            <aside className="hidden lg:block lg:col-span-3 lg:sticky lg:top-28 space-y-4">
-              <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/60 p-4 shadow-sm backdrop-blur-md">
-                <p className="font-jakarta text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                  <ListChecks size={14} className="text-lime-500" />
-                  <span>Document Sections</span>
-                </p>
-
-                <nav className="space-y-1">
-                  {SECTIONS.map((toc) => {
-                    const isActive = activeTocId === toc.id;
-                    return (
-                      <button
-                        key={toc.id}
-                        type="button"
-                        onClick={() => scrollToSection(toc.id)}
-                        className={clsx(
-                          "w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 block truncate",
-                          isActive
-                            ? "bg-lime-500/15 text-lime-700 dark:text-lime-300 font-bold border-l-2 border-lime-500 pl-2.5"
-                            : "text-slate-600 dark:text-zinc-400 hover:text-slate-950 dark:hover:text-zinc-100 hover:bg-slate-100/70 dark:hover:bg-zinc-800/50"
-                        )}
-                      >
-                        {toc.label}
-                      </button>
-                    );
-                  })}
-                </nav>
-              </div>
-
-              {/* Quick Metrics Capsule */}
-              <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-900/60 p-4 shadow-sm">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 mb-2">
-                  System Scale Targets
-                </p>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between border-b border-slate-100 dark:border-white/[0.05] pb-1.5">
-                    <span className="text-slate-500">Read QPS:</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">~60,000/s Peak</span>
-                  </div>
-                  <div className="flex justify-between border-b border-slate-100 dark:border-white/[0.05] pb-1.5">
-                    <span className="text-slate-500">Redirect Latency:</span>
-                    <span className="font-mono font-bold text-lime-600 dark:text-lime-400">&lt; 2ms (RAM)</span>
-                  </div>
-                  <div className="flex justify-between border-b border-slate-100 dark:border-white/[0.05] pb-1.5">
-                    <span className="text-slate-500">5-Year Storage:</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">~9.15 TB</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Redis Cache:</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">100 GB (Top 20%)</span>
-                  </div>
-                </div>
-              </div>
-            </aside>
-
-            {/* MAIN ARTICLE CONTENT */}
-            <main className="lg:col-span-9 space-y-16">
-              {/* # SECTION 01: THE CORE PROBLEM */}
-              <section id="overview" className="scroll-mt-32 space-y-4">
+          {/* TWO-COLUMN LAYOUT: MAIN CONTENT (LEFT) + FIXED "ON THIS PAGE" TOC (RIGHT - IMAGE 3 STYLE) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            {/* MAIN ARTICLE CONTENT (Left 8 Cols) */}
+            <main className="lg:col-span-8 space-y-16">
+              {/* SECTION 1: THE CORE PROBLEM */}
+              <section id="overview" className="scroll-mt-28 space-y-4">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                    // SECTION 01
-                  </span>
-                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
-                    What is a URL Shortener? (The Core Problem)
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    1. What is a URL Shortener? (The Core Problem)
                   </h2>
-                  {/* 1 to 2 line definition */}
                   <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
                     A URL shortener accepts any long destination URL, generates an ultra-compact 7-character alias, and redirects visitors in under 2 milliseconds while logging analytics in the background.
                   </p>
@@ -309,7 +216,7 @@ export default function SystemDesignArticleView({
 
                   <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-4 shadow-sm">
                     <div className="flex items-center gap-2 mb-2 text-cyan-600 dark:text-cyan-400 font-bold text-sm">
-                      <Clock size={16} />
+                      <Zap size={16} />
                       <span>Sub-2ms Redirection</span>
                     </div>
                     <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
@@ -328,29 +235,24 @@ export default function SystemDesignArticleView({
                   </div>
                 </div>
 
-                {/* Next Section Button */}
                 <div className="pt-2 text-right">
                   <button
                     type="button"
                     onClick={() => scrollToSection("capacity")}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
                   >
-                    <span>Next: 02. Traffic &amp; Storage Sizing</span>
+                    <span>Next: 2. Traffic &amp; Storage Sizing</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               </section>
 
-              {/* # SECTION 02: CAPACITY ESTIMATION */}
-              <section id="capacity" className="scroll-mt-32 space-y-6">
+              {/* SECTION 2: CAPACITY ESTIMATION */}
+              <section id="capacity" className="scroll-mt-28 space-y-6">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                    // SECTION 02
-                  </span>
-                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
-                    Sizing Up the System: Traffic &amp; Storage Sizing
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    2. Sizing Up the System: Traffic &amp; Storage Sizing
                   </h2>
-                  {/* 1 to 2 line definition */}
                   <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
                     Back-of-the-envelope calculations estimate that 1 Billion daily redirects and 10 Million new URLs require ~100 GB RAM for caching and ~9.15 TB disk storage over 5 years.
                   </p>
@@ -388,39 +290,43 @@ export default function SystemDesignArticleView({
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-slate-200 dark:border-white/[0.07] bg-slate-50/70 dark:bg-zinc-900/50 p-4 sm:p-5 text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
+                {/* Callout Box (Image 3 Style with green left border) */}
+                <div className="border-l-2 border-lime-400 bg-slate-50/70 dark:bg-white/[0.02] pl-4 py-3 rounded-r-xl text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
                   <strong className="text-slate-900 dark:text-white block font-bold mb-1">
-                    💡 The 80/20 Pareto Principle in System Design:
+                    The 80/20 Pareto Principle in System Design:
                   </strong>
                   In production, 20% of the links generate 80% of all redirect traffic (viral posts, trending news, brand campaigns). By caching only this hot 20% in a 100 GB Redis cluster, over 80% to 90% of requests are resolved directly from fast RAM without ever touching the persistent disk database!
                 </div>
 
-                {/* Next Section Button */}
                 <div className="pt-2 text-right">
                   <button
                     type="button"
                     onClick={() => scrollToSection("hld")}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
                   >
-                    <span>Next: 03. High-Level Architecture (HLD)</span>
+                    <span>Next: 3. High-Level Architecture (HLD)</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               </section>
 
-              {/* # SECTION 03: HIGH-LEVEL ARCHITECTURE */}
-              <section id="hld" className="scroll-mt-32 space-y-6">
+              {/* SECTION 3: HIGH-LEVEL ARCHITECTURE */}
+              <section id="hld" className="scroll-mt-28 space-y-6">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                    // SECTION 03
-                  </span>
-                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
-                    High-Level Architecture (The Big Picture)
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    3. High-Level Architecture (The Big Picture)
                   </h2>
-                  {/* 1 to 2 line definition */}
                   <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
                     The architecture strictly decouples link generation from link redirection so that viral traffic spikes on existing links never block or slow down new link creation.
                   </p>
+                </div>
+
+                {/* Callout Box */}
+                <div className="border-l-2 border-lime-400 bg-slate-50/70 dark:bg-white/[0.02] pl-4 py-3 rounded-r-xl text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
+                  <strong className="text-slate-900 dark:text-white block font-bold mb-1">
+                    Decoupled Read &amp; Write Architecture
+                  </strong>
+                  Link generation and link redirection run on completely independent pipelines so viral redirect spikes never exhaust write capacity or lock database records.
                 </div>
 
                 {/* Diagram 1: High Level Architecture */}
@@ -473,29 +379,24 @@ export default function SystemDesignArticleView({
                   </div>
                 </div>
 
-                {/* Next Section Button */}
                 <div className="pt-2 text-right">
                   <button
                     type="button"
                     onClick={() => scrollToSection("request-flow")}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
                   >
-                    <span>Next: 04. Request Lifecycles</span>
+                    <span>Next: 4. Request Lifecycles</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               </section>
 
-              {/* # SECTION 04: REQUEST LIFECYCLES */}
-              <section id="request-flow" className="scroll-mt-32 space-y-6">
+              {/* SECTION 4: REQUEST LIFECYCLES */}
+              <section id="request-flow" className="scroll-mt-28 space-y-6">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                    // SECTION 04
-                  </span>
-                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
-                    Request Lifecycles: Creating a Link vs. Redirecting
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    4. Request Lifecycles: Creating a Link vs. Redirecting
                   </h2>
-                  {/* 1 to 2 line definition */}
                   <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
                     Writing and reading follow two separate lifecycles: link creation claims a pre-allocated token from memory, while redirection resolves in under 2ms via Redis.
                   </p>
@@ -622,7 +523,7 @@ export default function SystemDesignArticleView({
                             HTTP 302 Redirection Sent
                           </h4>
                           <p className="mt-1 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-                            Returns an HTTP 302 (Found) header with <code>Location: https://example.com/very/long/destination</code>.
+                            Returns an HTTP 302 (Found) header with <code>Location: https://example.com/destination</code>.
                           </p>
                         </div>
 
@@ -642,29 +543,24 @@ export default function SystemDesignArticleView({
                   </div>
                 </div>
 
-                {/* Next Section Button */}
                 <div className="pt-2 text-right">
                   <button
                     type="button"
                     onClick={() => scrollToSection("algorithms")}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
                   >
-                    <span>Next: 05. Base62 Math (3.5T URLs)</span>
+                    <span>Next: 5. Base62 Math (3.5T URLs)</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               </section>
 
-              {/* # SECTION 05: BASE62 MATH */}
-              <section id="algorithms" className="scroll-mt-32 space-y-6">
+              {/* SECTION 5: BASE62 MATH */}
+              <section id="algorithms" className="scroll-mt-28 space-y-6">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                    // SECTION 05
-                  </span>
-                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
-                    The Key Secret: How 7 Characters Give 3.5 Trillion URLs
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    5. The Key Secret: How 7 Characters Give 3.5 Trillion URLs
                   </h2>
-                  {/* 1 to 2 line definition */}
                   <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
                     By combining letters [a-z, A-Z] and digits [0-9], we get 62 possible characters per slot, creating over 3.52 Trillion combinations in just 7 characters.
                   </p>
@@ -680,7 +576,7 @@ export default function SystemDesignArticleView({
                     Base62 uses 10 numbers [0-9] + 26 lowercase letters [a-z] + 26 uppercase letters [A-Z] = 62 characters. Unlike Base64, which contains &apos;+&apos; and &apos;/&apos; characters that require URL-encoding, every single Base62 character is 100% URL-safe without escape codes.
                   </p>
                   <div className="rounded-xl bg-zinc-950 p-4 font-mono text-xs text-lime-400 space-y-1">
-                    <p className="text-slate-400">// Combinations Formula: 62^Length</p>
+                    <p className="text-slate-400 font-bold">Combinations Formula: 62^Length</p>
                     <p>&bull; 6 Characters: 62^6 = 56,800,235,584 (~56.8 Billion URLs)</p>
                     <p className="font-bold text-lime-300">&bull; 7 Characters: 62^7 = 3,521,614,606,208 (~3.52 Trillion URLs!)</p>
                     <p>&bull; 8 Characters: 62^8 = 218,340,105,584,896 (~218 Trillion URLs)</p>
@@ -734,29 +630,24 @@ export default function SystemDesignArticleView({
                   </div>
                 </div>
 
-                {/* Next Section Button */}
                 <div className="pt-2 text-right">
                   <button
                     type="button"
                     onClick={() => scrollToSection("data-model")}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
                   >
-                    <span>Next: 06. Database &amp; Storage Strategy</span>
+                    <span>Next: 6. Database &amp; Storage Strategy</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               </section>
 
-              {/* # SECTION 06: DATABASE & STORAGE STRATEGY */}
-              <section id="data-model" className="scroll-mt-32 space-y-6">
+              {/* SECTION 6: DATABASE & STORAGE STRATEGY */}
+              <section id="data-model" className="scroll-mt-28 space-y-6">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                    // SECTION 06
-                  </span>
-                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
-                    How We Store the Data: Database &amp; Storage Strategy
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    6. How We Store the Data: Database &amp; Storage Strategy
                   </h2>
-                  {/* 1 to 2 line definition */}
                   <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
                     Because URL shortening is purely key-to-value lookups with no table joins, distributed NoSQL or sharded relational databases provide high throughput and zero bottlenecks.
                   </p>
@@ -800,29 +691,24 @@ export default function SystemDesignArticleView({
                   </div>
                 </div>
 
-                {/* Next Section Button */}
                 <div className="pt-2 text-right">
                   <button
                     type="button"
                     onClick={() => scrollToSection("scalability")}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
                   >
-                    <span>Next: 07. Redis Caching &amp; Scaling</span>
+                    <span>Next: 7. Redis Caching &amp; Scaling</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               </section>
 
-              {/* # SECTION 07: SCALING WITH REDIS */}
-              <section id="scalability" className="scroll-mt-32 space-y-6">
+              {/* SECTION 7: SCALING WITH REDIS */}
+              <section id="scalability" className="scroll-mt-28 space-y-6">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                    // SECTION 07
-                  </span>
-                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
-                    Scaling Up: Redis Caching &amp; Redirection Protocol
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    7. Scaling Up: Redis Caching &amp; Redirection Protocol
                   </h2>
-                  {/* 1 to 2 line definition */}
                   <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
                     Following the 80/20 Pareto principle, caching the top 20% viral links in a Redis cluster absorbs over 90% of all redirect traffic directly from fast RAM in ~1.2ms.
                   </p>
@@ -883,29 +769,24 @@ export default function SystemDesignArticleView({
                   </div>
                 </div>
 
-                {/* Next Section Button */}
                 <div className="pt-2 text-right">
                   <button
                     type="button"
                     onClick={() => scrollToSection("edge-cases")}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:underline"
                   >
-                    <span>Next: 08. Edge Cases &amp; Takeaways</span>
+                    <span>Next: 8. Edge Cases &amp; Takeaways</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
               </section>
 
-              {/* # SECTION 08: EDGE CASES & TAKEAWAYS */}
-              <section id="edge-cases" className="scroll-mt-32 space-y-6">
+              {/* SECTION 8: EDGE CASES & TAKEAWAYS */}
+              <section id="edge-cases" className="scroll-mt-28 space-y-6">
                 <div className="border-b border-slate-200 dark:border-white/[0.08] pb-3">
-                  <span className="font-mono text-xs font-bold uppercase tracking-widest text-lime-600 dark:text-lime-400">
-                    // SECTION 08
-                  </span>
-                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white mt-1">
-                    Real-World Edge Cases &amp; Key Takeaways
+                  <h2 className="font-jakarta text-2xl sm:text-3xl font-extrabold text-slate-950 dark:text-white">
+                    8. Real-World Disasters &amp; Key Takeaways
                   </h2>
-                  {/* 1 to 2 line definition */}
                   <p className="mt-2 text-sm font-medium text-slate-600 dark:text-zinc-400 leading-relaxed">
                     Production systems must withstand sudden cache stampedes, eliminate single points of failure on key generators, and actively block phishing abuse.
                   </p>
@@ -1040,6 +921,35 @@ export default function SystemDesignArticleView({
                 )}
               </div>
             </main>
+
+            {/* STICKY RIGHT SIDEBAR: "ON THIS PAGE" (Image 3 Style - Stays fixed on scroll) */}
+            <aside className="hidden lg:block lg:col-span-4 lg:sticky lg:top-28">
+              <div className="pl-6 border-l border-slate-200 dark:border-white/[0.08]">
+                <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500 mb-4">
+                  ON THIS PAGE
+                </p>
+                <nav className="space-y-3 text-xs">
+                  {SECTIONS.map((sec) => {
+                    const isActive = activeTocId === sec.id;
+                    return (
+                      <button
+                        key={sec.id}
+                        type="button"
+                        onClick={() => scrollToSection(sec.id)}
+                        className={clsx(
+                          "block w-full text-left transition-colors duration-150 leading-relaxed font-normal",
+                          isActive
+                            ? "text-slate-950 dark:text-white font-bold"
+                            : "text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300"
+                        )}
+                      >
+                        {sec.label}
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+            </aside>
           </div>
         </div>
       </article>
