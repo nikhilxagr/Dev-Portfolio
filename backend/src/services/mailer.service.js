@@ -1,5 +1,13 @@
 import nodemailer from "nodemailer";
+import dns from "node:dns";
 import { env } from "../config/env.js";
+
+// Ensure IPv4 is resolved first to avoid cloud host (Render/Docker) IPv6 timeouts on smtp.gmail.com
+try {
+  dns.setDefaultResultOrder("ipv4first");
+} catch {
+  // node < 17 fallback
+}
 
 let cachedTransporter = null;
 
@@ -13,17 +21,26 @@ const getTransporter = () => {
     return null;
   }
 
-  // Use Nodemailer's native Gmail service if Gmail is detected
+  // Use Nodemailer with explicit IPv4 and robust cloud timeouts
   if (
     (env.smtpHost && env.smtpHost.includes("gmail")) ||
     (env.smtpUser && env.smtpUser.includes("@gmail.com"))
   ) {
     cachedTransporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: env.smtpUser,
         pass: cleanedPass,
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      family: 4, // Forces IPv4 to bypass Render's IPv6 ENETUNREACH issues
+      connectionTimeout: 15000,
+      greetingTimeout: 10000,
+      socketTimeout: 20000,
     });
   } else {
     cachedTransporter = nodemailer.createTransport({
@@ -37,6 +54,10 @@ const getTransporter = () => {
       tls: {
         rejectUnauthorized: false,
       },
+      family: 4,
+      connectionTimeout: 15000,
+      greetingTimeout: 10000,
+      socketTimeout: 20000,
     });
   }
 

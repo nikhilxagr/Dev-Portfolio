@@ -37,6 +37,39 @@ const generateUserToken = (user) => {
   );
 };
 
+// Dispatches welcome or welcome-back email with clear delivery status logging
+const dispatchWelcomeEmail = (isNewUser, user) => {
+  if (!user || !user.email) return;
+
+  const emailPromise = isNewUser
+    ? sendNewUserWelcomeEmail({ email: user.email, name: user.name })
+    : sendUserWelcomeBackEmail({ email: user.email, name: user.name });
+
+  emailPromise
+    .then((result) => {
+      if (result?.simulated) {
+        console.warn(
+          `[UserAuth] ⚠️ Welcome email simulated for ${user.email}: SMTP_PASS is empty or not saved in server environment.`,
+        );
+      } else if (result?.sent) {
+        console.log(
+          `[UserAuth] ✅ Welcome email delivered successfully to ${user.email} (MessageId: ${result.messageId})`,
+        );
+      } else {
+        console.error(
+          `[UserAuth] ❌ Failed to deliver welcome email to ${user.email}:`,
+          result?.error,
+        );
+      }
+    })
+    .catch((err) => {
+      console.error(
+        `[UserAuth] ❌ Exception delivering welcome email to ${user.email}:`,
+        err.message,
+      );
+    });
+};
+
 // Validate allowed frontend origins for safe redirects
 export const isAllowedFrontendOrigin = (origin) => {
   if (!origin || typeof origin !== "string") return false;
@@ -277,16 +310,8 @@ export const handleGoogleCallback = async (req, res) => {
       });
     }
 
-    // Trigger Welcome or Welcome Back email in background
-    if (isNewUser) {
-      sendNewUserWelcomeEmail({ email: user.email, name: user.name }).catch((e) =>
-        console.error("[UserAuth] Error sending welcome email:", e.message),
-      );
-    } else {
-      sendUserWelcomeBackEmail({ email: user.email, name: user.name }).catch((e) =>
-        console.error("[UserAuth] Error sending welcome back email:", e.message),
-      );
-    }
+    // Trigger Welcome or Welcome Back email with delivery verification
+    dispatchWelcomeEmail(isNewUser, user);
 
     const token = generateUserToken(user);
     res.redirect(`${targetFrontend}/auth/callback?token=${encodeURIComponent(token)}`);
@@ -351,15 +376,8 @@ export const handleGoogleCredential = async (req, res, next) => {
       });
     }
 
-    if (isNewUser) {
-      sendNewUserWelcomeEmail({ email: user.email, name: user.name }).catch((e) =>
-        console.error("[UserAuth] Error sending welcome email:", e.message),
-      );
-    } else {
-      sendUserWelcomeBackEmail({ email: user.email, name: user.name }).catch((e) =>
-        console.error("[UserAuth] Error sending welcome back email:", e.message),
-      );
-    }
+    // Trigger Welcome or Welcome Back email with delivery verification
+    dispatchWelcomeEmail(isNewUser, user);
 
     const token = generateUserToken(user);
 
@@ -413,9 +431,7 @@ export const registerUser = async (req, res, next) => {
       lastLoginAt: new Date(),
     });
 
-    sendNewUserWelcomeEmail({ email: user.email, name: user.name }).catch((e) =>
-      console.error("[UserAuth] Error sending welcome email:", e.message),
-    );
+    dispatchWelcomeEmail(true, user);
 
     const token = generateUserToken(user);
 
@@ -466,9 +482,7 @@ export const loginUser = async (req, res, next) => {
     user.lastLoginAt = new Date();
     await user.save();
 
-    sendUserWelcomeBackEmail({ email: user.email, name: user.name }).catch((e) =>
-      console.error("[UserAuth] Error sending welcome back email:", e.message),
-    );
+    dispatchWelcomeEmail(false, user);
 
     const token = generateUserToken(user);
 
