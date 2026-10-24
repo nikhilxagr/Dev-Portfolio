@@ -10,6 +10,7 @@ import ScrollProgressBar from "@/components/layout/ScrollProgressBar";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import SignInModal from "@/components/auth/SignInModal";
 import UserProfileModal from "@/components/auth/UserProfileModal";
+import NikhilAI from "@/components/ai/NikhilAI";
 import LenisProvider from "@/components/layout/LenisProvider";
 import RouteErrorBoundary from "@/components/RouteErrorBoundary";
 import { prewarmBackendForCheckout } from "@/services/payment.service";
@@ -235,6 +236,8 @@ function App() {
         </div>
         <SignInModal />
         <UserProfileModal />
+        {/* Nikhil AI — Portfolio AI assistant widget */}
+        <NikhilAI />
         {import.meta.env.PROD ? <Analytics /> : null}
       </div>
     </LenisProvider>
