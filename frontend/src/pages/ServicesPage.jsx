@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import clsx from "clsx";
 import {
   ArrowRight,
@@ -24,7 +25,6 @@ import {
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
 import PaymentTrustPanel from "@/components/ui/PaymentTrustPanel";
-import FadeInUp from "@/components/animations/FadeInUp";
 import {
   createPaymentOrder,
   prewarmBackendForCheckout,
@@ -289,36 +289,94 @@ const ServicesPage = () => {
         jsonLd={createBreadcrumbSchema([{ name: "Home", path: "/" }, { name: "Services", path: "/services" }])}
       />
 
-      <section className="section-wrap pt-6 pb-28">
+      <section className="section-wrap pt-4 sm:pt-8 pb-28">
 
-        {/* # Page Header */}
-        <FadeInUp>
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
-              <Code2 size={13} /> Available for Freelance Work
-            </span>
+        {/* # Centered Hero Header (Sized & Styled like Blog & Journey Page) */}
+        <div className="relative text-center max-w-5xl mx-auto pt-6 sm:pt-10 pb-12 sm:pb-16">
+          {/* Ambient Radial Lighting */}
+          <div className="pointer-events-none absolute inset-0 -top-12 flex items-center justify-center">
+            <div className="h-72 w-[34rem] rounded-full bg-lime-400/[0.07] dark:bg-lime-400/[0.12] blur-[130px]" />
+          </div>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-slate-900 dark:text-white leading-[1.05]">
-              Services &amp;{" "}
-              <span className="bg-gradient-to-r from-lime-500 via-emerald-500 to-teal-500 dark:from-lime-400 dark:via-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
-                Packages
+          <div className="relative">
+            {/* Eyebrow Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
+                Available for Freelance &amp; Contract Work
               </span>
-            </h1>
+            </motion.div>
 
-            <p className="mt-4 text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto leading-relaxed">
+            {/* Proportional Heading (Matching Blog & Journey Page Scale) */}
+            <motion.h1
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.1 }}
+              className="mt-4 font-display text-[8.2vw] sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.05] tracking-tight text-zinc-900 dark:text-white"
+            >
+              SERVICES &amp;
+              <br />
+              <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
+                PACKAGES
+              </span>
+            </motion.h1>
+
+            {/* Subtitle Details */}
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.2 }}
+              className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-zinc-500 dark:text-zinc-400 sm:text-base font-normal"
+            >
               Transparent deliverables, clear turnaround times, and secure checkout — built for founders, teams, and individuals who want reliable technical execution.
-            </p>
+            </motion.p>
 
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+            {/* Quick Action CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.25 }}
+              className="mt-8 flex flex-wrap items-center justify-center gap-3"
+            >
               <Button to="/contact" className="min-w-[190px]">
                 <HeartHandshake size={16} /> Discuss Custom Project
               </Button>
               <Button to="/support" variant="secondary" className="min-w-[160px]">
                 <ShieldCheck size={16} /> Trust &amp; Refund Policy
               </Button>
-            </div>
+            </motion.div>
+
+            {/* Core Stats Capsule (Matching Blog / Journey Page Structure) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.3 }}
+              className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 backdrop-blur-xl shadow-sm dark:shadow-none"
+            >
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:divide-x md:divide-zinc-200 dark:md:divide-white/[0.08]">
+                {[
+                  { label: "Available Packages", value: "04 Core", color: "text-zinc-900 dark:text-white" },
+                  { label: "Turnaround Time", value: "3–7 Days", color: "text-lime-500 dark:text-lime-300" },
+                  { label: "Security Standard", value: "OWASP Hardened", color: "text-zinc-900 dark:text-white" },
+                  { label: "Checkout Model", value: "100% SECURE", color: "text-amber-600 dark:text-amber-500" },
+                ].map(({ label, value, color }, i) => (
+                  <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
+                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-600 mb-1">
+                      {label}
+                    </span>
+                    <span className={`text-xl font-black tracking-tight ${color}`}>
+                      {value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </div>
-        </FadeInUp>
+        </div>
 
         {/* # Trust / Payment Panel */}
         <PaymentTrustPanel includeHighlights />
@@ -338,19 +396,25 @@ const ServicesPage = () => {
         )}
 
         {/* # Section Header + Category Filters */}
-        <div className="mt-20 mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div className="mt-16 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-6 border-b border-slate-200/80 dark:border-white/[0.08]">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
-                Service Packages
+              <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-400 block mb-1">
+                // SERVICE CATALOG
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                Available Packages &amp; Deliverables
               </h2>
               <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
                 Choose a package, inspect deliverables, and book securely.
               </p>
             </div>
 
-            {/* Category pills */}
-            <div className="flex flex-wrap gap-2">
+            {/* Category pills styled like Blog Page */}
+            <div
+              className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full"
+              style={{ scrollbarWidth: "none" }}
+            >
               {categories.map((cat) => {
                 const isSelected = selectedCategory === cat;
                 const count = cat === "All"
@@ -363,16 +427,16 @@ const ServicesPage = () => {
                     type="button"
                     onClick={() => setSelectedCategory(cat)}
                     className={clsx(
-                      "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold transition-all duration-200",
+                      "shrink-0 rounded-full px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 border flex items-center gap-2",
                       isSelected
-                        ? "bg-emerald-600 text-white shadow-md dark:bg-emerald-500 dark:shadow-[0_0_16px_rgba(16,185,129,0.4)]"
-                        : "border border-slate-300 bg-white text-slate-700 hover:border-emerald-500 hover:text-emerald-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:border-emerald-500/40 dark:hover:text-emerald-400"
+                        ? "border-lime-500 bg-lime-400 text-slate-950 font-black shadow-[0_0_15px_rgba(163,230,53,0.3)]"
+                        : "border-slate-200 bg-white/60 text-slate-600 hover:border-lime-400/40 hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:border-lime-400/40 dark:hover:text-white"
                     )}
                   >
                     {cat}
                     <span className={clsx(
                       "rounded-full px-1.5 py-0.5 text-[9px] font-bold",
-                      isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                      isSelected ? "bg-black/15 text-slate-950 font-black" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                     )}>
                       {count}
                     </span>
@@ -381,9 +445,6 @@ const ServicesPage = () => {
               })}
             </div>
           </div>
-
-          {/* Divider */}
-          <div className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
         </div>
 
         {/* # Service Cards Grid */}
