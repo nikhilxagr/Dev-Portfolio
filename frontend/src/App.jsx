@@ -5,7 +5,6 @@ import { Analytics } from "@vercel/analytics/react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BackgroundGrid from "@/components/layout/BackgroundGrid";
-import PortfolioLoader from "@/components/layout/PortfolioLoader";
 import ScrollProgressBar from "@/components/layout/ScrollProgressBar";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import SignInModal from "@/components/auth/SignInModal";
@@ -51,7 +50,6 @@ const HowIBuildPage = lazy(() => import("@/pages/HowIBuildPage.jsx"));
 const AuthCallbackPage = lazy(() => import("@/pages/AuthCallbackPage.jsx"));
 import NotFoundPage from "@/pages/NotFoundPage.jsx";
 
-const LOADER_VISIT_KEY = "portfolio_loader_seen";
 const MotionDiv = motion.div;
 
 const RouteFallback = () => (
@@ -68,29 +66,7 @@ function App() {
   const prefersReducedMotion = useReducedMotion();
   const isAdminRoute = location.pathname.startsWith("/admin");
   const isAIRoute = location.pathname === "/ai";
-
-  const [showLoader, setShowLoader] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
-
-    const isAdminPath = window.location.pathname.startsWith("/admin");
-    const isAiPath = window.location.pathname === "/ai" || window.location.pathname === "/chat";
-    if (isAdminPath || isAiPath) {
-      return false;
-    }
-
-    return window.sessionStorage.getItem(LOADER_VISIT_KEY) !== "1";
-  });
-
-  const handleLoaderComplete = () => {
-    if (typeof window !== "undefined") {
-      window.sessionStorage.setItem(LOADER_VISIT_KEY, "1");
-      window.scrollTo(0, 0);
-    }
-
-    setShowLoader(false);
-  };
+  const showLoader = false;
 
   useEffect(() => {
     if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
@@ -136,14 +112,6 @@ function App() {
     <LenisProvider>
       <div className="relative min-h-screen overflow-x-clip">
         {!isAIRoute ? <ScrollProgressBar /> : null}
-        <AnimatePresence mode="wait">
-          {showLoader ? (
-            <PortfolioLoader
-              key="portfolio-loader"
-              onComplete={handleLoaderComplete}
-            />
-          ) : null}
-        </AnimatePresence>
         {!isAIRoute ? <BackgroundGrid /> : null}
         <div className="relative z-10 flex min-h-screen flex-col">
           {!isAdminRoute && !isAIRoute ? <Navbar /> : null}

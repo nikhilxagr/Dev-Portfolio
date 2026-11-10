@@ -5,12 +5,31 @@ export default {
   theme: {
     extend: {
       colors: {
-        panel: '#0c1624',
-        ink: '#d5e4f5',
+        panel: '#11141c',
+        ink: {
+          DEFAULT: '#eef0f5',
+          50: '#f8fafc',
+          100: '#eef0f5',
+          200: '#dde2ec',
+          300: '#c7cddb',
+          400: '#a3a9b8',
+          500: '#7a8296',
+          600: '#5a6377',
+          700: '#3f4759',
+          800: '#272c3a',
+          900: '#161a24',
+          950: '#090a0f',
+        },
+        surface: {
+          deep: '#07080d',
+          base: '#090a0f',
+          card: '#11141c',
+          raised: '#1a1e28',
+        },
         neon: {
-          blue: '#00d4ff',
-          green: '#00ffa8',
-          deep: '#08111f',
+          blue: '#34d399',
+          green: '#10b981',
+          deep: '#090a0f',
         },
       },
       fontFamily: {
@@ -23,25 +42,12 @@ export default {
         jakarta: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        neon: '0 0 0 1px rgba(0, 212, 255, 0.35), 0 0 30px rgba(0, 212, 255, 0.18)',
+        neon: '0 0 0 1px rgba(16, 185, 129, 0.35)',
+        highlight: 'inset 0 1px 0 rgba(255, 255, 255, 0.12)',
       },
       backgroundImage: {
         'mesh-grid':
-          'linear-gradient(rgba(0, 212, 255, 0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 168, 0.09) 1px, transparent 1px)',
-      },
-      keyframes: {
-        pulseLine: {
-          '0%, 100%': { opacity: 0.4 },
-          '50%': { opacity: 1 },
-        },
-        floatY: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-8px)' },
-        },
-      },
-      animation: {
-        pulseLine: 'pulseLine 3.2s ease-in-out infinite',
-        floatY: 'floatY 5s ease-in-out infinite',
+          'linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)',
       },
     },
   },
