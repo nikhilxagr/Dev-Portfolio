@@ -1,6 +1,16 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { Mail, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { Mail, ArrowUpRight } from "lucide-react";
+import { FaLinkedinIn } from "react-icons/fa";
+import {
+  SiGithub,
+  SiInstagram,
+  SiMedium,
+  SiTryhackme,
+  SiWhatsapp,
+  SiLeetcode,
+  SiGeeksforgeeks,
+} from "react-icons/si";
 import {
   LEGAL_LINKS,
   NAV_LINKS,
@@ -8,11 +18,95 @@ import {
   SITE_PROFILE,
   SOCIAL_LINKS,
 } from "@/constants/siteData";
-import { getSkillLogoUrl } from "@/constants/skillLogos";
-import { useTheme } from "@/context/ThemeContext";
+
+const DEFAULT_SOCIAL_META = {
+  icon: null,
+  cardHover:
+    "hover:border-emerald-600/35 hover:bg-emerald-500/[0.04] dark:hover:border-emerald-500/40 dark:hover:bg-emerald-500/[0.08]",
+  iconBoxHover:
+    "group-hover:border-emerald-600/30 group-hover:bg-emerald-500/10 group-hover:text-emerald-700 dark:group-hover:border-emerald-500/35 dark:group-hover:bg-emerald-500/15 dark:group-hover:text-emerald-400",
+  titleHover:
+    "group-hover:text-emerald-700 dark:group-hover:text-emerald-400",
+  arrowHover:
+    "group-hover:text-emerald-600 dark:group-hover:text-emerald-400",
+};
+
+const SOCIAL_CARD_META = {
+  GitHub: {
+    icon: SiGithub,
+    cardHover:
+      "hover:border-slate-900/35 hover:bg-slate-900/[0.04] dark:hover:border-white/35 dark:hover:bg-white/[0.06]",
+    iconBoxHover:
+      "group-hover:border-slate-900/25 group-hover:bg-slate-900/[0.08] group-hover:text-slate-950 dark:group-hover:border-white/25 dark:group-hover:bg-white/[0.12] dark:group-hover:text-white",
+    titleHover: "group-hover:text-slate-950 dark:group-hover:text-white",
+    arrowHover: "group-hover:text-slate-900 dark:group-hover:text-white",
+  },
+  LinkedIn: {
+    icon: FaLinkedinIn,
+    cardHover:
+      "hover:border-[#0A66C2]/40 hover:bg-[#0A66C2]/[0.05] dark:hover:border-[#3897F0]/45 dark:hover:bg-[#0A66C2]/[0.12]",
+    iconBoxHover:
+      "group-hover:border-[#0A66C2]/35 group-hover:bg-[#0A66C2]/10 group-hover:text-[#0A66C2] dark:group-hover:border-[#3897F0]/40 dark:group-hover:bg-[#0A66C2]/25 dark:group-hover:text-[#60A5FA]",
+    titleHover: "group-hover:text-[#0A66C2] dark:group-hover:text-[#60A5FA]",
+    arrowHover: "group-hover:text-[#0A66C2] dark:group-hover:text-[#60A5FA]",
+  },
+  Instagram: {
+    icon: SiInstagram,
+    cardHover:
+      "hover:border-[#E1306C]/45 hover:bg-[#E1306C]/[0.05] dark:hover:border-pink-400/50 dark:hover:bg-pink-500/[0.10]",
+    iconBoxHover:
+      "group-hover:border-[#E1306C]/35 group-hover:bg-[#E1306C]/10 group-hover:text-[#D81B60] dark:group-hover:border-pink-400/40 dark:group-hover:bg-pink-500/20 dark:group-hover:text-pink-400",
+    titleHover: "group-hover:text-[#C2185B] dark:group-hover:text-pink-400",
+    arrowHover: "group-hover:text-[#D81B60] dark:group-hover:text-pink-400",
+  },
+  Medium: {
+    icon: SiMedium,
+    cardHover:
+      "hover:border-[#00AB6C]/45 hover:bg-[#00AB6C]/[0.05] dark:hover:border-[#00AB6C]/50 dark:hover:bg-[#00AB6C]/[0.10]",
+    iconBoxHover:
+      "group-hover:border-[#00AB6C]/35 group-hover:bg-[#00AB6C]/12 group-hover:text-[#008755] dark:group-hover:border-[#00AB6C]/40 dark:group-hover:bg-[#00AB6C]/20 dark:group-hover:text-[#1FD495]",
+    titleHover: "group-hover:text-[#008755] dark:group-hover:text-[#1FD495]",
+    arrowHover: "group-hover:text-[#008755] dark:group-hover:text-[#1FD495]",
+  },
+  TryHackMe: {
+    icon: SiTryhackme,
+    cardHover:
+      "hover:border-red-600/40 hover:bg-red-600/[0.05] dark:hover:border-red-500/50 dark:hover:bg-red-500/[0.10]",
+    iconBoxHover:
+      "group-hover:border-red-600/35 group-hover:bg-red-600/10 group-hover:text-red-600 dark:group-hover:border-red-400/40 dark:group-hover:bg-red-500/20 dark:group-hover:text-red-400",
+    titleHover: "group-hover:text-red-700 dark:group-hover:text-red-400",
+    arrowHover: "group-hover:text-red-600 dark:group-hover:text-red-400",
+  },
+  WhatsApp: {
+    icon: SiWhatsapp,
+    cardHover:
+      "hover:border-[#25D366]/45 hover:bg-[#25D366]/[0.06] dark:hover:border-[#25D366]/50 dark:hover:bg-[#25D366]/[0.10]",
+    iconBoxHover:
+      "group-hover:border-[#25D366]/40 group-hover:bg-[#25D366]/15 group-hover:text-[#15803D] dark:group-hover:border-[#25D366]/40 dark:group-hover:bg-[#25D366]/20 dark:group-hover:text-[#25D366]",
+    titleHover: "group-hover:text-[#15803D] dark:group-hover:text-[#25D366]",
+    arrowHover: "group-hover:text-[#15803D] dark:group-hover:text-[#25D366]",
+  },
+  LeetCode: {
+    icon: SiLeetcode,
+    cardHover:
+      "hover:border-[#FFA116]/50 hover:bg-[#FFA116]/[0.07] dark:hover:border-[#FFA116]/50 dark:hover:bg-[#FFA116]/[0.10]",
+    iconBoxHover:
+      "group-hover:border-[#FFA116]/45 group-hover:bg-[#FFA116]/15 group-hover:text-[#C26D00] dark:group-hover:border-[#FFA116]/40 dark:group-hover:bg-[#FFA116]/20 dark:group-hover:text-[#FFA116]",
+    titleHover: "group-hover:text-[#B45309] dark:group-hover:text-[#FFA116]",
+    arrowHover: "group-hover:text-[#C26D00] dark:group-hover:text-[#FFA116]",
+  },
+  GeeksforGeeks: {
+    icon: SiGeeksforgeeks,
+    cardHover:
+      "hover:border-[#2F8D46]/45 hover:bg-[#2F8D46]/[0.06] dark:hover:border-[#2F8D46]/60 dark:hover:bg-[#2F8D46]/[0.12]",
+    iconBoxHover:
+      "group-hover:border-[#2F8D46]/40 group-hover:bg-[#2F8D46]/15 group-hover:text-[#2F8D46] dark:group-hover:border-[#4ADE80]/40 dark:group-hover:bg-[#2F8D46]/25 dark:group-hover:text-[#4ADE80]",
+    titleHover: "group-hover:text-[#257338] dark:group-hover:text-[#4ADE80]",
+    arrowHover: "group-hover:text-[#2F8D46] dark:group-hover:text-[#4ADE80]",
+  },
+};
 
 const Footer = () => {
-  const { isDark } = useTheme();
   const primaryLinks = NAV_LINKS.filter(
     (item) => !item.to.startsWith("/admin"),
   );
@@ -23,26 +117,26 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative border-t border-slate-300 bg-slate-100 text-slate-900 dark:border-emerald-500/20 dark:bg-[#030906] dark:text-white transition-colors duration-300">
+    <footer className="relative border-t border-black/[0.08] bg-[#f5f7fa] text-slate-900 dark:border-white/[0.08] dark:bg-[#090a0f] dark:text-[#eef0f5] transition-colors duration-150">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-          
           {/* Left Column: Brand & Social Grid */}
           <div>
-            <span className="text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-400">
+            <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
               Connect
             </span>
-            <h2 className="mt-1.5 font-display text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h2 className="mt-1.5 font-display text-2xl font-medium tracking-[-0.02em] text-slate-900 dark:text-[#eef0f5]">
               {SITE_PROFILE.fullName}
             </h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-              Full-stack developer &amp; application security engineer focused on practical delivery, clean architecture, and reliable execution.
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8]">
+              Full-stack developer and application security practitioner focused on clean architecture, tested APIs, and dependable delivery.
             </p>
 
             {/* Social Grid Cards */}
-            <div className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-3 lg:max-w-2xl">
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:max-w-2xl">
               {socialProfiles.map((item) => {
-                const logoUrl = getSkillLogoUrl(item.label, isDark);
+                const meta = SOCIAL_CARD_META[item.label] || DEFAULT_SOCIAL_META;
+                const PlatformIcon = meta.icon;
 
                 return (
                   <a
@@ -51,61 +145,38 @@ const Footer = () => {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={`Open ${item.label} profile for Nikhil Agrahari`}
-                    className="group flex items-center justify-between gap-2 rounded-2xl border border-slate-300 bg-white p-2.5 sm:p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500 hover:bg-emerald-50 dark:border-emerald-500/20 dark:bg-emerald-950/30 dark:hover:bg-emerald-500/10 dark:hover:border-emerald-400/40"
+                    className={`group flex items-center justify-between gap-2 rounded-xl border border-black/[0.08] bg-white p-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 dark:border-white/[0.08] dark:bg-[#11141c] ${meta.cardHover}`}
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 shrink-0 text-slate-800 dark:text-white">
-                        {item.label === "LinkedIn" ? (
-                          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-[#0A66C2]">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.026-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.063 2.063 0 1 1 0-4.126 2.063 2.063 0 0 1 0 4.126zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                          </svg>
-                        ) : item.label === "GitHub" ? (
-                          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
-                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-                          </svg>
-                        ) : item.label === "LeetCode" ? (
-                          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-[#FFA116]">
-                            <path d="M16.102 17.93l-2.697 2.607c-.466.45-1.135.528-1.68.275l-4.71-2.181a1.488 1.488 0 01-.845-1.348V6.717c0-.573.328-1.09.845-1.348l4.71-2.181c.545-.253 1.214-.175 1.68.275l2.697 2.607a.64.64 0 01-.892.918l-2.696-2.607a.208.208 0 00-.23-.035l-4.71 2.181a.208.208 0 00-.118.188v10.566c0 .08.046.152.118.188l4.71 2.181c.075.035.163.023.23-.035l2.696-2.607a.64.64 0 01.892.918z" />
-                            <path d="M20.25 12a.64.64 0 01-.64.64H9.64a.64.64 0 010-1.28h9.97c.353 0 .64.287.64.64z" />
-                          </svg>
-                        ) : item.label === "TryHackMe" ? (
-                          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-[#E11D48]">
-                            <path d="M12 1L2 6v6c0 5.55 3.84 10.74 10 12 6.16-1.26 10-5.45 10-12V6l-10-5zm0 4.8l6 3.6v4.8c0 3.8-2.6 7.3-6 8.3-3.4-1-6-4.5-6-8.3V9.4l6-3.6z" />
-                          </svg>
-                        ) : item.label === "GeeksforGeeks" ? (
-                          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-[#2F8D46]">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-4H8v4H6V7h2v4h2V7h2v10zm6 0h-4V7h4v2h-2v2h2v2h-2v2h2v2z" />
-                          </svg>
-                        ) : item.label === "Instagram" ? (
-                          <svg viewBox="0 0 24 24" className="h-4 w-4 fill-[#E4405F]">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                          </svg>
-                        ) : logoUrl ? (
-                          <img
-                            src={logoUrl}
-                            alt={`${item.label} logo`}
-                            loading="lazy"
-                            decoding="async"
-                            width={16}
-                            height={16}
-                            className="h-4 w-4 object-contain"
-                          />
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span
+                        className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-600 transition-colors duration-150 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8] ${meta.iconBoxHover}`}
+                      >
+                        {PlatformIcon ? (
+                          <PlatformIcon size={16} aria-hidden="true" />
                         ) : (
-                          <span className="font-mono text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-400">
+                          <span className="font-mono text-xs font-medium">
                             {item.label.slice(0, 2)}
                           </span>
                         )}
                       </span>
 
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors truncate">
+                        <p
+                          className={`text-sm font-medium text-slate-900 dark:text-[#eef0f5] truncate transition-colors duration-150 ${meta.titleHover}`}
+                        >
                           {item.label}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-normal truncate">Open profile</p>
+                        <p className="text-xs text-slate-500 dark:text-[#7a8296] truncate">
+                          Open profile
+                        </p>
                       </div>
                     </div>
 
-                    <ArrowUpRight size={14} className="shrink-0 text-slate-400 dark:text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                    <ArrowUpRight
+                      size={16}
+                      strokeWidth={1.5}
+                      className={`shrink-0 text-slate-400 dark:text-[#7a8296] transition-colors duration-150 ${meta.arrowHover}`}
+                    />
                   </a>
                 );
               })}
@@ -114,81 +185,80 @@ const Footer = () => {
 
           {/* Right Column: Navigation Links, Contact CTA, Policies */}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            
             {/* Quick Navigation */}
             <div>
-              <h3 className="font-display text-base font-bold text-slate-900 dark:text-white">
-                Quick Navigation
+              <h3 className="font-display text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+                Navigation
               </h3>
-              <div className="mt-4 grid grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2.5 text-xs font-bold text-slate-800 dark:text-slate-300">
+              <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-slate-600 dark:text-[#a3a9b8] sm:grid-cols-1">
                 {primaryLinks.map((item) => (
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="transition hover:text-emerald-700 dark:hover:text-emerald-400 truncate"
+                    className="transition-colors duration-150 hover:text-slate-900 dark:hover:text-[#eef0f5] truncate"
                   >
                     {item.label}
                   </Link>
                 ))}
                 <Link
                   to="/how-i-build"
-                  className="transition hover:text-emerald-700 dark:hover:text-emerald-400 truncate"
+                  className="transition-colors duration-150 hover:text-slate-900 dark:hover:text-[#eef0f5] truncate"
                 >
                   How I Build
                 </Link>
               </div>
             </div>
 
-            {/* Let's Work Together CTA */}
+            {/* Work Inquiry CTA */}
             <div>
-              <h3 className="inline-flex items-center gap-2 font-display text-base font-bold text-slate-900 dark:text-white">
-                <ShieldCheck size={18} className="text-emerald-700 dark:text-emerald-400" />
-                Let's Work Together
+              <h3 className="font-display text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+                Work Together
               </h3>
-              <p className="mt-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
-                Have a project in mind? Need frontend, backend, or application security auditing?
+              <p className="mt-4 text-xs leading-relaxed text-slate-600 dark:text-[#a3a9b8]">
+                Have a project in mind or need full-stack and security review help?
               </p>
               <Link
                 to="/contact"
-                className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-600/40 bg-emerald-600/10 text-emerald-900 hover:bg-emerald-600 hover:text-white dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500 dark:hover:text-slate-950 px-4 py-2.5 text-xs font-bold shadow-sm transition-all duration-300 hover:scale-[1.03]"
+                className="mt-4 inline-flex items-center gap-2 rounded-lg border border-black/[0.08] bg-white px-4 py-2 text-xs font-medium text-slate-900 transition-colors duration-150 hover:border-slate-300 hover:bg-slate-50 dark:border-white/[0.10] dark:bg-[#1a1e28] dark:text-[#eef0f5] dark:hover:border-white/[0.18] dark:hover:bg-[#222734]"
               >
-                <Mail size={15} />
-                Let's Talk
+                <Mail size={16} strokeWidth={1.5} className="text-slate-500 dark:text-[#7a8296]" />
+                Get in touch
               </Link>
             </div>
 
             {/* Legal Policies */}
             <div>
-              <h3 className="font-display text-base font-bold text-slate-900 dark:text-white">Policies</h3>
-              <div className="mt-4 grid grid-cols-2 sm:grid-cols-1 gap-x-4 gap-y-2.5 text-xs font-bold text-slate-800 dark:text-slate-300">
+              <h3 className="font-display text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+                Policies
+              </h3>
+              <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-slate-600 dark:text-[#a3a9b8] sm:grid-cols-1">
                 {LEGAL_LINKS.map((item) => (
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="transition hover:text-emerald-700 dark:hover:text-emerald-400 truncate"
+                    className="transition-colors duration-150 hover:text-slate-900 dark:hover:text-[#eef0f5] truncate"
                   >
                     {item.label}
                   </Link>
                 ))}
               </div>
             </div>
-
           </div>
         </div>
 
         {/* Footer Bottom Bar */}
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-slate-300 dark:border-emerald-500/20 pt-6 text-xs text-slate-700 dark:text-slate-400">
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-black/[0.08] pt-6 text-xs text-slate-500 dark:border-white/[0.08] dark:text-[#7a8296]">
           <p>
             Copyright &copy; {new Date().getFullYear()}{" "}
             <Link
               to="/admin/login"
-              className="font-extrabold text-slate-900 dark:text-emerald-300 transition hover:text-emerald-700 dark:hover:text-emerald-400"
+              className="font-medium text-slate-900 dark:text-[#eef0f5] transition-colors duration-150 hover:text-emerald-700 dark:hover:text-emerald-400"
             >
               {SITE_PROFILE.fullName}
             </Link>
             . All rights reserved.
           </p>
-          <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+          <p className="font-mono text-xs text-slate-500 dark:text-[#7a8296]">
             Full-Stack Developer &amp; Security Researcher
           </p>
         </div>

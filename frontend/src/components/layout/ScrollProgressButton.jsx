@@ -103,8 +103,8 @@ const ScrollProgressButton = () => {
         aria-label={`Back to top. Page progress ${progressPercent}%`}
         className={`pointer-events-auto group relative flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center overflow-hidden rounded-full border backdrop-blur-md transition-all duration-300 active:scale-90 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 ${
           isDark
-            ? "border-emerald-500/40 bg-[#050d14]/90 shadow-[0_6px_20px_rgba(52,211,153,0.35)] focus-visible:ring-emerald-400 text-emerald-400"
-            : "border-emerald-600/40 bg-white/95 shadow-[0_6px_20px_rgba(16,185,129,0.25)] focus-visible:ring-emerald-600 text-emerald-700"
+            ? "border-white/[0.08] bg-[#11141c]/90 hover:border-emerald-500/40 shadow-lg focus-visible:ring-emerald-400 text-emerald-400"
+            : "border-emerald-600/30 bg-white/95 shadow-lg focus-visible:ring-emerald-600 text-emerald-700"
         }`}
       >
         <span
@@ -116,7 +116,7 @@ const ScrollProgressButton = () => {
           aria-hidden="true"
           className={`pointer-events-none absolute inset-[3px] rounded-full border ${
             isDark
-              ? "border-emerald-500/20 bg-[#030a05]"
+              ? "border-white/[0.08] bg-[#090a0f]"
               : "border-emerald-500/20 bg-white"
           }`}
         />

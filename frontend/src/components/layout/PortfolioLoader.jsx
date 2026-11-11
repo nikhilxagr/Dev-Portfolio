@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
+const MotionDiv = motion.div;
+const MotionSpan = motion.span;
+
 /**
  * Portfolio Loader Component
  * 
@@ -81,21 +84,21 @@ const PortfolioLoader = ({ onComplete }) => {
 
   if (prefersReducedMotion) {
     return (
-      <motion.div
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-[#050d14] text-white"
+      <MotionDiv
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-[#090a0f] text-white"
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <span className="font-display text-4xl font-extrabold tracking-tight bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent">
+        <span className="font-display text-4xl font-extrabold tracking-tight text-emerald-400">
           Nikhil
         </span>
-      </motion.div>
+      </MotionDiv>
     );
   }
 
   return (
-    <motion.div
+    <MotionDiv
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden pointer-events-none select-none"
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === 2 ? 0 : 1 }}
@@ -104,23 +107,23 @@ const PortfolioLoader = ({ onComplete }) => {
       aria-label="Loading portfolio"
     >
       {/* Background Dark Curtain Overlay */}
-      <motion.div
-        className="absolute inset-0 bg-[#050d14]"
+      <MotionDiv
+        className="absolute inset-0 bg-[#090a0f]"
         animate={{ opacity: phase === 2 ? 0 : 1 }}
         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
       >
         {/* Subtle Tech Grid lines */}
-        <div className="absolute inset-0 opacity-20 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        <div className="absolute inset-0 opacity-15 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem]" />
         
-        {/* Ambient Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(52,211,153,0.15),transparent_65%)]" />
-      </motion.div>
+        {/* Subtle single ambient glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.10),transparent_65%)]" />
+      </MotionDiv>
 
       {/* Center Animated Stage */}
       <div className="relative z-10 flex flex-col items-center justify-center">
         
         {/* Combined Brand Name Wrapper */}
-        <motion.div
+        <MotionDiv
           className="flex items-center justify-center"
           animate={
             phase === 2
@@ -139,8 +142,8 @@ const PortfolioLoader = ({ onComplete }) => {
           }}
         >
           {/* NIK — Rising & Sliding from Left */}
-          <motion.span
-            className="font-display text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(52,211,153,0.75)] inline-block"
+          <MotionSpan
+            className="font-display text-5xl sm:text-7xl md:text-8xl font-semibold tracking-tight text-emerald-400 inline-block"
             initial={{ x: "-45vw", y: 45, opacity: 0, filter: "blur(10px)" }}
             animate={{ x: 0, y: 0, opacity: 1, filter: "blur(0px)" }}
             transition={{
@@ -149,11 +152,11 @@ const PortfolioLoader = ({ onComplete }) => {
             }}
           >
             Nik
-          </motion.span>
+          </MotionSpan>
 
           {/* HIL — Rising & Sliding from Right */}
-          <motion.span
-            className="font-display text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tight bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(52,211,153,0.75)] inline-block"
+          <MotionSpan
+            className="font-display text-5xl sm:text-7xl md:text-8xl font-semibold tracking-tight text-emerald-400 inline-block"
             initial={{ x: "45vw", y: 45, opacity: 0, filter: "blur(10px)" }}
             animate={{ x: 0, y: 0, opacity: 1, filter: "blur(0px)" }}
             transition={{
@@ -162,11 +165,11 @@ const PortfolioLoader = ({ onComplete }) => {
             }}
           >
             hil
-          </motion.span>
-        </motion.div>
+          </MotionSpan>
+        </MotionDiv>
 
         {/* Minimal Subtitle / Tagline */}
-        <motion.div
+        <MotionDiv
           className="mt-4 flex items-center gap-3 text-xs sm:text-sm tracking-wide text-emerald-400/90 font-medium"
           initial={{ opacity: 0, y: 12 }}
           animate={{
@@ -175,21 +178,21 @@ const PortfolioLoader = ({ onComplete }) => {
           }}
           transition={{ duration: phase === 2 ? 0.4 : 0.35, ease: "easeOut" }}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
           <span>Full-Stack Developer &amp; Security Researcher</span>
-          <span className="h-1.5 w-1.5 rounded-full bg-teal-400 animate-pulse" />
-        </motion.div>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        </MotionDiv>
       </div>
 
       {/* Subtle Corner Status Watermark */}
-      <motion.div
+      <MotionDiv
         className="absolute bottom-6 right-6 font-mono text-xs tracking-wide text-slate-500/70"
         animate={{ opacity: phase === 2 ? 0 : 0.7 }}
         transition={{ duration: 0.5 }}
       >
         Nikhil • 2026
-      </motion.div>
-    </motion.div>
+      </MotionDiv>
+    </MotionDiv>
   );
 };
 

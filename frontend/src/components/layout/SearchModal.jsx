@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
@@ -21,12 +21,13 @@ import {
   Network,
   Search,
   ShieldCheck,
-  Sparkles,
   Terminal,
   User,
   Wrench,
   X,
 } from "lucide-react";
+
+const MotionDiv = motion.div;
 import { NAV_LINKS, QUICK_CONTACT, SKILL_GROUPS, SOCIAL_LINKS } from "@/constants/siteData";
 import { SIGNATURE_PROJECTS } from "@/data/projectsData";
 import { BLOG_POSTS as BLOG_LINKS } from "@/data/blogsData";
@@ -166,20 +167,34 @@ const buildIndex = () => {
     });
   });
 
-  // Skills
+  // Skills (deduplicated across groups to guarantee unique keys & clean results)
+  const skillMap = new Map();
   SKILL_GROUPS.forEach((group) => {
     group.items.forEach((skill) => {
-      const kw = tokenise(`${skill} ${group.title} skill`);
-      items.push({
-        id: `skill-${skill.toLowerCase().replace(/\s+/g, "-")}`,
-        type: "skill",
-        label: skill,
-        description: `${group.title}`,
-        to: "/skills",
-        icon: Hash,
-        keywords: kw,
-        _corpus: kw.join(" "),
-      });
+      const slug = skill.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      const existing = skillMap.get(slug);
+      if (existing) {
+        if (!existing.groups.includes(group.title)) {
+          existing.groups.push(group.title);
+        }
+      } else {
+        skillMap.set(slug, { skill, slug, groups: [group.title] });
+      }
+    });
+  });
+
+  skillMap.forEach(({ skill, slug, groups }) => {
+    const groupDesc = groups.join(" · ");
+    const kw = tokenise(`${skill} ${groupDesc} skill`);
+    items.push({
+      id: `skill-${slug}`,
+      type: "skill",
+      label: skill,
+      description: groupDesc,
+      to: "/skills",
+      icon: Hash,
+      keywords: kw,
+      _corpus: kw.join(" "),
     });
   });
 
@@ -384,7 +399,7 @@ const FEATURED = [
   },
   {
     id: "feat-nerds",
-    label: "Nerds Hack Days — Kanoon-Mate",
+    label: "Nerds Hack Days: Kanoon-Mate",
     description: "Latest hackathon · July 2026 · AI Legal OS",
     to: "/journey#nerds-hack-days-lucknow-2026",
     icon: GitBranch,
@@ -412,19 +427,19 @@ const FEATURED = [
 ];
 
 const SEARCH_CHIPS = [
-  { icon: "💬", label: "WhatsApp Clone", to: "/projects/whatsapp-fullstack-clone" },
-  { icon: "📸", label: "Vistagram", to: "/projects/vistagram" },
-  { icon: "⚖️", label: "Kanoon-Mate", to: "/projects/kanoon-mate" },
-  { icon: "🏆", label: "Nerds Hackathon", to: "/journey#nerds-hack-days-lucknow-2026" },
-  { icon: "🚀", label: "Android Nova", to: "/journey#android-nova-2026" },
-  { icon: "💼", label: "ASSOCHAM", to: "/journey#assocham-samarth-2026" },
-  { icon: "🍔", label: "Fast Feast", to: "/projects/fast-feast" },
-  { icon: "⚡", label: "SnapURL", to: "/projects/snapurl" },
-  { icon: "🛡️", label: "Security Labs", to: "/experiments/security-labs" },
-  { icon: "📸", label: "Instagram", query: "Instagram" },
-  { icon: "💬", label: "WhatsApp", query: "WhatsApp" },
-  { icon: "💻", label: "React", query: "React" },
-  { icon: "🟢", label: "Node.js", query: "Node.js" },
+  { label: "WhatsApp Clone", to: "/projects/whatsapp-fullstack-clone" },
+  { label: "Vistagram", to: "/projects/vistagram" },
+  { label: "Kanoon-Mate", to: "/projects/kanoon-mate" },
+  { label: "Nerds Hackathon", to: "/journey#nerds-hack-days-lucknow-2026" },
+  { label: "Android Nova", to: "/journey#android-nova-2026" },
+  { label: "ASSOCHAM", to: "/journey#assocham-samarth-2026" },
+  { label: "Fast Feast", to: "/projects/fast-feast" },
+  { label: "SnapURL", to: "/projects/snapurl" },
+  { label: "Security Labs", to: "/experiments/security-labs" },
+  { label: "Instagram", query: "Instagram" },
+  { label: "WhatsApp", query: "WhatsApp" },
+  { label: "React", query: "React" },
+  { label: "Node.js", query: "Node.js" },
 ];
 
 const TYPE_LABELS = {
@@ -440,13 +455,13 @@ const TYPE_LABELS = {
 const TYPE_ORDER = ["page", "hackathon", "project", "blog", "experiment", "skill", "social"];
 
 const TYPE_COLORS = {
-  page:       { dark: "text-sky-400 bg-sky-400/10 border-sky-400/30",         light: "text-sky-800 bg-sky-100 border-sky-300 font-bold" },
-  experiment: { dark: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30", light: "text-emerald-800 bg-emerald-100 border-emerald-300 font-bold" },
-  project:    { dark: "text-purple-400 bg-purple-400/10 border-purple-400/30",   light: "text-purple-800 bg-purple-100 border-purple-300 font-bold" },
-  skill:      { dark: "text-amber-400 bg-amber-400/10 border-amber-400/30",     light: "text-amber-900 bg-amber-100 border-amber-300 font-bold" },
-  blog:       { dark: "text-rose-400 bg-rose-400/10 border-rose-400/30",     light: "text-rose-800 bg-rose-100 border-rose-300 font-bold" },
-  hackathon:  { dark: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30",     light: "text-teal-800 bg-teal-100 border-teal-300 font-bold" },
-  social:     { dark: "text-pink-400 bg-pink-400/10 border-pink-400/30",      light: "text-pink-800 bg-pink-100 border-pink-300 font-bold" },
+  page:       { dark: "text-ink-200 bg-white/[0.04] border-white/[0.1]",            light: "text-ink-700 bg-black/[0.04] border-black/[0.1]" },
+  experiment: { dark: "text-emerald-300 bg-emerald-500/10 border-emerald-500/25",  light: "text-emerald-700 bg-emerald-500/10 border-emerald-600/25" },
+  project:    { dark: "text-emerald-300 bg-emerald-500/10 border-emerald-500/25",  light: "text-emerald-700 bg-emerald-500/10 border-emerald-600/25" },
+  skill:      { dark: "text-ink-200 bg-white/[0.04] border-white/[0.1]",            light: "text-ink-700 bg-black/[0.04] border-black/[0.1]" },
+  blog:       { dark: "text-emerald-300 bg-emerald-500/10 border-emerald-500/25",  light: "text-emerald-700 bg-emerald-500/10 border-emerald-600/25" },
+  hackathon:  { dark: "text-emerald-300 bg-emerald-500/10 border-emerald-500/25",  light: "text-emerald-700 bg-emerald-500/10 border-emerald-600/25" },
+  social:     { dark: "text-ink-200 bg-white/[0.04] border-white/[0.1]",            light: "text-ink-700 bg-black/[0.04] border-black/[0.1]" },
 };
 
 const SearchModal = ({ isOpen, onClose }) => {
@@ -559,34 +574,34 @@ const SearchModal = ({ isOpen, onClose }) => {
         data-idx={idx}
         onClick={() => handleSelect(item)}
         className={clsx(
-          "group w-full flex items-center gap-3 rounded-2xl px-3.5 py-3 text-left transition-all duration-150 active:scale-[0.99] border",
+          "group w-full flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-left transition-colors duration-150 border",
           isActive
             ? isDark
-              ? "bg-cyan-500/15 border-cyan-400/40 text-white shadow-[0_0_20px_rgba(6,182,212,0.15)]"
-              : "bg-emerald-500/10 border-emerald-500/40 text-emerald-950 shadow-sm"
+              ? "bg-emerald-500/10 border-emerald-500/35 text-ink-50"
+              : "bg-emerald-500/10 border-emerald-600/35 text-ink-950"
             : isDark
-              ? "border-transparent hover:bg-white/[0.06] hover:border-white/10"
-              : "border-transparent hover:bg-slate-100/90 hover:border-slate-300/80",
+              ? "border-transparent hover:bg-white/[0.04] hover:border-white/[0.08]"
+              : "border-transparent hover:bg-black/[0.03] hover:border-black/[0.08]",
         )}
         onMouseEnter={() => setActiveIdx(idx)}
       >
         <span
           className={clsx(
-            "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border transition-transform group-hover:scale-105",
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border transition-colors",
             colorStr,
           )}
         >
-          <Icon size={16} />
+          <Icon size={16} strokeWidth={1.5} />
         </span>
         <div className="min-w-0 flex-1">
           <p
             className={clsx(
-              "text-xs sm:text-sm font-bold truncate transition-colors",
+              "text-xs sm:text-sm font-semibold truncate transition-colors",
               isActive
-                ? isDark ? "text-white" : "text-emerald-950"
+                ? isDark ? "text-ink-50" : "text-ink-950"
                 : isDark
-                  ? "text-slate-200 group-hover:text-white"
-                  : "text-slate-800 group-hover:text-slate-950",
+                  ? "text-ink-200 group-hover:text-ink-50"
+                  : "text-ink-800 group-hover:text-ink-950",
             )}
           >
             {item.label}
@@ -594,12 +609,12 @@ const SearchModal = ({ isOpen, onClose }) => {
           {item.description && (
             <p
               className={clsx(
-                "text-[11px] sm:text-xs truncate mt-0.5 font-medium transition-colors",
+                "text-xs truncate mt-0.5 transition-colors",
                 isActive
-                  ? isDark ? "text-cyan-200/90" : "text-emerald-800/90"
+                  ? isDark ? "text-emerald-300/90" : "text-emerald-700"
                   : isDark
-                    ? "text-slate-400 group-hover:text-slate-300"
-                    : "text-slate-600 group-hover:text-slate-700",
+                    ? "text-ink-400 group-hover:text-ink-300"
+                    : "text-ink-500 group-hover:text-ink-700",
               )}
             >
               {item.description}
@@ -609,7 +624,7 @@ const SearchModal = ({ isOpen, onClose }) => {
         {item.badge && (
           <span
             className={clsx(
-              "shrink-0 rounded-full px-2.5 py-0.5 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider border",
+              "shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium border",
               colorStr,
             )}
           >
@@ -619,17 +634,19 @@ const SearchModal = ({ isOpen, onClose }) => {
         {item.type === "social" ? (
           <ExternalLink
             size={14}
+            strokeWidth={1.5}
             className={clsx(
               "shrink-0 opacity-60 group-hover:opacity-100 transition-opacity hidden sm:block",
-              isDark ? "text-pink-400" : "text-pink-600",
+              isDark ? "text-emerald-400" : "text-emerald-600",
             )}
           />
         ) : (
           <ArrowRight
             size={15}
+            strokeWidth={1.5}
             className={clsx(
-              "shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150 hidden sm:block",
-              isDark ? "text-cyan-400" : "text-emerald-600",
+              "shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 hidden sm:block",
+              isDark ? "text-emerald-400" : "text-emerald-600",
             )}
           />
         )}
@@ -641,46 +658,42 @@ const SearchModal = ({ isOpen, onClose }) => {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
-          <motion.div
+          <MotionDiv
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
+            transition={{ duration: 0.16 }}
             className={clsx(
-              "fixed inset-0 z-[9998] backdrop-blur-md transition-colors",
-              isDark ? "bg-black/75" : "bg-slate-900/40",
+              "fixed inset-0 z-[9998] backdrop-blur-sm transition-colors",
+              isDark ? "bg-black/75" : "bg-ink-950/35",
             )}
             onClick={onClose}
           />
 
-          {/* Panel — Full screen on mobile, floating card on sm+ */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97, y: -10 }}
+          <MotionDiv
+            initial={{ opacity: 0, scale: 0.98, y: -8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: -10 }}
-            transition={{ type: "spring", stiffness: 350, damping: 28, mass: 0.5 }}
+            exit={{ opacity: 0, scale: 0.98, y: -8 }}
+            transition={{ duration: 0.18 }}
             className={clsx(
-              "fixed z-[9999] flex flex-col overflow-hidden border shadow-2xl transition-colors duration-200",
-              // Mobile: full screen
+              "fixed z-[9999] flex flex-col overflow-hidden border transition-colors duration-150",
               "inset-0",
-              // sm+: floating centered panel
-              "sm:inset-auto sm:left-1/2 sm:top-[8vh] sm:-translate-x-1/2 sm:w-[95vw] sm:max-w-2xl sm:rounded-3xl sm:max-h-[80vh]",
+              "sm:inset-auto sm:left-1/2 sm:top-[8vh] sm:-translate-x-1/2 sm:w-[95vw] sm:max-w-2xl sm:rounded-2xl sm:max-h-[80vh]",
               isDark
-                ? "bg-[#07131e] border-cyan-500/30 text-slate-100 shadow-[0_25px_70px_rgba(0,0,0,0.9)]"
-                : "bg-white border-slate-300 text-slate-900 shadow-[0_25px_70px_rgba(0,0,0,0.18)]",
+                ? "bg-[#11141c] border-white/[0.1] text-ink-50"
+                : "bg-white border-black/[0.1] text-ink-950",
             )}
           >
-            {/* Search Input Row */}
             <div
               className={clsx(
-                "flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-3.5 sm:py-4 border-b shrink-0 transition-colors",
-                isDark ? "border-cyan-500/20 bg-slate-950/40" : "border-slate-200 bg-slate-50/90",
+                "flex items-center gap-2.5 sm:gap-3 px-4 sm:px-5 py-3.5 sm:py-4 border-b shrink-0 transition-colors",
+                isDark ? "border-white/[0.08] bg-[#0c0e14]" : "border-black/[0.08] bg-[#f8fafc]",
               )}
             >
               <Search
-                size={19}
-                className={isDark ? "text-cyan-400 shrink-0" : "text-emerald-600 shrink-0"}
+                size={18}
+                strokeWidth={1.5}
+                className={isDark ? "text-emerald-400 shrink-0" : "text-emerald-600 shrink-0"}
               />
               <input
                 ref={inputRef}
@@ -690,10 +703,10 @@ const SearchModal = ({ isOpen, onClose }) => {
                 onKeyDown={handleKeyDown}
                 placeholder="Search projects, skills, social, hackathons, blogs..."
                 className={clsx(
-                  "flex-1 bg-transparent text-sm sm:text-base font-semibold outline-none placeholder:font-normal placeholder:text-xs sm:placeholder:text-sm min-w-0 transition-colors",
+                  "flex-1 bg-transparent text-sm sm:text-base font-medium outline-none placeholder:font-normal placeholder:text-xs sm:placeholder:text-sm min-w-0 transition-colors",
                   isDark
-                    ? "text-white placeholder:text-slate-400"
-                    : "text-slate-900 placeholder:text-slate-500",
+                    ? "text-ink-50 placeholder:text-ink-400"
+                    : "text-ink-950 placeholder:text-ink-500",
                 )}
               />
               {query && (
@@ -701,51 +714,49 @@ const SearchModal = ({ isOpen, onClose }) => {
                   type="button"
                   onClick={() => setQuery("")}
                   className={clsx(
-                    "rounded-lg p-1 transition shrink-0",
-                    isDark ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900",
+                    "rounded-lg p-1 transition-colors shrink-0",
+                    isDark ? "text-ink-400 hover:text-ink-50" : "text-ink-500 hover:text-ink-950",
                   )}
                 >
-                  <X size={16} />
+                  <X size={16} strokeWidth={1.5} />
                 </button>
               )}
-              {/* Close button for Mobile Touch */}
               <button
                 type="button"
                 onClick={onClose}
                 className={clsx(
-                  "flex sm:hidden h-8 w-8 items-center justify-center rounded-full border transition shrink-0",
+                  "flex sm:hidden h-8 w-8 items-center justify-center rounded-full border transition-colors shrink-0",
                   isDark
-                    ? "border-slate-700 bg-slate-800/80 text-slate-300 active:bg-slate-700"
-                    : "border-slate-300 bg-slate-200/80 text-slate-700 active:bg-slate-300",
+                    ? "border-white/[0.1] bg-white/[0.05] text-ink-300"
+                    : "border-black/[0.1] bg-black/[0.04] text-ink-700",
                 )}
                 aria-label="Close search"
               >
-                <X size={15} />
+                <X size={15} strokeWidth={1.5} />
               </button>
               <kbd
                 className={clsx(
-                  "hidden sm:inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-mono font-bold shrink-0",
-                  isDark ? "border-slate-700 text-slate-400 bg-slate-900" : "border-slate-300 text-slate-600 bg-slate-100",
+                  "hidden sm:inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-mono font-medium shrink-0",
+                  isDark ? "border-white/[0.1] text-ink-400 bg-[#11141c]" : "border-black/[0.1] text-ink-600 bg-white",
                 )}
               >
                 ESC
               </kbd>
             </div>
 
-            {/* Quick Suggestion Chips */}
             <div
               className={clsx(
-                "flex items-center gap-1.5 overflow-x-auto px-3.5 sm:px-5 py-2.5 border-b shrink-0 no-scrollbar scroll-smooth transition-colors",
-                isDark ? "border-cyan-500/15 bg-slate-950/60" : "border-slate-200 bg-slate-100/70",
+                "flex items-center gap-1.5 overflow-x-auto px-4 sm:px-5 py-2.5 border-b shrink-0 no-scrollbar scroll-smooth transition-colors",
+                isDark ? "border-white/[0.08] bg-[#0c0e14]" : "border-black/[0.08] bg-[#f8fafc]",
               )}
             >
               <span
                 className={clsx(
-                  "text-[10px] uppercase font-mono font-bold tracking-wider shrink-0 mr-1",
-                  isDark ? "text-cyan-400" : "text-emerald-800",
+                  "text-xs font-mono font-medium shrink-0 mr-1",
+                  isDark ? "text-emerald-400" : "text-emerald-700",
                 )}
               >
-                Top Matches:
+                Quick filter:
               </span>
               {SEARCH_CHIPS.map((chip) => (
                 <button
@@ -759,49 +770,45 @@ const SearchModal = ({ isOpen, onClose }) => {
                     }
                   }}
                   className={clsx(
-                    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold border shrink-0 transition-all duration-150 active:scale-95 shadow-sm",
+                    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border shrink-0 transition-colors duration-150",
                     isDark
-                      ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400"
-                      : "border-emerald-300 bg-white text-emerald-900 hover:bg-emerald-50 hover:border-emerald-400",
+                      ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400/50"
+                      : "border-emerald-600/25 bg-white text-emerald-800 hover:bg-emerald-500/10 hover:border-emerald-600/40",
                   )}
                 >
-                  <span>{chip.icon}</span>
                   <span>{chip.label}</span>
                 </button>
               ))}
             </div>
 
-            {/* Results List */}
             <div
               ref={listRef}
               className="flex-1 overflow-y-auto overscroll-contain px-3.5 py-3 space-y-1.5 touch-pan-y"
             >
-              {/* Featured / Quick Access */}
               {!query.trim() && (
                 <>
                   <p
                     className={clsx(
-                      "mb-2 px-2 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest font-mono",
-                      isDark ? "text-cyan-400/70" : "text-emerald-700",
+                      "mb-2 px-2 text-xs font-medium font-mono",
+                      isDark ? "text-emerald-400" : "text-emerald-700",
                     )}
                   >
-                    // Latest Projects & Featured
+                    Latest Projects &amp; Featured
                   </p>
                   {FEATURED.map((item, i) => renderItem(item, i, activeIdx === i))}
                 </>
               )}
 
-              {/* Search Results */}
               {query.trim() && results.length > 0 && grouped && (
                 <>
                   <p
                     className={clsx(
-                      "mb-2 px-2 text-[11px] font-mono font-medium",
-                      isDark ? "text-slate-400" : "text-slate-600",
+                      "mb-2 px-2 text-xs font-mono font-medium tabular-nums",
+                      isDark ? "text-ink-400" : "text-ink-600",
                     )}
                   >
                     {results.length} result{results.length !== 1 ? "s" : ""} for{" "}
-                    <span className={clsx("font-bold", isDark ? "text-cyan-400" : "text-emerald-700")}>"{query}"</span>
+                    <span className={clsx("font-semibold", isDark ? "text-emerald-400" : "text-emerald-700")}>"{query}"</span>
                   </p>
                   {TYPE_ORDER.map((type) => {
                     const section = grouped[type];
@@ -810,11 +817,11 @@ const SearchModal = ({ isOpen, onClose }) => {
                       <div key={type} className="mb-3">
                         <p
                           className={clsx(
-                            "mb-1 px-2 text-[10px] font-bold uppercase tracking-widest font-mono",
-                            isDark ? "text-cyan-400/70" : "text-emerald-700",
+                            "mb-1 px-2 text-xs font-medium font-mono",
+                            isDark ? "text-emerald-400" : "text-emerald-700",
                           )}
                         >
-                          // {TYPE_LABELS[type]}
+                          {TYPE_LABELS[type]}
                         </p>
                         {section.map(({ item, flatIdx }) =>
                           renderItem(item, flatIdx, activeIdx === flatIdx)
@@ -825,31 +832,29 @@ const SearchModal = ({ isOpen, onClose }) => {
                 </>
               )}
 
-              {/* No results */}
               {query.trim() && results.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
-                  <Sparkles
-                    size={30}
-                    className={isDark ? "text-cyan-400/50 mb-2" : "text-emerald-600/50 mb-2"}
+                  <Search
+                    size={26}
+                    strokeWidth={1.5}
+                    className={isDark ? "text-emerald-400/60 mb-2" : "text-emerald-600/60 mb-2"}
                   />
-                  <p className={clsx("text-sm font-bold", isDark ? "text-slate-200" : "text-slate-800")}>
-                    No results for <span className="font-extrabold">"{query}"</span>
+                  <p className={clsx("text-sm font-semibold", isDark ? "text-ink-200" : "text-ink-800")}>
+                    No results for "{query}"
                   </p>
-                  <p className={clsx("text-xs mt-1 max-w-xs font-medium", isDark ? "text-slate-400" : "text-slate-600")}>
+                  <p className={clsx("text-xs mt-1 max-w-xs", isDark ? "text-ink-400" : "text-ink-600")}>
                     Try searching for Kanoon-Mate, Fast Feast, React, Node.js, or Nerds Hack Days.
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Footer Hint */}
             <div
               className={clsx(
                 "flex items-center justify-between gap-4 border-t px-4 sm:px-5 py-2.5 sm:py-3 shrink-0 transition-colors",
-                isDark ? "border-cyan-500/20 bg-slate-950/60" : "border-slate-200 bg-slate-50",
+                isDark ? "border-white/[0.08] bg-[#0c0e14]" : "border-black/[0.08] bg-[#f8fafc]",
               )}
             >
-              {/* Desktop Shortcut Hints */}
               <div className="hidden sm:flex items-center gap-3">
                 {[
                   { keys: ["↑", "↓"], label: "navigate" },
@@ -861,32 +866,31 @@ const SearchModal = ({ isOpen, onClose }) => {
                       <kbd
                         key={k}
                         className={clsx(
-                          "rounded px-1.5 py-0.5 text-[10px] font-mono font-bold border",
+                          "rounded px-1.5 py-0.5 text-[11px] font-mono font-medium border",
                           isDark
-                            ? "border-slate-700 text-slate-300 bg-slate-900"
-                            : "border-slate-300 text-slate-700 bg-white shadow-xs",
+                            ? "border-white/[0.1] text-ink-300 bg-[#11141c]"
+                            : "border-black/[0.1] text-ink-700 bg-white",
                         )}
                       >
                         {k}
                       </kbd>
                     ))}
-                    <span className={clsx("text-[11px] font-semibold", isDark ? "text-slate-400" : "text-slate-600")}>
+                    <span className={clsx("text-xs", isDark ? "text-ink-400" : "text-ink-600")}>
                       {label}
                     </span>
                   </div>
                 ))}
               </div>
 
-              {/* Mobile Touch Hint */}
-              <p className={clsx("sm:hidden text-[11px] font-mono font-semibold", isDark ? "text-slate-400" : "text-slate-600")}>
+              <p className={clsx("sm:hidden text-xs font-mono", isDark ? "text-ink-400" : "text-ink-600")}>
                 Tap any result to view details
               </p>
 
-              <span className={clsx("text-[11px] font-mono font-bold hidden sm:inline-block", isDark ? "text-slate-400" : "text-slate-600")}>
+              <span className={clsx("text-xs font-mono font-medium hidden sm:inline-block", isDark ? "text-ink-400" : "text-ink-600")}>
                 Ctrl K
               </span>
             </div>
-          </motion.div>
+          </MotionDiv>
         </>
       )}
     </AnimatePresence>

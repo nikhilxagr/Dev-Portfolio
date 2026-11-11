@@ -9,15 +9,11 @@ import {
   Briefcase,
   ChevronDown,
   ChevronRight,
-  Code2,
   Cpu,
   Download,
   FileText,
   FlaskConical,
   Folder,
-  GitBranch,
-  GraduationCap,
-  Home,
   LayoutDashboard,
   Mail,
   Menu,
@@ -27,31 +23,26 @@ import {
   Search,
   Shield,
   ShieldCheck,
-  Sparkles,
   Sun,
-  SunMedium,
   Terminal,
   User,
   UserCheck,
   Workflow,
-  Wrench,
   X,
-  LogIn,
   LogOut,
   Receipt,
   Edit3,
 } from "lucide-react";
 import { useUserAuth } from "@/context/UserAuthContext";
-import { NAV_LINKS, QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
+import { NAV_LINKS, QUICK_CONTACT } from "@/constants/siteData";
 import { useTheme } from "@/context/ThemeContext";
 import UserAvatar from "@/components/ui/UserAvatar";
 import { prefetchRoute } from "@/utils/prefetchRoute";
 
-const MotionButton = motion.button;
 const MotionDiv = motion.div;
 const MotionAside = motion.aside;
 
-const NAV_OFFSET_REM = 6;
+const NAV_OFFSET_REM = 4;
 const OPPORTUNITY_BANNER_HEIGHT_REM = 2.25;
 
 const mobileNavIconMap = {
@@ -94,7 +85,6 @@ const Navbar = () => {
   const { user, logout, openSignInModal, openProfileModal } = useUserAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const openSearch = useCallback(() => setIsSearchOpen(true), []);
   const closeSearch = useCallback(() => setIsSearchOpen(false), []);
@@ -103,7 +93,6 @@ const Navbar = () => {
   const experimentsTimeoutRef = useRef(null);
 
   const [mobileDropdowns, setMobileDropdowns] = useState({});
-
   const location = useLocation();
 
   const handleExperimentsMouseEnter = () => {
@@ -118,7 +107,6 @@ const Navbar = () => {
     setMobileDropdowns((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (experimentsRef.current && !experimentsRef.current.contains(e.target)) {
@@ -135,24 +123,6 @@ const Navbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrolled = window.scrollY > 40;
-          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Ctrl+K / Cmd+K global shortcut
   useEffect(() => {
     const handler = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "k") {
@@ -214,12 +184,10 @@ const Navbar = () => {
 
   const navItemClass = ({ isActive }) =>
     clsx(
-      "group relative inline-flex items-center gap-1 rounded-full px-3 2xl:px-4 py-1.5 font-sans text-[13.5px] 2xl:text-sm font-semibold transition-all duration-300 select-none shrink-0",
+      "inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-150 select-none shrink-0",
       isActive
-        ? "bg-lime-400 text-slate-950 font-bold shadow-[0_0_18px_rgba(163,230,53,0.65)]"
-        : isDark
-          ? "text-zinc-200 hover:text-white hover:bg-white/[0.08]"
-          : "text-slate-700 hover:text-slate-950 hover:bg-black/[0.05]",
+        ? "border border-black/[0.08] bg-slate-100 text-slate-950 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
+        : "border border-transparent text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 dark:text-[#a3a9b8] dark:hover:bg-white/[0.05] dark:hover:text-[#eef0f5]",
     );
 
   return (
@@ -227,698 +195,457 @@ const Navbar = () => {
       {showOpportunityBanner ? (
         <div
           className={clsx(
-            "opportunity-banner-shell relative border-b backdrop-blur-lg",
+            "opportunity-banner-shell relative border-b",
             isDark
-              ? "border-emerald-300/25 bg-gradient-to-r from-emerald-950/65 via-emerald-900/40 to-cyan-950/45"
-              : "border-emerald-500/30 bg-gradient-to-r from-emerald-100/80 via-cyan-100/75 to-sky-100/80",
+              ? "border-white/[0.08] bg-[#0b0d14]"
+              : "border-black/[0.08] bg-slate-50",
           )}
         >
-          <div
-            className={clsx(
-              "pointer-events-none absolute inset-y-0 left-0 w-24 sm:w-32",
-              isDark
-                ? "bg-gradient-to-r from-slate-950/95 via-slate-950/50 to-transparent"
-                : "bg-gradient-to-r from-white/95 via-white/60 to-transparent",
-            )}
-          />
-          <div
-            className={clsx(
-              "pointer-events-none absolute inset-y-0 right-0 w-24 sm:w-32",
-              isDark
-                ? "bg-gradient-to-l from-slate-950/95 via-slate-950/50 to-transparent"
-                : "bg-gradient-to-l from-white/95 via-white/60 to-transparent",
-            )}
-          />
-
-          <div className="mx-auto relative flex h-9 max-w-7xl items-center px-3 sm:px-6 lg:px-10">
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-14 sm:hidden">
-              <Link
-                to="/contact"
-                className="pointer-events-auto inline-flex items-center gap-1 rounded-full border border-emerald-300/45 bg-emerald-300/12 px-2.5 py-1 text-[10px] font-semibold text-emerald-100 transition hover:bg-emerald-300/22"
-              >
-                Let's talk
-                <ArrowRight size={13} />
-              </Link>
+          <div className="mx-auto flex h-9 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-10">
+            <div className="flex min-w-0 items-center gap-2 text-xs">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+              <span className="truncate font-medium text-slate-800 dark:text-[#eef0f5]">
+                Open to opportunities
+              </span>
+              <span className="hidden truncate text-slate-500 dark:text-[#7a8296] sm:inline">
+                Internships, freelance and collaborations
+              </span>
             </div>
 
-            <div className="pointer-events-none absolute inset-0 hidden items-center justify-center px-12 sm:flex sm:px-24">
-              <div className="flex min-w-0 items-center justify-center gap-2 text-emerald-100">
-                <span className="relative inline-flex h-2.5 w-2.5 shrink-0">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300/65" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(74,222,128,0.95)]" />
-                </span>
-
-                <p className="truncate text-center text-xs font-semibold sm:text-xs">
-                  Open to opportunities
-                </p>
-                <p className="hidden text-xs text-emerald-200/90 lg:block">
-                  Internships, freelance and collaborations
-                </p>
-              </div>
-            </div>
-
-            <div className="ml-auto flex items-center gap-1.5 sm:gap-2.5">
+            <div className="flex shrink-0 items-center gap-2">
               <Link
                 to="/contact"
-                className="hidden items-center gap-1 rounded-full border border-emerald-300/45 bg-emerald-300/12 px-3 py-1 text-[11px] font-semibold text-emerald-100 transition hover:bg-emerald-300/22 sm:inline-flex"
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-emerald-700 transition-colors duration-150 hover:bg-emerald-500/10 dark:text-emerald-400"
               >
-                Let's talk
-                <ArrowRight size={13} />
+                Let&apos;s talk
+                <ArrowRight size={14} strokeWidth={1.5} />
               </Link>
               <button
                 type="button"
                 onClick={closeOpportunityBanner}
                 aria-label="Close opportunities banner"
-                className="rounded-full p-1 text-emerald-200/80 transition hover:bg-emerald-300/15 hover:text-emerald-100"
+                className="rounded-md p-1 text-slate-500 transition-colors duration-150 hover:bg-slate-200/70 hover:text-slate-900 dark:text-[#7a8296] dark:hover:bg-white/[0.06] dark:hover:text-[#eef0f5]"
               >
-                <X size={14} />
+                <X size={14} strokeWidth={1.5} />
               </button>
             </div>
           </div>
         </div>
       ) : null}
 
-      <div className={clsx(
-        "w-full transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)] z-50",
-        isScrolled ? "pt-4 px-[2%]" : "pt-0"
-      )}>
-        <div
-          className={clsx(
-            "mx-auto transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)] backdrop-blur-xl border-b",
-            isScrolled
-              ? isDark
-                ? "w-full max-w-[90rem] rounded-full px-4 2xl:px-6 py-2 shadow-[0_8px_24px_rgba(0,0,0,0.35)] border-white/[0.06] bg-zinc-950/20"
-                : "w-full max-w-[90rem] rounded-full px-4 2xl:px-6 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.02)] border-zinc-900/[0.06] bg-white/20"
-              : isDark
-                ? "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-transparent bg-transparent"
-                : "w-full max-w-none rounded-none px-6 sm:px-12 lg:px-16 py-3.5 shadow-none border-zinc-200/40 bg-white/60"
-          )}
-        >
-            <div className={clsx(
-              "relative flex items-center justify-between transition-all duration-[950ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
-              isScrolled ? "h-11" : "h-14"
-            )}>
+      <div
+        className={clsx(
+          "w-full border-b transition-colors duration-150",
+          isDark
+            ? "border-white/[0.08] bg-[#090a0f]/95"
+            : "border-black/[0.08] bg-white/95",
+        )}
+      >
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-10">
+          {/* Hamburger Button — Mobile */}
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-700 transition-colors duration-150 hover:bg-slate-100 xl:hidden dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:bg-[#1a1e28] dark:hover:text-[#eef0f5]"
+            aria-label="Toggle menu"
+          >
+            {open ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
+          </button>
 
-              {/* Hamburger Button — LEFT on mobile with smooth icon rotation transition */}
-              <MotionButton
-                type="button"
-                onClick={() => setOpen((value) => !value)}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.92 }}
-                className={clsx(
-                  "relative flex h-9 w-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-md transition-all duration-300 xl:hidden shrink-0 overflow-hidden",
-                  isDark
-                    ? "border-sky-400/30 bg-sky-500/10 text-sky-300 hover:border-sky-400/60 hover:bg-sky-500/20"
-                    : "border-slate-300 bg-slate-100 text-slate-700 hover:border-slate-400 hover:bg-slate-200",
-                )}
-                aria-label="Toggle menu"
+          {/* Logo */}
+          <div className="absolute left-1/2 -translate-x-1/2 xl:static xl:mr-6 xl:translate-x-0">
+            <Link
+              to="/"
+              onClick={() => {
+                setOpen(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="flex items-center shrink-0"
+            >
+              <span
+                id="navbar-logo-text"
+                className="font-display text-lg font-medium tracking-[-0.01em] text-slate-900 select-none dark:text-[#eef0f5]"
               >
-                <AnimatePresence mode="wait" initial={false}>
-                  <MotionDiv
-                    key={open ? "close" : "menu"}
-                    initial={{ rotate: -90, scale: 0.5, opacity: 0 }}
-                    animate={{ rotate: 0, scale: 1, opacity: 1 }}
-                    exit={{ rotate: 90, scale: 0.5, opacity: 0 }}
-                    transition={{ duration: 0.2, ease: "backOut" }}
-                    className="flex items-center justify-center"
+                Nikhil
+              </span>
+            </Link>
+          </div>
+
+          {/* Mobile right controls */}
+          <div className="ml-auto flex items-center gap-2 xl:hidden">
+            {user ? (
+              <button
+                type="button"
+                onClick={openProfileModal}
+                aria-label="Open user profile"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 dark:border-white/[0.08] dark:bg-[#11141c]"
+              >
+                <UserAvatar user={user} className="h-6 w-6 text-xs" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() =>
+                  openSignInModal({
+                    title: "Sign in with Google",
+                    subtitle: "Sign in or sign up with your Google account.",
+                  })
+                }
+                aria-label="Sign in with Google"
+                title="Sign in with Google"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-700 transition-colors duration-150 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:bg-[#1a1e28] dark:hover:text-[#eef0f5]"
+              >
+                <User size={16} strokeWidth={1.5} />
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={openSearch}
+              aria-label="Open search"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-700 transition-colors duration-150 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:bg-[#1a1e28] dark:hover:text-[#eef0f5]"
+            >
+              <Search size={16} strokeWidth={1.5} />
+            </button>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="hidden h-9 w-9 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-700 transition-colors duration-150 hover:bg-slate-100 sm:flex dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:bg-[#1a1e28] dark:hover:text-[#eef0f5]"
+              aria-label="Toggle theme"
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {isDark ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
+            </button>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden flex-1 items-center justify-center gap-1 xl:flex">
+            {NAV_LINKS.map((item) => {
+              if (item.isDropdown) {
+                const isParentActive =
+                  location.pathname.startsWith("/experiments") ||
+                  location.pathname.startsWith("/security") ||
+                  location.pathname.startsWith("/terminal") ||
+                  location.pathname.startsWith("/cyber-tools") ||
+                  location.pathname.startsWith("/dsa") ||
+                  location.pathname.startsWith("/methodology");
+
+                return (
+                  <div
+                    key={item.label}
+                    ref={experimentsRef}
+                    className="relative"
+                    onMouseEnter={handleExperimentsMouseEnter}
+                    onMouseLeave={handleExperimentsMouseLeave}
                   >
-                    {open ? <X size={18} /> : <Menu size={18} />}
-                  </MotionDiv>
-                </AnimatePresence>
-              </MotionButton>
-
-              {/* Logo — CENTERED on mobile via absolute, LEFT on desktop */}
-              <div className="absolute left-1/2 -translate-x-1/2 xl:static xl:translate-x-0 xl:mr-6 xl:order-first">
-                <Link
-                  to="/"
-                  onClick={() => { setOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                  className="group flex items-center shrink-0"
-                >
-                  <span
-                    id="navbar-logo-text"
-                    className={clsx(
-                      "font-display text-[1.4rem] sm:text-[1.6rem] font-extrabold tracking-tight select-none transition-all duration-300",
-                      "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
-                      "drop-shadow-[0_4px_22px_rgba(52,211,153,0.65)] group-hover:drop-shadow-[0_6px_30px_rgba(52,211,153,0.9)] group-hover:scale-[1.03]",
-                      "inline-block"
-                    )}
-                  >
-                    Nikhil
-                  </span>
-                </Link>
-              </div>
-
-              {/* Mobile right — User Login / Avatar + Search button */}
-              <div className="ml-auto flex items-center gap-1.5 xl:hidden">
-                {user ? (
-                  <button
-                    type="button"
-                    onClick={openProfileModal}
-                    aria-label="Open user profile"
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-emerald-500/40 bg-emerald-500/10"
-                  >
-                    <UserAvatar user={user} className="h-6 w-6 text-[10px]" />
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      openSignInModal({
-                        title: "Sign in with Google",
-                        subtitle: "Sign in or sign up with your Google account.",
-                      })
-                    }
-                    aria-label="Sign in with Google"
-                    title="Sign in with Google"
-                    className={clsx(
-                      "group relative flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200 shrink-0",
-                      isDark
-                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-400"
-                        : "border-emerald-500/35 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 hover:border-emerald-500 shadow-xs",
-                    )}
-                  >
-                    <User size={14} className="transition-transform duration-200 group-hover:scale-110" />
-                    <span
-                      className={clsx(
-                        "absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border shadow-xs transition-transform duration-200 group-hover:scale-105",
-                        isDark ? "bg-slate-900 border-slate-700" : "bg-white border-emerald-500/30",
-                      )}
-                    >
-                      <svg className="w-2.5 h-2.5" viewBox="0 0 18 18" aria-hidden="true">
-                        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-                        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-                      </svg>
-                    </span>
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={openSearch}
-                  aria-label="Open search"
-                  className={clsx(
-                    "flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-200",
-                    isDark
-                      ? "border-cyan-400/30 bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20 hover:border-cyan-400/60"
-                      : "border-sky-500/30 bg-sky-50 text-sky-600 hover:bg-sky-100 hover:border-sky-400",
-                  )}
-                >
-                  <Search size={15} />
-                </button>
-              </div>
-
-              <nav className="hidden items-center gap-1 xl:flex justify-center flex-1">
-                {NAV_LINKS.map((item) => {
-                  if (item.isDropdown) {
-                    const isDropdownOpen = experimentsOpen;
-                    const setDropdownOpen = setExperimentsOpen;
-                    const dropdownRef = experimentsRef;
-                    const mouseEnterHandler = handleExperimentsMouseEnter;
-                    const mouseLeaveHandler = handleExperimentsMouseLeave;
-
-                    const isParentActive =
-                      location.pathname.startsWith("/experiments") ||
-                      location.pathname.startsWith("/security") ||
-                      location.pathname.startsWith("/terminal") ||
-                      location.pathname.startsWith("/cyber-tools") ||
-                      location.pathname.startsWith("/dsa") ||
-                      location.pathname.startsWith("/methodology");
-
-                    return (
-                      <div
-                        key={item.label}
-                        ref={dropdownRef}
-                        className="relative"
-                        onMouseEnter={mouseEnterHandler}
-                        onMouseLeave={mouseLeaveHandler}
-                      >
-                        <NavLink
-                          to={item.to || "/"}
-                          className={clsx(
-                            "group relative inline-flex items-center gap-1 rounded-full px-3 2xl:px-4 py-1.5 font-outfit text-[13.5px] 2xl:text-sm font-semibold transition-all duration-300 select-none shrink-0",
-                            isParentActive
-                              ? "bg-lime-400 text-slate-950 font-extrabold shadow-[0_0_18px_rgba(163,230,53,0.65)]"
-                              : isDark
-                                ? "text-zinc-200 hover:text-white hover:bg-white/[0.08]"
-                                : "text-slate-700 hover:text-slate-950 hover:bg-black/[0.05]",
-                          )}
-                        >
-                          <span className="relative z-10 flex items-center gap-1">
-                            {item.label}
-                            <ChevronDown size={13} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
-                          </span>
-                        </NavLink>
-
-                        {isDropdownOpen && (
-                          <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2.5 w-[335px] z-[9999] pointer-events-auto">
-                            <div className="rounded-3xl border border-slate-200 dark:border-emerald-500/30 bg-white dark:bg-[#030d07] text-slate-900 dark:text-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] dark:shadow-[0_16px_50px_rgba(0,10,2,0.9)] p-2 transition-all duration-300 animate-fadeIn ring-1 ring-black/10 dark:ring-transparent">
-                              <div className="px-3 py-2 font-mono text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-widest border-b border-slate-100 dark:border-emerald-500/20 mb-1.5">
-                                // {item.label.toUpperCase()}
-                              </div>
-                              <div className="space-y-1">
-                                {item.children.map((sub) => {
-                                  const SubIcon = subIconMap[sub.label] || ShieldCheck;
-                                  return (
-                                    <NavLink
-                                      key={sub.to}
-                                      to={sub.to}
-                                      onClick={() => setDropdownOpen(false)}
-                                      className={({ isActive }) => clsx(
-                                        "group/sub flex items-center justify-between gap-3 rounded-2xl p-2.5 sm:p-3 transition-all duration-300 ease-out border font-outfit",
-                                        isActive
-                                          ? "bg-emerald-50 dark:bg-emerald-500/15 border-emerald-400/50 dark:border-emerald-500/40 text-emerald-950 dark:text-emerald-300 font-extrabold shadow-sm dark:shadow-[0_0_20px_rgba(52,211,153,0.25)]"
-                                          : "border-transparent text-slate-800 dark:text-slate-200/90 hover:bg-slate-100 dark:hover:bg-white/[0.08] hover:border-emerald-300/40 dark:hover:border-emerald-500/30 hover:text-slate-950 dark:hover:text-white",
-                                      )}
-                                    >
-                                      <div className="flex items-center gap-3">
-                                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover/sub:scale-110 group-hover/sub:bg-emerald-500 group-hover/sub:text-white dark:group-hover/sub:text-black transition-all duration-300 shadow-sm">
-                                          <SubIcon size={16} />
-                                        </span>
-                                        <span className="text-xs sm:text-sm font-extrabold tracking-wide text-slate-900 dark:text-slate-100">
-                                          {sub.label}
-                                        </span>
-                                      </div>
-
-                                      <ChevronRight
-                                        size={15}
-                                        className="text-slate-400 dark:text-slate-500 opacity-0 -translate-x-2 group-hover/sub:opacity-100 group-hover/sub:translate-x-0 group-hover/sub:text-emerald-500 dark:group-hover/sub:text-emerald-400 transition-all duration-200 shrink-0"
-                                      />
-                                    </NavLink>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  }
-
-                  return (
                     <NavLink
-                      key={item.to}
-                      to={item.to}
-                      className={navItemClass}
-                      onMouseEnter={() => prefetchRoute(item.to)}
-                      onFocus={() => prefetchRoute(item.to)}
-                    >
-                      <span className="relative z-10">{item.label}</span>
-                    </NavLink>
-                  );
-                })}
-              </nav>
-
-              <div className={clsx("hidden items-center xl:flex shrink-0", isScrolled ? "gap-1.5 2xl:gap-2 ml-2" : "gap-1.5 2xl:gap-3 ml-2 2xl:ml-6")}>
-                {/* User Auth Control — Symmetrically aligned under pill button */}
-                {user ? (
-                  <div className="relative shrink-0" ref={userMenuRef}>
-                    <button
-                      type="button"
-                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      to={item.to || "/"}
                       className={clsx(
-                        "flex items-center gap-2 rounded-full border p-1 pr-3 text-xs font-bold transition-all duration-200 shadow-sm cursor-pointer",
-                        userMenuOpen
-                          ? "border-emerald-400 bg-emerald-500/20 text-emerald-300 ring-2 ring-emerald-400/25"
-                          : "border-emerald-500/40 bg-emerald-500/10 text-slate-800 dark:text-slate-100 hover:border-emerald-400 hover:bg-emerald-500/15"
+                        "inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-150 select-none shrink-0",
+                        isParentActive
+                          ? "border border-black/[0.08] bg-slate-100 text-slate-950 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
+                          : "border border-transparent text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 dark:text-[#a3a9b8] dark:hover:bg-white/[0.05] dark:hover:text-[#eef0f5]",
                       )}
-                      aria-label="User profile menu"
-                      aria-expanded={userMenuOpen}
                     >
-                      <UserAvatar user={user} className="h-7 w-7 text-xs ring-1 ring-lime-400/30" />
-                      <span className="hidden xl:inline-block max-w-[75px] 2xl:max-w-[110px] truncate font-jakarta font-bold">
-                        {user.name.split(" ")[0]}
-                      </span>
+                      <span>{item.label}</span>
                       <ChevronDown
-                        size={12}
-                        className={clsx(
-                          "text-slate-400 dark:text-zinc-400 transition-transform duration-200",
-                          userMenuOpen && "rotate-180 text-emerald-400"
-                        )}
+                        size={14}
+                        strokeWidth={1.5}
+                        className={`transition-transform duration-150 ${experimentsOpen ? "rotate-180" : ""}`}
                       />
-                    </button>
+                    </NavLink>
 
-                    <AnimatePresence>
-                      {userMenuOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.96, y: -4 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.96, y: -4 }}
-                          transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                          className="absolute left-0 mt-2.5 w-[265px] sm:w-[275px] rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl p-2 shadow-2xl shadow-black/40 z-50 text-slate-900 dark:text-zinc-100"
-                        >
-                          {/* Top Subtle Glow Accent directly under avatar icon */}
-                          <div className="absolute -top-[1px] left-2 h-[2px] w-14 bg-gradient-to-r from-transparent via-lime-400 to-transparent rounded-full pointer-events-none" />
-
-                          {/* Pointer Notch aligned with profile avatar center (18px) */}
-                          <div className="absolute -top-1.5 left-[18px] -translate-x-1/2 w-3 h-3 bg-white dark:bg-zinc-950 border-t border-l border-slate-200/90 dark:border-white/10 rotate-45 pointer-events-none" />
-
-                          {/* User Info Header Card */}
-                          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50/90 dark:bg-zinc-900/80 border border-slate-100 dark:border-white/[0.05] mb-1.5 shadow-2xs">
-                            <div className="relative shrink-0">
-                              <UserAvatar
-                                user={user}
-                                className="h-8 w-8 text-xs font-black border border-lime-400 shadow-xs ring-2 ring-lime-400/15"
-                              />
-                              <span
-                                className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 border border-white dark:border-zinc-950 shadow-xs"
-                                title="Active Google Session"
-                              />
-                            </div>
-
-                            <div className="min-w-0 flex-1 space-y-0.5">
-                              <div className="flex items-center justify-between gap-1">
-                                <p className="font-jakarta text-[13px] font-extrabold text-slate-950 dark:text-white truncate tracking-tight">
-                                  {user.name}
-                                </p>
-                                <span className="font-mono text-[8px] font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400 bg-lime-400/15 dark:bg-lime-400/10 px-1 py-0.2 rounded border border-lime-400/25 shrink-0">
-                                  Active
-                                </span>
-                              </div>
-
-                              <p className="text-[11px] text-slate-500 dark:text-zinc-400 truncate flex items-center gap-1 font-medium">
-                                <span className="h-3.5 w-3.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black flex items-center justify-center text-[9px] shrink-0 border border-emerald-500/20">
-                                  G
-                                </span>
-                                <span className="truncate">{user.email}</span>
-                              </p>
-                            </div>
+                    {experimentsOpen && (
+                      <div className="absolute left-1/2 top-full z-[9999] w-80 -translate-x-1/2 pt-2">
+                        <div className="rounded-xl border border-black/[0.08] bg-white p-2 text-slate-900 shadow-lg dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:shadow-none">
+                          <div className="mb-1 border-b border-black/[0.06] px-3 py-2 font-mono text-xs text-slate-500 dark:border-white/[0.08] dark:text-[#7a8296]">
+                            {item.label}
                           </div>
-
-                          {/* Menu Actions */}
-                          <div className="space-y-0.5">
-                            {/* 1. My Profile & Activity */}
-                            <Link
-                              to="/profile"
-                              onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-180 group cursor-pointer border border-transparent hover:border-slate-200/50 dark:hover:border-white/[0.06]"
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0">
-                                <div className="h-7 w-7 rounded-lg bg-lime-400/15 text-lime-600 dark:text-lime-400 flex items-center justify-center shrink-0 group-hover:bg-lime-400 group-hover:text-slate-950 transition-all duration-180 shadow-2xs">
-                                  <User size={14} />
-                                </div>
-                                <div className="min-w-0 text-left">
-                                  <p className="font-jakarta text-xs font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
-                                    My Profile &amp; Activity
-                                  </p>
-                                  <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
-                                    Likes, comments &amp; timeline
-                                  </p>
-                                </div>
-                              </div>
-                              <ChevronRight
-                                size={13}
-                                className="text-slate-400 dark:text-zinc-500 group-hover:text-lime-500 group-hover:translate-x-0.5 transition-all duration-180 shrink-0"
-                              />
-                            </Link>
-
-                            {/* 2. Edit Profile */}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setUserMenuOpen(false);
-                                openProfileModal();
-                              }}
-                              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-180 group cursor-pointer border border-transparent hover:border-slate-200/50 dark:hover:border-white/[0.06]"
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0">
-                                <div className="h-7 w-7 rounded-lg bg-sky-500/15 text-sky-500 flex items-center justify-center shrink-0 group-hover:bg-sky-500 group-hover:text-white transition-all duration-180 shadow-2xs">
-                                  <Edit3 size={14} />
-                                </div>
-                                <div className="min-w-0 text-left">
-                                  <p className="font-jakarta text-xs font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
-                                    Edit Profile
-                                  </p>
-                                  <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
-                                    Photo, bio, location &amp; socials
-                                  </p>
-                                </div>
-                              </div>
-                              <ChevronRight
-                                size={13}
-                                className="text-slate-400 dark:text-zinc-500 group-hover:text-sky-500 group-hover:translate-x-0.5 transition-all duration-180 shrink-0"
-                              />
-                            </button>
-
-                            {/* 3. My Receipts */}
-                            <Link
-                              to="/receipts"
-                              onClick={() => setUserMenuOpen(false)}
-                              className="flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-all duration-180 group cursor-pointer border border-transparent hover:border-slate-200/50 dark:hover:border-white/[0.06]"
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0">
-                                <div className="h-7 w-7 rounded-lg bg-amber-500/15 text-amber-500 flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all duration-180 shadow-2xs">
-                                  <Receipt size={14} />
-                                </div>
-                                <div className="min-w-0 text-left">
-                                  <p className="font-jakarta text-xs font-bold text-slate-800 dark:text-zinc-100 group-hover:text-slate-950 dark:group-hover:text-white transition">
-                                    My Receipts
-                                  </p>
-                                  <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-tight group-hover:text-slate-600 dark:group-hover:text-zinc-300 transition">
-                                    Verified access codes &amp; bills
-                                  </p>
-                                </div>
-                              </div>
-                              <ChevronRight
-                                size={13}
-                                className="text-slate-400 dark:text-zinc-500 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all duration-180 shrink-0"
-                              />
-                            </Link>
-
-                            {/* Divider */}
-                            <div className="my-1 border-t border-slate-100 dark:border-white/[0.06]" />
-
-                            {/* 4. Sign Out */}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                logout();
-                                setUserMenuOpen(false);
-                              }}
-                              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl hover:bg-rose-500/10 dark:hover:bg-rose-500/15 transition-all duration-180 group cursor-pointer border border-transparent hover:border-rose-500/20"
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0">
-                                <div className="h-7 w-7 rounded-lg bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0 group-hover:bg-rose-500 group-hover:text-white transition-all duration-180 shadow-2xs">
-                                  <LogOut size={14} />
-                                </div>
-                                <div className="min-w-0 text-left">
-                                  <p className="font-jakarta text-xs font-bold text-rose-600 dark:text-rose-400 group-hover:text-rose-500 transition">
-                                    Sign Out
-                                  </p>
-                                  <p className="text-[10px] text-slate-400 dark:text-zinc-500 leading-tight">
-                                    Safely end session on this device
-                                  </p>
-                                </div>
-                              </div>
-                              <ChevronRight
-                                size={13}
-                                className="text-slate-400 dark:text-zinc-500 group-hover:text-rose-500 group-hover:translate-x-0.5 transition-all duration-180 shrink-0"
-                              />
-                            </button>
+                          <div className="space-y-1">
+                            {item.children.map((sub) => {
+                              const SubIcon = subIconMap[sub.label] || ShieldCheck;
+                              return (
+                                <NavLink
+                                  key={sub.to}
+                                  to={sub.to}
+                                  onClick={() => setExperimentsOpen(false)}
+                                  className={({ isActive }) =>
+                                    clsx(
+                                      "group/sub flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm transition-colors duration-150",
+                                      isActive
+                                        ? "border-black/[0.08] bg-slate-100 font-medium text-slate-950 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
+                                        : "border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-950 dark:text-[#a3a9b8] dark:hover:bg-white/[0.04] dark:hover:text-[#eef0f5]",
+                                    )
+                                  }
+                                >
+                                  <div className="flex items-center gap-2.5">
+                                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-black/[0.08] bg-slate-50 text-slate-500 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#7a8296]">
+                                      <SubIcon size={16} strokeWidth={1.5} />
+                                    </span>
+                                    <span className="text-sm font-medium">{sub.label}</span>
+                                  </div>
+                                  <ChevronRight
+                                    size={14}
+                                    strokeWidth={1.5}
+                                    className="shrink-0 text-slate-400 opacity-0 transition-opacity duration-150 group-hover/sub:opacity-100 dark:text-[#7a8296]"
+                                  />
+                                </NavLink>
+                              );
+                            })}
                           </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      openSignInModal({
-                        title: "Sign in with Google",
-                        subtitle: "Sign in or sign up with your Google account to access your receipts, bookings, and profile.",
-                      })
-                    }
-                    aria-label="Sign in with Google"
-                    title="Sign in with Google"
-                    className={clsx(
-                      "group relative flex h-8 w-8 2xl:h-9 2xl:w-9 items-center justify-center rounded-full border transition-all duration-200 shrink-0",
-                      isDark
-                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/20 hover:shadow-[0_0_16px_rgba(52,211,153,0.3)]"
-                        : "border-emerald-500/35 bg-emerald-50 text-emerald-800 hover:border-emerald-500 hover:bg-emerald-100 hover:shadow-[0_0_16px_rgba(52,211,153,0.22)] shadow-xs",
+                        </div>
+                      </div>
                     )}
-                  >
-                    <User size={15} className="transition-transform duration-200 group-hover:scale-110" />
-                    <span
-                      className={clsx(
-                        "absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 2xl:h-4 2xl:w-4 items-center justify-center rounded-full border shadow-xs transition-transform duration-200 group-hover:scale-105",
-                        isDark ? "bg-slate-900 border-slate-700" : "bg-white border-emerald-500/30",
-                      )}
-                    >
-                      <svg className="w-2.5 h-2.5 2xl:w-3 2xl:h-3" viewBox="0 0 18 18" aria-hidden="true">
-                        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-                        <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-                      </svg>
-                    </span>
-                  </button>
-                )}
+                  </div>
+                );
+              }
 
-                {/* Desktop Search Button */}
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={navItemClass}
+                  onMouseEnter={() => prefetchRoute(item.to)}
+                  onFocus={() => prefetchRoute(item.to)}
+                >
+                  <span>{item.label}</span>
+                </NavLink>
+              );
+            })}
+          </nav>
+
+          {/* Desktop Right Controls */}
+          <div className="hidden shrink-0 items-center gap-2 xl:flex">
+            {user ? (
+              <div className="relative shrink-0" ref={userMenuRef}>
                 <button
                   type="button"
-                  onClick={openSearch}
-                  aria-label="Open search (Ctrl+K)"
-                  title="Search (Ctrl+K)"
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
                   className={clsx(
-                    "flex items-center gap-2 rounded-full border px-2.5 2xl:px-3 py-1.5 text-xs font-medium transition-all duration-200 shrink-0",
-                    isDark
-                      ? "border-slate-700 bg-slate-800/60 text-slate-400 hover:border-cyan-400/40 hover:bg-cyan-400/10 hover:text-cyan-300"
-                      : "border-slate-200 bg-slate-50 text-slate-500 hover:border-sky-400/40 hover:bg-sky-50 hover:text-sky-700",
+                    "flex h-9 items-center gap-2 rounded-lg border px-2.5 text-sm font-medium transition-colors duration-150",
+                    userMenuOpen
+                      ? "border-slate-300 bg-slate-100 text-slate-950 dark:border-white/[0.16] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
+                      : "border-black/[0.08] bg-slate-50 text-slate-800 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:hover:bg-[#1a1e28]",
                   )}
+                  aria-label="User profile menu"
+                  aria-expanded={userMenuOpen}
                 >
-                  <Search size={13} />
-                  <span className="hidden 2xl:inline">Search</span>
+                  <UserAvatar user={user} className="h-6 w-6 text-xs" />
+                  <span className="max-w-[96px] truncate">
+                    {user.name.split(" ")[0]}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    strokeWidth={1.5}
+                    className={clsx(
+                      "text-slate-400 transition-transform duration-150 dark:text-[#7a8296]",
+                      userMenuOpen && "rotate-180",
+                    )}
+                  />
                 </button>
-                <MotionButton
-                  type="button"
-                  onClick={toggleTheme}
-                  whileHover={{ scale: 1.12 }}
-                  whileTap={{ scale: 0.88, rotate: -15 }}
-                  className={clsx(
-                    "relative flex h-8 w-8 2xl:h-9 2xl:w-9 items-center justify-center rounded-full border shadow-lg backdrop-blur-xl transition-all duration-300 overflow-hidden group shrink-0",
-                    isDark
-                      ? "border-amber-400/40 bg-amber-400/10 text-amber-300 shadow-[0_0_16px_rgba(251,191,36,0.35)] hover:border-amber-300 hover:bg-amber-400/20 hover:shadow-[0_0_24px_rgba(251,191,36,0.6)]"
-                      : "border-indigo-600/40 bg-indigo-500/10 text-indigo-700 shadow-[0_0_16px_rgba(99,102,241,0.25)] hover:border-indigo-600 hover:bg-indigo-500/20 hover:shadow-[0_0_24px_rgba(99,102,241,0.45)]"
-                  )}
-                  aria-label="Toggle theme"
-                  title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <MotionDiv
-                      key={isDark ? "dark" : "light"}
-                      initial={{ rotate: -90, scale: 0.3, opacity: 0 }}
-                      animate={{ rotate: 0, scale: 1, opacity: 1 }}
-                      exit={{ rotate: 90, scale: 0.3, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: "backOut" }}
-                      className="flex items-center justify-center"
-                    >
-                      {isDark ? (
-                        <Sun size={16} className="text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
-                      ) : (
-                        <Moon size={16} className="text-indigo-600 drop-shadow-[0_0_6px_rgba(99,102,241,0.6)]" />
-                      )}
-                    </MotionDiv>
-                  </AnimatePresence>
-                </MotionButton>
 
-                <a
-                  href={QUICK_CONTACT.resumeFullStack}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border-2 border-emerald-400/60 bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-green-500/15 px-5 py-2.5 text-xs font-black uppercase tracking-widest text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.35)] hover:border-emerald-300 hover:bg-gradient-to-r hover:from-emerald-400 hover:to-lime-400 hover:text-slate-950 hover:shadow-[0_0_30px_rgba(52,211,153,0.65)] hover:scale-[1.04] transition-all duration-300 ease-out"
-                  aria-label="Download Full Stack Resume"
-                >
-                  <Download size={14} />
-                  Resume
-                </a>
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.15, ease: "easeOut" }}
+                      className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-black/[0.08] bg-white p-2 text-slate-900 shadow-lg dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:shadow-none"
+                    >
+                      <div className="mb-1.5 flex items-center gap-2.5 rounded-lg border border-black/[0.06] bg-slate-50 p-2 dark:border-white/[0.06] dark:bg-[#1a1e28]">
+                        <UserAvatar user={user} className="h-8 w-8 shrink-0 text-xs" />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="truncate text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+                              {user.name}
+                            </p>
+                            <span className="shrink-0 font-mono text-xs text-emerald-700 dark:text-emerald-400">
+                              Active
+                            </span>
+                          </div>
+                          <p className="truncate text-xs text-slate-500 dark:text-[#7a8296]">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-0.5">
+                        <Link
+                          to="/profile"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-white/[0.05]"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <User size={16} strokeWidth={1.5} className="text-slate-500 dark:text-[#7a8296]" />
+                            <span>Profile &amp; Activity</span>
+                          </div>
+                          <ChevronRight size={14} strokeWidth={1.5} className="text-slate-400 dark:text-[#7a8296]" />
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUserMenuOpen(false);
+                            openProfileModal();
+                          }}
+                          className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-sm transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-white/[0.05]"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <Edit3 size={16} strokeWidth={1.5} className="text-slate-500 dark:text-[#7a8296]" />
+                            <span>Edit Profile</span>
+                          </div>
+                          <ChevronRight size={14} strokeWidth={1.5} className="text-slate-400 dark:text-[#7a8296]" />
+                        </button>
+
+                        <Link
+                          to="/receipts"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors duration-150 hover:bg-slate-100 dark:hover:bg-white/[0.05]"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <Receipt size={16} strokeWidth={1.5} className="text-slate-500 dark:text-[#7a8296]" />
+                            <span>My Receipts</span>
+                          </div>
+                          <ChevronRight size={14} strokeWidth={1.5} className="text-slate-400 dark:text-[#7a8296]" />
+                        </Link>
+
+                        <div className="my-1 border-t border-black/[0.06] dark:border-white/[0.06]" />
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            logout();
+                            setUserMenuOpen(false);
+                          }}
+                          className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-sm text-rose-600 transition-colors duration-150 hover:bg-rose-500/10 dark:text-rose-400"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <LogOut size={16} strokeWidth={1.5} />
+                            <span>Sign Out</span>
+                          </div>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() =>
+                  openSignInModal({
+                    title: "Sign in with Google",
+                    subtitle: "Sign in or sign up with your Google account to access your receipts, bookings, and profile.",
+                  })
+                }
+                aria-label="Sign in with Google"
+                title="Sign in with Google"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:bg-[#1a1e28] dark:hover:text-[#eef0f5]"
+              >
+                <User size={16} strokeWidth={1.5} />
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={openSearch}
+              aria-label="Open search (Ctrl+K)"
+              title="Search (Ctrl+K)"
+              className="flex h-9 shrink-0 items-center gap-2 rounded-lg border border-black/[0.08] bg-slate-50 px-3 text-sm text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:bg-[#1a1e28] dark:hover:text-[#eef0f5]"
+            >
+              <Search size={16} strokeWidth={1.5} />
+              <span className="hidden 2xl:inline">Search</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:bg-[#1a1e28] dark:hover:text-[#eef0f5]"
+              aria-label="Toggle theme"
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {isDark ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
+            </button>
+
+            <a
+              href={QUICK_CONTACT.resumeFullStack}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
+              aria-label="Download Full Stack Resume"
+            >
+              <Download size={16} strokeWidth={1.5} />
+              Resume
+            </a>
           </div>
         </div>
+      </div>
 
-        <AnimatePresence>
+      {/* Mobile Drawer */}
+      <AnimatePresence>
         {open && (
           <div className="fixed inset-0 z-50 xl:hidden">
-            {/* Smooth fading backdrop */}
             <MotionDiv
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
               onClick={() => setOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+              className="absolute inset-0 bg-black/60 cursor-pointer"
               aria-hidden="true"
             />
 
-            {/* Smooth sliding sidebar drawer */}
             <MotionAside
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
               className={clsx(
-                "relative flex h-full max-h-screen w-[min(85vw,310px)] flex-col overflow-y-auto p-5 sm:p-6 z-50 border-r shadow-2xl",
+                "relative z-50 flex h-full max-h-screen w-72 flex-col overflow-y-auto border-r p-5",
                 isDark
-                  ? "bg-[#050d14] border-sky-400/20 text-white shadow-[10px_0_50px_rgba(0,10,25,0.9)]"
-                  : "bg-white border-slate-300 text-slate-900 shadow-[10px_0_40px_rgba(0,0,0,0.18)]",
+                  ? "border-white/[0.08] bg-[#0b0d14] text-[#eef0f5]"
+                  : "border-black/[0.08] bg-white text-slate-900",
               )}
               role="dialog"
               aria-modal="true"
             >
-              <div className={clsx(
-                "flex items-center justify-between pb-4 mb-3 border-b shrink-0",
-                isDark ? "border-sky-400/15" : "border-slate-200"
-              )}>
+              <div className="mb-4 flex shrink-0 items-center justify-between border-b border-black/[0.08] pb-4 dark:border-white/[0.08]">
                 <Link
                   to="/"
-                  onClick={() => { setOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                  className="group"
+                  onClick={() => {
+                    setOpen(false);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                 >
-                  <span className={clsx(
-                    "font-outfit text-[1.4rem] font-black tracking-[0.18em] uppercase select-none",
-                    "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
-                    "drop-shadow-[0_4px_18px_rgba(52,211,153,0.6)] group-hover:drop-shadow-[0_4px_24px_rgba(52,211,153,0.9)]"
-                  )}>
-                    NIKHIL
+                  <span className="font-display text-lg font-medium tracking-[-0.01em] text-slate-900 select-none dark:text-[#eef0f5]">
+                    Nikhil
                   </span>
                 </Link>
                 <div className="flex items-center gap-2">
-                  <MotionButton
+                  <button
                     type="button"
                     onClick={toggleTheme}
-                    whileHover={{ scale: 1.12 }}
-                    whileTap={{ scale: 0.88, rotate: -15 }}
-                    className={clsx(
-                      "relative flex h-8 w-8 items-center justify-center rounded-full border shadow-md backdrop-blur-xl transition-all duration-300 overflow-hidden",
-                      isDark
-                        ? "border-amber-400/40 bg-amber-400/10 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.35)]"
-                        : "border-indigo-600/40 bg-indigo-500/10 text-indigo-700 shadow-[0_0_12px_rgba(99,102,241,0.25)]"
-                    )}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-600 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8]"
                     aria-label="Toggle theme"
                   >
-                    <AnimatePresence mode="wait" initial={false}>
-                      <MotionDiv
-                        key={isDark ? "dark" : "light"}
-                        initial={{ rotate: -90, scale: 0.3, opacity: 0 }}
-                        animate={{ rotate: 0, scale: 1, opacity: 1 }}
-                        exit={{ rotate: 90, scale: 0.3, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "backOut" }}
-                        className="flex items-center justify-center"
-                      >
-                        {isDark ? (
-                          <Sun size={15} className="text-amber-300" />
-                        ) : (
-                          <Moon size={15} className="text-indigo-600" />
-                        )}
-                      </MotionDiv>
-                    </AnimatePresence>
-                  </MotionButton>
+                    {isDark ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
+                  </button>
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className={clsx(
-                      "rounded-full p-2 transition",
-                      isDark
-                        ? "text-zinc-400 hover:text-sky-400 hover:bg-sky-400/10"
-                        : "text-slate-600 hover:text-emerald-700 hover:bg-emerald-50",
-                    )}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-[#7a8296] dark:hover:bg-white/[0.06]"
                     aria-label="Close menu"
                   >
-                    <X size={18} />
+                    <X size={18} strokeWidth={1.5} />
                   </button>
                 </div>
               </div>
 
-              <p className={clsx(
-                "text-[10px] uppercase tracking-[0.2em] font-bold mb-2.5 px-1 shrink-0",
-                isDark ? "text-sky-400" : "text-emerald-700"
-              )}>
+              <p className="mb-2 px-1 font-mono text-xs text-slate-500 dark:text-[#7a8296]">
                 Navigation
               </p>
 
-              <div className="space-y-1.5 overflow-y-auto pr-1 flex-1 min-h-0">
+              <div className="min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
                 {NAV_LINKS.map((item) => {
                   const Icon = mobileNavIconMap[item.label] || Shield;
 
@@ -931,37 +658,34 @@ const Navbar = () => {
                           <NavLink
                             to={item.to || "/"}
                             onClick={() => setOpen(false)}
-                            className={({ isActive }) => clsx(
-                              "group flex-1 flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold border transition-all duration-200",
-                              isActive
-                                ? isDark
-                                  ? "bg-gradient-to-r from-sky-500/20 via-teal-500/20 to-green-500/20 border-sky-400/40 text-white shadow-[0_0_15px_rgba(56,189,248,0.25)]"
-                                  : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 shadow-sm"
-                                : isDark
-                                  ? "border-transparent text-zinc-400 active:text-white"
-                                  : "border-transparent text-slate-800 active:text-slate-950",
-                            )}
+                            className={({ isActive }) =>
+                              clsx(
+                                "flex flex-1 items-center gap-2.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-150",
+                                isActive
+                                  ? "border-black/[0.08] bg-slate-100 text-slate-950 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
+                                  : "border-transparent text-slate-600 hover:bg-slate-50 dark:text-[#a3a9b8] dark:hover:bg-white/[0.04]",
+                              )
+                            }
                           >
-                            <Icon size={16} className={isDark ? "text-sky-400" : "text-emerald-600"} />
-                            <span className="flex-1 tracking-wide">{item.label}</span>
+                            <Icon size={16} strokeWidth={1.5} className="text-slate-500 dark:text-[#7a8296]" />
+                            <span className="flex-1">{item.label}</span>
                           </NavLink>
                           <button
                             type="button"
                             onClick={() => toggleMobileDropdown(item.label)}
-                            className={clsx(
-                              "p-2.5 rounded-xl border transition-all duration-200",
-                              isDark
-                                ? "border-transparent text-zinc-400 hover:text-white"
-                                : "border-transparent text-slate-700 hover:text-slate-950"
-                            )}
+                            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-[#7a8296] dark:hover:bg-white/[0.04]"
                             aria-label={`Toggle ${item.label} sub-menu`}
                           >
-                            <ChevronDown size={14} className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                            <ChevronDown
+                              size={16}
+                              strokeWidth={1.5}
+                              className={`transition-transform duration-150 ${isOpen ? "rotate-180" : ""}`}
+                            />
                           </button>
                         </div>
 
                         {isOpen && (
-                          <div className="pl-6 space-y-1 pt-1 pb-1">
+                          <div className="space-y-1 pb-1 pl-6 pt-1">
                             {item.children.map((sub) => {
                               const SubIcon = subIconMap[sub.label] || ShieldCheck;
                               return (
@@ -969,16 +693,16 @@ const Navbar = () => {
                                   key={sub.to}
                                   to={sub.to}
                                   onClick={() => setOpen(false)}
-                                  className={({ isActive }) => clsx(
-                                    "flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold border transition-all duration-200",
-                                    isActive
-                                      ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
-                                      : isDark
-                                        ? "border-transparent text-zinc-400 hover:text-white"
-                                        : "border-transparent text-slate-700 hover:text-slate-950",
-                                  )}
+                                  className={({ isActive }) =>
+                                    clsx(
+                                      "flex items-center gap-2.5 rounded-lg border px-3 py-2 text-sm transition-colors duration-150",
+                                      isActive
+                                        ? "border-black/[0.08] bg-slate-100 font-medium text-slate-950 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
+                                        : "border-transparent text-slate-600 hover:text-slate-950 dark:text-[#a3a9b8] dark:hover:text-[#eef0f5]",
+                                    )
+                                  }
                                 >
-                                  <SubIcon size={14} className="text-emerald-500 shrink-0" />
+                                  <SubIcon size={16} strokeWidth={1.5} className="shrink-0 text-slate-500 dark:text-[#7a8296]" />
                                   <span>{sub.label}</span>
                                 </NavLink>
                               );
@@ -996,14 +720,10 @@ const Navbar = () => {
                       onClick={() => setOpen(false)}
                       className={({ isActive }) =>
                         clsx(
-                          "group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold border transition-all duration-200",
+                          "flex items-center gap-2.5 rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-150",
                           isActive
-                            ? isDark
-                              ? "bg-gradient-to-r from-sky-500/20 via-teal-500/20 to-green-500/20 border-sky-400/40 text-white shadow-[0_0_15px_rgba(56,189,248,0.25)]"
-                              : "bg-emerald-500/10 border-emerald-500/40 text-emerald-900 shadow-sm"
-                            : isDark
-                              ? "border-transparent text-zinc-400 active:text-white active:bg-white/10"
-                              : "border-transparent text-slate-800 active:text-slate-950 active:bg-slate-100",
+                            ? "border-black/[0.08] bg-slate-100 text-slate-950 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
+                            : "border-transparent text-slate-600 hover:bg-slate-50 dark:text-[#a3a9b8] dark:hover:bg-white/[0.04]",
                         )
                       }
                     >
@@ -1011,30 +731,17 @@ const Navbar = () => {
                         <>
                           <Icon
                             size={16}
+                            strokeWidth={1.5}
                             className={clsx(
-                              "transition-colors duration-200",
                               isActive
-                                ? isDark ? "text-sky-400" : "text-emerald-600"
-                                : isDark
-                                  ? "text-zinc-500 group-hover:text-sky-400"
-                                  : "text-slate-500 group-hover:text-emerald-700",
+                                ? "text-emerald-700 dark:text-emerald-400"
+                                : "text-slate-500 dark:text-[#7a8296]",
                             )}
                           />
-                          <span className="flex-1 tracking-wide">{item.label}</span>
+                          <span className="flex-1">{item.label}</span>
                           {isActive ? (
-                            <span className={clsx(
-                              "h-2 w-2 rounded-full",
-                              isDark ? "bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]" : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"
-                            )} />
-                          ) : (
-                            <ChevronRight
-                              size={14}
-                              className={clsx(
-                                "opacity-50 group-hover:translate-x-1 group-hover:opacity-100 transition-all duration-200",
-                                isDark ? "text-zinc-500 group-hover:text-green-400" : "text-slate-400 group-hover:text-emerald-600"
-                              )}
-                            />
-                          )}
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                          ) : null}
                         </>
                       )}
                     </NavLink>
@@ -1042,53 +749,47 @@ const Navbar = () => {
                 })}
               </div>
 
-              <div className={clsx(
-                "mt-auto space-y-2.5 pt-4 border-t shrink-0",
-                isDark ? "border-sky-400/15" : "border-slate-200"
-              )}>
-                {/* Google Sign-In — only when not logged in */}
+              <div className="mt-auto shrink-0 space-y-2.5 border-t border-black/[0.08] pt-4 dark:border-white/[0.08]">
                 {!user && (
                   <button
                     type="button"
-                    onClick={() => { openSignInModal(); setOpen(false); }}
-                    className={clsx(
-                      "flex w-full items-center justify-center gap-2.5 rounded-xl border py-2.5 text-xs font-bold transition-all duration-200",
-                      isDark
-                        ? "border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20"
-                        : "border-slate-200 bg-white text-slate-800 hover:bg-slate-50 hover:border-slate-300",
-                    )}
+                    onClick={() => {
+                      openSignInModal();
+                      setOpen(false);
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-black/[0.08] bg-slate-50 py-2.5 text-sm font-medium text-slate-800 transition-colors duration-150 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:hover:bg-[#1a1e28]"
                     aria-label="Sign in with Google"
                   >
-                    {/* Google G icon */}
                     <svg width="16" height="16" viewBox="0 0 18 18" aria-hidden="true">
-                      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-                      <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4" />
+                      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853" />
+                      <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05" />
+                      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335" />
                     </svg>
                     Sign in with Google
                   </button>
                 )}
 
-                {/* User Profile Card on Mobile */}
                 {user ? (
-                  <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 space-y-3">
+                  <div className="space-y-3 rounded-xl border border-black/[0.08] bg-slate-50 p-3 dark:border-white/[0.08] dark:bg-[#11141c]">
                     <div className="flex items-center gap-3">
-                      <UserAvatar user={user} className="h-10 w-10 text-sm font-black border-2 border-lime-400 ring-2 ring-lime-400/20" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-jakarta text-sm font-extrabold text-slate-900 dark:text-white truncate">{user.name}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate flex items-center gap-1 font-medium">
-                          <span className="text-emerald-500 font-bold">G</span> {user.email}
+                      <UserAvatar user={user} className="h-9 w-9 text-sm" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+                          {user.name}
+                        </p>
+                        <p className="truncate text-xs text-slate-500 dark:text-[#7a8296]">
+                          {user.email}
                         </p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-emerald-500/20">
+                    <div className="grid grid-cols-3 gap-2 border-t border-black/[0.06] pt-2 dark:border-white/[0.06]">
                       <Link
                         to="/profile"
                         onClick={() => setOpen(false)}
-                        className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 text-xs font-bold text-slate-800 dark:text-slate-200"
+                        className="flex items-center justify-center gap-1.5 rounded-lg border border-black/[0.08] bg-white py-2 text-xs font-medium text-slate-800 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
                       >
-                        <User size={13} className="text-lime-500" /> Profile
+                        <User size={14} strokeWidth={1.5} /> Profile
                       </Link>
                       <button
                         type="button"
@@ -1096,9 +797,9 @@ const Navbar = () => {
                           setOpen(false);
                           openProfileModal();
                         }}
-                        className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 text-xs font-bold text-slate-800 dark:text-slate-200"
+                        className="flex items-center justify-center gap-1.5 rounded-lg border border-black/[0.08] bg-white py-2 text-xs font-medium text-slate-800 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]"
                       >
-                        <Edit3 size={13} className="text-sky-400" /> Edit
+                        <Edit3 size={14} strokeWidth={1.5} /> Edit
                       </button>
                       <button
                         type="button"
@@ -1106,9 +807,9 @@ const Navbar = () => {
                           logout();
                           setOpen(false);
                         }}
-                        className="flex items-center justify-center gap-1 rounded-xl border border-rose-500/30 bg-rose-500/10 py-2 text-xs font-bold text-rose-600 dark:text-rose-400"
+                        className="flex items-center justify-center gap-1 rounded-lg border border-rose-500/30 bg-rose-500/10 py-2 text-xs font-medium text-rose-600 dark:text-rose-400"
                       >
-                        <LogOut size={13} /> Exit
+                        <LogOut size={14} strokeWidth={1.5} /> Exit
                       </button>
                     </div>
                   </div>
@@ -1119,27 +820,21 @@ const Navbar = () => {
                   target="_blank"
                   rel="noreferrer"
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-400 py-3 text-xs font-black uppercase tracking-wider text-black shadow-[0_4px_18px_rgba(34,197,94,0.35)] hover:shadow-[0_6px_24px_rgba(34,197,94,0.5)] transition-all duration-300"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 py-2.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"
                   aria-label="Download Full Stack Resume"
                 >
-                  <Download size={14} />
+                  <Download size={16} strokeWidth={1.5} />
                   Download Resume
                 </a>
-
-                <p className="text-[10px] text-center text-slate-500 dark:text-zinc-500 font-medium pt-0.5">
-                  Made with 💚 by Nikhil
-                </p>
               </div>
             </MotionAside>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Global Search Modal */}
       <SearchModal isOpen={isSearchOpen} onClose={closeSearch} />
     </header>
   );
 };
 
 export default Navbar;
-
