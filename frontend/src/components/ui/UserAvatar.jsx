@@ -1,6 +1,10 @@
 import { memo, useState } from "react";
 
-const UserAvatar = ({ user, className = "h-7 w-7 text-xs", textClassName = "font-black" }) => {
+const UserAvatar = ({
+  user,
+  className = "h-7 w-7 text-xs",
+  textClassName = "font-medium",
+}) => {
   const [imgError, setImgError] = useState(false);
 
   if (user?.avatar && !imgError) {
@@ -8,7 +12,7 @@ const UserAvatar = ({ user, className = "h-7 w-7 text-xs", textClassName = "font
       <img
         src={user.avatar}
         alt={user.name || "User profile"}
-        className={`${className} rounded-full object-cover shrink-0 border border-emerald-500/30`}
+        className={`${className} shrink-0 rounded-full border border-black/[0.10] object-cover dark:border-white/[0.12]`}
         referrerPolicy="no-referrer"
         crossOrigin="anonymous"
         width={32}
@@ -24,7 +28,7 @@ const UserAvatar = ({ user, className = "h-7 w-7 text-xs", textClassName = "font
 
   return (
     <div
-      className={`${className} flex items-center justify-center rounded-full bg-gradient-to-tr from-emerald-500 via-teal-400 to-lime-400 text-slate-950 ${textClassName} shrink-0 shadow-sm border border-emerald-400/40`}
+      className={`${className} flex shrink-0 items-center justify-center rounded-full border border-emerald-600/30 bg-emerald-500/15 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 ${textClassName}`}
     >
       {initial}
     </div>

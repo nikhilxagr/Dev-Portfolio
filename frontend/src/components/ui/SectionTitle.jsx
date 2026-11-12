@@ -5,36 +5,20 @@ const containerVariants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.05,
+      staggerChildren: 0.06,
+      delayChildren: 0.02,
     },
   },
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 10 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      type: 'spring',
-      stiffness: 250,
-      damping: 26,
-      mass: 0.6,
-    },
-  },
-}
-
-const ruleVariants = {
-  hidden: { scaleX: 0, opacity: 0 },
-  show: {
-    scaleX: 1,
-    opacity: 1,
-    transition: {
-      type: 'spring',
-      stiffness: 220,
-      damping: 24,
-      delay: 0.15,
+      duration: 0.22,
+      ease: 'easeOut',
     },
   },
 }
@@ -55,29 +39,23 @@ const SectionTitle = ({
       {eyebrow ? (
         <motion.p
           variants={animate ? itemVariants : undefined}
-          className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-300/35 dark:bg-emerald-300/10 dark:text-emerald-200 px-3 py-1 text-xs font-semibold"
+          className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" />
           {eyebrow}
         </motion.p>
       ) : null}
 
       <motion.h2
         variants={animate ? itemVariants : undefined}
-        className="mt-3 font-display text-3xl font-bold tracking-tight leading-tight text-slate-900 dark:text-cyan-50 sm:text-4xl lg:text-5xl"
+        className="mt-2 font-display text-3xl font-semibold tracking-[-0.02em] leading-[1.15] text-slate-900 dark:text-[#eef0f5] sm:text-4xl"
       >
         {title}
       </motion.h2>
 
-      <motion.span
-        variants={animate ? ruleVariants : undefined}
-        className="section-title-rule mt-4 inline-block h-px w-24 origin-left bg-gradient-to-r from-cyan-500/75 via-emerald-500/70 to-transparent dark:from-cyan-300/75 dark:via-emerald-300/70"
-      />
-
       {description ? (
         <motion.p
           variants={animate ? itemVariants : undefined}
-          className={`section-title-description mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300 sm:text-base sm:leading-8 ${descriptionAlignmentClass}`}
+          className={`section-title-description mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8] sm:text-base ${descriptionAlignmentClass}`}
         >
           {description}
         </motion.p>

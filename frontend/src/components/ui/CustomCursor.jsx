@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 import { motion, useSpring, useMotionValue } from "framer-motion";
 
+const MotionDiv = motion.div;
+
 export const CustomCursor = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Position motion values
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
 
-  // Smooth spring physics follower
   const springConfig = { damping: 28, stiffness: 400, mass: 0.2 };
   const smoothX = useSpring(cursorX, springConfig);
   const smoothY = useSpring(cursorY, springConfig);
 
   useEffect(() => {
-    // Hide cursor on touch devices / mobile screens
     if (window.matchMedia("(pointer: coarse)").matches) {
       return undefined;
     }
 
-    setIsVisible(true);
+    const timer = setTimeout(() => setIsVisible(true), 0);
 
     const updatePosition = (e) => {
       cursorX.set(e.clientX);
@@ -44,6 +43,7 @@ export const CustomCursor = () => {
     document.addEventListener("mouseover", handleMouseOver);
 
     return () => {
+      clearTimeout(timer);
       window.removeEventListener("mousemove", updatePosition);
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -55,22 +55,20 @@ export const CustomCursor = () => {
 
   return (
     <>
-      {/* Outer Spring Follower Dot/Ring */}
-      <motion.div
+      <MotionDiv
         style={{
           x: smoothX,
           y: smoothY,
         }}
         animate={{
-          scale: isClicking ? 0.75 : isHovered ? 1.8 : 1,
-          opacity: isHovered ? 0.6 : 0.4,
+          scale: isClicking ? 0.75 : isHovered ? 1.65 : 1,
+          opacity: isHovered ? 0.55 : 0.35,
         }}
         transition={{ duration: 0.15, ease: "easeOut" }}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-sky-400/60 bg-sky-400/10 shadow-[0_0_15px_rgba(56,189,248,0.3)] backdrop-blur-[1px] transform-gpu will-change-transform"
+        className="pointer-events-none fixed top-0 left-0 z-[9999] h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-500/50 bg-emerald-500/10 transform-gpu will-change-transform"
       />
 
-      {/* Center Precise Dot */}
-      <motion.div
+      <MotionDiv
         style={{
           x: cursorX,
           y: cursorY,
@@ -79,7 +77,7 @@ export const CustomCursor = () => {
           scale: isClicking ? 0.5 : isHovered ? 0 : 1,
         }}
         transition={{ duration: 0.1, ease: "easeOut" }}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] transform-gpu will-change-transform"
+        className="pointer-events-none fixed top-0 left-0 z-[9999] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500 dark:bg-emerald-400 transform-gpu will-change-transform"
       />
     </>
   );
