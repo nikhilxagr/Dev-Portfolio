@@ -16,28 +16,33 @@ const ConsistencyDashboard = () => {
     QUICK_CONTACT.tryhackme.split("/").filter(Boolean).pop() || "nikhilxagr";
 
   return (
-    <section className="section-wrap section-divider pt-10 pb-16">
+    <section className="section-wrap section-divider">
       <FadeInUp>
-        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-6 sm:p-8 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/90 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)]">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_15%,rgba(52,211,153,0.08),transparent_34%),radial-gradient(circle_at_86%_84%,rgba(16,185,129,0.08),transparent_40%)]" />
+        <div className="mb-8 max-w-2xl">
+          <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+            Proof of Work
+          </p>
+          <h2 className="mt-2 font-display text-3xl font-medium tracking-[-0.02em] text-slate-900 sm:text-4xl dark:text-[#eef0f5]">
+            Coding Consistency
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base dark:text-[#a3a9b8]">
+            Verified activity across GitHub, LeetCode, and TryHackMe.
+          </p>
+        </div>
 
-          <div className="relative text-center mb-6">
-            <p className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">
-              Proof of Work
-            </p>
-            <h2 className="mt-1.5 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Coding Consistency <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Showcase</span>
-            </h2>
-            <p className="mt-2.5 text-sm sm:text-base text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
-              Live GitHub, LeetCode, and TryHackMe platform statistics.
-            </p>
-          </div>
-
-          <div className="relative grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            <GitHubStreakCard username={githubUsername} profileUrl={QUICK_CONTACT.github} />
-            <LeetCodeStatsCard username={leetcodeUsername} profileUrl={QUICK_CONTACT.leetcode} />
-            <TryHackMeBadgeCard username={tryHackMeUsername} profileUrl={QUICK_CONTACT.tryhackme} />
-          </div>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <GitHubStreakCard
+            username={githubUsername}
+            profileUrl={QUICK_CONTACT.github}
+          />
+          <LeetCodeStatsCard
+            username={leetcodeUsername}
+            profileUrl={QUICK_CONTACT.leetcode}
+          />
+          <TryHackMeBadgeCard
+            username={tryHackMeUsername}
+            profileUrl={QUICK_CONTACT.tryhackme}
+          />
         </div>
       </FadeInUp>
     </section>

@@ -1,6 +1,6 @@
 import { memo } from "react";
+import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import Button from "@/components/ui/Button";
 import FadeInUp from "@/components/animations/FadeInUp";
 
 const featuredHomeJourney = [
@@ -11,7 +11,7 @@ const featuredHomeJourney = [
     title: "Lenovo LEAP Hackathon",
     subOrg: "AKTU, Lucknow",
     description:
-      "Attended the Lenovo LEAP Hackathon at AKTU, Lucknow, where I presented TaskNexus, a service marketplace concept connecting clients with skilled freelancers while simplifying task assignment, quality checks, and delivery.",
+      "Presented TaskNexus at AKTU, Lucknow—a service marketplace concept connecting clients with freelancers and streamlining task assignment, quality checks, and delivery.",
     imageUrl: "/images/journey/Lenovo1.jpg",
     skills: ["Hackathons", "Problem Solving", "Rapid Prototyping"],
   },
@@ -22,7 +22,7 @@ const featuredHomeJourney = [
     title: "Nerds Hack Days: Building Kanoon-Mate",
     subOrg: "Nerds Community Lucknow",
     description:
-      "Participated in the Nerds Hack Days offline hackathon in Lucknow, collaborating with developers, designers, and AI builders to engineer Kanoon-Mate—an intelligent AI legal...",
+      "Built Kanoon-Mate during the Nerds Hack Days offline hackathon in Lucknow, combining OCR document extraction, law detection, and guided case tracking.",
     imageUrl: "/images/journey/Nerd1.jpg",
     skills: ["Generative AI", "Google Gemini API", "OCR Integration"],
   },
@@ -33,7 +33,7 @@ const featuredHomeJourney = [
     title: "Qualcomm AI Hub Meetup & HeyGen Event",
     subOrg: "Qualcomm & HeyGen Lucknow",
     description:
-      "Attended an AI-focused developer workshop and community event in Lucknow, featuring Qualcomm AI Hub and HeyGen. Explored On-Device AI, Generative AI, and AI agent workflows...",
+      "Attended an engineering workshop in Lucknow covering Qualcomm AI Hub and HeyGen, exploring on-device inference and structured AI agent workflows.",
     imageUrl: "/images/journey/Qualcum1.jpg",
     skills: ["On-Device AI", "Generative AI", "AI Agents"],
   },
@@ -41,83 +41,80 @@ const featuredHomeJourney = [
 
 const JourneySection = () => {
   return (
-    <section className="section-wrap section-divider pt-10 pb-12">
+    <section className="section-wrap section-divider">
       <FadeInUp>
-        <div className="text-center max-w-3xl mx-auto">
-          <div className="mb-4 inline-block">
-            <span className="inline-flex items-center gap-2 rounded-full border border-lime-500/40 dark:border-[#ccff00]/30 bg-lime-500/10 dark:bg-[#ccff00]/10 px-4 py-1.5 text-xs font-semibold text-lime-700 dark:text-[#ccff00]">
-              Continuous Learning &amp; Growth
-            </span>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+              Experience &amp; Events
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-[-0.02em] text-slate-900 sm:text-4xl dark:text-[#eef0f5]">
+              Professional Journey
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base dark:text-[#a3a9b8]">
+              Hackathons, workshops, conferences, and technical milestones outside regular project work.
+            </p>
           </div>
-
-          <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
-            Professional{" "}
-            <span className="block text-slate-900 dark:text-white">Journey</span>
-          </h2>
-
-          <p className="mt-4 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Explore my experiences beyond projects and blogs, including internships, workshops, hackathons, conferences, certifications, industrial visits, and technical events.
-          </p>
+          <Link
+            to="/journey"
+            className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-emerald-700 transition-colors duration-150 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
+          >
+            All milestones
+            <ArrowRight size={16} strokeWidth={1.5} />
+          </Link>
         </div>
       </FadeInUp>
 
-      {/* 3 Featured Cards Grid */}
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {featuredHomeJourney.map((item, index) => (
-          <FadeInUp key={item.id} delay={index * 0.08}>
+          <FadeInUp key={item.id} delay={index * 0.06}>
             <a
               href={`/journey?selected=${item.id}`}
-              className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/90 dark:border-white/[0.08] bg-white dark:bg-[#070e14] shadow-md dark:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-lime-500/50 dark:hover:border-[#ccff00]/40"
+              className="group flex h-full flex-col overflow-hidden rounded-xl border border-black/[0.08] bg-white transition-colors duration-150 hover:border-slate-300 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-white/[0.16]"
             >
-              {/* Card Image Cover */}
-              <div className="relative h-48 sm:h-52 overflow-hidden bg-slate-950">
+              <div className="relative aspect-[16/10] overflow-hidden border-b border-black/[0.06] bg-slate-950 dark:border-white/[0.08]">
                 <img
                   src={item.imageUrl}
                   alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover"
                   width={640}
-                  height={208}
+                  height={400}
                   loading={index === 0 ? "eager" : "lazy"}
                   decoding="async"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-12 bg-gradient-to-t from-[#11141c]/50 to-transparent dark:block" />
               </div>
 
-              {/* Card Header Tag & Date */}
-              <div className="flex flex-1 flex-col p-5">
+              <div className="flex flex-1 flex-col p-6">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center rounded-sm border border-lime-500/50 dark:border-[#ccff00]/40 bg-lime-500/10 dark:bg-[#ccff00]/10 px-2.5 py-0.5 text-xs font-semibold text-lime-700 dark:text-[#ccff00]">
+                  <span className="inline-flex items-center rounded-md border border-black/[0.08] bg-slate-50 px-2.5 py-0.5 font-mono text-xs text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8]">
                     {item.tag}
                   </span>
-                  <span className="font-mono text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <span className="font-mono text-xs text-slate-500 dark:text-[#7a8296]">
                     {item.date}
                   </span>
                 </div>
 
-                {/* Card Title */}
-                <h3 className="mt-3 font-display text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white leading-snug group-hover:text-lime-600 dark:group-hover:text-[#ccff00] transition-colors line-clamp-2">
+                <h3 className="mt-3 font-display text-lg font-medium leading-snug tracking-[-0.01em] text-slate-900 line-clamp-2 transition-colors duration-150 group-hover:text-emerald-700 dark:text-[#eef0f5] dark:group-hover:text-emerald-400">
                   {item.title}
                 </h3>
 
-                {/* Sub Organization Line */}
-                <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
+                <p className="mt-1 text-xs text-slate-500 dark:text-[#7a8296]">
                   {item.subOrg}
                 </p>
 
-                {/* Description */}
-                <p className="mt-2.5 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3">
+                <p className="mt-2.5 flex-1 text-sm leading-relaxed text-slate-600 line-clamp-3 dark:text-[#a3a9b8]">
                   {item.description}
                 </p>
 
-                {/* Skill Pills Footer */}
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/5 flex flex-wrap gap-1.5">
+                <div className="mt-4 flex flex-wrap gap-1.5 border-t border-black/[0.06] pt-4 dark:border-white/[0.08]">
                   {item.skills.map((skill, sIdx) => (
                     <span
                       key={sIdx}
-                      className="inline-flex items-center rounded-md border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 font-mono text-xs text-slate-600 dark:text-slate-400"
+                      className="inline-flex items-center rounded-md border border-black/[0.08] bg-slate-50 px-2 py-0.5 font-mono text-xs text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8]"
                     >
                       {skill}
                     </span>
@@ -128,18 +125,6 @@ const JourneySection = () => {
           </FadeInUp>
         ))}
       </div>
-
-      {/* Bright Neon-Lime Pill CTA Button */}
-      <FadeInUp delay={0.25}>
-        <div className="mt-10 flex justify-center">
-          <Button
-            to="/journey"
-            className="rounded-full bg-[#ccff00] text-black font-semibold text-sm px-8 py-3.5 hover:bg-lime-300 dark:hover:bg-[#b8e600] shadow-[0_0_24px_rgba(204,255,0,0.4)] transition-all duration-300 transform hover:scale-105 active:scale-95 inline-flex items-center gap-2 border-0"
-          >
-            Explore Complete Journey <ArrowRight size={15} strokeWidth={2.5} />
-          </Button>
-        </div>
-      </FadeInUp>
     </section>
   );
 };

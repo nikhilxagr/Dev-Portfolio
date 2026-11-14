@@ -1,132 +1,58 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { ShieldCheck, Code2, Braces, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { MAIN_SKILL_SHOWCASE } from "@/constants/siteData";
 
-const skillVisualMap = {
-  "Full Stack Development": {
-    cardClass:
-      "border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-green-400/28 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#082218] dark:to-[#050d14] dark:shadow-none",
-    orbClass: "bg-green-500/10 dark:bg-green-400/18",
-    iconWrapClass:
-      "border-green-500/30 bg-green-500/10 text-green-600 dark:border-green-400/40 dark:bg-green-400/12 dark:text-green-300",
-    iconColorClass: "text-green-600 dark:text-green-300",
-    titleClass: "text-green-700 dark:text-green-300",
-    tagClass:
-      "border-green-500/20 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-400/35 dark:bg-green-950/70 dark:text-green-300 dark:hover:bg-green-900/70",
-  },
-  "Languages & Frameworks": {
-    cardClass:
-      "border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-lime-400/28 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#122608] dark:to-[#050d14] dark:shadow-none",
-    orbClass: "bg-lime-500/10 dark:bg-lime-400/18",
-    iconWrapClass:
-      "border-lime-500/30 bg-lime-500/10 text-lime-700 dark:border-lime-400/40 dark:bg-lime-400/12 dark:text-lime-300",
-    iconColorClass: "text-lime-700 dark:text-lime-300",
-    titleClass: "text-lime-800 dark:text-lime-300",
-    tagClass:
-      "border-lime-500/20 bg-lime-50 text-lime-800 hover:bg-lime-100 dark:border-lime-400/35 dark:bg-lime-950/70 dark:text-lime-300 dark:hover:bg-lime-900/70",
-  },
-  "Cyber Security Analyst": {
-    cardClass:
-      "border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-cyan-400/28 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#081e2e] dark:to-[#050d14] dark:shadow-none",
-    orbClass: "bg-cyan-500/10 dark:bg-cyan-400/18",
-    iconWrapClass:
-      "border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:border-cyan-400/40 dark:bg-cyan-400/12 dark:text-cyan-300",
-    iconColorClass: "text-cyan-600 dark:text-cyan-300",
-    titleClass: "text-cyan-700 dark:text-cyan-300",
-    tagClass:
-      "border-cyan-500/20 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 dark:border-cyan-400/35 dark:bg-cyan-950/70 dark:text-cyan-300 dark:hover:bg-cyan-900/70",
-  },
-  "Application Security": {
-    cardClass:
-      "border-slate-200/80 bg-white dark:bg-[#050d14] shadow-md dark:border-cyan-400/28 dark:bg-gradient-to-br dark:from-[#050d14] dark:via-[#081e2e] dark:to-[#050d14] dark:shadow-none",
-    orbClass: "bg-cyan-500/10 dark:bg-cyan-400/18",
-    iconWrapClass:
-      "border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:border-cyan-400/40 dark:bg-cyan-400/12 dark:text-cyan-300",
-    iconColorClass: "text-cyan-600 dark:text-cyan-300",
-    titleClass: "text-cyan-700 dark:text-cyan-300",
-    tagClass:
-      "border-cyan-500/20 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 dark:border-cyan-400/35 dark:bg-cyan-950/70 dark:text-cyan-300 dark:hover:bg-cyan-900/70",
-  },
-};
-
-const skillIconMap = {
-  "Full Stack Development": Code2,
-  "Languages & Frameworks": Braces,
-  "Cyber Security Analyst": ShieldCheck,
-  "Application Security": ShieldCheck,
-};
-
 const SkillsSection = () => {
   return (
-    <section className="section-wrap section-divider pt-12 pb-16">
+    <section className="section-wrap section-divider">
       <FadeInUp>
-        <div className="text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3.5 py-1 text-xs font-semibold text-green-600 dark:text-green-300 mb-3">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
-            Core Competencies
-          </p>
-          <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
-            Technical Skills
-            <span className="block text-green-600 dark:text-green-400">&amp; Focus Areas</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-slate-600 dark:text-slate-400 font-normal leading-relaxed">
-            Comprehensive technical capabilities across full-stack software development and application security auditing.
-          </p>
-        </div>
-      </FadeInUp>
-
-      <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {MAIN_SKILL_SHOWCASE.map((category) => {
-          const visual = skillVisualMap[category.title] || skillVisualMap["Full Stack Development"];
-          const Icon = skillIconMap[category.title] || Code2;
-
-          return (
-            <FadeInUp key={category.title}>
-              <article className={`relative h-full overflow-hidden rounded-3xl border p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-7 ${visual.cardClass}`}>
-                <div className={`pointer-events-none absolute -top-12 -right-12 h-36 w-36 rounded-full blur-3xl ${visual.orbClass}`} />
-
-                <div className="relative">
-                  <h3 className={`text-lg font-bold tracking-tight sm:text-xl ${visual.titleClass}`}>
-                    {category.title}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-                    {category.description || category.summary}
-                  </p>
-                </div>
-
-                <div className="relative mt-6 flex flex-wrap gap-2">
-                  {(category.skills || category.tags || category.items || []).map((skill) => (
-                    <SkillLogoBadge
-                      key={skill}
-                      skill={skill}
-                      className={visual.tagClass}
-                    />
-                  ))}
-                </div>
-              </article>
-            </FadeInUp>
-          );
-        })}
-      </div>
-
-      {/* Show All Skills button redirecting to /skills */}
-      <FadeInUp delay={0.15}>
-        <div className="mt-10 flex justify-center">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+              Core Competencies
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-[-0.02em] text-slate-900 sm:text-4xl dark:text-[#eef0f5]">
+              Technical Skills &amp; Focus Areas
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base dark:text-[#a3a9b8]">
+              Technologies and workflows I use across MERN applications, REST APIs, and security testing.
+            </p>
+          </div>
           <Link
             to="/skills"
-            className="group inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-1 hover:bg-green-400 hover:shadow-[0_8px_24px_rgba(34,197,94,0.45)]"
+            className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-emerald-700 transition-colors duration-150 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
           >
-            Show All Skills{" "}
-            <ArrowRight
-              size={15}
-              className="transition-transform duration-200 group-hover:translate-x-1"
-            />
+            All skills
+            <ArrowRight size={16} strokeWidth={1.5} />
           </Link>
         </div>
       </FadeInUp>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {MAIN_SKILL_SHOWCASE.map((category) => (
+          <FadeInUp key={category.title}>
+            <article className="flex h-full flex-col justify-between rounded-xl border border-black/[0.08] bg-white p-6 transition-colors duration-150 hover:border-slate-300 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-white/[0.16]">
+              <div>
+                <h3 className="font-display text-lg font-medium tracking-[-0.01em] text-slate-900 dark:text-[#eef0f5]">
+                  {category.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8]">
+                  {category.description || category.summary}
+                </p>
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {(category.skills || category.tags || category.items || []).map((skill) => (
+                  <SkillLogoBadge key={skill} skill={skill} />
+                ))}
+              </div>
+            </article>
+          </FadeInUp>
+        ))}
+      </div>
     </section>
   );
 };

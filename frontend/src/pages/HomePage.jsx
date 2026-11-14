@@ -158,26 +158,21 @@ const HomePage = () => {
   return (
     <>
       <SeoHead
-        title="Nikhil Agrahari | Best Full Stack Developer in Lucknow & Prayagraj"
-        description="Nikhil Agrahari is the Best Full Stack Developer & MERN Stack Engineer in Lucknow and Prayagraj, UP. Expert in React, Node.js, AI web application development & secure software engineering."
+        title="Nikhil Agrahari | Full-Stack Engineer (MERN & AppSec)"
+        description="Nikhil Agrahari (@nikhilxagr) is a Full-Stack Engineer based in Lucknow & Prayagraj, UP. Building React, Node.js, Express, and MongoDB web apps alongside problem-solving and OWASP application security labs."
         pathname="/"
         image={SITE_PROFILE.profileImage}
-        imageAlt="Nikhil Agrahari - Best Full Stack Developer in Lucknow & Prayagraj"
+        imageAlt="Nikhil Agrahari — Full-Stack Software Engineer"
         keywords={[
           "nikhil agrahari projects",
           "nikhil agrahari project",
           "nikhil projects",
-          "nikhil project",
-          "best full stack developer in lucknow",
-          "best full stack developer in prayagraj",
-          "top full stack developer lucknow",
-          "top full stack developer prayagraj",
+          "nikhil agrahari portfolio",
+          "full stack developer lucknow",
           "full stack developer prayagraj",
-          "full stack web developer lucknow",
-          "best mern stack developer in lucknow",
-          "best mern stack developer in prayagraj",
-          "hire full stack developer in lucknow",
-          "freelance web developer prayagraj",
+          "mern stack engineer lucknow",
+          "react node.js developer",
+          "application security portfolio",
           "nikhil agrahari full stack developer",
           "Nikhil BBD Lucknow",
         ]}
