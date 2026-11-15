@@ -36,7 +36,7 @@ const AIPage = () => {
   } = useNikhilAI();
 
   useEffect(() => {
-    document.title = 'NikhilGPT · AI Assistant';
+    document.title = 'Nikhil AI · Assistant';
   }, []);
 
   const handleClose = () => {

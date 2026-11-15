@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Lock, Mail, User as UserIcon, X, LogIn, ArrowRight, UserPlus } from "lucide-react";
+import { Lock, Mail, User as UserIcon, X, ArrowRight } from "lucide-react";
 import { useUserAuth } from "@/context/UserAuthContext";
 import {
   getGoogleAuthUrl,
@@ -9,7 +9,7 @@ import {
 } from "@/services/userAuth.service";
 
 const GoogleIcon = () => (
-  <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
+  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
     <path
       fill="#4285F4"
       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -43,8 +43,8 @@ const SignInModal = () => {
   if (!isSignInModalOpen) return null;
 
   const {
-    title = "Sign In Required",
-    subtitle = "Please sign in to proceed with your payment or support.",
+    title = isRegister ? "Create an account" : "Sign in",
+    subtitle = "Access your profile, receipts, and saved activity.",
     onSuccess,
   } = signInModalOptions;
 
@@ -91,132 +91,145 @@ const SignInModal = () => {
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-        {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.16, ease: "easeOut" }}
           onClick={closeSignInModal}
-          className="absolute inset-0 bg-black/70 backdrop-blur-md"
+          className="absolute inset-0 bg-black/65"
         />
 
-        {/* Modal Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ type: "spring", duration: 0.4 }}
-          className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-950 p-6 sm:p-8 shadow-2xl transition-all"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="relative w-full max-w-md rounded-xl border border-black/[0.08] bg-white p-6 shadow-xl sm:p-7 dark:border-white/[0.08] dark:bg-[#11141c] dark:shadow-none"
         >
-          {/* Close button */}
           <button
+            type="button"
             onClick={closeSignInModal}
-            className="absolute top-5 right-5 flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition"
+            aria-label="Close sign in dialog"
+            className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 dark:text-[#7a8296] dark:hover:bg-white/[0.06] dark:hover:text-[#eef0f5]"
           >
-            <X size={18} />
+            <X size={16} strokeWidth={1.5} />
           </button>
 
-          {/* Header */}
-          <div className="text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-              <UserPlus size={22} />
-            </div>
-            <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-              {title}
+          <div>
+            <p className="font-mono text-xs text-emerald-700 dark:text-emerald-400">
+              Account
+            </p>
+            <h2 className="mt-1.5 font-display text-xl font-medium tracking-[-0.01em] text-slate-900 dark:text-[#eef0f5]">
+              {isRegister ? "Create an account" : title}
             </h2>
-            <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+            <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8]">
               {subtitle}
             </p>
           </div>
 
-          {/* Error notice */}
           {error && (
-            <div className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-700 dark:text-rose-300 text-center">
+            <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-medium text-rose-700 dark:text-rose-300">
               {error}
             </div>
           )}
 
-          {/* Google Sign-In Button */}
-          <div className="mt-6">
+          <div className="mt-5">
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/90 py-3.5 px-4 text-sm font-bold text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition shadow-xs hover:shadow-md"
+              className="flex h-10 w-full items-center justify-center gap-2.5 rounded-lg border border-black/[0.10] bg-slate-50 px-4 text-sm font-medium text-slate-900 transition-colors duration-150 hover:border-slate-300 hover:bg-slate-100 dark:border-white/[0.10] dark:bg-[#1a1e28] dark:text-[#eef0f5] dark:hover:border-white/[0.18] dark:hover:bg-[#222734]"
             >
               <GoogleIcon />
               <span>Continue with Google</span>
             </button>
           </div>
 
-          {/* Divider */}
           <div className="my-5 flex items-center gap-3">
-            <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-              or continue with email
+            <div className="h-px flex-1 bg-black/[0.08] dark:bg-white/[0.08]" />
+            <span className="font-mono text-xs text-slate-400 dark:text-[#7a8296]">
+              or with email
             </span>
-            <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+            <div className="h-px flex-1 bg-black/[0.08] dark:bg-white/[0.08]" />
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3.5">
             {isRegister && (
               <div>
-                <label className="mb-1 block text-xs font-bold text-slate-700 dark:text-slate-300">
-                  Full Name
+                <label
+                  htmlFor="auth-name"
+                  className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-[#a3a9b8]"
+                >
+                  Full name
                 </label>
                 <div className="relative">
                   <UserIcon
                     size={16}
-                    className="absolute top-1/2 left-3.5 -translate-y-1/2 text-slate-400"
+                    strokeWidth={1.5}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#7a8296]"
                   />
                   <input
+                    id="auth-name"
+                    name="name"
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Nikhil Agrahari"
-                    className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 py-2.5 pr-4 pl-10 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                    className="h-10 w-full rounded-lg border border-black/[0.10] bg-white pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors duration-150 focus:border-emerald-600 dark:border-white/[0.08] dark:bg-[#0b0d14] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="mb-1 block text-xs font-bold text-slate-700 dark:text-slate-300">
-                Email Address
+              <label
+                htmlFor="auth-email"
+                className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-[#a3a9b8]"
+              >
+                Email address
               </label>
               <div className="relative">
                 <Mail
                   size={16}
-                  className="absolute top-1/2 left-3.5 -translate-y-1/2 text-slate-400"
+                  strokeWidth={1.5}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#7a8296]"
                 />
                 <input
+                  id="auth-email"
+                  name="email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 py-2.5 pr-4 pl-10 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  className="h-10 w-full rounded-lg border border-black/[0.10] bg-white pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors duration-150 focus:border-emerald-600 dark:border-white/[0.08] dark:bg-[#0b0d14] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-bold text-slate-700 dark:text-slate-300">
+              <label
+                htmlFor="auth-password"
+                className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-[#a3a9b8]"
+              >
                 Password
               </label>
               <div className="relative">
                 <Lock
                   size={16}
-                  className="absolute top-1/2 left-3.5 -translate-y-1/2 text-slate-400"
+                  strokeWidth={1.5}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#7a8296]"
                 />
                 <input
+                  id="auth-password"
+                  name="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 py-2.5 pr-4 pl-10 text-sm text-slate-900 dark:text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  className="h-10 w-full rounded-lg border border-black/[0.10] bg-white pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors duration-150 focus:border-emerald-600 dark:border-white/[0.08] dark:bg-[#0b0d14] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
                 />
               </div>
             </div>
@@ -224,24 +237,25 @@ const SignInModal = () => {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-500 py-3 text-sm font-black text-black transition hover:bg-emerald-400 disabled:opacity-50 shadow-md"
+              className="mt-2 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
             >
               {loading ? (
                 "Processing..."
               ) : isRegister ? (
                 <>
-                  Create Account <ArrowRight size={16} />
+                  <span>Create account</span>
+                  <ArrowRight size={16} strokeWidth={1.5} />
                 </>
               ) : (
                 <>
-                  Sign In <LogIn size={16} />
+                  <span>Sign in</span>
+                  <ArrowRight size={16} strokeWidth={1.5} />
                 </>
               )}
             </button>
           </form>
 
-          {/* Toggle Register / Login */}
-          <div className="mt-5 text-center text-xs font-semibold text-slate-600 dark:text-slate-400">
+          <div className="mt-5 text-center text-xs text-slate-600 dark:text-[#a3a9b8]">
             {isRegister ? (
               <>
                 Already have an account?{" "}
@@ -251,23 +265,23 @@ const SignInModal = () => {
                     setIsRegister(false);
                     setError("");
                   }}
-                  className="font-bold text-emerald-600 dark:text-emerald-400 underline hover:text-emerald-500"
+                  className="font-medium text-emerald-700 hover:underline dark:text-emerald-400"
                 >
-                  Sign In
+                  Sign in
                 </button>
               </>
             ) : (
               <>
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <button
                   type="button"
                   onClick={() => {
                     setIsRegister(true);
                     setError("");
                   }}
-                  className="font-bold text-emerald-600 dark:text-emerald-400 underline hover:text-emerald-500"
+                  className="font-medium text-emerald-700 hover:underline dark:text-emerald-400"
                 >
-                  Create One
+                  Create one
                 </button>
               </>
             )}

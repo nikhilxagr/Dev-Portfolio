@@ -22,7 +22,7 @@ import {
   Moon,
   X,
   ChevronDown,
-  Sparkles,
+  Award,
   Zap,
   Folder,
   Edit3,
@@ -49,7 +49,6 @@ import {
 import { useTheme } from '@/context/ThemeContext';
 import { useUserAuth } from '@/context/UserAuthContext';
 import AIMarkdownRenderer from './AIMarkdownRenderer';
-import NikhilAILogo from './NikhilAILogo';
 import InlineAIImageMessage from './InlineAIImageMessage';
 
 const MotionDiv = motion.div;
@@ -90,7 +89,7 @@ const KNOWLEDGE_TOPICS = [
   { id: 'skills', name: 'Technical Skills', icon: Terminal, desc: 'Python, MERN, Cybersecurity' },
   { id: 'experience', name: 'Experience & Roles', icon: Edit3, desc: 'Internships, Freelance, Projects' },
   { id: 'journey', name: 'Education & Timeline', icon: Shield, desc: 'BCA at BBDU, Self-taught roadmap' },
-  { id: 'certificates', name: 'Certifications', icon: Sparkles, desc: 'TryHackMe, Python, Security' },
+  { id: 'certificates', name: 'Certifications', icon: Award, desc: 'TryHackMe, Python, Security' },
 ];
 
 const FALLBACK_IMAGE_MODELS = [
@@ -180,14 +179,7 @@ const AIChatPanel = ({
   const { isDark, toggleTheme } = useTheme();
   const { user, openSignInModal, openProfileModal } = useUserAuth();
 
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(() => {
-    try {
-      return localStorage.getItem('ai_sidebar_expanded') !== 'false';
-    } catch {
-      return true;
-    }
-  });
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openMenuSessionId, setOpenMenuSessionId] = useState(null);
   const [renamingSessionId, setRenamingSessionId] = useState(null);
   const [renameValue, setRenameValue] = useState('');
@@ -220,16 +212,8 @@ const AIChatPanel = ({
   const localTextareaRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  const toggleSidebarExpanded = useCallback(() => {
-    setIsSidebarExpanded((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem('ai_sidebar_expanded', String(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
+  const toggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prev) => !prev);
   }, []);
 
   // Close context menu on outside click
@@ -590,11 +574,11 @@ const AIChatPanel = ({
             type="button"
             onClick={() => {
               onSelectSession?.(session._id);
-              setIsMobileSidebarOpen(false);
+              setIsSidebarOpen(false);
             }}
             className="flex items-center gap-2.5 min-w-0 flex-1 text-left"
           >
-            <MessageSquare size={14} className="shrink-0 text-slate-400 group-hover:text-slate-200" />
+            <MessageSquare size={14} className="shrink-0 text-slate-400" />
             <span className="truncate">{session.title || 'New chat'}</span>
           </button>
         )}
@@ -673,85 +657,71 @@ const AIChatPanel = ({
   };
 
   const renderSidebarContent = () => (
-    <div className="flex flex-col h-full justify-between">
+    <div className="flex h-full flex-col justify-between">
       {/* Top Header & Navigation */}
-      <div className="flex flex-col flex-1 min-h-0 overflow-hidden px-2 py-3">
-        {/* Header row: Brand + Toggle Icon */}
-        <div className="flex items-center justify-between px-2 py-1 mb-2 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <NikhilAILogo size={24} />
-            <span className="font-semibold text-base tracking-tight text-white">
-              NikhilGPT
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-3 py-3">
+        <div className="mb-3 flex shrink-0 items-center justify-between px-1 py-1">
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+            <span className="font-display text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+              Nikhil AI
             </span>
           </div>
 
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={toggleSidebarExpanded}
-              title="Collapse sidebar"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all hidden sm:flex"
-            >
-              <PanelLeftClose size={17} />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setIsMobileSidebarOpen(false)}
-              title="Close sidebar"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all sm:hidden flex"
-            >
-              <X size={17} />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsSidebarOpen(false)}
+            title="Close sidebar"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors duration-150 hover:bg-slate-200/70 hover:text-slate-900 dark:text-[#7a8296] dark:hover:bg-white/[0.06] dark:hover:text-[#eef0f5]"
+          >
+            <X size={16} strokeWidth={1.5} />
+          </button>
         </div>
 
-        {/* Action List: Only New chat and Images */}
-        <div className="space-y-0.5 shrink-0 mb-3">
-          {/* New chat */}
+        {/* Action List */}
+        <div className="mb-3 shrink-0 space-y-1">
           <button
             type="button"
             onClick={() => {
               if (onNewChat) onNewChat();
               else onClear();
-              setIsMobileSidebarOpen(false);
+              setIsSidebarOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all text-slate-200 hover:bg-white/10 text-left"
+            className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-700 transition-colors duration-150 hover:bg-slate-200/70 hover:text-slate-900 dark:text-[#eef0f5] dark:hover:bg-white/[0.06]"
           >
-            <SquarePen size={18} className="text-slate-300 shrink-0" />
+            <SquarePen size={16} strokeWidth={1.5} className="shrink-0 text-slate-500 dark:text-[#7a8296]" />
             <span>New chat</span>
           </button>
 
-          {/* Images */}
           <button
             type="button"
             onClick={() => {
               handleToggleImageMode();
-              setIsMobileSidebarOpen(false);
+              setIsSidebarOpen(false);
             }}
-            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-all text-left ${
+            className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm font-medium transition-colors duration-150 ${
               activeImageMode
-                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
-                : 'text-slate-200 hover:bg-white/10'
+                ? 'border-emerald-600/30 bg-emerald-500/10 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300'
+                : 'border-transparent text-slate-700 hover:bg-slate-200/70 hover:text-slate-900 dark:text-[#eef0f5] dark:hover:bg-white/[0.06]'
             }`}
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <Images size={18} className="text-slate-300 shrink-0" />
+            <div className="flex min-w-0 items-center gap-2.5">
+              <Images size={16} strokeWidth={1.5} className="shrink-0 text-slate-500 dark:text-[#7a8296]" />
               <span>Images</span>
             </div>
             {activeImageMode && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-mono">
+              <span className="font-mono text-xs text-emerald-700 dark:text-emerald-400">
                 Active
               </span>
             )}
           </button>
         </div>
 
-        {/* Recents Section */}
-        <div className="flex-1 min-h-0 flex flex-col pt-2 border-t border-white/8">
-          <div className="flex items-center justify-between px-3 py-1 mb-1 shrink-0">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Recents
+        {/* Recent Chats */}
+        <div className="flex min-h-0 flex-1 flex-col border-t border-black/[0.06] pt-3 dark:border-white/[0.08]">
+          <div className="mb-1.5 flex shrink-0 items-center justify-between px-2">
+            <span className="font-mono text-xs text-slate-500 dark:text-[#7a8296]">
+              Recent chats
             </span>
             {user && allSessions.length > 0 && (
               <button
@@ -761,90 +731,80 @@ const AIChatPanel = ({
                     onClearAllSessions?.();
                   }
                 }}
-                className="text-[10px] text-slate-500 hover:text-red-400 transition-colors cursor-pointer"
+                className="cursor-pointer text-xs text-slate-500 transition-colors hover:text-rose-500 dark:text-[#7a8296]"
                 title="Clear all chat history"
               >
-                Clear all
+                Clear
               </button>
             )}
           </div>
 
-          <div className="space-y-0.5 overflow-y-auto pr-1 flex-1">
+          <div className="flex-1 space-y-0.5 overflow-y-auto pr-1">
             {user ? (
               isSessionsLoading ? (
-                <div className="px-3 py-2 text-xs text-slate-500 animate-pulse">
+                <div className="px-2 py-2 text-xs text-slate-500 dark:text-[#7a8296]">
                   Loading chats...
                 </div>
               ) : allSessions.length > 0 ? (
                 allSessions.map((session) => renderSessionItem(session))
               ) : (
-                <div className="px-3 py-2 text-xs text-slate-500 italic">
+                <div className="px-2 py-2 text-xs text-slate-500 dark:text-[#7a8296]">
                   No previous chats yet
                 </div>
               )
             ) : (
-              <div className="p-3 my-1 rounded-xl bg-white/[0.03] border border-white/8 text-xs space-y-2">
-                <p className="text-slate-400 leading-relaxed">
-                  Chats reset on refresh in guest mode. Sign in to save your chat history!
-                </p>
-                <button
-                  type="button"
-                  onClick={() => openSignInModal({ title: 'Sign in to save chat history' })}
-                  className="w-full py-1.5 px-3 rounded-lg font-semibold bg-white text-black hover:bg-slate-200 transition-all text-center"
-                >
-                  Sign in
-                </button>
-              </div>
+              <p className="px-2 py-2 text-xs leading-relaxed text-slate-500 dark:text-[#7a8296]">
+                Guest chats reset on refresh. Sign in below to save history.
+              </p>
             )}
           </div>
         </div>
       </div>
 
-      {/* Bottom User Profile Section (Matching screenshot exactly) */}
-      <div className="p-2 border-t border-white/10 shrink-0">
+      {/* Bottom User Profile */}
+      <div className="shrink-0 border-t border-black/[0.06] p-3 dark:border-white/[0.08]">
         {user ? (
-          <div className="flex items-center justify-between p-2 rounded-xl hover:bg-white/5 transition-colors">
-            <button
-              type="button"
-              onClick={() => openProfileModal?.()}
-              className="flex items-center gap-2.5 min-w-0 text-left w-full"
-            >
-              <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-xs font-bold text-white shrink-0 overflow-hidden">
-                {user.avatar ? (
-                  <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
-                ) : (
-                  <span>{userInitial}</span>
-                )}
-                <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full border-2 border-black bg-emerald-500" />
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-medium text-white truncate">
-                  {user.name || 'Nikhil Agrahari'}
-                </span>
-                <span className="text-xs text-slate-400 font-mono">Free</span>
-              </div>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => openProfileModal?.()}
+            className="flex w-full items-center gap-2.5 rounded-lg p-2 text-left transition-colors duration-150 hover:bg-slate-200/70 dark:hover:bg-white/[0.06]"
+          >
+            <div className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-black/[0.08] bg-slate-100 text-xs font-medium text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]">
+              {user.avatar ? (
+                <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
+              ) : (
+                <span>{userInitial}</span>
+              )}
+            </div>
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+                {user.name || 'Nikhil Agrahari'}
+              </span>
+              <span className="font-mono text-xs text-slate-500 dark:text-[#7a8296]">
+                Signed in
+              </span>
+            </div>
+          </button>
         ) : (
-          <div className="flex items-center justify-between p-2 rounded-xl hover:bg-white/5 transition-colors">
-            <button
-              type="button"
-              onClick={() => openSignInModal({ title: 'Sign in to save chat history' })}
-              className="flex items-center gap-2.5 min-w-0 text-left flex-1"
-            >
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-slate-300 shrink-0">
-                NA
+          <div className="flex items-center justify-between gap-2 rounded-lg p-1.5">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-100 font-mono text-xs text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8]">
+                {userInitial}
               </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-sm font-medium text-white truncate">Guest User</span>
-                <span className="text-xs text-slate-400">Ephemeral</span>
+              <div className="flex min-w-0 flex-col">
+                <span className="truncate text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+                  Guest
+                </span>
+                <span className="text-xs text-slate-500 dark:text-[#7a8296]">
+                  Ephemeral
+                </span>
               </div>
-            </button>
+            </div>
 
             <button
               type="button"
               onClick={() => openSignInModal({ title: 'Sign in to save chat history' })}
-              className="text-xs px-2.5 py-1 rounded-full font-semibold bg-white text-black hover:bg-slate-200 transition-all shrink-0 font-medium"
+              className="shrink-0 rounded-lg border border-black/[0.10] bg-white px-3 py-1.5 text-xs font-medium text-slate-900 transition-colors duration-150 hover:bg-slate-100 dark:border-white/[0.10] dark:bg-[#1a1e28] dark:text-[#eef0f5] dark:hover:bg-[#222734]"
             >
               Sign in
             </button>
@@ -852,89 +812,6 @@ const AIChatPanel = ({
         )}
       </div>
     </div>
-  );
-
-  const renderSlimDock = () => (
-    <aside
-      className={`hidden sm:flex flex-col items-center justify-between py-3.5 px-2 w-14 border-r shrink-0 z-20 ${
-        isDark ? 'border-white/10 bg-[#000000]' : 'border-slate-200 bg-[#f3f4f6]'
-      }`}
-    >
-      <div className="flex flex-col items-center gap-3 w-full">
-        {/* Toggle Expand Sidebar */}
-        <button
-          type="button"
-          onClick={toggleSidebarExpanded}
-          title="Expand sidebar"
-          className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all ${
-            isDark
-              ? 'text-slate-400 hover:bg-white/10 hover:text-white'
-              : 'text-slate-600 hover:bg-slate-200 hover:text-black'
-          }`}
-        >
-          <PanelLeft size={18} />
-        </button>
-
-        {/* Nikhil AI Logo */}
-        <button
-          type="button"
-          onClick={() => (onNewChat ? onNewChat() : onClear())}
-          title="Nikhil AI — New conversation"
-          className="relative flex h-9 w-9 items-center justify-center rounded-xl transition-transform hover:scale-105 active:scale-95"
-        >
-          <NikhilAILogo size={32} />
-        </button>
-
-        {/* New Chat */}
-        <button
-          type="button"
-          onClick={() => (onNewChat ? onNewChat() : onClear())}
-          title="New chat"
-          className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all ${
-            isDark
-              ? 'text-slate-400 hover:bg-white/10 hover:text-white'
-              : 'text-slate-600 hover:bg-slate-200 hover:text-black'
-          }`}
-        >
-          <SquarePen size={18} />
-        </button>
-
-        {/* Images */}
-        <button
-          type="button"
-          onClick={handleToggleImageMode}
-          title={
-            activeImageMode
-              ? 'Image Mode active (FLUX.2-dev) - click to switch back to chat'
-              : 'Activate FLUX.2-dev Image Generator'
-          }
-          className={`flex h-9 w-9 items-center justify-center rounded-lg transition-all ${
-            activeImageMode
-              ? isDark
-                ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
-                : 'bg-sky-100 text-sky-700 border border-sky-300'
-              : isDark
-              ? 'text-slate-400 hover:bg-white/10 hover:text-white'
-              : 'text-slate-600 hover:bg-slate-200 hover:text-black'
-          }`}
-        >
-          <Images size={18} />
-        </button>
-      </div>
-
-      {/* Bottom Avatar */}
-      <div className="flex flex-col items-center gap-2">
-        <button
-          type="button"
-          onClick={toggleSidebarExpanded}
-          title="Expand sidebar"
-          className="group relative flex h-9 w-9 items-center justify-center rounded-full bg-purple-600 text-xs font-bold text-white shadow-md transition-transform hover:scale-105 active:scale-95"
-        >
-          <span>{userInitial}</span>
-          <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-black bg-emerald-500" />
-        </button>
-      </div>
-    </aside>
   );
 
   if (!isOpen && !isStandalone) {
@@ -947,34 +824,37 @@ const AIChatPanel = ({
     <AnimatePresence>
       <MotionDiv
         key="full-page-ai-chat"
-        initial={{ opacity: 0, scale: 0.99 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.99 }}
-        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.16, ease: 'easeOut' }}
         className={`fixed inset-0 z-[1000] flex h-screen w-screen overflow-hidden font-sans select-text ${
           isDark
-            ? 'bg-[#0d0d0d] text-[#ececec]'
-            : 'bg-[#f9f9f9] text-[#0d0d0d]'
+            ? 'bg-[#090a0f] text-[#eef0f5]'
+            : 'bg-[#f5f7fa] text-slate-900'
         }`}
       >
-        {/* Mobile Slide-out Drawer */}
+        {/* Slide-out History Drawer (Closed by default; opens only on toggle click) */}
         <AnimatePresence>
-          {isMobileSidebarOpen && (
+          {isSidebarOpen && (
             <>
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => setIsMobileSidebarOpen(false)}
-                className="fixed inset-0 z-40 bg-black/70 backdrop-blur-xs sm:hidden"
+                transition={{ duration: 0.16, ease: 'easeOut' }}
+                onClick={() => setIsSidebarOpen(false)}
+                className="fixed inset-0 z-40 bg-black/50"
               />
               <motion.aside
                 initial={{ x: '-100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 240 }}
-                className={`fixed inset-y-0 left-0 z-50 w-72 sm:hidden border-r shadow-2xl flex flex-col ${
-                  isDark ? 'bg-[#000000] border-white/10' : 'bg-[#f3f4f6] border-slate-200'
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r ${
+                  isDark
+                    ? 'border-white/[0.08] bg-[#0b0d14]'
+                    : 'border-black/[0.08] bg-white'
                 }`}
               >
                 {renderSidebarContent()}
@@ -984,168 +864,118 @@ const AIChatPanel = ({
         </AnimatePresence>
 
         {/* ========================================================
-            DESKTOP SIDEBAR: FULL EXPANDED VS SLIM DOCK (Direct ChatGPT style)
-            ======================================================== */}
-        {isSidebarExpanded ? (
-          <aside
-            className={`hidden sm:flex flex-col w-64 border-r shrink-0 z-20 h-full ${
-              isDark ? 'border-white/10 bg-[#000000]' : 'border-slate-200 bg-[#f3f4f6]'
-            }`}
-          >
-            {renderSidebarContent()}
-          </aside>
-        ) : (
-          renderSlimDock()
-        )}
-
-        {/* ========================================================
             MAIN CHAT WORKSPACE
             ======================================================== */}
         <div className="flex flex-1 flex-col h-full min-w-0 relative overflow-hidden">
           {/* Top Bar */}
           <header
-            className={`flex items-center justify-between px-4 sm:px-6 h-14 border-b shrink-0 z-10 transition-colors ${
+            className={`flex h-14 shrink-0 items-center justify-between border-b px-4 sm:px-6 z-10 transition-colors duration-150 ${
               isDark
-                ? 'border-white/8 bg-[#0d0d0d]'
-                : 'border-slate-200 bg-white'
+                ? 'border-white/[0.08] bg-[#090a0f]'
+                : 'border-black/[0.08] bg-white'
             }`}
           >
-            {/* Left: Mobile / Collapse Button + Model Selector Dropdown */}
+            {/* Left: Sidebar Toggle + Title */}
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setIsMobileSidebarOpen(true)}
+                onClick={toggleSidebar}
                 title="Open chat history"
-                className={`sm:hidden flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
+                aria-label="Open chat history"
+                className={`flex h-9 w-9 items-center justify-center rounded-lg border transition-colors duration-150 ${
                   isDark
-                    ? 'text-slate-400 hover:bg-white/10 hover:text-white'
-                    : 'text-slate-600 hover:bg-slate-200'
+                    ? 'border-white/[0.08] bg-[#11141c] text-[#a3a9b8] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                    : 'border-black/[0.08] bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                <PanelLeft size={18} />
+                <PanelLeft size={16} strokeWidth={1.5} />
               </button>
-
-              {!isSidebarExpanded && (
-                <button
-                  type="button"
-                  onClick={toggleSidebarExpanded}
-                  title="Open sidebar"
-                  className={`hidden sm:flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
-                    isDark
-                      ? 'text-slate-400 hover:bg-white/10 hover:text-white'
-                      : 'text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  <PanelLeft size={18} />
-                </button>
-              )}
 
               <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowModelMenu((prev) => !prev)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-semibold transition-all ${
-                  isDark
-                    ? 'text-slate-200 hover:bg-white/8'
-                    : 'text-slate-800 hover:bg-slate-100'
-                }`}
-              >
-                <div className="flex items-center gap-1.5">
-                  <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <button
+                  type="button"
+                  onClick={() => setShowModelMenu((prev) => !prev)}
+                  className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors duration-150 ${
+                    isDark
+                      ? 'text-[#eef0f5] hover:bg-white/[0.05]'
+                      : 'text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
                   <span>Nikhil AI</span>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      isDark
-                        ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
-                        : 'bg-sky-100 text-sky-800 border border-sky-300'
-                    }`}
-                  >
-                    2.5 Flash + Grok
+                  <span className="hidden font-mono text-xs text-slate-500 sm:inline dark:text-[#7a8296]">
+                    2.5 Flash
                   </span>
-                </div>
-                <ChevronDown size={14} className="text-slate-400" />
-              </button>
+                  <ChevronDown size={14} strokeWidth={1.5} className="text-slate-400 dark:text-[#7a8296]" />
+                </button>
 
-              {/* Model Info Popover */}
-              <AnimatePresence>
-                {showModelMenu && (
-                  <MotionDiv
-                    initial={{ opacity: 0, y: 6, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
-                    transition={{ duration: 0.15 }}
-                    className={`absolute left-0 mt-1.5 w-72 rounded-2xl border p-3.5 shadow-2xl z-50 backdrop-blur-xl ${
-                      isDark
-                        ? 'border-white/10 bg-[#171717] text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.8)]'
-                        : 'border-slate-200 bg-white text-slate-900 shadow-2xl'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/8 text-xs font-bold uppercase tracking-wider text-slate-400">
-                      <span>Engine Pipeline</span>
-                      <span className="text-emerald-400">Ultra-Fast</span>
-                    </div>
+                <AnimatePresence>
+                  {showModelMenu && (
+                    <MotionDiv
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      transition={{ duration: 0.14, ease: 'easeOut' }}
+                      className={`absolute left-0 z-50 mt-1.5 w-72 rounded-xl border p-3 shadow-lg ${
+                        isDark
+                          ? 'border-white/[0.08] bg-[#11141c] text-[#eef0f5] shadow-none'
+                          : 'border-black/[0.08] bg-white text-slate-900'
+                      }`}
+                    >
+                      <div className="mb-2 flex items-center justify-between border-b border-black/[0.06] pb-2 font-mono text-xs text-slate-500 dark:border-white/[0.08] dark:text-[#7a8296]">
+                        <span>Pipeline</span>
+                        <span className="text-emerald-700 dark:text-emerald-400">Online</span>
+                      </div>
 
-                    <div className="space-y-2 text-xs">
-                      <div className="flex items-start gap-2.5 p-2 rounded-xl bg-white/5">
-                        <Zap size={16} className="text-sky-400 mt-0.5 shrink-0" />
-                        <div>
-                          <div className="font-bold">Gemini 2.5 Flash</div>
-                          <div className="text-[11px] text-slate-400">
-                            Streaming UI tokens in ~2 seconds with smart fallback.
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex items-start gap-2.5 rounded-lg bg-slate-50 p-2 dark:bg-[#1a1e28]">
+                          <Zap size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-slate-500 dark:text-[#a3a9b8]" />
+                          <div>
+                            <div className="font-medium">Gemini 2.5 Flash &amp; Grok</div>
+                            <div className="text-slate-500 dark:text-[#7a8296]">
+                              Portfolio retrieval and fast streaming replies.
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-2.5 rounded-lg bg-slate-50 p-2 dark:bg-[#1a1e28]">
+                          <Images size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-slate-500 dark:text-[#a3a9b8]" />
+                          <div>
+                            <div className="font-medium">FLUX.2-dev</div>
+                            <div className="text-slate-500 dark:text-[#7a8296]">
+                              Inline image generation via /image or Image toggle.
+                            </div>
                           </div>
                         </div>
                       </div>
-
-                      <div className="flex items-start gap-2.5 p-2 rounded-xl bg-white/5">
-                        <Sparkles size={16} className="text-emerald-400 mt-0.5 shrink-0" />
-                        <div>
-                          <div className="font-bold">Grok Knowledge Extractor</div>
-                          <div className="text-[11px] text-slate-400">
-                            Extracts targeted facts from portfolio dataset.
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-2.5 p-2 rounded-xl bg-white/5">
-                        <Images size={16} className="text-purple-400 mt-0.5 shrink-0" />
-                        <div>
-                          <div className="font-bold">Cloudflare FLUX.2-dev</div>
-                          <div className="text-[11px] text-slate-400">
-                            Inline real AI image generation via /image command.
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-2.5 p-2 rounded-xl bg-white/5">
-                        <Library size={16} className="text-blue-400 mt-0.5 shrink-0" />
-                        <div>
-                          <div className="font-bold">11 Knowledge Modules</div>
-                          <div className="text-[11px] text-slate-400">
-                            Resume, Projects, Skills, Timeline, Certs & FAQs.
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </MotionDiv>
-                )}
-              </AnimatePresence>
-            </div>
+                    </MotionDiv>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
             {/* Right Controls */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              {/* Image Credits Badge (Guest trial vs Authenticated daily) */}
-              {user ? (
-                <div
-                  title="Daily FLUX.2-dev image credits (resets midnight UTC). Text chat is always unlimited!"
-                  className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+            <div className="flex items-center gap-2">
+              {hasMessages && (
+                <button
+                  type="button"
+                  onClick={() => (onNewChat ? onNewChat() : onClear())}
+                  title="New chat"
+                  className={`flex h-9 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition-colors duration-150 ${
                     isDark
-                      ? 'border-sky-500/30 bg-sky-500/10 text-sky-300'
-                      : 'border-sky-300 bg-sky-50 text-sky-800'
+                      ? 'border-white/[0.08] bg-[#11141c] text-[#a3a9b8] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                      : 'border-black/[0.08] bg-slate-50 text-slate-700 hover:bg-slate-100'
                   }`}
                 >
-                  <span>{imageQuota ? `${imageQuota.remaining}/10 credits` : '10/10 credits'}</span>
-                </div>
+                  <SquarePen size={14} strokeWidth={1.5} />
+                  <span className="hidden sm:inline">New chat</span>
+                </button>
+              )}
+
+              {user ? (
+                <span className="hidden font-mono text-xs text-slate-500 sm:inline dark:text-[#7a8296]">
+                  {imageQuota ? `${imageQuota.remaining}/10 credits` : '10/10 credits'}
+                </span>
               ) : (
                 <button
                   type="button"
@@ -1156,83 +986,43 @@ const AIChatPanel = ({
                         'Sign in or register for free to unlock 10 daily image generations. Text chat is always free & unlimited!',
                     })
                   }
-                  title="Guest trial credits. Click to sign in and unlock 10 credits every day! Text chat is unlimited."
-                  className={`hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-transform hover:scale-105 active:scale-95 ${
-                    (imageQuota?.remaining ?? 2) > 0
-                      ? isDark
-                        ? 'border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20'
-                        : 'border-purple-300 bg-purple-50 text-purple-800'
-                      : isDark
-                      ? 'border-amber-500/40 bg-amber-500/15 text-amber-300 animate-pulse'
-                      : 'border-amber-400 bg-amber-50 text-amber-800'
+                  className={`hidden h-9 items-center rounded-lg border px-3 text-xs font-medium transition-colors duration-150 sm:inline-flex ${
+                    isDark
+                      ? 'border-white/[0.08] bg-[#11141c] text-[#a3a9b8] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                      : 'border-black/[0.08] bg-slate-50 text-slate-700 hover:bg-slate-100'
                   }`}
                 >
-                  <span>
-                    {(imageQuota?.remaining ?? 2) > 0
-                      ? `${imageQuota?.remaining ?? 2}/2 guest credit${(imageQuota?.remaining ?? 2) === 1 ? '' : 's'}`
-                      : 'Sign in for credits'}
-                  </span>
+                  {(imageQuota?.remaining ?? 2) > 0
+                    ? `${imageQuota?.remaining ?? 2}/2 credits`
+                    : 'Sign in'}
                 </button>
               )}
 
-              {/* Mobile Images Tab toggle */}
-              <button
-                type="button"
-                onClick={handleStartImagePrompt}
-                title="Create Image (/image)"
-                className={`sm:hidden flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
-                  inputValue.trim().toLowerCase().startsWith('/image')
-                    ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40'
-                    : isDark
-                    ? 'text-slate-400 hover:bg-white/10 hover:text-white'
-                    : 'text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                <Images size={16} />
-              </button>
-
-              {/* Mobile New Chat */}
-              <button
-                type="button"
-                onClick={onClear}
-                title="New chat"
-                className={`sm:hidden flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
-                  isDark
-                    ? 'text-slate-400 hover:bg-white/10 hover:text-white'
-                    : 'text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                <SquarePen size={16} />
-              </button>
-
-              {/* Theme Toggle */}
               <button
                 type="button"
                 onClick={toggleTheme}
                 title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
+                className={`flex h-9 w-9 items-center justify-center rounded-lg border transition-colors duration-150 ${
                   isDark
-                    ? 'text-slate-400 hover:bg-white/10 hover:text-white'
-                    : 'text-slate-600 hover:bg-slate-200'
+                    ? 'border-white/[0.08] bg-[#11141c] text-[#a3a9b8] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                    : 'border-black/[0.08] bg-slate-50 text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                {isDark ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
               </button>
 
-              {/* Close / Back to Portfolio button */}
               <button
                 type="button"
                 onClick={onClose}
                 title="Back to Portfolio (Esc)"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all hover:scale-105 active:scale-95 ${
+                className={`flex h-9 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium transition-colors duration-150 ${
                   isDark
-                    ? 'border-white/15 bg-white/8 text-slate-200 hover:bg-white/15 hover:text-white'
-                    : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100 shadow-xs'
+                    ? 'border-white/[0.08] bg-[#11141c] text-[#eef0f5] hover:border-white/[0.16] hover:bg-[#1a1e28]'
+                    : 'border-black/[0.08] bg-white text-slate-800 hover:bg-slate-50'
                 }`}
               >
                 <span>Back</span>
-                <span className="hidden sm:inline-block text-[10px] opacity-60 font-mono">Esc</span>
-                <X size={14} className="ml-0.5" />
+                <X size={14} strokeWidth={1.5} />
               </button>
             </div>
           </header>
@@ -1249,33 +1039,31 @@ const AIChatPanel = ({
           >
             {!hasMessages ? (
                 /* ========================================================
-                   EMPTY STATE (IDENTICAL TO CHATGPT DESKTOP SCREENSHOT)
+                   EMPTY STATE (SIMPLE, FOCUSED WORKBENCH LAYOUT)
                    ======================================================== */
-                <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 max-w-2xl w-full mx-auto my-auto select-none">
-                  {/* Big Centered Heading */}
+                <div className="mx-auto my-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-4 py-8 select-none">
                   <MotionH1
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={`text-3xl sm:text-4xl md:text-[2.65rem] font-semibold tracking-tight text-center mb-8 ${
-                      isDark ? 'text-white' : 'text-slate-900'
+                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                    className={`mb-6 text-center font-display text-2xl font-medium tracking-[-0.02em] sm:text-3xl ${
+                      isDark ? 'text-[#eef0f5]' : 'text-slate-900'
                     }`}
                   >
-                    What’s on your mind today?
+                    Ask Nikhil AI
                   </MotionH1>
 
-                  {/* Centered Capsule Input Box (Matching screenshot) */}
                   <MotionDiv
-                    initial={{ opacity: 0, y: 15 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: 0.05 }}
-                    className="w-full relative"
+                    transition={{ duration: 0.22, delay: 0.04, ease: 'easeOut' }}
+                    className="relative w-full"
                   >
                     <div
-                      className={`w-full rounded-3xl border transition-all duration-200 shadow-2xl p-3 sm:p-3.5 flex flex-col gap-2 ${
+                      className={`flex w-full flex-col gap-2 rounded-xl border p-3 transition-colors duration-150 ${
                         isDark
-                          ? 'border-white/12 bg-[#212121] focus-within:border-white/25 focus-within:shadow-[0_0_30px_rgba(255,255,255,0.06)]'
-                          : 'border-slate-300 bg-white focus-within:border-slate-400 shadow-xl'
+                          ? 'border-white/[0.10] bg-[#11141c] focus-within:border-white/[0.20]'
+                          : 'border-black/[0.10] bg-white focus-within:border-slate-400'
                       }`}
                     >
                       {/* Slash Command / Multi-Model Studio Banner & Model Selector */}
@@ -1366,46 +1154,44 @@ const AIChatPanel = ({
                         />
                       </div>
 
-                      {/* Capsule Bottom Row: Left '+' & Image Model Button, Right Controls (Think, Mic, Submit) */}
+                      {/* Capsule Bottom Row */}
                       <div className="flex items-center justify-between pt-1">
-                        {/* Left: Quick Actions Popover (+) & Image Model Button */}
-                        <div className="flex items-center gap-1.5 sm:gap-2">
+                        <div className="flex items-center gap-1.5">
                           <div className="relative">
                             <button
                               type="button"
                               onClick={() => setShowPlusMenu((prev) => !prev)}
                               title="Quick topics and suggestions"
-                              className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all ${
+                              className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-colors duration-150 ${
                                 showPlusMenu
                                   ? isDark
-                                    ? 'border-white/30 bg-white/20 text-white'
-                                    : 'border-slate-400 bg-slate-200 text-black'
+                                    ? 'border-white/[0.18] bg-[#1a1e28] text-[#eef0f5]'
+                                    : 'border-slate-300 bg-slate-100 text-slate-900'
                                   : isDark
-                                  ? 'border-white/10 hover:border-white/25 hover:bg-white/10 text-slate-400 hover:text-white'
-                                  : 'border-slate-300 hover:bg-slate-100 text-slate-600'
+                                  ? 'border-white/[0.08] text-[#7a8296] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                                  : 'border-black/[0.08] text-slate-600 hover:bg-slate-50'
                               }`}
                             >
-                              <Plus size={16} />
+                              <Plus size={16} strokeWidth={1.5} />
                             </button>
 
-                            {/* Plus Popover (Opens below the capsule in empty state) */}
                             <AnimatePresence>
                               {showPlusMenu && (
                                 <MotionDiv
-                                  initial={{ opacity: 0, y: -6, scale: 0.96 }}
-                                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                                  exit={{ opacity: 0, y: -6, scale: 0.96 }}
-                                  transition={{ duration: 0.15 }}
-                                  className={`absolute left-0 top-full mt-2.5 w-72 rounded-2xl border p-2.5 shadow-2xl z-50 backdrop-blur-xl ${
+                                  initial={{ opacity: 0, y: -4 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: -4 }}
+                                  transition={{ duration: 0.14, ease: 'easeOut' }}
+                                  className={`absolute left-0 top-full z-50 mt-2 w-72 rounded-xl border p-2 shadow-lg ${
                                     isDark
-                                      ? 'border-white/12 bg-[#1b1b1b] text-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.8)]'
-                                      : 'border-slate-200 bg-white text-slate-900 shadow-2xl'
+                                      ? 'border-white/[0.08] bg-[#11141c] text-[#eef0f5] shadow-none'
+                                      : 'border-black/[0.08] bg-white text-slate-900'
                                   }`}
                                 >
-                                  <div className="px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                                    Quick Knowledge Topics
+                                  <div className="px-2 py-1 font-mono text-xs text-slate-500 dark:text-[#7a8296]">
+                                    Topics
                                   </div>
-                                  <div className="flex flex-col gap-1 mt-1">
+                                  <div className="mt-1 flex flex-col gap-0.5">
                                     {KNOWLEDGE_TOPICS.map((topic) => {
                                       const Icon = topic.icon;
                                       return (
@@ -1413,16 +1199,16 @@ const AIChatPanel = ({
                                           key={topic.id}
                                           type="button"
                                           onClick={() => handlePromptClick(`Tell me about Nikhil's ${topic.name}`)}
-                                          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs text-left transition-all ${
+                                          className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs transition-colors duration-150 ${
                                             isDark
-                                              ? 'hover:bg-white/8 text-slate-200'
-                                              : 'hover:bg-slate-100 text-slate-800'
+                                              ? 'text-[#eef0f5] hover:bg-white/[0.05]'
+                                              : 'text-slate-800 hover:bg-slate-100'
                                           }`}
                                         >
-                                          <Icon size={14} className="text-sky-400 shrink-0" />
+                                          <Icon size={14} strokeWidth={1.5} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
                                           <div className="min-w-0 flex-1 truncate">
-                                            <div className="font-semibold">{topic.name}</div>
-                                            <div className="text-[10px] text-slate-400 truncate">{topic.desc}</div>
+                                            <div className="font-medium">{topic.name}</div>
+                                            <div className="truncate text-slate-500 dark:text-[#7a8296]">{topic.desc}</div>
                                           </div>
                                         </button>
                                       );
@@ -1433,7 +1219,6 @@ const AIChatPanel = ({
                             </AnimatePresence>
                           </div>
 
-                          {/* Image Model Toggle Button (Right side of '+' icon) */}
                           <button
                             type="button"
                             onClick={handleToggleImageMode}
@@ -1442,85 +1227,77 @@ const AIChatPanel = ({
                                 ? 'Image Mode active - click to switch back to chat'
                                 : 'Activate AI Image Studio'
                             }
-                            className={`flex h-8 items-center gap-1.5 px-2.5 rounded-full border text-xs font-medium transition-all ${
+                            className={`flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition-colors duration-150 ${
                               activeImageMode
-                                ? isDark
-                                  ? 'border-sky-500/60 bg-sky-500/20 text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.3)]'
-                                  : 'border-sky-400 bg-sky-100 text-sky-800'
+                                ? 'border-emerald-600/40 bg-emerald-500/10 text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300'
                                 : isDark
-                                ? 'border-white/10 hover:border-white/25 hover:bg-white/10 text-slate-400 hover:text-white'
-                                : 'border-slate-300 hover:bg-slate-100 text-slate-600'
+                                ? 'border-white/[0.08] text-[#a3a9b8] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                                : 'border-black/[0.08] text-slate-600 hover:bg-slate-50'
                             }`}
                           >
-                            <ImageIcon size={15} className={activeImageMode ? 'text-sky-400' : ''} />
+                            <ImageIcon size={15} strokeWidth={1.5} />
                             <span>{activeImageMode ? currentModel.name : 'Image'}</span>
                           </button>
                         </div>
 
-                        {/* Right: Think Pill, Mic, and Circular Send Button (Matching screenshot!) */}
-                        <div className="flex items-center gap-2">
-                          {/* Think Pill Button */}
+                        <div className="flex items-center gap-1.5">
                           <button
                             type="button"
                             onClick={onToggleDeepThink}
                             title={isDeepThink ? 'Deep Think: Active' : 'Enable Deep Think'}
-                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+                            className={`flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition-colors duration-150 ${
                               isDeepThink
-                                ? isDark
-                                  ? 'border-sky-500/50 bg-sky-500/15 text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.25)]'
-                                  : 'border-sky-500 bg-sky-50 text-sky-800 shadow-xs'
+                                ? 'border-emerald-600/40 bg-emerald-500/10 text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300'
                                 : isDark
-                                ? 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'
-                                : 'border-slate-300 text-slate-600 hover:bg-slate-100'
+                                ? 'border-white/[0.08] text-[#a3a9b8] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                                : 'border-black/[0.08] text-slate-600 hover:bg-slate-50'
                             }`}
                           >
-                            <Brain size={14} className={isDeepThink ? 'text-sky-400 animate-pulse' : ''} />
+                            <Brain size={14} strokeWidth={1.5} />
                             <span>Think</span>
                           </button>
 
-                          {/* Mic Button */}
                           <button
                             type="button"
                             onClick={toggleSpeechRecognition}
                             title={isMicActive ? 'Listening... click to stop' : 'Voice input'}
-                            className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+                            className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-150 ${
                               isMicActive
-                                ? 'bg-rose-500 text-white animate-pulse shadow-[0_0_20px_rgba(244,63,94,0.6)]'
+                                ? 'bg-rose-600 text-white'
                                 : isDark
-                                ? 'text-slate-400 hover:text-white hover:bg-white/10'
-                                : 'text-slate-600 hover:text-black hover:bg-slate-100'
+                                ? 'text-[#7a8296] hover:bg-white/[0.06] hover:text-[#eef0f5]'
+                                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                             }`}
                           >
-                            {isMicActive ? <MicOff size={16} /> : <Mic size={16} />}
+                            {isMicActive ? <MicOff size={16} strokeWidth={1.5} /> : <Mic size={16} strokeWidth={1.5} />}
                           </button>
 
-                          {/* Send / Action Button (Circular blue button matching screenshot!) */}
                           <button
                             type="button"
                             onClick={() => inputValue.trim() && handleSendIntercept()}
                             disabled={!inputValue.trim() || isLoading || isStreaming}
                             title="Send prompt"
-                            className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full transition-all ${
+                            className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-150 ${
                               inputValue.trim()
-                                ? 'bg-[#2563eb] hover:bg-blue-600 text-white shadow-md active:scale-90'
+                                ? 'bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400'
                                 : isDark
-                                ? 'bg-white/10 text-slate-500 cursor-not-allowed'
-                                : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                ? 'cursor-not-allowed bg-white/[0.06] text-[#7a8296]'
+                                : 'cursor-not-allowed bg-slate-200 text-slate-400'
                             }`}
                           >
-                            <ArrowUp size={16} strokeWidth={2.5} />
+                            <ArrowUp size={16} strokeWidth={1.5} />
                           </button>
                         </div>
                       </div>
                     </div>
                   </MotionDiv>
 
-                  {/* Quick Action Prompt List Below Input (Matching screenshot exactly) */}
+                  {/* Quick Prompts */}
                   <MotionDiv
-                    initial={{ opacity: 0, y: 15 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: 0.12 }}
-                    className="w-full mt-6 flex flex-col gap-2"
+                    transition={{ duration: 0.22, delay: 0.08, ease: 'easeOut' }}
+                    className="mt-4 flex w-full flex-col gap-1"
                   >
                     {SUGGESTED_CARDS.map((card, i) => {
                       const CardIcon = card.icon;
@@ -1535,17 +1312,18 @@ const AIChatPanel = ({
                               handlePromptClick(card.query);
                             }
                           }}
-                          className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl text-left transition-all ${
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-150 ${
                             isDark
-                              ? 'hover:bg-white/5 text-slate-300 hover:text-white'
-                              : 'hover:bg-slate-200/70 text-slate-700 hover:text-slate-950'
+                              ? 'text-[#a3a9b8] hover:bg-white/[0.04] hover:text-[#eef0f5]'
+                              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                           }`}
                         >
                           <CardIcon
-                            size={17}
-                            className={isDark ? 'text-slate-400 shrink-0' : 'text-slate-600 shrink-0'}
+                            size={16}
+                            strokeWidth={1.5}
+                            className="shrink-0 text-slate-500 dark:text-[#7a8296]"
                           />
-                          <span className="text-sm font-medium">{card.title}</span>
+                          <span>{card.title}</span>
                         </button>
                       );
                     })}
@@ -1581,16 +1359,14 @@ const AIChatPanel = ({
                   if (message.type === 'image') {
                     return (
                       <div key={message.id} className="flex items-start gap-3 w-full">
-                        {/* Nikhil AI Avatar */}
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400 mt-1 shadow-xs">
-                          <NikhilAILogo size={22} />
+                        <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-100 font-mono text-xs text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]">
+                          AI
                         </div>
 
-                        {/* Inline Image Component */}
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs font-semibold text-slate-400 mb-1.5 flex items-center gap-2">
+                          <div className="mb-1.5 flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
                             <span>Nikhil AI</span>
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 font-mono font-medium border border-sky-500/30">
+                            <span className="rounded border border-black/[0.08] bg-slate-50 px-1.5 py-0.5 font-mono text-xs text-slate-600 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8]">
                               FLUX.2-dev
                             </span>
                           </div>
@@ -1606,36 +1382,30 @@ const AIChatPanel = ({
 
                   return (
                     <div key={message.id} className="flex items-start gap-3 w-full">
-                      {/* Nikhil AI Avatar */}
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400 mt-1 shadow-xs">
-                        <NikhilAILogo size={22} />
+                      <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-100 font-mono text-xs text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5]">
+                        AI
                       </div>
 
-                      {/* AI Content & Action Bar */}
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs font-semibold text-slate-400 mb-1.5">
+                        <div className="mb-1.5 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
                           Nikhil AI
                         </div>
 
-                        {/* Markdown Body */}
                         <div
                           className={`text-base leading-relaxed break-words ${
                             isError
-                              ? 'text-rose-400 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20'
+                              ? 'rounded-xl border border-rose-500/25 bg-rose-500/10 p-3 text-rose-500 dark:text-rose-400'
                               : isDark
-                              ? 'text-slate-200'
+                              ? 'text-[#eef0f5]'
                               : 'text-slate-900'
                           }`}
                         >
                           {message.content ? (
                             <AIMarkdownRenderer content={message.content} />
                           ) : (
-                            /* Typing dot animation */
-                            <div className="flex items-center gap-1.5 py-2">
-                              <span className="h-2 w-2 rounded-full bg-sky-400 animate-bounce" />
-                              <span className="h-2 w-2 rounded-full bg-sky-400 animate-bounce [animation-delay:0.15s]" />
-                              <span className="h-2 w-2 rounded-full bg-sky-400 animate-bounce [animation-delay:0.3s]" />
-                            </div>
+                            <p className="py-1 font-mono text-xs text-slate-500 dark:text-[#7a8296]">
+                              Thinking...
+                            </p>
                           )}
                         </div>
 
@@ -1748,42 +1518,40 @@ const AIChatPanel = ({
               ======================================================== */}
           {hasMessages && (
             <div
-              className={`absolute bottom-0 inset-x-0 pt-6 pb-4 px-4 sm:px-6 pointer-events-none ${
+              className={`pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-4 pt-6 sm:px-6 ${
                 isDark
-                  ? 'bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d]/90 to-transparent'
-                  : 'bg-gradient-to-t from-[#f9f9f9] via-[#f9f9f9]/90 to-transparent'
+                  ? 'bg-gradient-to-t from-[#090a0f] via-[#090a0f]/95 to-transparent'
+                  : 'bg-gradient-to-t from-[#f5f7fa] via-[#f5f7fa]/95 to-transparent'
               }`}
             >
-              <div className="max-w-3xl w-full mx-auto pointer-events-auto">
-                {/* Scroll to bottom button */}
+              <div className="pointer-events-auto mx-auto w-full max-w-3xl">
                 <AnimatePresence>
                   {showScrollBottom && (
-                    <div className="flex justify-center mb-2">
+                    <div className="mb-2 flex justify-center">
                       <MotionButton
                         type="button"
                         onClick={scrollToBottom}
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold shadow-lg border backdrop-blur-md transition-transform hover:scale-105 active:scale-95 ${
+                        exit={{ opacity: 0, y: 6 }}
+                        className={`flex items-center gap-1.5 rounded-lg border px-3 py-1 text-xs font-medium transition-colors duration-150 ${
                           isDark
-                            ? 'border-white/15 bg-[#1f1f1f]/95 text-slate-200'
-                            : 'border-slate-300 bg-white text-slate-800'
+                            ? 'border-white/[0.10] bg-[#1a1e28] text-[#eef0f5] hover:border-white/[0.18]'
+                            : 'border-black/[0.10] bg-white text-slate-800 shadow-sm'
                         }`}
                       >
                         <span>Scroll down</span>
-                        <ChevronDown size={14} />
+                        <ChevronDown size={14} strokeWidth={1.5} />
                       </MotionButton>
                     </div>
                   )}
                 </AnimatePresence>
 
-                {/* Capsule Input Box */}
                 <div
-                  className={`w-full rounded-3xl border transition-all duration-200 shadow-2xl p-3 sm:p-3.5 flex flex-col gap-2 ${
+                  className={`flex w-full flex-col gap-2 rounded-xl border p-3 transition-colors duration-150 ${
                     isDark
-                      ? 'border-white/12 bg-[#212121] focus-within:border-white/25 shadow-[0_0_40px_rgba(0,0,0,0.6)]'
-                      : 'border-slate-300 bg-white focus-within:border-slate-400 shadow-xl'
+                      ? 'border-white/[0.10] bg-[#11141c] focus-within:border-white/[0.20]'
+                      : 'border-black/[0.10] bg-white focus-within:border-slate-400'
                   }`}
                 >
                   {/* Slash Command / Multi-Model Studio Banner & Model Selector */}
@@ -1937,7 +1705,7 @@ const AIChatPanel = ({
                         </AnimatePresence>
                       </div>
 
-                      {/* Image Model Toggle Button (Right side of '+' icon) */}
+                      {/* Image Model Toggle Button */}
                       <button
                         type="button"
                         onClick={handleToggleImageMode}
@@ -1946,38 +1714,34 @@ const AIChatPanel = ({
                             ? 'Image Mode active - click to switch back to chat'
                             : 'Activate AI Image Studio'
                         }
-                        className={`flex h-8 items-center gap-1.5 px-2.5 rounded-full border text-xs font-medium transition-all ${
+                        className={`flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition-colors duration-150 ${
                           activeImageMode
-                            ? isDark
-                              ? 'border-sky-500/60 bg-sky-500/20 text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.3)]'
-                              : 'border-sky-400 bg-sky-100 text-sky-800'
+                            ? 'border-emerald-600/40 bg-emerald-500/10 text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300'
                             : isDark
-                            ? 'border-white/10 hover:border-white/25 hover:bg-white/10 text-slate-400 hover:text-white'
-                            : 'border-slate-300 hover:bg-slate-100 text-slate-600'
+                            ? 'border-white/[0.08] text-[#a3a9b8] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                            : 'border-black/[0.08] text-slate-600 hover:bg-slate-50'
                         }`}
                       >
-                        <ImageIcon size={15} className={activeImageMode ? 'text-sky-400' : ''} />
+                        <ImageIcon size={15} strokeWidth={1.5} />
                         <span>{activeImageMode ? currentModel.name : 'Image'}</span>
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      {/* Think pill */}
+                    <div className="flex items-center gap-1.5">
+                      {/* Think toggle */}
                       <button
                         type="button"
                         onClick={onToggleDeepThink}
                         title={isDeepThink ? 'Deep Think: Active' : 'Enable Deep Think'}
-                        className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+                        className={`flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition-colors duration-150 ${
                           isDeepThink
-                            ? isDark
-                              ? 'border-sky-500/50 bg-sky-500/15 text-sky-300 shadow-[0_0_15px_rgba(56,189,248,0.25)]'
-                              : 'border-sky-500 bg-sky-50 text-sky-800 shadow-xs'
+                            ? 'border-emerald-600/40 bg-emerald-500/10 text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300'
                             : isDark
-                            ? 'border-white/10 text-slate-400 hover:text-white hover:bg-white/5'
-                            : 'border-slate-300 text-slate-600 hover:bg-slate-100'
+                            ? 'border-white/[0.08] text-[#a3a9b8] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                            : 'border-black/[0.08] text-slate-600 hover:bg-slate-50'
                         }`}
                       >
-                        <Brain size={14} className={isDeepThink ? 'text-sky-400 animate-pulse' : ''} />
+                        <Brain size={14} strokeWidth={1.5} />
                         <span>Think</span>
                       </button>
 
@@ -1986,15 +1750,15 @@ const AIChatPanel = ({
                         type="button"
                         onClick={toggleSpeechRecognition}
                         title={isMicActive ? 'Listening...' : 'Voice input'}
-                        className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${
+                        className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-150 ${
                           isMicActive
-                            ? 'bg-rose-500 text-white animate-pulse'
+                            ? 'bg-rose-600 text-white'
                             : isDark
-                            ? 'text-slate-400 hover:text-white hover:bg-white/10'
-                            : 'text-slate-600 hover:text-black hover:bg-slate-100'
+                            ? 'text-[#7a8296] hover:bg-white/[0.06] hover:text-[#eef0f5]'
+                            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                         }`}
                       >
-                        {isMicActive ? <MicOff size={16} /> : <Mic size={16} />}
+                        {isMicActive ? <MicOff size={16} strokeWidth={1.5} /> : <Mic size={16} strokeWidth={1.5} />}
                       </button>
 
                       {/* Send / Stop button */}
@@ -2003,7 +1767,7 @@ const AIChatPanel = ({
                           type="button"
                           onClick={onStop}
                           title="Stop generating"
-                          className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-rose-500 hover:bg-rose-600 text-white shadow-md active:scale-90 transition-all"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-600 text-white transition-colors duration-150 hover:bg-rose-700"
                         >
                           <Square size={13} className="fill-current" />
                         </button>
@@ -2013,15 +1777,15 @@ const AIChatPanel = ({
                           onClick={() => inputValue.trim() && handleSendIntercept()}
                           disabled={!inputValue.trim() || isLoading}
                           title="Send prompt"
-                          className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full transition-all ${
+                          className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-150 ${
                             inputValue.trim()
-                              ? 'bg-[#2563eb] hover:bg-blue-600 text-white shadow-md active:scale-90'
+                              ? 'bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400'
                               : isDark
-                              ? 'bg-white/10 text-slate-500 cursor-not-allowed'
-                              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                              ? 'cursor-not-allowed bg-white/[0.06] text-[#7a8296]'
+                              : 'cursor-not-allowed bg-slate-200 text-slate-400'
                           }`}
                         >
-                          <ArrowUp size={16} strokeWidth={2.5} />
+                          <ArrowUp size={16} strokeWidth={1.5} />
                         </button>
                       )}
                     </div>
