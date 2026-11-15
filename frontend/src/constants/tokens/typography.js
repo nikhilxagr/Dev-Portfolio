@@ -1,11 +1,11 @@
 export const typography = {
-  fontSans: "'Space Grotesk', sans-serif",
-  fontDisplay: "'Outfit', sans-serif",
-  fontMono: "'JetBrains Mono', monospace",
+  fontSans: "'Plus Jakarta Sans', system-ui, sans-serif",
+  fontDisplay: "'Plus Jakarta Sans', system-ui, sans-serif",
+  fontMono: "'JetBrains Mono', ui-monospace, monospace",
   trackingTight: "-0.025em",
   trackingNormal: "0em",
-  trackingWide: "0.1em",
-  trackingWider: "0.22em",
+  trackingWide: "0.04em",
+  trackingWider: "0.08em",
 };
 
 export default typography;

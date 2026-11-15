@@ -14,11 +14,13 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Orbitron', 'sans-serif'],
-        body: ['Space Grotesk', 'sans-serif'],
-        syne: ['Syne', 'sans-serif'],
-        outfit: ['Outfit', 'sans-serif'],
-        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        body: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        syne: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        outfit: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        jakarta: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         neon: '0 0 0 1px rgba(0, 212, 255, 0.35), 0 0 30px rgba(0, 212, 255, 0.18)',
