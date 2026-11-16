@@ -4,7 +4,7 @@
 
 /* Theme colors */
 :root {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 
   /* Backgrounds — deep navy-black, not pure green-black */
   --bg-base: #050d14;
@@ -99,7 +99,7 @@ body {
     radial-gradient(circle at 50% 80%, var(--bg-radial-3), transparent 50%),
     var(--bg-base);
   color: var(--text-base);
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   text-rendering: geometricPrecision;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
