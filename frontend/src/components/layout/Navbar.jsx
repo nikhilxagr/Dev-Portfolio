@@ -214,9 +214,9 @@ const Navbar = () => {
 
   const navItemClass = ({ isActive }) =>
     clsx(
-      "group relative inline-flex items-center gap-1 rounded-full px-3 2xl:px-4 py-1.5 font-outfit text-[13.5px] 2xl:text-sm font-semibold transition-all duration-300 select-none shrink-0",
+      "group relative inline-flex items-center gap-1 rounded-full px-3 2xl:px-4 py-1.5 font-sans text-[13.5px] 2xl:text-sm font-semibold transition-all duration-300 select-none shrink-0",
       isActive
-        ? "bg-lime-400 text-slate-950 font-extrabold shadow-[0_0_18px_rgba(163,230,53,0.65)]"
+        ? "bg-lime-400 text-slate-950 font-bold shadow-[0_0_18px_rgba(163,230,53,0.65)]"
         : isDark
           ? "text-zinc-200 hover:text-white hover:bg-white/[0.08]"
           : "text-slate-700 hover:text-slate-950 hover:bg-black/[0.05]",
@@ -268,7 +268,7 @@ const Navbar = () => {
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_12px_rgba(74,222,128,0.95)]" />
                 </span>
 
-                <p className="truncate text-center text-[10px] font-semibold uppercase tracking-[0.14em] sm:text-xs">
+                <p className="truncate text-center text-xs font-semibold sm:text-xs">
                   Open to opportunities
                 </p>
                 <p className="hidden text-xs text-emerald-200/90 lg:block">
@@ -357,13 +357,13 @@ const Navbar = () => {
                   <span
                     id="navbar-logo-text"
                     className={clsx(
-                      "font-outfit text-[1.4rem] sm:text-[1.6rem] font-black tracking-[0.16em] uppercase select-none transition-all duration-300",
+                      "font-display text-[1.4rem] sm:text-[1.6rem] font-extrabold tracking-tight select-none transition-all duration-300",
                       "bg-gradient-to-r from-teal-300 via-emerald-400 to-lime-400 bg-clip-text text-transparent",
                       "drop-shadow-[0_4px_22px_rgba(52,211,153,0.65)] group-hover:drop-shadow-[0_6px_30px_rgba(52,211,153,0.9)] group-hover:scale-[1.03]",
                       "inline-block"
                     )}
                   >
-                    NIKHIL
+                    Nikhil
                   </span>
                 </Link>
               </div>
