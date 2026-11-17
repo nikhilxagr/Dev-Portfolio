@@ -19,7 +19,10 @@ export const mergeStaticAndApiContent = (staticItem = {}, apiItem = {}) => {
 
   Object.entries(apiItem || {}).forEach(([key, value]) => {
     if (isNonEmptyValue(value)) {
-      if (key === "imageUrl" && staticItem.imageUrl) {
+      if (key === "imageUrl" && staticItem?.imageUrl) {
+        return;
+      }
+      if (key === "status" && value === "published" && staticItem?.status) {
         return;
       }
       merged[key] = value;

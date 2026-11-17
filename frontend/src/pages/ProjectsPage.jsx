@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Search, X, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
+import { Search, X, ChevronDown, FolderGit2 } from "lucide-react";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
@@ -11,7 +12,11 @@ import { getProjects } from "@/services/projects.service";
 import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";
 
-const CATEGORIES = ["ALL", "FULL STACK", "WEB DEV", "SOLO", "COLLAB", "AI", "PYTHON", "CYBER SECURITY"];
+const MotionDiv = motion.div;
+const MotionH1 = motion.h1;
+const MotionP = motion.p;
+
+const CATEGORIES = ["All", "Full Stack", "Web Dev", "Solo", "Collab", "AI", "Python", "Cyber Security"];
 
 const isCollabProject = (project) => {
   if (!project) return false;
@@ -32,29 +37,30 @@ const isCollabProject = (project) => {
 const matchesProjectFilters = (project, selectedCategory, currentSearch) => {
   let matchesCategory = true;
   const isCollab = isCollabProject(project);
+  const cat = selectedCategory.toUpperCase();
 
-  if (selectedCategory === "COLLAB") {
+  if (cat === "COLLAB") {
     matchesCategory = isCollab;
-  } else if (selectedCategory === "SOLO") {
+  } else if (cat === "SOLO") {
     matchesCategory = !isCollab;
-  } else if (selectedCategory === "FULL STACK") {
+  } else if (cat === "FULL STACK") {
     matchesCategory = project.category?.toLowerCase() === "full stack";
-  } else if (selectedCategory === "WEB DEV") {
+  } else if (cat === "WEB DEV") {
     matchesCategory = project.category?.toLowerCase() === "web dev";
-  } else if (selectedCategory === "PYTHON") {
+  } else if (cat === "PYTHON") {
     matchesCategory = project.category?.toLowerCase() === "python";
-  } else if (selectedCategory === "CYBER SECURITY") {
+  } else if (cat === "CYBER SECURITY") {
     matchesCategory =
       project.category?.toLowerCase() === "cyber security" ||
       project.category?.toLowerCase() === "security" ||
       (project.tags || []).some((t) => t.toLowerCase().includes("security"));
-  } else if (selectedCategory === "AI") {
+  } else if (cat === "AI") {
     matchesCategory =
       project.category?.toLowerCase() === "ai" ||
       project.category?.toLowerCase() === "ai/ml" ||
       project.category?.toLowerCase() === "ai / security" ||
       (project.techStack || []).some((t) => t.toLowerCase().includes("gemini") || t.toLowerCase() === "ai");
-  } else if (selectedCategory !== "ALL") {
+  } else if (cat !== "ALL") {
     matchesCategory = project.category?.toLowerCase() === selectedCategory.toLowerCase();
   }
 
@@ -70,7 +76,7 @@ const matchesProjectFilters = (project, selectedCategory, currentSearch) => {
 
 const ProjectsPage = () => {
   const [projects, setProjects] = useState(SIGNATURE_PROJECTS);
-  const [category, setCategory] = useState("ALL");
+  const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("FEATURED");
 
@@ -170,89 +176,112 @@ const ProjectsPage = () => {
         ]}
       />
 
-      {/* Main Section with Instant Loading & Clean Minimal Design */}
-      <section className="section-wrap pt-4 sm:pt-6 pb-20">
-        
-        {/* Minimal Hero Header */}
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Professional Heading */}
-          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
-            Production <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Case Studies</span>
-          </h1>
+      <section className="section-wrap pt-6 sm:pt-8 pb-20">
+        {/* Centered Hero Headline */}
+        <div className="text-center max-w-3xl mx-auto pb-10 sm:pb-12">
+          <MotionDiv
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/[0.08] px-4 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
+              <FolderGit2 size={14} strokeWidth={1.5} /> Projects Archive
+            </span>
+          </MotionDiv>
 
-          {/* Clean Subtitle */}
-          <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            AI/ML, Python, and web development projects built with React, Node.js, and MERN stack workflows.
-          </p>
+          <MotionH1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-slate-900 dark:text-[#eef0f5] leading-[1.08]"
+          >
+            Production{" "}
+            <span className="text-emerald-600 dark:text-emerald-400">
+              Case Studies
+            </span>
+          </MotionH1>
 
-          {/* Centered Search Bar */}
-          <div className="mt-8 mx-auto max-w-xl relative">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
-            <input
-              value={search}
-              onChange={handleSearchChange}
-              placeholder="Search projects by name, tech stack, or description..."
-              className="w-full rounded-2xl border border-slate-300 bg-white/80 dark:border-white/10 dark:bg-[#030d07]/80 px-11 py-3 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none backdrop-blur-md focus:border-lime-400 dark:focus:border-lime-400 shadow-lg transition-all"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={handleSearchClear}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+          <MotionP
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base dark:text-[#a3a9b8]"
+          >
+            Full-stack MERN applications, Python utilities, and security tools with architecture notes and source code.
+          </MotionP>
+        </div>
+
+        <div className="max-w-4xl">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative flex-1">
+              <Search size={16} strokeWidth={1.5} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#7a8296]" />
+              <input
+                id="projects-search"
+                name="search"
+                value={search}
+                onChange={handleSearchChange}
+                placeholder="Search projects"
+                className="h-10 w-full rounded-lg border border-black/[0.08] bg-white pl-10 pr-9 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors duration-150 focus:border-emerald-600 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={handleSearchClear}
+                  aria-label="Clear search"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:text-[#7a8296] dark:hover:text-[#eef0f5]"
+                >
+                  <X size={14} strokeWidth={1.5} />
+                </button>
+              )}
+            </div>
+
+            <div className="relative shrink-0">
+              <select
+                id="projects-sort"
+                name="sort"
+                value={sortBy}
+                onChange={handleSortChange}
+                aria-label="Sort projects by"
+                className="h-10 appearance-none rounded-lg border border-black/[0.08] bg-white px-3.5 pr-8 font-mono text-xs font-medium text-slate-800 outline-none transition-colors duration-150 hover:border-slate-300 focus:border-emerald-600 cursor-pointer dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:hover:border-white/[0.16]"
               >
-                <X size={14} />
-              </button>
-            )}
+                <option value="FEATURED">Sort: Featured</option>
+                <option value="NEWEST">Sort: Newest</option>
+                <option value="NAME">Sort: Name A–Z</option>
+              </select>
+              <ChevronDown size={14} strokeWidth={1.5} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#7a8296]" />
+            </div>
           </div>
 
-          {/* Centered Category Buttons + Inline "Sort By" Dropdown Button to the Right of AI */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-5 flex flex-wrap items-center gap-2">
             {CATEGORIES.map((item) => (
               <button
                 key={item}
                 type="button"
                 onClick={() => handleCategorySelect(item)}
-                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold transition-colors duration-150 ${
+                className={`inline-flex h-9 items-center rounded-lg border px-3.5 text-xs font-medium transition-colors duration-150 sm:text-sm ${
                   category === item
-                    ? "border border-lime-400 bg-lime-400 text-slate-950 shadow-[0_0_20px_rgba(163,230,53,0.55)]"
-                    : "border border-slate-200 bg-slate-100/80 text-slate-700 hover:border-slate-400 dark:border-emerald-500/20 dark:bg-[#08140c]/80 dark:text-slate-300 dark:hover:border-lime-400/50 dark:hover:text-white"
+                    ? "border-emerald-600/40 bg-emerald-500/10 text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300"
+                    : "border-black/[0.08] bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5]"
                 }`}
               >
                 {item}
               </button>
             ))}
-
-            {/* Inline "Sort By" Button (Right Side of AI) */}
-            <div className="relative inline-block">
-              <select
-                value={sortBy}
-                onChange={handleSortChange}
-                aria-label="Sort projects by"
-                className="appearance-none rounded-xl border border-slate-300 bg-slate-100/80 dark:border-emerald-500/30 dark:bg-[#08140c]/90 px-3.5 py-2 pr-8 font-mono text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:border-lime-400 cursor-pointer shadow-sm transition-colors duration-150 hover:border-slate-400 dark:hover:border-lime-400/50"
-              >
-                <option value="FEATURED">Sort By: Featured</option>
-                <option value="NEWEST">Sort By: Newest</option>
-                <option value="NAME">Sort By: Name A-Z</option>
-              </select>
-              <ChevronDown size={14} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-400" />
-            </div>
           </div>
 
-          {/* Project Counter */}
-          <p className="mt-5 font-mono text-xs font-medium text-slate-500 dark:text-slate-400">
-            Showing <span className="text-lime-500 dark:text-lime-400 font-bold">{sortedProjects.length}</span> projects
+          <p className="mt-4 font-mono text-xs text-slate-500 tabular-nums dark:text-[#7a8296]">
+            Showing <span className="font-medium text-slate-900 dark:text-[#eef0f5]">{sortedProjects.length}</span> projects
           </p>
         </div>
 
-        {/* Project Cards Grid — cv-auto skips layout/paint until scrolled */}
+        {/* Project Cards Grid */}
         <div className="mt-8 cv-auto">
           {sortedProjects.length > 0 ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 transform-gpu">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {sortedProjects.map((project, index) => (
                 <ProjectCard
                   key={project._id || project.slug}
                   project={project}
-                  variant="featured"
                   priority={index < 6}
                 />
               ))}
