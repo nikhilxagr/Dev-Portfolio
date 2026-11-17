@@ -29,14 +29,14 @@ const Footer = () => {
           
           {/* Left Column: Brand & Social Grid */}
           <div>
-            <span className="font-mono text-xs uppercase tracking-[0.2em] font-extrabold text-emerald-700 dark:text-emerald-400">
-              // CONNECT WITH ME
+            <span className="text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-400">
+              Connect
             </span>
-            <h2 className="mt-2 font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+            <h2 className="mt-1.5 font-display text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               {SITE_PROFILE.fullName}
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-              Full stack developer &amp; application security engineer focused on practical delivery, clean architecture, and reliable execution.
+              Full-stack developer &amp; application security engineer focused on practical delivery, clean architecture, and reliable execution.
             </p>
 
             {/* Social Grid Cards */}
@@ -98,10 +98,10 @@ const Footer = () => {
                       </span>
 
                       <div className="min-w-0">
-                        <p className="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors truncate">
+                        <p className="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors truncate">
                           {item.label}
                         </p>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium truncate">Open profile</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-normal truncate">Open profile</p>
                       </div>
                     </div>
 
@@ -188,8 +188,8 @@ const Footer = () => {
             </Link>
             . All rights reserved.
           </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-400 font-extrabold">
-            FULL STACK DEVELOPER // CYBERSECURITY
+          <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+            Full-Stack Developer &amp; Security Researcher
           </p>
         </div>
       </div>
