@@ -55,7 +55,7 @@ const SectionTitle = ({
       {eyebrow ? (
         <motion.p
           variants={animate ? itemVariants : undefined}
-          className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-300/35 dark:bg-emerald-300/10 dark:text-emerald-200 px-3 py-1 font-display text-[10px] uppercase tracking-[0.2em] sm:text-xs font-bold"
+          className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-300/35 dark:bg-emerald-300/10 dark:text-emerald-200 px-3 py-1 text-xs font-semibold"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" />
           {eyebrow}
@@ -64,7 +64,7 @@ const SectionTitle = ({
 
       <motion.h2
         variants={animate ? itemVariants : undefined}
-        className="mt-3 font-display text-[1.9rem] font-semibold leading-tight text-slate-900 dark:text-cyan-50 sm:text-[2.35rem] lg:text-[2.8rem]"
+        className="mt-3 font-display text-3xl font-bold tracking-tight leading-tight text-slate-900 dark:text-cyan-50 sm:text-4xl lg:text-5xl"
       >
         {title}
       </motion.h2>
