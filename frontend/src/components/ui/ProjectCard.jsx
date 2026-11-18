@@ -126,28 +126,28 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
       <div className="flex flex-1 flex-col p-5">
         {/* Category & Project Type tag header */}
         <div className="mb-2 flex items-center justify-between gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
             {project.category || "Full Stack"}
           </span>
           <span
-            className={`shrink-0 inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider border ${
+            className={`shrink-0 inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold border ${
               isCollab
                 ? "border-purple-500/30 bg-purple-500/10 text-purple-700 dark:border-purple-400/30 dark:bg-purple-950/50 dark:text-purple-300"
                 : "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-950/50 dark:text-emerald-300"
             }`}
           >
-            {isCollab ? <Users size={10} /> : <User size={10} />}
+            {isCollab ? <Users size={11} /> : <User size={11} />}
             {projectTypeLabel}
           </span>
         </div>
 
         {/* Project Title */}
-        <h3 className="font-outfit text-lg font-bold tracking-normal text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-lime-400 transition-colors duration-200">
+        <h3 className="font-display text-lg font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-lime-400 transition-colors duration-200">
           {project.title}
         </h3>
 
         {/* Description */}
-        <p className="mt-2 flex-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3">
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3">
           {summary}
         </p>
 
@@ -159,7 +159,7 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
             return (
               <span
                 key={tech}
-                className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-semibold ${style.bg} ${style.border} ${style.text}`}
+                className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${style.bg} ${style.border} ${style.text}`}
               >
                 {tech}
               </span>
@@ -173,10 +173,10 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
           {showDetailsButton ? (
             <Link
               to={`/projects/${project.slug}`}
-              className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-green-500/15 text-emerald-600 dark:text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500 hover:text-black dark:hover:text-black px-4 py-2 text-xs font-black uppercase tracking-widest transition-all duration-200 shadow-sm"
+              className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-emerald-500/15 via-teal-500/15 to-green-500/15 text-emerald-600 dark:text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500 hover:text-black dark:hover:text-black px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 shadow-sm"
             >
               View Details
-              <ArrowRight size={13} />
+              <ArrowRight size={14} />
             </Link>
           ) : null}
 
@@ -188,13 +188,13 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Project code"
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-800 hover:bg-slate-200 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:border-white/30 dark:hover:bg-white/10 dark:hover:text-white px-3 py-2 text-xs font-black uppercase tracking-widest transition-all duration-200"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-800 hover:bg-slate-200 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:border-white/30 dark:hover:bg-white/10 dark:hover:text-white px-3 py-2 text-xs sm:text-sm font-semibold transition-all duration-200"
               >
                 <GitHubMark className="h-3.5 w-3.5" />
                 Code
               </a>
             ) : (
-              <span className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700/40 dark:bg-slate-800/30 dark:text-slate-600 px-3 py-2 text-xs font-black uppercase tracking-widest">
+              <span className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700/40 dark:bg-slate-800/30 dark:text-slate-600 px-3 py-2 text-xs sm:text-sm font-semibold">
                 <GitHubMark className="h-3.5 w-3.5" />
                 Code
               </span>
@@ -207,13 +207,13 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Live demo"
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-500 text-black px-3 py-2 text-xs font-black uppercase tracking-widest transition-all duration-200 hover:bg-green-400 hover:shadow-[0_6px_20px_rgba(34,197,94,0.4)]"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-green-500 text-black px-3 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 hover:bg-green-400 hover:shadow-[0_6px_20px_rgba(34,197,94,0.4)]"
               >
                 Demo
-                <ExternalLink size={11} />
+                <ExternalLink size={12} />
               </a>
             ) : (
-              <span className="flex flex-1 items-center justify-center rounded-xl bg-green-500/10 border border-green-500/20 text-green-700 dark:bg-green-500/20 dark:border-green-500/30 dark:text-green-600 px-3 py-2 text-xs font-black uppercase tracking-widest">
+              <span className="flex flex-1 items-center justify-center rounded-xl bg-green-500/10 border border-green-500/20 text-green-700 dark:bg-green-500/20 dark:border-green-500/30 dark:text-green-600 px-3 py-2 text-xs sm:text-sm font-semibold">
                 Demo
               </span>
             )}
@@ -225,10 +225,10 @@ const ProjectCard = ({ project, variant = "default", priority = false }) => {
                 download="Vistagram.apk"
                 aria-label="Download Android APK"
                 title="Download Android APK"
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-cyan-500/40 bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500 hover:text-black dark:hover:text-black px-3 py-2 text-xs font-black uppercase tracking-widest transition-all duration-200"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-cyan-500/40 bg-cyan-500/15 text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500 hover:text-black dark:hover:text-black px-3 py-2 text-xs sm:text-sm font-semibold transition-all duration-200"
               >
                 APK
-                <Download size={11} />
+                <Download size={12} />
               </a>
             ) : null}
           </div>
