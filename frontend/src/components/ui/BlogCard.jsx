@@ -60,29 +60,29 @@ const BlogCard = ({
           {/* Details */}
           <div className="flex-1 min-w-0">
             {/* Category Eyebrow */}
-            <p className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-lime-600 dark:text-lime-400 transition-all duration-300 group-hover:tracking-[0.25em]">
+            <p className="font-mono text-xs font-semibold text-lime-600 dark:text-lime-400">
               {categoryName}
             </p>
 
-            {/* Title in Clean Font Outfit Title Case */}
-            <h3 className="mt-1.5 font-outfit text-xl sm:text-2xl lg:text-[27px] font-bold text-slate-900 dark:text-white leading-snug tracking-tight transition-colors duration-300 group-hover:text-lime-600 dark:group-hover:text-lime-400">
+            {/* Title in Clean Font Display Title Case */}
+            <h3 className="mt-1.5 font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-snug tracking-tight transition-colors duration-300 group-hover:text-lime-600 dark:group-hover:text-lime-400">
               {blog.title}
             </h3>
 
-            {/* Excerpt in Clean Font Jakarta */}
-            <p className="mt-2.5 font-jakarta text-xs sm:text-sm text-slate-600 dark:text-zinc-400 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3">
+            {/* Excerpt in Clean Body Font */}
+            <p className="mt-2.5 text-sm sm:text-base text-slate-600 dark:text-zinc-400 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3">
               {blog.excerpt || blog.content}
             </p>
 
             {/* Bottom Meta & Action */}
             <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-white/[0.04]">
-              <div className="flex items-center gap-2 font-mono text-[11px] sm:text-xs text-slate-500 dark:text-zinc-400">
+              <div className="flex items-center gap-2 font-mono text-xs text-slate-500 dark:text-zinc-400">
                 <span>{formattedDate}</span>
                 <span>•</span>
                 <span>{readTime}</span>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-slate-800 dark:text-zinc-200 transition-colors duration-300 group-hover:text-lime-600 dark:group-hover:text-lime-400">
+              <div className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-800 dark:text-zinc-200 transition-colors duration-300 group-hover:text-lime-600 dark:group-hover:text-lime-400">
                 <span>Read note</span>
                 <ArrowRight
                   size={14}
