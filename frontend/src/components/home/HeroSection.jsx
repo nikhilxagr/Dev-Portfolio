@@ -262,10 +262,10 @@ const HeroSection = () => {
         aria-hidden="true"
       >
         <div className="flex w-max animate-marquee-drift">
-          <span className="font-display font-black uppercase tracking-[0.2em] text-[22vw] lg:text-[18vw] xl:text-[250px] leading-none whitespace-nowrap text-white/[0.025] dark:text-emerald-400/[0.035] [-webkit-text-stroke:1.5px_rgba(255,255,255,0.03)] dark:[-webkit-text-stroke:1.5px_rgba(52,211,153,0.045)] pr-16 sm:pr-24">
+          <span className="font-display font-bold uppercase tracking-[0.12em] text-[18vw] lg:text-[14vw] xl:text-[200px] leading-none whitespace-nowrap text-white/[0.025] dark:text-emerald-400/[0.03] [-webkit-text-stroke:1px_rgba(255,255,255,0.03)] dark:[-webkit-text-stroke:1px_rgba(52,211,153,0.04)] pr-16 sm:pr-24">
             BUILDER • BUILDER • BUILDER • BUILDER •&nbsp;
           </span>
-          <span className="font-display font-black uppercase tracking-[0.2em] text-[22vw] lg:text-[18vw] xl:text-[250px] leading-none whitespace-nowrap text-white/[0.025] dark:text-emerald-400/[0.035] [-webkit-text-stroke:1.5px_rgba(255,255,255,0.03)] dark:[-webkit-text-stroke:1.5px_rgba(52,211,153,0.045)] pr-16 sm:pr-24">
+          <span className="font-display font-bold uppercase tracking-[0.12em] text-[18vw] lg:text-[14vw] xl:text-[200px] leading-none whitespace-nowrap text-white/[0.025] dark:text-emerald-400/[0.03] [-webkit-text-stroke:1px_rgba(255,255,255,0.03)] dark:[-webkit-text-stroke:1px_rgba(52,211,153,0.04)] pr-16 sm:pr-24">
             BUILDER • BUILDER • BUILDER • BUILDER •&nbsp;
           </span>
         </div>
@@ -281,20 +281,20 @@ const HeroSection = () => {
               {...fadeUp(0.05)}
               className="mb-4 flex justify-center sm:justify-start"
             >
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3.5 py-1.5 text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-400 shadow-sm backdrop-blur-md">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3.5 py-1.5 text-xs font-medium text-emerald-400 shadow-sm backdrop-blur-md">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                WELCOME TO MY PORTFOLIO
+                Welcome to my portfolio
               </span>
             </motion.div>
 
           {/* Primary Name Display */}
           <motion.h1
             {...fadeUp(0.12)}
-            className="font-display text-5xl font-black uppercase tracking-tight text-white sm:text-6xl lg:text-[4.6rem] xl:text-[5.2rem] leading-[0.92] drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]"
+            className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-[4rem] xl:text-[4.5rem] leading-[1.02] drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]"
           >
-            NIKHIL <br />
+            Nikhil <br />
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-green-400 bg-clip-text text-transparent">
-              AGRAHARI
+              Agrahari
             </span>
           </motion.h1>
 
@@ -303,8 +303,8 @@ const HeroSection = () => {
             {...fadeUp(0.18)}
             className="mt-4 flex items-center justify-center sm:justify-start gap-3"
           >
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">
-              // CYBER SECURITY &amp; WEB DEVELOPER
+            <span className="text-sm sm:text-base font-semibold text-emerald-400">
+              Full-Stack Developer &amp; Security Researcher
             </span>
             <div className="hidden sm:flex items-center flex-1 max-w-[110px]">
               <div className="h-[1px] flex-1 bg-gradient-to-r from-emerald-500/50 to-transparent" />
@@ -319,16 +319,16 @@ const HeroSection = () => {
             {...fadeUp(0.24)}
             className="mt-4 flex flex-wrap justify-center sm:justify-start gap-2.5"
           >
-            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
-              <Terminal size={13} className="text-emerald-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs sm:text-sm font-medium text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
+              <Terminal size={14} className="text-emerald-400" />
               Python
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
-              <Layers size={13} className="text-teal-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs sm:text-sm font-medium text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
+              <Layers size={14} className="text-teal-400" />
               Full Stack
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
-              <ShieldCheck size={13} className="text-emerald-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-md px-3.5 py-1.5 text-xs sm:text-sm font-medium text-slate-200 hover:border-emerald-400/40 hover:bg-emerald-500/10 transition-all">
+              <ShieldCheck size={14} className="text-emerald-400" />
               SOC Analyst
             </span>
           </motion.div>
@@ -336,14 +336,14 @@ const HeroSection = () => {
           {/* Academic & Availability Status */}
           <motion.div
             {...fadeUp(0.3)}
-            className="mt-4 space-y-2 text-xs sm:text-sm text-slate-300 font-medium"
+            className="mt-4 space-y-2.5 text-sm text-slate-300 font-medium leading-relaxed"
           >
             <p className="flex items-center justify-center sm:justify-start gap-2">
-              <GraduationCap size={15} className="text-emerald-400 shrink-0" />
+              <GraduationCap size={16} className="text-emerald-400 shrink-0" />
               <span>BCA at BBDU Lucknow, India</span>
             </p>
             <p className="flex items-center justify-center sm:justify-start gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 Open for Internships &amp; Freelance
               </span>
@@ -357,29 +357,29 @@ const HeroSection = () => {
           >
             <a
               href="/services"
-              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3 text-xs font-black uppercase tracking-wider text-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(16,185,129,0.4)]"
+              className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(16,185,129,0.4)]"
             >
               Book Service
               <ArrowRight
-                size={13}
+                size={14}
                 className="transition-transform duration-200 group-hover:translate-x-0.5"
               />
             </a>
             <a
               href="/projects"
-              className="group inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] backdrop-blur-md px-5 py-3 text-xs font-black uppercase tracking-wider text-slate-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:text-emerald-300 hover:bg-emerald-500/10"
+              className="group inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] backdrop-blur-md px-5 py-3 text-sm font-semibold text-slate-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:text-emerald-300 hover:bg-emerald-500/10"
             >
               View Projects
               <ArrowUpRight
-                size={14}
+                size={15}
                 className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               />
             </a>
             <a
               href="/contact"
-              className="group inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] backdrop-blur-md px-5 py-3 text-xs font-black uppercase tracking-wider text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:text-emerald-300 hover:bg-emerald-500/10"
+              className="group inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] backdrop-blur-md px-5 py-3 text-sm font-semibold text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/40 hover:text-emerald-300 hover:bg-emerald-500/10"
             >
-              <Mail size={13} />
+              <Mail size={14} />
               Contact Me
             </a>
           </motion.div>
@@ -442,9 +442,9 @@ const HeroSection = () => {
               </div>
 
               {/* Available Status Pill */}
-              <div className="absolute bottom-1 right-2 sm:right-4 rounded-full border border-emerald-400/80 bg-emerald-500 px-4 py-1.5 text-xs font-black uppercase tracking-wider text-black shadow-[0_4px_20px_rgba(16,185,129,0.5)]">
+              <div className="absolute bottom-1 right-2 sm:right-4 rounded-full border border-emerald-400/80 bg-emerald-500 px-3.5 py-1.5 text-xs font-semibold text-black shadow-[0_4px_20px_rgba(16,185,129,0.5)]">
                 <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-black animate-pulse" />
-                AVAILABLE!
+                Available
               </div>
             </div>
           ) : null}
@@ -455,10 +455,10 @@ const HeroSection = () => {
       {/* Scroll Down Indicator */}
       <motion.div
         {...fadeUp(0.52)}
-        className="mt-10 hidden lg:flex items-center justify-center gap-2 text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-slate-500"
+        className="mt-10 hidden lg:flex items-center justify-center gap-2 text-xs font-medium tracking-wide text-slate-400"
       >
-        <span>SCROLL DOWN</span>
-        <ChevronDown size={13} className="animate-bounce text-emerald-400" />
+        <span>Scroll to explore</span>
+        <ChevronDown size={14} className="animate-bounce text-emerald-400" />
       </motion.div>
     </section>
   );
