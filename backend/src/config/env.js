@@ -174,6 +174,7 @@ export const env = {
     readOptionalVariable("FRONTEND_URL", ["CLIENT_URL"]) ||
     (isDevelopment ? "http://localhost:5173" : "https://nikhilxagr.vercel.app"),
   geminiApiKey: readOptionalVariable("GEMINI_API_KEY"),
+  grokApiKey: readOptionalVariable("GROK_API_KEY", ["XAI_API_KEY"]),
   smtpHost: readOptionalVariable("SMTP_HOST") || "smtp.gmail.com",
   smtpPort: parseNumber(process.env.SMTP_PORT, 465),
   smtpSecure: parseBoolean(process.env.SMTP_SECURE, true),

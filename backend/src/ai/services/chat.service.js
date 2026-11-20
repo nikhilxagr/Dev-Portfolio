@@ -1,8 +1,11 @@
-import { buildPrompt, buildRagPrompt, estimateTokenCount } from "../prompts/prompt.builder.js";
+import {
+  buildRagPrompt,
+  getTargetedKnowledgeContext,
+  estimateTokenCount,
+} from "../prompts/prompt.builder.js";
 import { isKnowledgeReady } from "../knowledge/knowledge.index.js";
 import { geminiProvider } from "../providers/gemini.provider.js";
-import { retrieveContext } from "../rag/rag.service.js";
-import { isRagReady } from "../rag/rag.index.js";
+import { grokProvider } from "../providers/grok.provider.js";
 
 const activeProvider = geminiProvider;
 const MAX_MESSAGE_LENGTH = 500;
@@ -53,33 +56,42 @@ export const streamChatResponse = async ({
 
   let prompt;
   try {
-    if (isRagReady()) {
-      // RAG path: retrieve only relevant chunks, build a small focused prompt
-      const ragContext = await retrieveContext(trimmedMessage);
+    // Step 1: Immediately extract targeted knowledge context (0ms, avoids heavy 66KB dumps)
+    const targetedContext = getTargetedKnowledgeContext(trimmedMessage);
 
-      if (ragContext) {
-        prompt = buildRagPrompt({
-          userMessage: trimmedMessage,
-          ragContext,
-          history: sanitizedHistory,
-        });
-        const estimatedTokens = estimateTokenCount(prompt);
-        console.log(`[ChatService] RAG prompt built. ~${estimatedTokens} tokens (RAG active).`);
+    // Step 2: If GROK_API_KEY is configured, use Grok to read question & extract facts
+    let grokExtractedContext = null;
+    if (grokProvider.isConfigured()) {
+      console.log("[ChatService] Grok API key active. Asking Grok to extract relevant portfolio context...");
+      grokExtractedContext = await grokProvider.extractKnowledge({
+        userMessage: trimmedMessage,
+        knowledgeSummary: targetedContext,
+      });
+
+      if (grokExtractedContext) {
+        console.log("[ChatService] Grok extraction succeeded. Passing extracted facts to Gemini for UI streaming.");
       } else {
-        // RAG returned no results — fall back to full context
-        prompt = buildPrompt({ userMessage: trimmedMessage, history: sanitizedHistory });
-        console.log("[ChatService] RAG returned no results. Using full knowledge context.");
+        console.log("[ChatService] Grok extraction unavailable/no credits. Using targeted topic context for Gemini.");
       }
-    } else {
-      // RAG not ready — use full context as before
-      prompt = buildPrompt({ userMessage: trimmedMessage, history: sanitizedHistory });
-      console.log("[ChatService] RAG not ready. Using full knowledge context (fallback).");
     }
+
+    const effectiveContext = grokExtractedContext || targetedContext;
+
+    // Step 3: Build high-speed prompt for Gemini
+    prompt = buildRagPrompt({
+      userMessage: trimmedMessage,
+      ragContext: effectiveContext,
+      history: sanitizedHistory,
+    });
+
+    const estimatedTokens = estimateTokenCount(prompt);
+    console.log(`[ChatService] Fast prompt built: ~${estimatedTokens} tokens.`);
   } catch (error) {
     console.error(`[ChatService] Prompt build failed: ${error.message}`);
     onError(new Error("Failed to prepare your request. Please try again."));
     return;
   }
 
+  // Step 4: Stream response directly to UI via Gemini 2.5 Flash
   await activeProvider.streamChat({ prompt, onToken, onComplete, onError });
 };

@@ -2,12 +2,13 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 import { AIProvider } from "./provider.interface.js";
 import { env } from "../../config/env.js";
 
-const PRIMARY_MODEL = "gemini-flash-latest";
+// Primary stable & high-speed model
+const PRIMARY_MODEL = "gemini-2.5-flash";
 const FALLBACK_MODELS = [
-  "gemini-2.5-flash",
+  "gemini-2.5-flash-lite",
   "gemini-2.0-flash",
-  "gemini-1.5-flash",
-  "gemini-2.0-flash-lite",
+  "gemini-flash-latest",
+  "gemini-2.5-pro",
 ];
 
 const GENERATION_CONFIG = {
@@ -69,11 +70,21 @@ export class GeminiProvider extends AIProvider {
     let lastError = null;
 
     for (const modelName of candidateModels) {
+      let hasReceivedToken = false;
       try {
         const model = getModelInstance(modelName);
-        const result = await model.generateContentStream(prompt);
 
-        let hasReceivedToken = false;
+        // 18-second timeout guard to prevent hung requests on stalled models
+        const generateStreamPromise = model.generateContentStream(prompt);
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error(`Timeout waiting for ${modelName} after 18s`)),
+            18000
+          )
+        );
+
+        const result = await Promise.race([generateStreamPromise, timeoutPromise]);
+
         for await (const chunk of result.stream) {
           const text = chunk.text();
           if (text) {
@@ -98,14 +109,19 @@ export class GeminiProvider extends AIProvider {
         return;
       } catch (error) {
         lastError = error;
-        const isQuotaError =
-          error?.message?.includes("429") ||
-          error?.message?.includes("QUOTA") ||
-          error?.message?.includes("quota") ||
-          error?.message?.includes("Too Many Requests");
+        console.warn(
+          `[GeminiProvider] Model ${modelName} failed (${error?.status || error?.name || "error"}: ${error?.message}).`
+        );
 
-        if (isQuotaError && modelName !== candidateModels[candidateModels.length - 1]) {
-          console.warn(`[GeminiProvider] ${modelName} hit quota limit. Falling back to next model...`);
+        // If tokens were already sent to client, do not restart with another model
+        if (hasReceivedToken) {
+          console.error(`[GeminiProvider] Stream was interrupted after tokens were delivered. Aborting.`);
+          break;
+        }
+
+        // If fallback models remain, continue to next candidate
+        if (modelName !== candidateModels[candidateModels.length - 1]) {
+          console.warn(`[GeminiProvider] Falling back to next available model...`);
           continue;
         }
 
@@ -128,12 +144,16 @@ const sanitizeErrorMessage = (error) => {
 
   if (
     msg.includes("429") ||
+    msg.includes("503") ||
     msg.includes("QUOTA_EXCEEDED") ||
     msg.includes("quota") ||
     msg.includes("Too Many Requests") ||
-    msg.includes("RESOURCE_EXHAUSTED")
+    msg.includes("RESOURCE_EXHAUSTED") ||
+    msg.includes("high demand") ||
+    msg.includes("Service Unavailable") ||
+    msg.includes("ServiceUnavailable")
   ) {
-    return "Nikhil AI is temporarily at capacity (free tier limit). Please wait a moment and try again.";
+    return "Nikhil AI is temporarily experiencing high traffic. Please try again in a few moments.";
   }
 
   if (
@@ -149,9 +169,10 @@ const sanitizeErrorMessage = (error) => {
     msg.includes("fetch failed") ||
     msg.includes("ECONNREFUSED") ||
     msg.includes("ENOTFOUND") ||
-    msg.includes("ETIMEDOUT")
+    msg.includes("ETIMEDOUT") ||
+    msg.includes("Timeout waiting")
   ) {
-    return "Unable to reach AI service. Please check your internet connection and try again.";
+    return "Unable to reach AI service in time. Please check your connection and try again.";
   }
 
   return "AI service encountered an error. Please try again in a few seconds.";
