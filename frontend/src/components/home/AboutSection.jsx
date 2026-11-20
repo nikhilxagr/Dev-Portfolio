@@ -33,11 +33,11 @@ const StatsBar = memo(() => {
               rel="noreferrer"
               className="stat-card-green flex flex-col items-center gap-1 p-4 text-center sm:p-5 group"
             >
-              <p className={`font-outfit text-2xl font-black sm:text-3xl ${item.accentColor || "text-green-400"}`}>
+              <p className={`font-display text-2xl font-bold tracking-tight sm:text-3xl ${item.accentColor || "text-green-400"}`}>
                 {item.value}
               </p>
-              <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">{item.label}</p>
-              <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">{item.detail}</p>
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{item.label}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{item.detail}</p>
             </a>
           ))}
         </div>
@@ -104,10 +104,10 @@ const AboutSection = () => {
           {/* Centered Large Section Title */}
           <FadeInUp>
             <div className="text-center">
-              <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-green-600 dark:text-green-400 mb-2">
-                // About Me
+              <p className="text-xs font-semibold tracking-wide text-green-600 dark:text-green-400 mb-2">
+                About Me
               </p>
-              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
                 About <span className="text-green-600 dark:text-green-400">Me</span>
               </h2>
             </div>
@@ -123,10 +123,10 @@ const AboutSection = () => {
                 <div className="relative space-y-5">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-white/10">
                     <div>
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-green-600 dark:text-green-400">
-                        // Profile
+                      <span className="text-xs font-medium text-green-600 dark:text-green-400">
+                        Profile
                       </span>
-                      <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-green-700 dark:text-green-300">
+                      <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-green-700 dark:text-green-300">
                         Who I Am
                       </h3>
                     </div>
@@ -135,7 +135,7 @@ const AboutSection = () => {
                     </span>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                  <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
                     I am a third-year Bachelor of Computer Applications (BCA) student with a passion for software engineering, system design, and cybersecurity defense.
                   </p>
 
@@ -146,7 +146,7 @@ const AboutSection = () => {
                         <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-green-500/30 bg-green-500/10 text-green-600 dark:border-green-400/40 dark:bg-green-400/12 dark:text-green-300">
                           <CheckCircle2 size={13} />
                         </span>
-                        <div className="text-xs sm:text-sm">
+                        <div className="text-sm leading-relaxed">
                           <span className="font-semibold text-slate-900 dark:text-white">{label}: </span>
                           <span className="text-slate-600 dark:text-slate-400">{text}</span>
                         </div>
@@ -156,7 +156,7 @@ const AboutSection = () => {
                 </div>
 
                 {/* Footer Tag Chips */}
-                <div className="relative pt-6 mt-6 border-t border-slate-100 dark:border-white/10 flex flex-wrap gap-2 font-mono text-[11px] font-bold uppercase tracking-wider">
+                <div className="relative pt-6 mt-6 border-t border-slate-100 dark:border-white/10 flex flex-wrap gap-2 font-mono text-xs font-medium">
                   {["BBDU Lucknow", "3rd Year BCA", "DSA Problem Solving", "Available Immediately"].map((tag) => (
                     <span
                       key={tag}
@@ -177,10 +177,10 @@ const AboutSection = () => {
                 <div className="relative space-y-5">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-white/10">
                     <div>
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-600 dark:text-cyan-400">
-                        // Capabilities
+                      <span className="text-xs font-medium text-cyan-600 dark:text-cyan-400">
+                        Capabilities
                       </span>
-                      <h3 className="font-display text-xl sm:text-2xl font-bold uppercase tracking-tight text-cyan-700 dark:text-cyan-300">
+                      <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-cyan-700 dark:text-cyan-300">
                         What I Can Provide
                       </h3>
                     </div>
@@ -189,7 +189,7 @@ const AboutSection = () => {
                     </span>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                  <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
                     I engineer end-to-end web applications with modern frontend experiences, secure REST APIs, and production-minded architecture.
                   </p>
 
@@ -200,7 +200,7 @@ const AboutSection = () => {
                         <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-cyan-500/30 bg-cyan-500/10 text-cyan-600 dark:border-cyan-400/40 dark:bg-cyan-400/12 dark:text-cyan-300">
                           <CheckCircle2 size={13} />
                         </span>
-                        <div className="text-xs sm:text-sm">
+                        <div className="text-sm leading-relaxed">
                           <span className="font-semibold text-slate-900 dark:text-white">{label}: </span>
                           <span className="text-slate-600 dark:text-slate-400">{text}</span>
                         </div>
@@ -210,7 +210,7 @@ const AboutSection = () => {
                 </div>
 
                 {/* Footer Tag Chips */}
-                <div className="relative pt-6 mt-6 border-t border-slate-100 dark:border-white/10 flex flex-wrap gap-2 font-mono text-[11px] font-bold uppercase tracking-wider">
+                <div className="relative pt-6 mt-6 border-t border-slate-100 dark:border-white/10 flex flex-wrap gap-2 font-mono text-xs font-medium">
                   {["React", "Node.js", "Express", "MongoDB", "REST APIs", "OWASP Top 10", "TryHackMe Top 1%"].map((tag) => (
                     <span
                       key={tag}
@@ -229,7 +229,7 @@ const AboutSection = () => {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
               <Link
                 to="/about"
-                className="group inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-black transition-all duration-300 hover:-translate-y-1 hover:bg-green-400 hover:shadow-[0_8px_24px_rgba(34,197,94,0.45)]"
+                className="group inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-1 hover:bg-green-400 hover:shadow-[0_8px_24px_rgba(34,197,94,0.45)]"
               >
                 View Full About Me
                 <ArrowRight
@@ -241,7 +241,7 @@ const AboutSection = () => {
                 href={QUICK_CONTACT.resume}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white/90 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-green-500/50 hover:text-green-600 dark:border-white/10 dark:bg-[#050d14] dark:text-slate-200 dark:hover:border-green-400/50 dark:hover:text-white"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white/90 px-6 py-3.5 text-sm font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-1 hover:border-green-500/50 hover:text-green-600 dark:border-white/10 dark:bg-[#050d14] dark:text-slate-200 dark:hover:border-green-400/50 dark:hover:text-white"
               >
                 View Resume
                 <Download size={15} />
