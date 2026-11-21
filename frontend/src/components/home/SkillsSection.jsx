@@ -64,15 +64,15 @@ const SkillsSection = () => {
     <section className="section-wrap section-divider pt-12 pb-16">
       <FadeInUp>
         <div className="text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3.5 py-1 font-display text-[10px] uppercase tracking-[0.2em] text-green-600 dark:text-green-300 sm:text-xs font-bold mb-3">
+          <p className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3.5 py-1 text-xs font-semibold text-green-600 dark:text-green-300 mb-3">
             <span className="h-1.5 w-1.5 rounded-full bg-green-500 dark:bg-green-400" />
             Core Competencies
           </p>
-          <h2 className="font-display text-5xl font-black uppercase tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
             Technical Skills
-            <span className="block text-green-600 dark:text-green-400">&amp; Expertise</span>
+            <span className="block text-green-600 dark:text-green-400">&amp; Focus Areas</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+          <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-slate-600 dark:text-slate-400 font-normal leading-relaxed">
             Comprehensive technical capabilities across full-stack software development and application security auditing.
           </p>
         </div>
@@ -89,10 +89,10 @@ const SkillsSection = () => {
                 <div className={`pointer-events-none absolute -top-12 -right-12 h-36 w-36 rounded-full blur-3xl ${visual.orbClass}`} />
 
                 <div className="relative">
-                  <h3 className={`text-lg font-bold sm:text-xl ${visual.titleClass}`}>
+                  <h3 className={`text-lg font-bold tracking-tight sm:text-xl ${visual.titleClass}`}>
                     {category.title}
                   </h3>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                     {category.description || category.summary}
                   </p>
                 </div>
@@ -117,7 +117,7 @@ const SkillsSection = () => {
         <div className="mt-10 flex justify-center">
           <Link
             to="/skills"
-            className="group inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3.5 text-xs font-black uppercase tracking-wider text-black transition-all duration-300 hover:-translate-y-1 hover:bg-green-400 hover:shadow-[0_8px_24px_rgba(34,197,94,0.45)]"
+            className="group inline-flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3.5 text-sm font-semibold text-black transition-all duration-300 hover:-translate-y-1 hover:bg-green-400 hover:shadow-[0_8px_24px_rgba(34,197,94,0.45)]"
           >
             Show All Skills{" "}
             <ArrowRight

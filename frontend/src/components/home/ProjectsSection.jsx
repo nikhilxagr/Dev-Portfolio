@@ -35,16 +35,16 @@ const ProjectsSection = ({
       <section className="section-wrap section-divider pt-10">
         <FadeInUp>
           <div className="relative text-center">
-            <p className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3 py-1 font-display text-[10px] uppercase tracking-[0.2em] text-green-300 sm:text-xs">
+            <p className="inline-flex items-center gap-2 rounded-full border border-green-400/35 bg-green-400/10 px-3.5 py-1 text-xs font-semibold text-green-300">
               <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
-              Featured Projects
+              Selected Work
             </p>
-            <h2 className="mt-3 font-display text-4xl font-black sm:text-5xl lg:text-6xl">
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
               <span className="bg-gradient-to-r from-green-300 via-emerald-300 to-lime-300 bg-clip-text text-transparent">
                 Featured Projects
               </span>
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-300">
+            <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base leading-relaxed text-slate-300">
               Selected projects with implementation details, source code, and live demos.
             </p>
           </div>
@@ -55,13 +55,13 @@ const ProjectsSection = ({
             <button
               key={tab}
               onClick={makeTabClickHandler(tab)}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors duration-150 ${
+              className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs sm:text-sm font-medium transition-colors duration-150 ${
                 projectFilter === tab
-                  ? "border-green-400 bg-green-400/15 text-green-300"
+                  ? "border-green-400 bg-green-400/15 text-green-300 font-semibold"
                   : "border-white/12 bg-white/5 text-slate-400 hover:border-green-400/40 hover:text-green-400"
               }`}
             >
-              <Filter size={10} />
+              <Filter size={11} />
               {tab}
             </button>
           ))}
@@ -83,24 +83,24 @@ const ProjectsSection = ({
                   <div className="pointer-events-none absolute -top-20 -right-16 h-52 w-52 rounded-full bg-green-500/10 dark:bg-green-400/12 blur-3xl" />
                   <div className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-emerald-500/10 dark:bg-emerald-400/15 blur-3xl" />
                   <div className="relative">
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-green-600 dark:text-green-300/80 font-bold">Explore More</p>
+                    <p className="text-xs font-semibold text-green-600 dark:text-green-300/80">Explore More</p>
                     <div className="mt-6 flex justify-center">
                       <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-green-500/30 bg-green-500/10 text-green-600 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400">
                         <GitBranch size={26} />
                       </div>
                     </div>
-                    <h3 className="mt-4 text-center text-3xl font-bold text-slate-900 dark:text-white">View All Projects</h3>
-                    <p className="mx-auto mt-2 max-w-[220px] text-center text-xs text-slate-600 dark:text-slate-300/80">
+                    <h3 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-white">View All Projects</h3>
+                    <p className="mx-auto mt-2 max-w-[220px] text-center text-sm leading-relaxed text-slate-600 dark:text-slate-300/80">
                       Full archive with filters, detail pages, and live demos.
                     </p>
                     <div className="mt-4 grid grid-cols-2 gap-2">
                       <div className="rounded-xl border border-slate-200 bg-slate-50 dark:border-green-400/18 dark:bg-[#020802]/60 p-3 text-center">
-                        <p className="font-outfit text-2xl font-black text-green-600 dark:text-green-400">{mergedFeaturedProjects.length}</p>
-                        <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Featured</p>
+                        <p className="font-display text-2xl font-bold text-green-600 dark:text-green-400">{mergedFeaturedProjects.length}</p>
+                        <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Featured</p>
                       </div>
                       <div className="rounded-xl border border-slate-200 bg-slate-50 dark:border-green-400/18 dark:bg-[#020802]/60 p-3 text-center">
-                        <p className="font-outfit text-2xl font-black text-green-600 dark:text-green-400">{liveDemoCount}</p>
-                        <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Live Demos</p>
+                        <p className="font-display text-2xl font-bold text-green-600 dark:text-green-400">{liveDemoCount}</p>
+                        <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Live Demos</p>
                       </div>
                     </div>
                     <div className="mt-3 grid grid-cols-3 gap-2">
