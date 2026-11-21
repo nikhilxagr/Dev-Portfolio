@@ -175,6 +175,8 @@ export const env = {
     (isDevelopment ? "http://localhost:5173" : "https://nikhilxagr.vercel.app"),
   geminiApiKey: readOptionalVariable("GEMINI_API_KEY"),
   grokApiKey: readOptionalVariable("GROK_API_KEY", ["XAI_API_KEY"]),
+  cloudflareAccountId: readOptionalVariable("CLOUDFLARE_ACCOUNT_ID"),
+  cloudflareApiToken: readOptionalVariable("CLOUDFLARE_API_TOKEN"),
   smtpHost: readOptionalVariable("SMTP_HOST") || "smtp.gmail.com",
   smtpPort: parseNumber(process.env.SMTP_PORT, 465),
   smtpSecure: parseBoolean(process.env.SMTP_SECURE, true),

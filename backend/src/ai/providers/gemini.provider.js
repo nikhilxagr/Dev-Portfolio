@@ -2,13 +2,11 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/ge
 import { AIProvider } from "./provider.interface.js";
 import { env } from "../../config/env.js";
 
-// Primary stable & high-speed model
-const PRIMARY_MODEL = "gemini-2.5-flash";
+// Primary stable & high-speed models with high quota and ~1s latency
+const PRIMARY_MODEL = "gemini-3.5-flash-lite";
 const FALLBACK_MODELS = [
-  "gemini-2.5-flash-lite",
-  "gemini-2.0-flash",
-  "gemini-flash-latest",
-  "gemini-2.5-pro",
+  "gemini-flash-lite-latest",
+  "gemini-3.5-flash",
 ];
 
 const GENERATION_CONFIG = {

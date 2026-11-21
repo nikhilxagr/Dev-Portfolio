@@ -156,3 +156,15 @@ export const aiChatLimiter = rateLimit({
   },
 });
 
+// Cloudflare FLUX.2-dev image generation rate limiter
+export const aiImageLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Image generation rate limit reached. Please wait a few minutes before generating more images.",
+  },
+});
+

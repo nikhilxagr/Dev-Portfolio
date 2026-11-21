@@ -8,7 +8,7 @@ import { geminiProvider } from "../providers/gemini.provider.js";
 import { grokProvider } from "../providers/grok.provider.js";
 
 const activeProvider = geminiProvider;
-const MAX_MESSAGE_LENGTH = 500;
+const MAX_MESSAGE_LENGTH = 1500;
 const MAX_HISTORY_ENTRIES = 12;
 
 export const streamChatResponse = async ({
