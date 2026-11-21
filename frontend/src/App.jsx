@@ -44,6 +44,7 @@ const DeliveryPolicyPage = lazy(() => import("@/pages/DeliveryPolicyPage.jsx"));
 const BlogPage = lazy(() => import("@/pages/BlogPage.jsx"));
 const BlogDetailsPage = lazy(() => import("@/pages/BlogDetailsPage.jsx"));
 const ContactPage = lazy(() => import("@/pages/ContactPage.jsx"));
+const AIPage = lazy(() => import("@/pages/AIPage.jsx"));
 const AdminLoginPage = lazy(() => import("@/pages/AdminLoginPage.jsx"));
 const AdminDashboardPage = lazy(() => import("@/pages/AdminDashboardPage.jsx"));
 const HowIBuildPage = lazy(() => import("@/pages/HowIBuildPage.jsx"));
@@ -66,6 +67,7 @@ function App() {
   const location = useLocation();
   const prefersReducedMotion = useReducedMotion();
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const isAIRoute = location.pathname === "/ai";
 
   const [showLoader, setShowLoader] = useState(() => {
     if (typeof window === "undefined") {
@@ -73,7 +75,8 @@ function App() {
     }
 
     const isAdminPath = window.location.pathname.startsWith("/admin");
-    if (isAdminPath) {
+    const isAiPath = window.location.pathname === "/ai" || window.location.pathname === "/chat";
+    if (isAdminPath || isAiPath) {
       return false;
     }
 
@@ -125,12 +128,14 @@ function App() {
 
   const mainStyle = isAdminRoute
     ? { paddingTop: "2rem" }
+    : isAIRoute
+    ? { paddingTop: 0 }
     : { paddingTop: "var(--site-top-offset, 6rem)" };
 
   return (
     <LenisProvider>
       <div className="relative min-h-screen overflow-x-clip">
-        <ScrollProgressBar />
+        {!isAIRoute ? <ScrollProgressBar /> : null}
         <AnimatePresence mode="wait">
           {showLoader ? (
             <PortfolioLoader
@@ -139,10 +144,10 @@ function App() {
             />
           ) : null}
         </AnimatePresence>
-        <BackgroundGrid />
+        {!isAIRoute ? <BackgroundGrid /> : null}
         <div className="relative z-10 flex min-h-screen flex-col">
-          {!isAdminRoute ? <Navbar /> : null}
-          <main className="flex-1 min-h-[85vh]" style={mainStyle}>
+          {!isAdminRoute && !isAIRoute ? <Navbar /> : null}
+          <main className={isAIRoute ? "flex-1 w-full" : "flex-1 min-h-[85vh]"} style={mainStyle}>
             <AnimatePresence mode="wait">
               <MotionDiv
                 key={location.pathname}
@@ -209,6 +214,8 @@ function App() {
                         element={<DeliveryPolicyPage />}
                       />
                       <Route path="/contact" element={<ContactPage />} />
+                      <Route path="/ai" element={<AIPage />} />
+                      <Route path="/chat" element={<Navigate to="/ai" replace />} />
                       <Route path="/admin/login" element={<AdminLoginPage />} />
                       <Route
                         path="/admin"
@@ -232,7 +239,7 @@ function App() {
               </MotionDiv>
             </AnimatePresence>
           </main>
-          {!isAdminRoute ? <Footer /> : null}
+          {!isAdminRoute && !isAIRoute ? <Footer /> : null}
         </div>
         <SignInModal />
         <UserProfileModal />

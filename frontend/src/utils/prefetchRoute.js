@@ -21,6 +21,7 @@ const routeImportMap = {
   "/blog": () => import("@/pages/BlogPage.jsx"),
   "/services": () => import("@/pages/ServicesPage.jsx"),
   "/contact": () => import("@/pages/ContactPage.jsx"),
+  "/ai": () => import("@/pages/AIPage.jsx"),
   "/how-i-build": () => import("@/pages/HowIBuildPage.jsx"),
   "/support": () => import("@/pages/SupportPage.jsx"),
   "/profile": () => import("@/pages/ProfilePage.jsx"),
