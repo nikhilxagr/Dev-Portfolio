@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Mail, Check, Loader2, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
+import { Mail, Check, Loader2, ArrowRight, ShieldCheck } from "lucide-react";
 import { subscribeNewsletter } from "@/services/newsletter.service";
 
 export default function NewsletterSubscriptionCard({ className = "" }) {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -34,7 +34,7 @@ export default function NewsletterSubscriptionCard({ className = "" }) {
       setStatus("success");
       setMessage(
         response?.message ||
-          "You're subscribed! Check your inbox for your welcome digest & featured blueprints.",
+          "Subscribed. Check your inbox for the welcome digest and featured notes.",
       );
       setEmail("");
     } catch (err) {
@@ -49,106 +49,98 @@ export default function NewsletterSubscriptionCard({ className = "" }) {
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl border border-slate-200/90 dark:border-white/[0.08] bg-white/90 dark:bg-[#07130c]/90 p-7 sm:p-10 shadow-xl backdrop-blur-xl transition-all duration-300 ${className}`}
+      className={`rounded-2xl border border-black/[0.08] bg-white p-7 sm:p-10 dark:border-white/[0.08] dark:bg-[#11141c] ${className}`}
     >
-      {/* Ambient background glows */}
-      <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-lime-400/10 blur-[90px]" />
-      <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-emerald-400/10 blur-[90px]" />
+      <div className="mx-auto max-w-3xl text-center">
+        <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+          Engineering Dispatches
+        </p>
 
-      <div className="relative z-10 max-w-3xl mx-auto text-center">
-        {/* Eyebrow Pill */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-400/20 bg-lime-500/[0.06] dark:bg-lime-400/[0.05] px-3.5 py-1 text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300 mb-4">
-          <Sparkles size={12} className="text-lime-500" />
-          <span>ENGINEERING DISPATCHES</span>
-        </div>
-
-        {/* Title */}
-        <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white leading-snug">
+        <h3 className="mt-2 font-display text-2xl font-semibold tracking-[-0.02em] leading-snug text-slate-900 sm:text-3xl dark:text-[#eef0f5]">
           Subscribe to{" "}
-          <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+          <span className="text-emerald-600 dark:text-emerald-400">
             Engineering Docs
           </span>
         </h3>
 
-        {/* Subtitle */}
-        <p className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
-          Receive in-depth system design blueprints, distributed caching architectures, and practical engineering notes straight to your inbox.
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base dark:text-[#a3a9b8]">
+          Receive system design notes, backend architecture writeups, and new blog posts directly in your inbox.
         </p>
 
-        {/* Subscription Form */}
-        <form onSubmit={handleSubmit} className="mt-8 max-w-xl mx-auto">
-          <div className="flex flex-col sm:flex-row items-center gap-3">
+        <form onSubmit={handleSubmit} className="mx-auto mt-7 max-w-xl">
+          <div className="flex flex-col items-center gap-3 sm:flex-row">
             <div className="relative w-full">
               <Mail
                 size={16}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-500"
+                strokeWidth={1.5}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#7a8296]"
               />
               <input
                 type="email"
+                id="newsletter-email"
+                name="email"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   if (status === "error") setStatus("idle");
                 }}
                 disabled={status === "loading" || status === "success"}
-                placeholder="Enter your email address..."
-                className="w-full rounded-2xl border border-slate-300/80 dark:border-white/10 bg-slate-50/80 dark:bg-black/40 pl-11 pr-4 py-3 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 outline-none backdrop-blur-md transition-all focus:border-lime-500 dark:focus:border-lime-400 focus:ring-2 focus:ring-lime-400/20 shadow-xs"
+                placeholder="you@example.com"
+                className="h-11 w-full rounded-lg border border-black/[0.08] bg-slate-50 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors duration-150 focus:border-emerald-600 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
               />
             </div>
 
             <button
               type="submit"
               disabled={status === "loading" || status === "success"}
-              className={`shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 font-mono text-xs font-black uppercase tracking-wider transition-all duration-300 shadow-md ${
+              className={`inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg px-5 text-sm font-medium transition-colors duration-150 sm:w-auto ${
                 status === "success"
-                  ? "bg-emerald-500 text-white cursor-default"
-                  : "bg-lime-400 text-slate-950 hover:bg-lime-300 hover:shadow-[0_0_20px_rgba(163,230,53,0.4)] active:scale-[0.98]"
+                  ? "bg-emerald-600 text-white cursor-default dark:bg-emerald-500 dark:text-slate-950"
+                  : "bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"
               }`}
             >
               {status === "loading" ? (
                 <>
-                  <Loader2 size={15} className="animate-spin" />
-                  <span>Subscribing...</span>
+                  <Loader2 size={15} strokeWidth={1.5} className="animate-spin" />
+                  <span>Subscribing</span>
                 </>
               ) : status === "success" ? (
                 <>
-                  <Check size={15} />
-                  <span>Subscribed!</span>
+                  <Check size={15} strokeWidth={1.5} />
+                  <span>Subscribed</span>
                 </>
               ) : (
                 <>
                   <span>Subscribe</span>
-                  <ArrowRight size={14} />
+                  <ArrowRight size={15} strokeWidth={1.5} />
                 </>
               )}
             </button>
           </div>
 
-          {/* Feedback messages */}
           {status === "success" && (
-            <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs font-medium text-emerald-700 dark:text-emerald-300 flex items-center justify-center gap-2">
-              <Check size={14} className="shrink-0 text-emerald-500" />
+            <div className="mt-4 flex items-center justify-center gap-2 rounded-lg border border-emerald-600/25 bg-emerald-500/10 p-3 text-xs font-medium text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-300">
+              <Check size={14} strokeWidth={1.5} className="shrink-0" />
               <span>{message}</span>
             </div>
           )}
 
           {status === "error" && (
-            <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs font-medium text-red-600 dark:text-red-400 text-center">
+            <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-center text-xs font-medium text-rose-700 dark:text-rose-400">
               {message}
             </div>
           )}
         </form>
 
-        {/* Trust Badges */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-500 dark:text-zinc-500 font-medium">
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck size={13} className="text-lime-500" />
-            <span>Zero Spam Guarantee</span>
-          </div>
-          <span>•</span>
-          <span>Nodemailer Powered Dispatch</span>
-          <span>•</span>
-          <span>Unsubscribe Anytime</span>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500 dark:text-[#7a8296]">
+          <span className="inline-flex items-center gap-1.5">
+            <ShieldCheck size={14} strokeWidth={1.5} className="text-emerald-700 dark:text-emerald-400" />
+            <span>Zero spam</span>
+          </span>
+          <span>·</span>
+          <span>Email digest via Nodemailer</span>
+          <span>·</span>
+          <span>Unsubscribe anytime</span>
         </div>
       </div>
     </div>

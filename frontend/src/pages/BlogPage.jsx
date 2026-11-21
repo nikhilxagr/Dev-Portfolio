@@ -11,6 +11,10 @@ import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { createBreadcrumbSchema, createItemListSchema } from "@/utils/seo";
 import { BLOG_POSTS as BLOG_LINKS, BLOG_CATEGORIES } from "@/data/blogsData";
 
+const MotionDiv = motion.div;
+const MotionH1 = motion.h1;
+const MotionP = motion.p;
+
 const matchesBlogSearch = (blog, currentKeyword) => {
   const keyword = currentKeyword.trim().toLowerCase();
   if (!keyword) return true;
@@ -123,80 +127,74 @@ const BlogPage = () => {
         ]}
       />
 
-      <section className="section-wrap pt-4 sm:pt-8 pb-24">
-        {/* Centered Hero Header (Sized & Styled like Journey Page) */}
-        <div className="relative text-center max-w-5xl mx-auto pt-6 sm:pt-10 pb-12 sm:pb-16">
-          {/* Ambient Radial Lighting */}
-          <div className="pointer-events-none absolute inset-0 -top-12 flex items-center justify-center">
-            <div className="h-72 w-[34rem] rounded-full bg-lime-400/[0.07] dark:bg-lime-400/[0.12] blur-[130px]" />
-          </div>
-
+      <section className="section-wrap pt-6 sm:pt-8 pb-24">
+        {/* Centered Hero Header */}
+        <div className="relative text-center max-w-5xl mx-auto pb-12 sm:pb-16">
           <div className="relative">
             {/* Eyebrow Badge */}
-            <motion.div
+            <MotionDiv
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/[0.08] px-4 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-400">
                 Technical Archive &amp; Notes
               </span>
-            </motion.div>
+            </MotionDiv>
 
             {/* Proportional Heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 28 }}
+            <MotionH1
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1 }}
-              className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] tracking-tight text-zinc-900 dark:text-white"
+              transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-2 font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.08] tracking-tight text-slate-900 dark:text-[#eef0f5]"
             >
               Engineering{" "}
-              <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
+              <span className="text-emerald-600 dark:text-emerald-400">
                 Docs
               </span>
-            </motion.h1>
+            </MotionH1>
 
             {/* Subtitle Details */}
-            <motion.p
+            <MotionP
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.2 }}
-              className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-zinc-500 dark:text-zinc-400 sm:text-base font-normal"
+              transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
+              className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8] sm:text-base"
             >
               A curated knowledge base of system design architectures, distributed engineering notes, and technical writeups.
-            </motion.p>
+            </MotionP>
 
-            {/* Core Stats Capsule (Matching Journey Page Structure) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+            {/* Core Stats Capsule */}
+            <MotionDiv
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.3 }}
-              className="mx-auto mt-10 max-w-4xl rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 backdrop-blur-xl shadow-sm dark:shadow-none"
+              transition={{ duration: 0.65, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
+              className="mx-auto mt-9 max-w-4xl rounded-2xl border border-black/[0.08] bg-white p-4 sm:p-6 dark:border-white/[0.08] dark:bg-[#11141c]"
             >
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:divide-x md:divide-zinc-200 dark:md:divide-white/[0.08]">
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4 md:divide-x md:divide-black/[0.08] dark:md:divide-white/[0.08]">
                 {[
-                  { label: "Total Notes", value: String(blogs.length).padStart(2, "0"), color: "text-zinc-900 dark:text-white" },
-                  { label: "System Design", value: "01 Blueprint", color: "text-lime-500 dark:text-lime-300" },
-                  { label: "Core Domains", value: "Distributed & Web", color: "text-zinc-900 dark:text-white" },
-                  { label: "Archive Status", value: "Learn & Build", color: "text-amber-600 dark:text-amber-500" },
+                  { label: "Total Notes", value: String(blogs.length).padStart(2, "0"), color: "text-slate-900 dark:text-[#eef0f5]" },
+                  { label: "System Design", value: "01 Blueprint", color: "text-emerald-600 dark:text-emerald-400" },
+                  { label: "Core Domains", value: "Distributed & Web", color: "text-slate-900 dark:text-[#eef0f5]" },
+                  { label: "Archive Status", value: "Active", color: "text-emerald-600 dark:text-emerald-400" },
                 ].map(({ label, value, color }, i) => (
-                  <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
-                    <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+                  <div key={label} className={`flex flex-col items-center justify-center text-center ${i > 0 ? "md:pl-4" : ""}`}>
+                    <span className="mb-1 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
                       {label}
                     </span>
-                    <span className={`text-xl font-bold tracking-tight ${color}`}>
+                    <span className={`text-base sm:text-lg font-semibold tracking-tight tabular-nums ${color}`}>
                       {value}
                     </span>
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </MotionDiv>
           </div>
         </div>
 
         {/* Category Pills & Search Controls Bar */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-8 border-b border-slate-200/80 dark:border-white/[0.08]">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-8 border-b border-black/[0.08] dark:border-white/[0.08]">
           {/* Category Filter Pills */}
           <div
             className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full"
@@ -207,10 +205,10 @@ const BlogPage = () => {
                 key={category}
                 type="button"
                 onClick={() => handleCategorySelect(category)}
-                className={`shrink-0 rounded-full px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 border ${
+                className={`shrink-0 rounded-lg border px-3.5 py-1.5 text-xs font-medium transition-colors duration-150 ${
                   selectedCategory === category
-                    ? "border-lime-500 bg-lime-400 text-slate-950 font-black shadow-[0_0_15px_rgba(163,230,53,0.3)]"
-                    : "border-slate-200 bg-white/60 text-slate-600 hover:border-lime-400/40 hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:border-lime-400/40 dark:hover:text-white"
+                    ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-slate-950"
+                    : "border-black/[0.08] bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5]"
                 }`}
               >
                 {category}
@@ -221,23 +219,26 @@ const BlogPage = () => {
           {/* Search Box */}
           <div className="relative w-full md:w-72 shrink-0">
             <Search
-              size={15}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-zinc-500"
+              size={16}
+              strokeWidth={1.5}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#7a8296]"
             />
             <input
+              id="blog-search"
+              name="search"
               value={search}
               onChange={handleSearchChange}
               placeholder="Search notes..."
-              className="w-full rounded-2xl border border-slate-300/80 bg-white/80 dark:border-white/10 dark:bg-zinc-900/60 pl-9 pr-9 py-2 text-xs sm:text-sm font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 outline-none backdrop-blur-md focus:border-lime-400 dark:focus:border-lime-400 shadow-sm transition-all"
+              className="h-10 w-full rounded-lg border border-black/[0.08] bg-white pl-10 pr-9 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors duration-150 focus:border-emerald-600 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
             />
             {search && (
               <button
                 type="button"
                 onClick={handleSearchClear}
                 aria-label="Clear search"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:text-[#7a8296] dark:hover:text-[#eef0f5]"
               >
-                <X size={14} />
+                <X size={14} strokeWidth={1.5} />
               </button>
             )}
           </div>
@@ -245,11 +246,11 @@ const BlogPage = () => {
 
         {/* Subtle Counter Bar */}
         <div className="flex items-center justify-between pt-6 pb-2">
-          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-lime-600 dark:text-lime-400">
-            LATEST NOTES
+          <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+            Latest notes
           </p>
-          <p className="font-mono text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500">
-            {String(filteredBlogs.length).padStart(2, "0")} NOTES
+          <p className="font-mono text-xs text-slate-500 tabular-nums dark:text-[#7a8296]">
+            {String(filteredBlogs.length).padStart(2, "0")} notes
           </p>
         </div>
 

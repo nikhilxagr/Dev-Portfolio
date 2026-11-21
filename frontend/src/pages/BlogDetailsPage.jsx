@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
-import SectionTitle from "@/components/ui/SectionTitle";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
@@ -23,12 +22,10 @@ import {
 const BlogDetailsPage = () => {
   const { slug } = useParams();
 
-  // Check if current article is a System Design topic
   const system = useMemo(() => {
     return getSystemDesignById(slug) || null;
   }, [slug]);
 
-  // If viewing a System Design article from the blog, render the comprehensive architecture study view
   if (system) {
     const article = getSystemDesignArticleById(system.id);
     const currentIndex = SYSTEM_DESIGNS.findIndex((s) => s.id === system.id);
@@ -64,6 +61,10 @@ const BlogDetailsPage = () => {
     );
   }
 
+  return <StandardBlogDetails slug={slug} />;
+};
+
+const StandardBlogDetails = ({ slug }) => {
   const staticBlog = useMemo(
     () => BLOG_LINKS.find((item) => item.slug === slug) || null,
     [slug],
@@ -117,6 +118,7 @@ const BlogDetailsPage = () => {
     setError("");
     setLoading(!staticBlog);
     loadBlog(false).catch(() => undefined);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [loadBlog, staticBlog]);
 
   const rawDate = blog?.publishedAt || blog?.createdAt || "";
@@ -143,136 +145,158 @@ const BlogDetailsPage = () => {
   const blogSchema = blog ? createBlogPostingSchema(blog, canonicalPath) : null;
 
   return (
-    <section className="section-wrap pt-12 sm:pt-20">
-      {loading ? (
-        <LoadingState
-          message="Loading article..."
-          cards={1}
-          variant="details"
-        />
-      ) : null}
-      {!loading && error ? (
-        <ErrorState message={error} onRetry={() => loadBlog(true)} />
-      ) : null}
-      {!loading && !error && !blog ? (
-        <EmptyState
-          title="Article not found"
-          message="The requested blog post does not exist."
-        />
-      ) : null}
-
-      {!loading && !error && blog ? (
-        <article className="mx-auto max-w-4xl">
-          <SeoHead
-            title={blog.title}
-            description={blog.excerpt || blog.subtitle || blog.content}
-            pathname={canonicalPath}
-            image={previewImage}
-            imageAlt={`${blog.title} cover`}
-            type="article"
-            publishedTime={publishedTime}
-            modifiedTime={modifiedTime}
-            keywords={[
-              ...(Array.isArray(blog.tags) ? blog.tags : []),
-              "Nikhil blog",
-              "Nikhil portfolio",
-            ]}
-            jsonLd={[
-              createBreadcrumbSchema([
-                { name: "Home", path: "/" },
-                { name: "Blog", path: "/blog" },
-                { name: blog.title, path: canonicalPath },
-              ]),
-              blogSchema,
-            ]}
+    <section className="section-wrap pt-6 sm:pt-8 pb-24">
+      <div className="mx-auto max-w-4xl">
+        {loading ? (
+          <LoadingState
+            message="Loading article..."
+            cards={1}
+            variant="details"
           />
+        ) : null}
+        {!loading && error ? (
+          <ErrorState message={error} onRetry={() => loadBlog(true)} />
+        ) : null}
+        {!loading && !error && !blog ? (
+          <EmptyState
+            title="Article not found"
+            message="The requested article does not exist."
+          />
+        ) : null}
 
-          <Link
-            to="/blog"
-            className="mb-6 inline-flex items-center gap-2 text-sm text-cyan-200 hover:text-cyan-100"
-          >
-            <ArrowLeft size={16} /> Back to Blog
-          </Link>
+        {!loading && !error && blog ? (
+          <>
+            <SeoHead
+              title={blog.title}
+              description={blog.excerpt || blog.subtitle || blog.content}
+              pathname={canonicalPath}
+              image={previewImage}
+              imageAlt={`${blog.title} cover`}
+              type="article"
+              publishedTime={publishedTime}
+              modifiedTime={modifiedTime}
+              keywords={[
+                ...(Array.isArray(blog.tags) ? blog.tags : []),
+                "Nikhil blog",
+                "Nikhil portfolio",
+              ]}
+              jsonLd={[
+                createBreadcrumbSchema([
+                  { name: "Home", path: "/" },
+                  { name: "Blog", path: "/blog" },
+                  { name: blog.title, path: canonicalPath },
+                ]),
+                blogSchema,
+              ]}
+            />
 
-          <FadeInUp>
-            <header className="card-surface rounded-2xl p-6">
-              <p className="text-xs uppercase tracking-[0.14em] text-slate-500">
-                {formattedDate}
-                {readTime ? ` | ${readTime}` : ""}
-              </p>
+            <div className="mb-6 flex items-center justify-between gap-3">
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-2 rounded-lg border border-black/[0.08] bg-white px-3.5 py-2 text-xs font-medium text-slate-700 transition-colors duration-150 hover:border-slate-300 hover:text-slate-950 sm:text-sm dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5]"
+              >
+                <ArrowLeft size={16} strokeWidth={1.5} />
+                Back to Blog
+              </Link>
 
-              <SectionTitle
-                mobileCenter={false}
-                className="mt-3"
-                eyebrow={blog.source || "Portfolio"}
-                title={blog.title}
-                description={
-                  blog.subtitle ||
-                  blog.excerpt ||
-                  "Technical notes and implementation learnings from recent builds."
-                }
-              />
+              <span className="font-mono text-xs text-slate-500 dark:text-[#7a8296]">
+                {blog.source || "Notes"}
+              </span>
+            </div>
 
-              {blog.subtitle && blog.excerpt ? (
-                <p className="mt-3 text-sm text-slate-400">{blog.excerpt}</p>
-              ) : null}
-              {blog.tags?.length ? (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {blog.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-md border border-cyan-300/25 bg-slate-900/80 px-2 py-1 text-xs text-cyan-100"
-                    >
-                      #{tag}
+            <article className="space-y-6">
+              <FadeInUp>
+                <header className="rounded-2xl border border-black/[0.08] bg-white p-6 sm:p-8 dark:border-white/[0.08] dark:bg-[#11141c]">
+                  <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-slate-500 dark:text-[#7a8296]">
+                    <span className="font-medium text-emerald-700 dark:text-emerald-400">
+                      {blog.source || "Portfolio"}
                     </span>
-                  ))}
+                    <span>·</span>
+                    <span>{formattedDate}</span>
+                    {readTime ? (
+                      <>
+                        <span>·</span>
+                        <span>{readTime}</span>
+                      </>
+                    ) : null}
+                  </div>
+
+                  <h1 className="mt-3 font-display text-2xl font-semibold tracking-[-0.02em] leading-[1.15] text-slate-900 sm:text-3xl lg:text-4xl dark:text-[#eef0f5]">
+                    {blog.title}
+                  </h1>
+
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base dark:text-[#a3a9b8]">
+                    {blog.subtitle ||
+                      blog.excerpt ||
+                      "Technical notes and implementation lessons from recent builds."}
+                  </p>
+
+                  {blog.subtitle && blog.excerpt && blog.excerpt !== blog.subtitle ? (
+                    <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-slate-500 dark:text-[#7a8296]">
+                      {blog.excerpt}
+                    </p>
+                  ) : null}
+
+                  {blog.tags?.length ? (
+                    <div className="mt-5 flex flex-wrap gap-1.5 border-t border-black/[0.06] pt-4 dark:border-white/[0.08]">
+                      {blog.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-md border border-black/[0.08] bg-slate-50 px-2.5 py-1 font-mono text-xs text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  {blog.url ? (
+                    <a
+                      href={blog.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-5 inline-flex h-10 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"
+                    >
+                      Read Original Article
+                      <ExternalLink size={15} strokeWidth={1.5} />
+                    </a>
+                  ) : null}
+                </header>
+              </FadeInUp>
+
+              <FadeInUp delay={0.04}>
+                <div className="overflow-hidden rounded-2xl border border-black/[0.08] bg-slate-100 dark:border-white/[0.08] dark:bg-[#0b0d14]">
+                  <picture>
+                    {localWebpImage ? (
+                      <source srcSet={localWebpImage} type="image/webp" />
+                    ) : null}
+                    <img
+                      src={previewImage}
+                      alt={`${blog.title} cover`}
+                      className="max-h-[460px] w-full object-contain"
+                      width={1280}
+                      height={720}
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
+                      onError={handleImageError}
+                    />
+                  </picture>
                 </div>
-              ) : null}
+              </FadeInUp>
 
-              {blog.url ? (
-                <a
-                  href={blog.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-flex text-sm font-semibold text-cyan-200 hover:text-cyan-100"
-                >
-                  Read Original Article
-                </a>
-              ) : null}
-            </header>
-          </FadeInUp>
-
-          <FadeInUp delay={0.06}>
-            <div className="mt-5 overflow-hidden rounded-2xl border border-cyan-300/20 bg-slate-900/70">
-              <picture>
-                {localWebpImage ? (
-                  <source srcSet={localWebpImage} type="image/webp" />
-                ) : null}
-                <img
-                  src={previewImage}
-                  alt={`${blog.title} cover`}
-                  className="h-auto max-h-[460px] w-full object-cover"
-                  width={1280}
-                  height={720}
-                  loading="eager"
-                  decoding="async"
-                  fetchPriority="high"
-                  onError={handleImageError}
-                />
-              </picture>
-            </div>
-          </FadeInUp>
-
-          <FadeInUp delay={0.12}>
-            <div className="mt-5 card-surface rounded-2xl p-6">
-              <p className="whitespace-pre-line leading-8 text-slate-200">
-                {blog.content ||
-                  "Detailed notes will be added soon for this article."}
-              </p>
-            </div>
-          </FadeInUp>
-        </article>
-      ) : null}
+              <FadeInUp delay={0.08}>
+                <div className="rounded-2xl border border-black/[0.08] bg-white p-6 sm:p-8 dark:border-white/[0.08] dark:bg-[#11141c]">
+                  <p className="whitespace-pre-line text-sm leading-7 text-slate-700 sm:text-base sm:leading-8 dark:text-[#d1d5df]">
+                    {blog.content ||
+                      "Detailed notes will be added soon for this article."}
+                  </p>
+                </div>
+              </FadeInUp>
+            </article>
+          </>
+        ) : null}
+      </div>
     </section>
   );
 };
