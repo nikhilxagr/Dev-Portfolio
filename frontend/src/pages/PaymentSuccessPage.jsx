@@ -107,7 +107,7 @@ const PaymentSuccessPage = () => {
         robots="noindex, nofollow"
       />
 
-      <section className="section-wrap pt-12 sm:pt-20">
+      <section className="section-wrap pt-6 sm:pt-8 pb-20">
         <SectionTitle
           eyebrow="Payment Confirmed"
           title="Payment Confirmation"
@@ -115,30 +115,30 @@ const PaymentSuccessPage = () => {
         />
 
         {verificationInfo ? (
-          <p className="mt-4 rounded-xl border border-emerald-300/35 bg-emerald-300/10 px-4 py-3 text-sm text-emerald-200">
+          <p className="mt-4 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-300">
             {verificationInfo}
           </p>
         ) : null}
 
         {verificationError ? (
-          <p className="mt-4 rounded-xl border border-rose-300/35 bg-rose-300/10 px-4 py-3 text-sm text-rose-200">
+          <p className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300">
             {verificationError}
           </p>
         ) : null}
 
         <div className="mt-8 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-          <article className="card-surface rounded-3xl p-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/35 bg-emerald-300/15 px-3 py-1 text-xs uppercase tracking-[0.14em] text-emerald-200">
-              <CircleCheckBig size={14} />
+          <article className="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/[0.08] dark:bg-[#11141c]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300">
+              <CircleCheckBig size={14} strokeWidth={1.5} />
               Verified Payment
             </div>
 
             {isVerifying ? (
               <>
-                <h2 className="mt-4 text-2xl font-semibold text-cyan-100">
+                <h2 className="mt-4 text-2xl font-semibold text-ink-950 dark:text-ink-50">
                   Verifying Payment Status
                 </h2>
-                <p className="mt-2 text-sm text-slate-300">
+                <p className="mt-2 text-sm text-ink-600 dark:text-ink-300">
                   Please wait while we validate your transaction and prepare the
                   receipt.
                 </p>
@@ -152,54 +152,54 @@ const PaymentSuccessPage = () => {
 
             {!isVerifying && receipt ? (
               <>
-                <h2 className="mt-4 text-2xl font-semibold text-cyan-100">
+                <h2 className="mt-4 text-2xl font-semibold text-ink-950 dark:text-ink-50">
                   Receipt Ready for Download
                 </h2>
-                <p className="mt-2 text-sm text-slate-300">
-                  Payment references are now attached to your receipt for future
-                  support and validation.
+                <p className="mt-2 text-sm text-ink-600 dark:text-ink-300">
+                  Payment references are attached to your receipt for future
+                  support and verification.
                 </p>
 
-                <div className="mt-4 grid gap-3 rounded-2xl border border-cyan-300/20 bg-slate-900/75 p-4 text-sm text-slate-200 sm:grid-cols-2">
+                <div className="mt-4 grid gap-3 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-4 text-sm text-ink-700 dark:border-white/[0.08] dark:bg-[#0c0e14] dark:text-ink-300 sm:grid-cols-2">
                   <p>
-                    <span className="text-slate-400">Receipt Number</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400">Receipt Number</span>
                     <br />
-                    <span className="font-semibold text-cyan-100">
+                    <span className="font-mono font-semibold tabular-nums text-ink-950 dark:text-ink-50">
                       {receipt.receiptNumber}
                     </span>
                   </p>
                   <p>
-                    <span className="text-slate-400">Payment For</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400">Payment For</span>
                     <br />
-                    <span className="font-semibold text-cyan-100">
+                    <span className="font-semibold text-ink-950 dark:text-ink-50">
                       {receipt.serviceName}
                     </span>
                   </p>
                   <p>
-                    <span className="text-slate-400">Amount</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400">Amount</span>
                     <br />
-                    <span className="font-semibold text-cyan-100">
+                    <span className="font-mono font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">
                       INR {receipt.amountInr}
                     </span>
                   </p>
                   <p>
-                    <span className="text-slate-400">Paid At</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400">Paid At</span>
                     <br />
-                    <span className="font-semibold text-cyan-100">
+                    <span className="font-semibold tabular-nums text-ink-950 dark:text-ink-50">
                       {formatDate(receipt.paidAt)}
                     </span>
                   </p>
                   <p>
-                    <span className="text-slate-400">Order ID</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400">Order ID</span>
                     <br />
-                    <span className="break-all text-xs text-slate-200">
+                    <span className="break-all font-mono text-xs text-ink-700 dark:text-ink-300">
                       {receipt.orderId}
                     </span>
                   </p>
                   <p>
-                    <span className="text-slate-400">Payment ID</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400">Payment ID</span>
                     <br />
-                    <span className="break-all text-xs text-slate-200">
+                    <span className="break-all font-mono text-xs text-ink-700 dark:text-ink-300">
                       {receipt.paymentId}
                     </span>
                   </p>
@@ -212,14 +212,14 @@ const PaymentSuccessPage = () => {
                     rel="noreferrer"
                     className="min-w-[200px]"
                   >
-                    <Download size={16} /> Download Receipt
+                    <Download size={15} strokeWidth={1.5} /> Download Receipt
                   </Button>
                   <Button
                     to="/receipts"
                     variant="secondary"
                     className="min-w-[200px]"
                   >
-                    <RefreshCw size={16} /> Receipt History
+                    <RefreshCw size={15} strokeWidth={1.5} /> Receipt History
                   </Button>
                 </div>
               </>
@@ -227,10 +227,10 @@ const PaymentSuccessPage = () => {
 
             {!isVerifying && !receipt ? (
               <>
-                <h2 className="mt-4 text-2xl font-semibold text-cyan-100">
+                <h2 className="mt-4 text-2xl font-semibold text-ink-950 dark:text-ink-50">
                   Receipt Session Not Found
                 </h2>
-                <p className="mt-2 text-sm text-slate-300">
+                <p className="mt-2 text-sm text-ink-600 dark:text-ink-300">
                   Your payment may still be pending. Open receipt history and
                   verify using your payment email or retry checkout.
                 </p>
@@ -250,27 +250,27 @@ const PaymentSuccessPage = () => {
             ) : null}
           </article>
 
-          <aside className="card-surface rounded-3xl p-6">
-            <p className="text-xs uppercase tracking-[0.16em] text-emerald-200">
+          <aside className="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/[0.08] dark:bg-[#11141c]">
+            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
               Confirmation Support
             </p>
-            <h3 className="mt-2 text-lg font-semibold text-cyan-100">
+            <h3 className="mt-2 text-lg font-semibold text-ink-950 dark:text-ink-50">
               Need Billing Help?
             </h3>
-            <p className="mt-2 text-sm text-slate-300">
+            <p className="mt-2 text-sm text-ink-600 dark:text-ink-300">
               If you need payment confirmation again, share your receipt number
               through official support.
             </p>
 
             <a
               href={`mailto:${QUICK_CONTACT.billingEmail}`}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-cyan-300/30 bg-slate-900/70 px-3 py-2 text-sm text-cyan-100"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-black/[0.08] bg-[#f8fafc] px-3 py-2 text-sm text-ink-900 transition-colors hover:border-emerald-600/35 dark:border-white/[0.08] dark:bg-[#0c0e14] dark:text-ink-100"
             >
-              <Mail size={16} />
+              <Mail size={15} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
               {QUICK_CONTACT.billingEmail}
             </a>
 
-            <p className="mt-4 text-xs text-slate-400">
+            <p className="mt-4 text-xs text-ink-500 dark:text-ink-400">
               Refund requests are accepted within 7 days from payment date as
               per policy.
             </p>

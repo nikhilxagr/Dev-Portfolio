@@ -8,12 +8,10 @@ import {
   ShieldCheck,
   CreditCard,
   HeartHandshake,
-  Sparkles,
   Zap,
   ChevronDown,
   ChevronUp,
   Lock,
-  Globe,
   Code2,
   Clock,
   HelpCircle,
@@ -25,6 +23,10 @@ import {
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
 import PaymentTrustPanel from "@/components/ui/PaymentTrustPanel";
+
+const MotionDiv = motion.div;
+const MotionH1 = motion.h1;
+const MotionP = motion.p;
 import {
   createPaymentOrder,
   prewarmBackendForCheckout,
@@ -47,39 +49,34 @@ const GoogleIcon = () => (
   </svg>
 );
 
-// # Per‑category config
 const CATEGORY_CONFIG = {
   Frontend: {
     icon: Monitor,
-    cardBorder: "border-slate-200 dark:border-emerald-500/25 hover:border-emerald-500 dark:hover:border-emerald-400/50",
-    headerGradient: "from-emerald-600 to-teal-500",
-    badge: "border-emerald-500/30 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
-    bullet: "text-emerald-600 dark:text-emerald-400",
-    iconBox: "border-emerald-500/30 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+    cardBorder: "border-black/[0.08] dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.16]",
+    badge: "border-emerald-600/25 bg-emerald-500/[0.08] text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400",
+    bullet: "text-emerald-700 dark:text-emerald-400",
+    iconBox: "border-black/[0.08] bg-slate-50 text-emerald-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-emerald-400",
   },
   Backend: {
     icon: Server,
-    cardBorder: "border-slate-200 dark:border-lime-500/25 hover:border-lime-500 dark:hover:border-lime-400/50",
-    headerGradient: "from-lime-600 to-emerald-500",
-    badge: "border-lime-600/30 bg-lime-50 text-lime-800 dark:bg-lime-500/10 dark:text-lime-400",
-    bullet: "text-lime-600 dark:text-lime-400",
-    iconBox: "border-lime-500/30 bg-lime-50 text-lime-800 dark:bg-lime-500/10 dark:text-lime-400",
+    cardBorder: "border-black/[0.08] dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.16]",
+    badge: "border-black/[0.08] bg-slate-50 text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8]",
+    bullet: "text-emerald-700 dark:text-emerald-400",
+    iconBox: "border-black/[0.08] bg-slate-50 text-emerald-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-emerald-400",
   },
   "Full Stack": {
     icon: Layers,
-    cardBorder: "border-slate-200 dark:border-amber-500/25 hover:border-amber-500 dark:hover:border-amber-400/50",
-    headerGradient: "from-amber-600 to-orange-500",
-    badge: "border-amber-600/30 bg-amber-50 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400",
-    bullet: "text-amber-600 dark:text-amber-400",
-    iconBox: "border-amber-500/30 bg-amber-50 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400",
+    cardBorder: "border-black/[0.08] dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.16]",
+    badge: "border-emerald-600/25 bg-emerald-500/[0.08] text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400",
+    bullet: "text-emerald-700 dark:text-emerald-400",
+    iconBox: "border-black/[0.08] bg-slate-50 text-emerald-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-emerald-400",
   },
   Security: {
     icon: ShieldAlert,
-    cardBorder: "border-slate-200 dark:border-cyan-500/25 hover:border-cyan-500 dark:hover:border-cyan-400/50",
-    headerGradient: "from-cyan-600 to-blue-500",
-    badge: "border-cyan-600/30 bg-cyan-50 text-cyan-800 dark:bg-cyan-500/10 dark:text-cyan-400",
-    bullet: "text-cyan-600 dark:text-cyan-400",
-    iconBox: "border-cyan-500/30 bg-cyan-50 text-cyan-800 dark:bg-cyan-500/10 dark:text-cyan-400",
+    cardBorder: "border-black/[0.08] dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.16]",
+    badge: "border-black/[0.08] bg-slate-50 text-slate-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8]",
+    bullet: "text-emerald-700 dark:text-emerald-400",
+    iconBox: "border-black/[0.08] bg-slate-50 text-emerald-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-emerald-400",
   },
 };
 
@@ -289,91 +286,85 @@ const ServicesPage = () => {
         jsonLd={createBreadcrumbSchema([{ name: "Home", path: "/" }, { name: "Services", path: "/services" }])}
       />
 
-      <section className="section-wrap pt-4 sm:pt-8 pb-28">
+      <section className="section-wrap pt-6 sm:pt-8 pb-24">
 
-        {/* # Centered Hero Header (Sized & Styled like Blog & Journey Page) */}
-        <div className="relative text-center max-w-5xl mx-auto pt-6 sm:pt-10 pb-12 sm:pb-16">
-          {/* Ambient Radial Lighting */}
-          <div className="pointer-events-none absolute inset-0 -top-12 flex items-center justify-center">
-            <div className="h-72 w-[34rem] rounded-full bg-lime-400/[0.07] dark:bg-lime-400/[0.12] blur-[130px]" />
-          </div>
-
+        {/* Centered Hero Header */}
+        <div className="relative text-center max-w-5xl mx-auto pb-12 sm:pb-16">
           <div className="relative">
             {/* Eyebrow Badge */}
-            <motion.div
+            <MotionDiv
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/[0.08] px-4 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-400">
                 Available for Freelance &amp; Contract Work
               </span>
-            </motion.div>
+            </MotionDiv>
 
             {/* Proportional Heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 28 }}
+            <MotionH1
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1 }}
-              className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] tracking-tight text-zinc-900 dark:text-white"
+              transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-2 font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.08] tracking-tight text-slate-900 dark:text-[#eef0f5]"
             >
               Services &amp;{" "}
-              <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
+              <span className="text-emerald-600 dark:text-emerald-400">
                 Packages
               </span>
-            </motion.h1>
+            </MotionH1>
 
             {/* Subtitle Details */}
-            <motion.p
+            <MotionP
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.2 }}
-              className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-zinc-500 dark:text-zinc-400 sm:text-base font-normal"
+              transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
+              className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8] sm:text-base"
             >
-              Transparent deliverables, clear turnaround times, and secure checkout — built for founders, teams, and individuals who want reliable technical execution.
-            </motion.p>
+              Transparent deliverables, clear turnaround times, and secure checkout, built for founders, teams, and individuals who want reliable technical execution.
+            </MotionP>
 
             {/* Quick Action CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
+            <MotionDiv
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.25 }}
-              className="mt-8 flex flex-wrap items-center justify-center gap-3"
+              transition={{ duration: 0.65, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-7 flex flex-wrap items-center justify-center gap-3"
             >
               <Button to="/contact" className="min-w-[190px]">
-                <HeartHandshake size={16} /> Discuss Custom Project
+                <HeartHandshake size={16} strokeWidth={1.5} /> Discuss Custom Project
               </Button>
               <Button to="/support" variant="secondary" className="min-w-[160px]">
-                <ShieldCheck size={16} /> Trust &amp; Refund Policy
+                <ShieldCheck size={16} strokeWidth={1.5} /> Trust &amp; Refund Policy
               </Button>
-            </motion.div>
+            </MotionDiv>
 
-            {/* Core Stats Capsule (Matching Blog / Journey Page Structure) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+            {/* Core Stats Capsule */}
+            <MotionDiv
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.3 }}
-              className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 backdrop-blur-xl shadow-sm dark:shadow-none"
+              transition={{ duration: 0.65, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="mx-auto mt-10 max-w-4xl rounded-2xl border border-black/[0.08] bg-white p-4 sm:p-6 dark:border-white/[0.08] dark:bg-[#11141c]"
             >
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:divide-x md:divide-zinc-200 dark:md:divide-white/[0.08]">
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4 md:divide-x md:divide-black/[0.08] dark:md:divide-white/[0.08]">
                 {[
-                  { label: "Available Packages", value: "04 Core", color: "text-zinc-900 dark:text-white" },
-                  { label: "Turnaround Time", value: "3–7 Days", color: "text-lime-500 dark:text-lime-300" },
-                  { label: "Security Standard", value: "OWASP Hardened", color: "text-zinc-900 dark:text-white" },
-                  { label: "Checkout Model", value: "100% Secure", color: "text-amber-600 dark:text-amber-500" },
+                  { label: "Available Packages", value: "04 Core", color: "text-slate-900 dark:text-[#eef0f5]" },
+                  { label: "Turnaround Time", value: "3–7 Days", color: "text-emerald-600 dark:text-emerald-400" },
+                  { label: "Security Standard", value: "OWASP Hardened", color: "text-slate-900 dark:text-[#eef0f5]" },
+                  { label: "Checkout Model", value: "100% Secure", color: "text-emerald-600 dark:text-emerald-400" },
                 ].map(({ label, value, color }, i) => (
-                  <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
-                    <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+                  <div key={label} className={`flex flex-col items-center justify-center text-center ${i > 0 ? "md:pl-4" : ""}`}>
+                    <span className="mb-1 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
                       {label}
                     </span>
-                    <span className={`text-xl font-bold tracking-tight ${color}`}>
+                    <span className={`text-base sm:text-lg font-semibold tracking-tight tabular-nums ${color}`}>
                       {value}
                     </span>
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </MotionDiv>
           </div>
         </div>
 
@@ -388,8 +379,8 @@ const ServicesPage = () => {
           </div>
         )}
         {paymentInfo && (
-          <div className="mt-6 flex items-start gap-3 rounded-2xl border border-emerald-400/40 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
-            <Sparkles size={16} className="mt-0.5 shrink-0 animate-spin-slow" />
+          <div className="mt-6 flex items-start gap-3 rounded-xl border border-emerald-600/25 bg-emerald-500/[0.08] px-5 py-4 text-sm font-medium text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
+            <CheckCircle2 size={16} strokeWidth={1.5} className="mt-0.5 shrink-0" />
             <span>{paymentInfo}</span>
           </div>
         )}
@@ -398,13 +389,13 @@ const ServicesPage = () => {
         <div className="mt-16 mb-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-6 border-b border-slate-200/80 dark:border-white/[0.08]">
             <div>
-              <span className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400 block mb-1">
+              <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400 block mb-1">
                 Service Catalog
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-[#eef0f5] tracking-tight">
                 Available Packages &amp; Deliverables
               </h2>
-              <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              <p className="mt-1.5 text-sm text-slate-600 dark:text-[#a3a9b8] leading-relaxed">
                 Choose a package, inspect deliverables, and book securely.
               </p>
             </div>
@@ -426,16 +417,16 @@ const ServicesPage = () => {
                     type="button"
                     onClick={() => setSelectedCategory(cat)}
                     className={clsx(
-                      "shrink-0 rounded-full px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider transition-all duration-200 border flex items-center gap-2",
+                      "shrink-0 rounded-lg border px-3.5 py-1.5 text-xs font-medium transition-colors duration-150 flex items-center gap-2",
                       isSelected
-                        ? "border-lime-500 bg-lime-400 text-slate-950 font-black shadow-[0_0_15px_rgba(163,230,53,0.3)]"
-                        : "border-slate-200 bg-white/60 text-slate-600 hover:border-lime-400/40 hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.04] dark:text-zinc-400 dark:hover:border-lime-400/40 dark:hover:text-white"
+                        ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-slate-950"
+                        : "border-black/[0.08] bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5]"
                     )}
                   >
                     {cat}
                     <span className={clsx(
-                      "rounded-full px-1.5 py-0.5 text-[9px] font-bold",
-                      isSelected ? "bg-black/15 text-slate-950 font-black" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                      "rounded-full px-1.5 py-0.5 text-[9px] font-medium tabular-nums",
+                      isSelected ? "bg-black/15 text-white" : "bg-black/[0.06] text-slate-500 dark:bg-white/[0.08] dark:text-[#7a8296]"
                     )}>
                       {count}
                     </span>
@@ -460,26 +451,23 @@ const ServicesPage = () => {
               <article
                 key={service.slug}
                 className={clsx(
-                  "group relative flex flex-col justify-between rounded-2xl border bg-white/95 dark:bg-slate-900/60 backdrop-blur-sm shadow-xl dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] transition-all duration-300",
+                  "flex flex-col justify-between rounded-2xl border bg-white dark:bg-[#11141c] transition-colors duration-150",
                   cfg.cardBorder,
                   isActive && "ring-2 ring-emerald-500/40"
                 )}
               >
-                {/* # Card Top stripe */}
-                <div className={clsx("h-1.5 w-full rounded-t-2xl bg-gradient-to-r", cfg.headerGradient)} />
-
                 <div className="p-6 sm:p-7">
                   {/* Service Identity Row */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className={clsx("flex h-10 w-10 items-center justify-center rounded-xl border", cfg.iconBox)}>
-                        <CategoryIcon size={20} />
+                        <CategoryIcon size={18} strokeWidth={1.5} />
                       </div>
                       <div>
-                        <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-tight">
+                        <h3 className="font-display text-base sm:text-lg font-semibold text-slate-900 dark:text-[#eef0f5] leading-tight">
                           {service.name}
                         </h3>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
+                        <span className="font-mono text-xs text-slate-500 dark:text-[#7a8296]">
                           {service.category}
                         </span>
                       </div>
@@ -487,7 +475,7 @@ const ServicesPage = () => {
 
                     {/* Badge */}
                     <span className={clsx(
-                      "shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-widest",
+                      "shrink-0 rounded-md border px-2.5 py-1 font-mono text-xs font-medium",
                       cfg.badge
                     )}>
                       {service.badge}
@@ -495,24 +483,24 @@ const ServicesPage = () => {
                   </div>
 
                   {/* Price */}
-                  <div className="mt-5 flex items-end justify-between gap-2 border-b border-slate-200 dark:border-white/5 pb-4">
+                  <div className="mt-5 flex items-end justify-between gap-2 border-b border-black/[0.06] dark:border-white/[0.08] pb-4">
                     <div>
-                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                      <p className="font-mono text-xs text-slate-500 dark:text-[#7a8296] mb-1">
                         Starting from
                       </p>
-                      <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                      <p className="font-display text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#eef0f5]">
                         {service.price}
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="flex items-center gap-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                        <Clock size={12} /> {service.turnaround}
+                      <span className="flex items-center gap-1 font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                        <Clock size={12} strokeWidth={1.5} /> {service.turnaround}
                       </span>
                     </div>
                   </div>
 
                   {/* Summary */}
-                  <p className="mt-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  <p className="mt-4 text-sm text-slate-600 dark:text-[#a3a9b8] leading-relaxed">
                     {service.summary}
                   </p>
 
@@ -520,8 +508,8 @@ const ServicesPage = () => {
                   {service.bullets && (
                     <ul className="mt-4 space-y-2">
                       {service.bullets.map((bullet, i) => (
-                        <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-200">
-                          <CheckCircle2 size={14} className={clsx("mt-0.5 shrink-0", cfg.bullet)} />
+                        <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-[#d1d5df]">
+                          <CheckCircle2 size={15} strokeWidth={1.5} className={clsx("mt-0.5 shrink-0", cfg.bullet)} />
                           <span className="leading-snug">{bullet}</span>
                         </li>
                       ))}
@@ -530,11 +518,11 @@ const ServicesPage = () => {
 
                   {/* Expected Outcome */}
                   {service.expectedOutcome && (
-                    <div className="mt-5 rounded-xl border border-emerald-500/20 bg-emerald-50/70 dark:bg-emerald-500/5 p-3.5">
-                      <p className="text-[10px] font-bold uppercase tracking-widest mb-1 text-emerald-700 dark:text-emerald-400">
-                        Expected Outcome
+                    <div className="mt-5 rounded-xl border border-black/[0.06] bg-slate-50 p-3.5 dark:border-white/[0.06] dark:bg-[#1a1e28]">
+                      <p className="font-mono text-xs font-medium mb-1 text-emerald-700 dark:text-emerald-400">
+                        Expected outcome
                       </p>
-                      <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-[#a3a9b8] leading-relaxed">
                         {service.expectedOutcome}
                       </p>
                     </div>
@@ -542,37 +530,37 @@ const ServicesPage = () => {
 
                   {/* # Expandable Details Drawer */}
                   {isDetailsOpen && (
-                    <div className="mt-5 space-y-4 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-800/50 p-4 text-xs">
+                    <div className="mt-5 space-y-4 rounded-xl border border-black/[0.06] dark:border-white/[0.06] bg-slate-50 dark:bg-[#1a1e28] p-4 text-xs">
                       <div>
-                        <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">
-                          Best For
+                        <p className="font-mono text-xs text-slate-500 dark:text-[#7a8296] mb-1.5">
+                          Best for
                         </p>
-                        <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{details.idealFor}</p>
+                        <p className="text-slate-700 dark:text-[#d1d5df] leading-relaxed">{details.idealFor}</p>
                       </div>
-                      <div className="h-px bg-slate-200 dark:bg-white/5" />
+                      <div className="h-px bg-black/[0.06] dark:bg-white/[0.06]" />
                       <div>
-                        <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2">
+                        <p className="font-mono text-xs text-slate-500 dark:text-[#7a8296] mb-2">
                           Deliverables
                         </p>
                         <ul className="space-y-1.5">
                           {details.deliverables.map((item) => (
-                            <li key={item} className="flex items-start gap-2 text-slate-700 dark:text-slate-300">
-                              <CheckCircle2 size={12} className="mt-0.5 text-emerald-600 dark:text-emerald-500 shrink-0" />
+                            <li key={item} className="flex items-start gap-2 text-slate-700 dark:text-[#d1d5df]">
+                              <CheckCircle2 size={14} strokeWidth={1.5} className="mt-0.5 text-emerald-700 dark:text-emerald-400 shrink-0" />
                               <span>{item}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
-                      <div className="h-px bg-slate-200 dark:bg-white/5" />
+                      <div className="h-px bg-black/[0.06] dark:bg-white/[0.06]" />
                       <div>
-                        <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2">
-                          Tech Stack &amp; Tools
+                        <p className="font-mono text-xs text-slate-500 dark:text-[#7a8296] mb-2">
+                          Tech stack &amp; tools
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {details.stack.map((tech) => (
                             <span
                               key={tech}
-                              className="rounded-md border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-300"
+                              className="rounded-md border border-black/[0.08] bg-white px-2 py-0.5 font-mono text-xs text-slate-700 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8]"
                             >
                               {tech}
                             </span>
@@ -584,32 +572,32 @@ const ServicesPage = () => {
 
                   {/* # Checkout Drawer */}
                   {isActive && (
-                    <div className="mt-5 rounded-xl border border-emerald-500/30 bg-emerald-50/80 dark:bg-emerald-500/5 p-5">
+                    <div className="mt-5 rounded-xl border border-emerald-600/25 bg-emerald-500/[0.06] dark:border-emerald-500/25 dark:bg-emerald-500/[0.06] p-5">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <p className="text-xs font-black uppercase tracking-widest text-emerald-800 dark:text-emerald-400 flex items-center gap-1.5">
-                            <Lock size={12} /> Secure Checkout
+                          <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                            <Lock size={13} strokeWidth={1.5} /> Secure Checkout
                           </p>
-                          <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
+                          <p className="mt-0.5 text-xs text-slate-600 dark:text-[#a3a9b8]">
                             Powered by Cashfree · 256-bit encrypted
                           </p>
                         </div>
                         <button
                           type="button"
                           onClick={() => setActiveServiceSlug("")}
-                          className="rounded-lg p-1.5 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-black/5 dark:hover:bg-white/5 transition"
+                          className="rounded-lg p-1.5 text-slate-500 hover:text-slate-800 dark:text-[#7a8296] dark:hover:text-[#eef0f5] hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-150"
                         >
-                          <ChevronUp size={16} />
+                          <ChevronUp size={16} strokeWidth={1.5} />
                         </button>
                       </div>
 
                       {!isLoggedIn ? (
-                        <div className="rounded-xl border border-emerald-500/20 bg-white dark:bg-slate-900/80 p-5 text-center shadow-sm">
-                          <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-white/10">
+                        <div className="rounded-xl border border-black/[0.08] bg-white dark:border-white/[0.08] dark:bg-[#11141c] p-5 text-center">
+                          <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-[#1a1e28]">
                             <GoogleIcon />
                           </div>
-                          <p className="text-sm font-extrabold text-slate-900 dark:text-white">Sign In Required</p>
-                          <p className="mt-1 text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-xs mx-auto">
+                          <p className="font-display text-sm font-semibold text-slate-900 dark:text-[#eef0f5]">Sign In Required</p>
+                          <p className="mt-1 text-xs text-slate-600 dark:text-[#a3a9b8] leading-relaxed max-w-xs mx-auto">
                             Please sign in with Google to lock in your booking and generate your official receipt.
                           </p>
                           <button
@@ -620,7 +608,7 @@ const ServicesPage = () => {
                               }
                               window.location.href = getGoogleAuthUrl();
                             }}
-                            className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-900 text-white dark:border-white/10 dark:bg-white dark:text-slate-900 px-5 py-2.5 text-xs font-black hover:scale-[1.02] transition shadow-md"
+                            className="mt-4 inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-black/[0.10] bg-slate-900 text-white dark:border-white/[0.10] dark:bg-[#eef0f5] dark:text-[#090a0f] px-4 text-xs font-medium transition-colors duration-150"
                           >
                             <GoogleIcon /> Continue with Google
                           </button>
@@ -628,45 +616,45 @@ const ServicesPage = () => {
                       ) : (
                         <>
                           <div className="grid gap-3 sm:grid-cols-2">
-                            <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <label className="text-xs font-medium text-slate-700 dark:text-[#d1d5df]">
                               Full Name
                               <input
                                 type="text"
                                 value={buyerForm.customerName}
                                 onChange={(e) => updateBuyerForm("customerName", e.target.value)}
-                                className="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 outline-none focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-white transition placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                                className="mt-1.5 h-10 w-full rounded-lg border border-black/[0.10] bg-white px-3.5 text-xs text-slate-900 outline-none focus:border-emerald-600 dark:border-white/[0.10] dark:bg-[#11141c] dark:text-[#eef0f5] transition-colors duration-150 placeholder:text-slate-400 dark:placeholder:text-[#7a8296]"
                                 placeholder="Your full name"
                               />
                             </label>
 
-                            <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <label className="text-xs font-medium text-slate-700 dark:text-[#d1d5df]">
                               Email
-                              <span className="ml-1 text-[10px] font-normal text-emerald-600 dark:text-emerald-500">(locked to sign‑in)</span>
+                              <span className="ml-1 text-[11px] font-normal text-emerald-700 dark:text-emerald-400">(locked to sign-in)</span>
                               <input
                                 type="email"
                                 readOnly
                                 value={buyerForm.customerEmail}
-                                className="mt-1.5 w-full rounded-lg border border-slate-200 bg-slate-100 px-3.5 py-2.5 text-xs text-slate-500 dark:border-slate-700/50 dark:bg-slate-800/50 dark:text-slate-400 cursor-not-allowed outline-none"
+                                className="mt-1.5 h-10 w-full rounded-lg border border-black/[0.08] bg-slate-100 px-3.5 text-xs text-slate-500 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#7a8296] cursor-not-allowed outline-none"
                                 placeholder="you@example.com"
                               />
                             </label>
 
-                            <label className="text-xs font-bold text-slate-700 dark:text-slate-300 sm:col-span-2">
+                            <label className="text-xs font-medium text-slate-700 dark:text-[#d1d5df] sm:col-span-2">
                               Phone Number
-                              <span className="ml-1 text-[10px] font-normal text-slate-500 dark:text-slate-400">(required for Cashfree OTP)</span>
+                              <span className="ml-1 text-[11px] font-normal text-slate-500 dark:text-[#7a8296]">(required for Cashfree OTP)</span>
                               <input
                                 type="text"
                                 value={buyerForm.customerPhone}
                                 onChange={(e) => updateBuyerForm("customerPhone", e.target.value)}
-                                className="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-xs text-slate-900 outline-none focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900/80 dark:text-white transition placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                                className="mt-1.5 h-10 w-full rounded-lg border border-black/[0.10] bg-white px-3.5 text-xs text-slate-900 outline-none focus:border-emerald-600 dark:border-white/[0.10] dark:bg-[#11141c] dark:text-[#eef0f5] transition-colors duration-150 placeholder:text-slate-400 dark:placeholder:text-[#7a8296]"
                                 placeholder="e.g. 9876543210"
                               />
                             </label>
                           </div>
 
-                          <div className="mt-4 flex items-center justify-between border-t border-slate-200 dark:border-white/5 pt-3 text-[11px] text-slate-600 dark:text-slate-400">
-                            <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold">
-                              <ShieldCheck size={12} /> 256-bit SSL Encrypted
+                          <div className="mt-4 flex items-center justify-between border-t border-black/[0.06] dark:border-white/[0.06] pt-3 text-xs text-slate-600 dark:text-[#a3a9b8]">
+                            <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-medium">
+                              <ShieldCheck size={14} strokeWidth={1.5} /> 256-bit SSL Encrypted
                             </span>
                             <span>7-Day Refund Policy</span>
                           </div>
@@ -675,9 +663,9 @@ const ServicesPage = () => {
                             type="button"
                             disabled={isProcessing}
                             onClick={() => handlePayAndBook(service)}
-                            className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 py-3 text-xs font-black uppercase tracking-wider text-white shadow-md hover:scale-[1.01] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="mt-4 flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400 text-sm font-medium text-white transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed"
                           >
-                            <CreditCard size={15} />
+                            <CreditCard size={15} strokeWidth={1.5} />
                             {isProcessing ? "Opening Cashfree Gateway..." : `Complete Payment · INR ${service.amountInr}`}
                           </button>
                         </>
@@ -687,22 +675,22 @@ const ServicesPage = () => {
                 </div>
 
                 {/* # Card Footer */}
-                <div className="border-t border-slate-100 dark:border-white/5 px-6 sm:px-7 py-4 flex items-center justify-between gap-3">
+                <div className="border-t border-black/[0.06] dark:border-white/[0.08] px-6 sm:px-7 py-4 flex items-center justify-between gap-3">
                   <button
                     type="button"
                     onClick={() => toggleDetails(service.slug)}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-[#a3a9b8] dark:hover:text-[#eef0f5] transition-colors duration-150"
                   >
                     {isDetailsOpen ? "Hide Details" : "View Details"}
-                    <ArrowRight size={13} className={clsx("transition-transform", isDetailsOpen && "rotate-90")} />
+                    <ArrowRight size={13} strokeWidth={1.5} className={clsx("transition-transform", isDetailsOpen && "rotate-90")} />
                   </button>
 
                   <div className="flex items-center gap-3">
                     <Link
                       to="/contact"
-                      className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 transition"
+                      className="text-xs font-medium text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors duration-150"
                     >
-                      Custom Scope →
+                      Custom Scope
                     </Link>
 
                     <button
@@ -717,7 +705,7 @@ const ServicesPage = () => {
                           setActiveServiceSlug(service.slug);
                         }
                       }}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 px-5 py-2 text-xs font-black uppercase tracking-wider text-white shadow-md transition-all hover:scale-[1.03] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:text-slate-950 px-4 text-xs font-medium text-white transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Book Now
                     </button>
@@ -729,13 +717,13 @@ const ServicesPage = () => {
         </div>
 
         {/* # FAQ Section */}
-        <div className="mt-24 max-w-3xl mx-auto">
+        <div className="mt-20 max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+            <h2 className="font-display text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-[#eef0f5]">
               Frequently Asked Questions
             </h2>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 font-medium">
-              Everything you need to know about payments, deliverables, and custom scopes.
+            <p className="mt-2 text-sm text-slate-600 dark:text-[#a3a9b8]">
+              Details about payments, deliverables, and custom scopes.
             </p>
           </div>
 
@@ -745,24 +733,24 @@ const ServicesPage = () => {
               return (
                 <div
                   key={faq.q}
-                  className="rounded-xl border border-slate-200 bg-white/95 dark:border-slate-800 dark:bg-slate-900/60 overflow-hidden shadow-sm transition-all"
+                  className="rounded-xl border border-black/[0.08] bg-white dark:border-white/[0.08] dark:bg-[#11141c] overflow-hidden"
                 >
                   <button
                     type="button"
                     onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                    className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left text-sm font-bold text-slate-900 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                    className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left text-sm font-medium text-slate-900 dark:text-[#eef0f5] hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors duration-150"
                   >
                     <span className="flex items-center gap-2.5">
-                      <HelpCircle size={16} className="text-emerald-600 dark:text-emerald-500 shrink-0" />
+                      <HelpCircle size={16} strokeWidth={1.5} className="text-emerald-700 dark:text-emerald-400 shrink-0" />
                       {faq.q}
                     </span>
                     {isOpen
-                      ? <ChevronUp size={16} className="text-emerald-600 dark:text-emerald-500 shrink-0" />
-                      : <ChevronDown size={16} className="text-slate-400 dark:text-slate-500 shrink-0" />}
+                      ? <ChevronUp size={16} strokeWidth={1.5} className="text-emerald-700 dark:text-emerald-400 shrink-0" />
+                      : <ChevronDown size={16} strokeWidth={1.5} className="text-slate-400 dark:text-[#7a8296] shrink-0" />}
                   </button>
 
                   {isOpen && (
-                    <div className="px-5 pb-5 pt-1 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-white/5">
+                    <div className="px-5 pb-5 pt-2 text-sm text-slate-600 dark:text-[#a3a9b8] leading-relaxed border-t border-black/[0.06] dark:border-white/[0.06]">
                       {faq.a}
                     </div>
                   )}
@@ -773,25 +761,25 @@ const ServicesPage = () => {
         </div>
 
         {/* # Bottom CTA Banner */}
-        <div className="mt-20 rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-50/70 via-white to-teal-50/70 dark:border-emerald-500/25 dark:bg-gradient-to-br dark:from-slate-900 dark:to-emerald-950/30 p-8 sm:p-10 text-center shadow-lg dark:shadow-none">
-          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-100 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 px-4 py-1.5 text-xs font-bold uppercase tracking-widest mb-5">
-            <Globe size={13} /> Custom Enterprise Build &amp; Auditing
-          </span>
+        <div className="mt-20 rounded-2xl border border-black/[0.08] bg-white dark:border-white/[0.08] dark:bg-[#11141c] p-8 sm:p-10 text-center">
+          <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+            Custom Scope &amp; Retainer Work
+          </p>
 
-          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            Have a Specific Enterprise Scope?
+          <h2 className="mt-2 font-display text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-[#eef0f5] tracking-tight">
+            Have a Specific Technical Scope?
           </h2>
 
-          <p className="mt-3 text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto leading-relaxed">
-            Need custom full-stack architecture, API security penetration testing, or long-term retainer support? Let's discuss your scope directly.
+          <p className="mt-3 text-sm text-slate-600 dark:text-[#a3a9b8] max-w-xl mx-auto leading-relaxed">
+            Need custom full-stack architecture, API security reviews, or ongoing engineering support? Reach out to discuss requirements directly.
           </p>
 
           <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <Button to="/contact" className="min-w-[200px]">
-              <HeartHandshake size={16} /> Contact Nikhil Directly
+            <Button to="/contact" className="min-w-[190px]">
+              <HeartHandshake size={16} strokeWidth={1.5} /> Contact Nikhil
             </Button>
-            <Button to="/support" variant="secondary" className="min-w-[180px]">
-              <ShieldCheck size={16} /> Trust &amp; Refund Policy
+            <Button to="/support" variant="secondary" className="min-w-[170px]">
+              <ShieldCheck size={16} strokeWidth={1.5} /> Trust &amp; Refund Policy
             </Button>
           </div>
         </div>

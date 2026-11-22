@@ -3,13 +3,10 @@ import { useNavigate } from "react-router-dom";
 import {
   CreditCard,
   HeartHandshake,
-  Sparkles,
   ShieldCheck,
   CheckCircle2,
-  Lock,
-  Coffee,
   Rocket,
-  Zap,
+  AlertCircle,
   HelpCircle,
   ChevronDown,
   ChevronUp,
@@ -17,9 +14,8 @@ import {
   Globe,
   FileCheck2,
   Code2,
-  Award,
   ArrowRight,
-  Gift,
+  RefreshCw,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
@@ -59,12 +55,12 @@ const GoogleIcon = () => (
 );
 
 const supportPillPresets = [
-  { amount: 49, label: "Buy a Coffee ☕", desc: "Small boost" },
-  { amount: 99, label: "Supporter 🚀", desc: "Popular option" },
-  { amount: 149, label: "Developer Pack 💻", desc: "Help tools & hosting" },
-  { amount: 199, label: "Patron 🌟", desc: "Fund open source" },
-  { amount: 499, label: "Sponsor 🏆", desc: "Major contributor" },
-  { amount: 999, label: "Gold Supporter 🥇", desc: "Key project patron" },
+  { amount: 49, label: "Buy a Coffee", desc: "Small boost" },
+  { amount: 99, label: "Supporter", desc: "Popular option" },
+  { amount: 149, label: "Developer Pack", desc: "Help tools & hosting" },
+  { amount: 199, label: "Patron", desc: "Fund open source" },
+  { amount: 499, label: "Sponsor", desc: "Major contributor" },
+  { amount: 999, label: "Gold Supporter", desc: "Key project patron" },
 ];
 
 const supportHighlights = [
@@ -83,7 +79,7 @@ const supportHighlights = [
   {
     title: "Instant Digital Receipts",
     summary:
-      "Every contribution generates an official digital PDF receipt instantly saved to your account portal.",
+      "Every contribution generates an official digital PDF receipt saved directly to your account receipt portal.",
     icon: FileCheck2,
   },
 ];
@@ -91,7 +87,7 @@ const supportHighlights = [
 const SUPPORT_FAQS = [
   {
     q: "Why contribute to this work?",
-    a: "Your contribution helps maintain free developer tools, fund cloud server infrastructure for live labs, and create open-source web development and cybersecurity resources for students and engineers.",
+    a: "Your contribution helps maintain free developer tools, fund cloud server infrastructure for live labs, and build open-source web engineering and security guides.",
   },
   {
     q: "How is my payment processed?",
@@ -99,11 +95,11 @@ const SUPPORT_FAQS = [
   },
   {
     q: "Will I receive an official payment receipt?",
-    a: "Yes! As soon as your contribution completes, an automated digital receipt is generated and linked to your account. You can view or download it anytime from the Receipt Portal (/receipts).",
+    a: "Yes. As soon as your contribution completes, an automated digital receipt is generated and linked to your account. You can view or download it anytime from the Receipt Portal (/receipts).",
   },
   {
     q: "Can I contribute a custom amount?",
-    a: "Absolutely. You can select one of the quick preset amounts or enter any custom whole INR value between ₹1 and ₹50,000 in the contribution form.",
+    a: "Yes. You can select one of the quick preset amounts or enter any custom whole INR value between ₹1 and ₹50,000 in the contribution form.",
   },
 ];
 
@@ -302,42 +298,39 @@ const SupportPage = () => {
         ])}
       />
 
-      <section className="section-wrap pt-4 sm:pt-6 pb-24">
-        
-        {/* Hero Header Section */}
+      <section className="section-wrap pt-6 sm:pt-8 pb-24">
         <FadeInUp>
-          <div className="text-center max-w-4xl mx-auto mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full border border-lime-400/40 bg-lime-400/10 px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-lime-600 dark:text-lime-300 shadow-sm mb-4">
-              <HeartHandshake size={14} className="text-lime-400" />
-              COMMUNITY SUPPORT &amp; OPEN-SOURCE FUEL
+          <div className="mx-auto mb-12 max-w-4xl text-center">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300">
+              <HeartHandshake size={14} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
+              Community Support &amp; Open-Source Work
             </span>
 
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-slate-900 dark:text-white leading-[1.05]">
-              SUPPORT THIS <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">ENGINEERING WORK</span>
+            <h1 className="font-display text-3xl font-semibold tracking-tight leading-[1.08] text-ink-950 dark:text-ink-50 sm:text-4xl lg:text-5xl">
+              Support This <span className="text-emerald-600 dark:text-emerald-400">Engineering Work</span>
             </h1>
 
-            <p className="mt-4 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              If the tools, security writeups, or open-source projects have been useful, consider contributing to support server hosting, research, and continuous builds.
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-ink-600 dark:text-ink-300 sm:text-base">
+              If the tools, security writeups, or open-source projects have been useful, consider contributing to support server hosting, research, and ongoing releases.
             </p>
           </div>
         </FadeInUp>
 
-        {/* Top 3 Impact Highlights */}
-        <div className="grid gap-5 sm:grid-cols-3 mb-12">
+        <div className="mb-12 grid gap-5 sm:grid-cols-3">
           {supportHighlights.map((item) => {
             const Icon = item.icon;
             return (
               <article
                 key={item.title}
-                className="group rounded-3xl border border-slate-200/80 bg-white/90 p-6 shadow-md backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 dark:border-emerald-500/20 dark:bg-[#030d07]/90 dark:hover:border-emerald-400/50"
+                className="rounded-2xl border border-black/[0.08] bg-white p-6 transition-colors duration-200 hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
-                  <Icon size={22} />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-500/10 text-emerald-600 dark:border-emerald-500/25 dark:text-emerald-400">
+                  <Icon size={18} strokeWidth={1.5} />
                 </div>
-                <h2 className="mt-4 text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">
+                <h2 className="mt-4 text-base font-semibold text-ink-950 dark:text-ink-50 sm:text-lg">
                   {item.title}
                 </h2>
-                <p className="mt-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                <p className="mt-1.5 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
                   {item.summary}
                 </p>
               </article>
@@ -345,55 +338,49 @@ const SupportPage = () => {
           })}
         </div>
 
-        {/* Notifications */}
         {paymentError ? (
-          <p className="mb-6 rounded-2xl border border-rose-300/40 bg-rose-500/10 px-5 py-3.5 text-xs sm:text-sm font-bold text-rose-700 dark:text-rose-300 flex items-center gap-2">
-            <Zap size={16} className="shrink-0" />
+          <p className="mb-6 flex items-center gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-700 dark:text-rose-300">
+            <AlertCircle size={16} strokeWidth={1.5} className="shrink-0" />
             {paymentError}
           </p>
         ) : null}
         {paymentInfo ? (
-          <p className="mb-6 rounded-2xl border border-emerald-300/40 bg-emerald-500/10 px-5 py-3.5 text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
-            <Sparkles size={16} className="shrink-0 animate-spin-slow" />
+          <p className="mb-6 flex items-center gap-2 rounded-xl border border-emerald-600/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:text-emerald-300">
+            <RefreshCw size={15} strokeWidth={1.5} className="shrink-0" />
             {paymentInfo}
           </p>
         ) : null}
 
-        {/* Two-Column Form & Trust Layout */}
         <div className="grid gap-8 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
-          
-          {/* Left Column: Contribution Form */}
-          <article className="rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-8 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.75)] relative overflow-hidden">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400" />
-
-            <div className="flex items-center justify-between">
+          <article className="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/[0.08] dark:bg-[#11141c] sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <span className="font-mono text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                  <Gift size={13} /> DIGITAL CONTRIBUTION FORM
+                <span className="font-mono text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  Digital contribution
                 </span>
-                <h3 className="mt-1 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                <h3 className="mt-1 text-2xl font-semibold text-ink-950 dark:text-ink-50">
                   Contribution &amp; Support Jar
                 </h3>
               </div>
-              <span className="rounded-full border border-lime-500/30 bg-lime-500/10 px-3 py-1 text-[11px] font-extrabold text-lime-700 dark:text-lime-300">
+              <span className="rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3 py-0.5 font-mono text-xs font-medium tabular-nums text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300">
                 INR 1 - 50,000
               </span>
             </div>
 
-            <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-              Select a quick contribution preset or enter your custom amount. Every contribution generates an official digital PDF receipt.
+            <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+              Select a preset amount or enter your custom value. Every contribution generates an official digital PDF receipt.
             </p>
 
             {!isLoggedIn ? (
-              <div className="mt-6 rounded-2xl border border-emerald-500/40 bg-slate-50 dark:bg-slate-900/90 p-6 text-center shadow-md">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
+              <div className="mt-6 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-6 text-center dark:border-white/[0.08] dark:bg-[#0c0e14]">
+                <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full border border-black/[0.08] bg-white dark:border-white/[0.08] dark:bg-[#11141c]">
                   <GoogleIcon />
                 </div>
-                <h4 className="mt-3 text-base font-extrabold text-slate-900 dark:text-white">
-                  Sign In Required to Support
+                <h4 className="mt-3 text-base font-semibold text-ink-950 dark:text-ink-50">
+                  Sign in required to support
                 </h4>
-                <p className="mt-1 text-xs text-slate-600 dark:text-slate-400 font-medium max-w-sm mx-auto leading-relaxed">
-                  Please sign in with Google first to unlock the contribution form and receive your official digital receipt.
+                <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-ink-600 dark:text-ink-400">
+                  Sign in with Google first to unlock the contribution form and link your official digital receipt.
                 </p>
                 <button
                   type="button"
@@ -406,7 +393,7 @@ const SupportPage = () => {
                     }
                     window.location.href = getGoogleAuthUrl();
                   }}
-                  className="mt-5 inline-flex items-center justify-center gap-2.5 rounded-xl bg-slate-900 dark:bg-white px-6 py-3 text-xs font-black text-white dark:text-slate-900 shadow-md hover:scale-[1.02] transition"
+                  className="mt-5 inline-flex items-center justify-center gap-2.5 rounded-lg border border-black/[0.08] bg-ink-950 px-5 py-2.5 text-xs font-medium text-white transition-colors hover:bg-ink-900 dark:border-white/[0.1] dark:bg-white dark:text-ink-950 dark:hover:bg-ink-100"
                 >
                   <GoogleIcon />
                   <span>Continue with Google</span>
@@ -414,13 +401,11 @@ const SupportPage = () => {
               </div>
             ) : (
               <div className="mt-6 space-y-5">
-                
-                {/* Preset Amount Pills */}
                 <div>
-                  <p className="text-xs font-mono font-extrabold uppercase tracking-widest text-slate-700 dark:text-slate-300 mb-2">
-                    Select Preset Amount:
+                  <p className="mb-2 text-xs font-medium text-ink-700 dark:text-ink-300">
+                    Select preset amount
                   </p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                     {supportPillPresets.map((preset) => {
                       const selected = Number(supportForm.amountInr) === preset.amount;
 
@@ -431,16 +416,16 @@ const SupportPage = () => {
                           onClick={() =>
                             updateSupportForm("amountInr", String(preset.amount))
                           }
-                          className={`rounded-2xl border p-3 text-left transition-all duration-200 ${
+                          className={`rounded-xl border p-3 text-left transition-colors duration-150 ${
                             selected
-                              ? "border-lime-400 bg-lime-400/15 dark:bg-lime-400/10 text-slate-950 dark:text-white shadow-[0_0_15px_rgba(163,230,53,0.3)] ring-2 ring-lime-400/40"
-                              : "border-slate-200 bg-slate-50 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300 dark:hover:border-slate-700"
+                              ? "border-emerald-600/50 bg-emerald-500/10 text-ink-950 dark:border-emerald-500/50 dark:bg-emerald-500/15 dark:text-ink-50"
+                              : "border-black/[0.08] bg-[#f8fafc] text-ink-700 hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:border-emerald-500/30"
                           }`}
                         >
-                          <p className="font-outfit text-base font-black text-slate-900 dark:text-white">
+                          <p className="font-mono text-base font-semibold tabular-nums text-ink-950 dark:text-ink-50">
                             ₹{preset.amount}
                           </p>
-                          <p className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 truncate mt-0.5">
+                          <p className="mt-0.5 truncate text-xs font-medium text-emerald-600 dark:text-emerald-400">
                             {preset.label}
                           </p>
                         </button>
@@ -449,9 +434,8 @@ const SupportPage = () => {
                   </div>
                 </div>
 
-                {/* Form Inputs Grid */}
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                  <label className="text-xs font-medium text-ink-800 dark:text-ink-200">
                     Full Name
                     <input
                       type="text"
@@ -459,36 +443,36 @@ const SupportPage = () => {
                       onChange={(event) =>
                         updateSupportForm("customerName", event.target.value)
                       }
-                      className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-900 outline-none focus:border-lime-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-black/[0.1] bg-[#f8fafc] px-3.5 py-2.5 text-sm text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-50 dark:focus:border-emerald-500"
                       placeholder="Your full name"
                     />
                   </label>
 
-                  <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
-                    Email <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold ml-1">(Signed-in Email 🔒)</span>
+                  <label className="text-xs font-medium text-ink-800 dark:text-ink-200">
+                    Email <span className="ml-1 text-[11px] text-emerald-600 dark:text-emerald-400">(Verified)</span>
                     <input
                       type="email"
                       readOnly
                       value={supportForm.customerEmail}
-                      className="mt-1 w-full rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/60 px-3.5 py-2.5 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-not-allowed font-semibold outline-none"
+                      className="mt-1 w-full cursor-not-allowed rounded-xl border border-black/[0.08] bg-black/[0.03] px-3.5 py-2.5 text-sm text-ink-500 outline-none dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-ink-400"
                       placeholder="you@example.com"
                     />
                   </label>
 
-                  <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
-                    Phone Number (for Cashfree &amp; WhatsApp Receipt)
+                  <label className="text-xs font-medium text-ink-800 dark:text-ink-200">
+                    Phone Number (Cashfree &amp; Receipt)
                     <input
                       type="text"
                       value={supportForm.customerPhone}
                       onChange={(event) =>
                         updateSupportForm("customerPhone", event.target.value)
                       }
-                      className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-900 outline-none focus:border-lime-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-black/[0.1] bg-[#f8fafc] px-3.5 py-2.5 text-sm tabular-nums text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-50 dark:focus:border-emerald-500"
                       placeholder="9876543210"
                     />
                   </label>
 
-                  <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                  <label className="text-xs font-medium text-ink-800 dark:text-ink-200">
                     Custom Support Amount (INR ₹)
                     <input
                       type="text"
@@ -500,15 +484,14 @@ const SupportPage = () => {
                           event.target.value.replace(/\D/g, "")
                         )
                       }
-                      className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-black text-slate-900 outline-none focus:border-lime-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
+                      className="mt-1 w-full rounded-xl border border-black/[0.1] bg-[#f8fafc] px-3.5 py-2.5 text-sm font-medium tabular-nums text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-50 dark:focus:border-emerald-500"
                       placeholder="Enter custom amount"
                     />
                   </label>
                 </div>
 
-                {/* Optional Message Field */}
-                <label className="block text-xs font-extrabold text-slate-800 dark:text-slate-200">
-                  Optional Support Message / Note:
+                <label className="block text-xs font-medium text-ink-800 dark:text-ink-200">
+                  Optional Support Message
                   <textarea
                     value={supportForm.notes}
                     onChange={(event) =>
@@ -516,26 +499,25 @@ const SupportPage = () => {
                     }
                     maxLength={500}
                     rows={3}
-                    className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-medium text-slate-900 outline-none focus:border-lime-500 dark:border-emerald-500/30 dark:bg-[#020803] dark:text-white"
-                    placeholder="Write a message to Nikhil (optional)..."
+                    className="mt-1 w-full rounded-xl border border-black/[0.1] bg-[#f8fafc] px-3.5 py-2.5 text-sm text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-50 dark:focus:border-emerald-500"
+                    placeholder="Write a note to Nikhil (optional)..."
                   />
                 </label>
 
-                <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-1">
-                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
-                    <ShieldCheck size={14} /> 256-bit SSL Encrypted
+                <div className="flex items-center justify-between pt-1 text-xs text-ink-500 dark:text-ink-400">
+                  <span className="flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
+                    <ShieldCheck size={14} strokeWidth={1.5} /> 256-bit SSL Encrypted
                   </span>
-                  <span>7-Day Refund Terms Apply</span>
+                  <span>7-day refund terms apply</span>
                 </div>
 
-                {/* Pay Button */}
                 <button
                   type="button"
                   disabled={processing}
                   onClick={handleSupportPayment}
-                  className="w-full flex items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-lime-400 to-emerald-400 py-3.5 text-xs font-black uppercase tracking-wider text-slate-950 shadow-[0_4px_25px_rgba(163,230,53,0.45)] hover:shadow-[0_6px_32px_rgba(163,230,53,0.65)] hover:scale-[1.01] transition-all"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-black/[0.08] bg-ink-950 py-3.5 text-sm font-medium text-white transition-colors hover:bg-ink-900 disabled:opacity-60 dark:border-white/[0.1] dark:bg-emerald-500 dark:text-ink-950 dark:hover:bg-emerald-400"
                 >
-                  <CreditCard size={18} />
+                  <CreditCard size={16} strokeWidth={1.5} />
                   {processing
                     ? "Opening Cashfree Gateway..."
                     : `Proceed to Secure Contribution (₹${supportForm.amountInr || 99})`}
@@ -544,52 +526,47 @@ const SupportPage = () => {
             )}
           </article>
 
-          {/* Right Column: Support Context & Trust Sidebar */}
           <div className="space-y-6">
-            
-            {/* Why Support Jar */}
-            <aside className="rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.75)]">
-              <span className="font-mono text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                <BadgeCheck size={13} /> TRANSPARENT IMPACT
+            <aside className="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/[0.08] dark:bg-[#11141c] sm:p-7">
+              <span className="inline-flex items-center gap-1.5 font-mono text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                <BadgeCheck size={14} strokeWidth={1.5} /> Transparent impact
               </span>
-              <h3 className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
+              <h3 className="mt-1 text-xl font-semibold text-ink-950 dark:text-ink-50">
                 Where Does Support Go?
               </h3>
-              <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-                Your contributions directly keep the technical ecosystem running and free for everyone:
+              <p className="mt-2 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+                Contributions keep the labs, tools, and writeups free and accessible:
               </p>
 
-              <ul className="mt-4 space-y-3 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200">
+              <ul className="mt-4 space-y-3 text-sm text-ink-700 dark:text-ink-200">
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 size={16} className="mt-0.5 text-emerald-500 shrink-0" />
-                  <span><strong>Server &amp; Cloud Hosting:</strong> Pays for Render, Vercel, and MongoDB database clusters running live apps.</span>
+                  <CheckCircle2 size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <span><strong className="font-semibold">Server &amp; Cloud Hosting:</strong> Covers Render, Vercel, and MongoDB Atlas runtime costs.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 size={16} className="mt-0.5 text-emerald-500 shrink-0" />
-                  <span><strong>Open-Source Developer Tools:</strong> Funds continuous updates to the Cyber Tools &amp; DSA Visualizer labs.</span>
+                  <CheckCircle2 size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <span><strong className="font-semibold">Open-Source Developer Tools:</strong> Supports improvements to Cyber Tools and the DSA Visualizer.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 size={16} className="mt-0.5 text-emerald-500 shrink-0" />
-                  <span><strong>Free Educational Guides:</strong> Supports writing cybersecurity writeups and full-stack engineering blogs.</span>
+                  <CheckCircle2 size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <span><strong className="font-semibold">Free Educational Guides:</strong> Supports security writeups and full-stack engineering articles.</span>
                 </li>
               </ul>
             </aside>
 
-            {/* Payment Gateway Trust Panel */}
             <PaymentTrustPanel />
           </div>
         </div>
 
-        {/* Support FAQ Accordion */}
-        <div className="mt-20 max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="font-mono text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-              // SUPPORT FAQS
+        <div className="mx-auto mt-20 max-w-4xl">
+          <div className="mb-10 text-center">
+            <span className="font-mono text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              Support FAQs
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1">
+            <h2 className="mt-1 text-2xl font-semibold text-ink-950 dark:text-ink-50 sm:text-3xl">
               Frequently Asked Questions
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">
+            <p className="mt-1.5 text-sm text-ink-600 dark:text-ink-400">
               Common questions about contributions, receipts, and security.
             </p>
           </div>
@@ -600,26 +577,26 @@ const SupportPage = () => {
               return (
                 <div
                   key={faq.q}
-                  className="rounded-2xl border border-slate-200 bg-white/90 dark:border-emerald-500/20 dark:bg-[#030d07]/90 overflow-hidden shadow-sm transition-all"
+                  className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white transition-colors dark:border-white/[0.08] dark:bg-[#11141c]"
                 >
                   <button
                     type="button"
                     onClick={() => setOpenFaqIndex(isOpen ? null : index)}
-                    className="w-full flex items-center justify-between gap-4 p-4 text-left font-extrabold text-sm sm:text-base text-slate-900 dark:text-white hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                    className="flex w-full items-center justify-between gap-4 p-4 text-left text-sm font-semibold text-ink-950 transition-colors hover:text-emerald-600 dark:text-ink-50 dark:hover:text-emerald-400 sm:text-base"
                   >
-                    <span className="flex items-center gap-2">
-                      <HelpCircle size={18} className="text-emerald-500 shrink-0" />
+                    <span className="flex items-center gap-2.5">
+                      <HelpCircle size={17} strokeWidth={1.5} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
                       {faq.q}
                     </span>
                     {isOpen ? (
-                      <ChevronUp size={18} className="text-emerald-500 shrink-0" />
+                      <ChevronUp size={17} strokeWidth={1.5} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
                     ) : (
-                      <ChevronDown size={18} className="text-slate-400 shrink-0" />
+                      <ChevronDown size={17} strokeWidth={1.5} className="shrink-0 text-ink-400" />
                     )}
                   </button>
 
                   {isOpen ? (
-                    <div className="px-4 pb-4 pt-1 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-emerald-500/10">
+                    <div className="border-t border-black/[0.06] px-4 pt-3 pb-4 text-sm leading-relaxed text-ink-600 dark:border-white/[0.06] dark:text-ink-300">
                       {faq.a}
                     </div>
                   ) : null}
@@ -629,28 +606,27 @@ const SupportPage = () => {
           </div>
         </div>
 
-        {/* Bottom CTA Banner */}
-        <div className="mt-16 rounded-3xl border border-slate-200 bg-white dark:border-emerald-500/40 dark:bg-[#030d07] p-8 sm:p-10 text-center text-slate-900 dark:text-white shadow-xl dark:shadow-2xl relative overflow-hidden cta-enterprise-banner">
-          <div className="pointer-events-none absolute -right-20 -bottom-20 h-60 w-60 rounded-full bg-emerald-500/10 blur-3xl" />
-          
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-100 text-emerald-900 dark:border-emerald-400/50 dark:bg-emerald-400/15 dark:text-emerald-300 px-4 py-1.5 text-xs font-black mb-4 shadow-xs">
-            <Globe size={14} /> LOOKING FOR DEDICATED SERVICES?
+        <div className="mt-16 rounded-2xl border border-black/[0.08] bg-white p-8 text-center dark:border-white/[0.08] dark:bg-[#11141c] sm:p-10">
+          <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300">
+            <Globe size={13} strokeWidth={1.5} /> Looking for dedicated services?
           </span>
 
-          <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
-            Explore Dedicated Engineering Services &amp; Projects
+          <h2 className="text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl">
+            Explore Engineering Services &amp; Projects
           </h2>
 
-          <p className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-200 font-bold max-w-xl mx-auto leading-relaxed">
-            Looking to hire for a custom web build, API architecture, or 1:1 code mentorship? Explore structured service plans or view live projects.
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+            Need help with a full-stack web application, backend API architecture, or code review? Explore structured service plans or open-source builds.
           </p>
 
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Button to="/services" className="min-w-[190px] !bg-emerald-500 hover:!bg-emerald-600 !text-slate-950 dark:!bg-emerald-400 dark:hover:!bg-emerald-300 font-black shadow-lg">
-              <Sparkles size={16} /> View Service Plans
+            <Button to="/services" variant="primary">
+              <span>View Service Plans</span>
+              <ArrowRight size={15} strokeWidth={1.5} />
             </Button>
-            <Button to="/projects" variant="secondary" className="min-w-[180px] !border-slate-300 !bg-slate-100 !text-slate-900 hover:!bg-slate-200 dark:!border-emerald-400/50 dark:!bg-emerald-500/20 dark:!text-white dark:hover:!bg-emerald-500/30 font-black shadow-sm">
-              <Code2 size={16} /> Explore Open Projects
+            <Button to="/projects" variant="ghost">
+              <Code2 size={15} strokeWidth={1.5} />
+              <span>Explore Open Projects</span>
             </Button>
           </div>
         </div>

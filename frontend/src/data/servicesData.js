@@ -6,16 +6,16 @@ export const SERVICE_OFFERINGS = [
     price: "INR 1099 - INR 1499",
     amountInr: 1499,
     turnaround: "3 to 5 days for basic scope",
-    badge: "CLIENT FAVORITE",
-    badgeColor: "border-lime-500/40 text-lime-400 bg-lime-500/10",
+    badge: "Popular Scope",
+    badgeColor: "border-emerald-600/25 bg-emerald-500/[0.08] text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400",
     expectedOutcome:
-      "Production-ready responsive frontend modules with clear handover in 3–5 days for basic scope.",
+      "Responsive React and Tailwind frontend modules with clean component handoff in 3 to 5 days for standard scope.",
     summary:
-      "Modern, responsive frontend experiences with clean component architecture and performance-focused implementation.",
+      "Modern responsive interfaces built with clean React component structure and smooth interaction polish.",
     bullets: [
-      "React and Tailwind responsive development",
-      "Responsive layout and interaction design",
-      "Performance and accessibility-first delivery",
+      "React and Tailwind responsive UI development",
+      "Cross-device layout and navigation structure",
+      "Performance and accessibility checks included",
     ],
   },
   {
@@ -25,16 +25,16 @@ export const SERVICE_OFFERINGS = [
     price: "INR 1299 - INR 1799",
     amountInr: 1799,
     turnaround: "3 to 6 days",
-    badge: "SECURE APIS",
-    badgeColor: "border-emerald-500/40 text-emerald-400 bg-emerald-500/10",
+    badge: "API Engineering",
+    badgeColor: "border-black/[0.08] bg-slate-50 text-slate-700 dark:border-white/[0.10] dark:bg-[#1a1e28] dark:text-[#a3a9b8]",
     expectedOutcome:
-      "Ship secure API modules with validation and logging baseline in 3–6 days.",
+      "Validated Express API endpoints with database schemas, authentication middleware, and rate limiting in 3 to 6 days.",
     summary:
-      "Reliable backend systems with API design, authentication, validation, and production-focused architecture.",
+      "Structured server APIs with authentication, input validation, and clean database schemas.",
     bullets: [
-      "REST API development with Node.js and Express",
-      "Database modeling and integration",
-      "Validation, rate limiting, and secure patterns",
+      "REST API routing with Node.js and Express",
+      "MongoDB schema design and indexed queries",
+      "Validation, rate limiting, and session security",
     ],
   },
   {
@@ -44,16 +44,16 @@ export const SERVICE_OFFERINGS = [
     price: "INR 2999 - INR 3499",
     amountInr: 3499,
     turnaround: "Depends on scope",
-    badge: "PREMIUM DELIVERY",
-    badgeColor: "border-amber-500/40 text-amber-400 bg-amber-500/10",
+    badge: "End-to-End Build",
+    badgeColor: "border-emerald-600/25 bg-emerald-500/[0.08] text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400",
     expectedOutcome:
-      "Receive a functional full-stack scope with phased milestones and deployment support.",
+      "Complete full-stack web application delivered across agreed milestones with hosting setup.",
     summary:
-      "End-to-end development from UI to APIs with practical product thinking, deployment support, and production readiness.",
+      "Combined frontend UI, Express REST APIs, database persistence, and cloud deployment.",
     bullets: [
-      "Frontend + backend integration",
-      "Authentication and protected workflows",
-      "Deployment-ready project setup",
+      "Frontend and backend API integration",
+      "Authentication and protected user flows",
+      "Production deployment and environment setup",
     ],
   },
   {
@@ -63,16 +63,16 @@ export const SERVICE_OFFERINGS = [
     price: "INR 2499 - INR 2999",
     amountInr: 2499,
     turnaround: "Phased Milestones / Custom Scope",
-    badge: "CUSTOM SCOPE",
-    badgeColor: "border-cyan-500/40 text-cyan-400 bg-cyan-500/10",
+    badge: "Security Focus",
+    badgeColor: "border-black/[0.08] bg-slate-50 text-slate-700 dark:border-white/[0.10] dark:bg-[#1a1e28] dark:text-[#a3a9b8]",
     expectedOutcome:
-      "Custom security architecture, vulnerability audit & tailored software scope with milestone delivery.",
+      "OWASP vulnerability checklist review, API hardening updates, or scoped security software build.",
     summary:
-      "Tailored security-focused software engineering, OWASP vulnerability assessments, API hardening, and custom project architecture.",
+      "Defensive web security reviews, OWASP Top 10 checks, API hardening, and custom utility builds.",
     bullets: [
-      "Security architecture review & OWASP auditing",
-      "Custom software engineering & scope discussion",
-      "Defensive coding, rate limiting & auth hardening",
+      "Security architecture and OWASP review",
+      "Custom scoped security tools or modules",
+      "Rate limiting, CORS, and auth hardening",
     ],
   },
 ];
@@ -81,13 +81,13 @@ export const ETHICAL_HACKING_TOOL_CARDS = [
   {
     title: "Recon and Diagnostics",
     summary:
-      "Discovery-focused tools for mapping system surfaces and collecting actionable diagnostic data.",
+      "Discovery tools for mapping system surfaces and collecting actionable diagnostic data.",
     tools: ["Kali Linux", "Nmap", "Gobuster", "Whois", "Subdomain Discovery"],
   },
   {
     title: "Application Security Review",
     summary:
-      "Reviewing web applications for common risks with manual validation and guided frameworks.",
+      "Inspecting web applications for common vulnerabilities through manual testing and structured checklists.",
     tools: [
       "Burp Suite",
       "OWASP Testing Guide",
@@ -99,19 +99,19 @@ export const ETHICAL_HACKING_TOOL_CARDS = [
   {
     title: "Network and Traffic Diagnostics",
     summary:
-      "Inspecting packets, services, and protocol behavior to identify reliability and defense gaps.",
+      "Analyzing packet flows, open ports, and protocol behavior to find reliability and transport gaps.",
     tools: ["Wireshark", "Tcpdump", "Port Analysis", "Protocol Inspection"],
   },
   {
     title: "Data and File Analysis Basics",
     summary:
-      "Using basic forensic utilities to inspect hidden data, metadata clues, and file integrity indicators.",
+      "Inspecting metadata clues, hidden embeds, and file integrity markers with standard command utilities.",
     tools: ["Steghide", "ExifTool", "strings", "File Signature Checks"],
   },
   {
     title: "Validation and Hardening Workflows",
     summary:
-      "Structured validation practice to confirm findings and support practical hardening workflows.",
+      "Structured checks to reproduce findings cleanly and apply reliable remediation patterns.",
     tools: [
       "Metasploit",
       "Risk Verification",
@@ -126,7 +126,7 @@ export const MAIN_SKILL_SHOWCASE = [
     id: "web-development",
     title: "Full Stack Development",
     summary:
-      "Delivering end-to-end web applications with responsive interfaces, clean architecture, and reliable backend integration using MERN stack.",
+      "Building complete web applications with responsive interfaces, modular structure, and reliable MERN backends.",
     tags: ["React", "Node.js", "MongoDB", "REST APIs"],
     icon: "Code2",
     color: "emerald",
@@ -136,20 +136,20 @@ export const MAIN_SKILL_SHOWCASE = [
     id: "languages-frameworks",
     title: "Languages & Frameworks",
     summary:
-      "Building practical solutions with JavaScript and Python, powered by React and Next.js for modern product development.",
+      "Developing web products and utilities using JavaScript and Python alongside React and Next.js.",
     tags: ["JavaScript", "Python", "React", "Next.js"],
     icon: "Braces",
-    color: "lime",
+    color: "emerald",
     progressPercent: 80,
   },
   {
     id: "cyber-security",
     title: "Cyber Security Analyst",
     summary:
-      "Applying OWASP Top 10 methodology, Burp Suite workflows, and threat modeling to identify and remediate web vulnerabilities in authorized lab environments.",
+      "Applying OWASP Top 10 methodology, Burp Suite testing, and threat modeling across web apps and lab targets.",
     tags: ["OWASP Top 10", "Burp Suite", "SQLi / XSS", "Threat Modeling"],
     icon: "ShieldCheck",
-    color: "cyan",
+    color: "emerald",
     progressPercent: 78,
   },
 ];
