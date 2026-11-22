@@ -10,7 +10,7 @@ const BlogsSection = ({ loadingLatestBlog, latestBlogError, latestBlogs }) => {
     <section className="section-wrap section-divider pt-10">
       <FadeInUp>
         <div className="text-center">
-          <h2 className="font-display text-5xl font-black uppercase tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
             Recent Blog
             <span className="block text-green-600 dark:text-green-400">Posts</span>
           </h2>
@@ -41,7 +41,7 @@ const BlogsSection = ({ loadingLatestBlog, latestBlogError, latestBlogs }) => {
                     />
                   </div>
                   <div className="flex flex-1 flex-col p-5">
-                    <div className="flex items-center gap-2 text-[10px] text-slate-500 uppercase tracking-wider">
+                    <div className="flex items-center gap-2 font-mono text-xs text-slate-500 dark:text-slate-400">
                       {blog.publishedAt || blog.createdAt
                         ? new Date(blog.publishedAt || blog.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "2-digit" })
                         : null}
@@ -52,15 +52,15 @@ const BlogsSection = ({ loadingLatestBlog, latestBlogError, latestBlogs }) => {
                         </>
                       )}
                     </div>
-                    <h3 className="mt-2 font-display text-sm font-bold uppercase tracking-tight text-slate-900 dark:text-white line-clamp-2">
+                    <h3 className="mt-2 font-display text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white line-clamp-2">
                       {blog.title}
                     </h3>
-                    <p className="mt-2 flex-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-2">
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-2">
                       {blog.description || blog.excerpt}
                     </p>
                     {(blog.category || (blog.tags && blog.tags[0])) && (
                       <div className="mt-3">
-                        <span className="inline-flex items-center rounded border border-green-500/30 bg-green-500/10 text-green-700 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                        <span className="inline-flex items-center rounded border border-green-500/30 bg-green-500/10 text-green-700 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400 px-2.5 py-0.5 text-xs font-medium">
                           {blog.category || blog.tags[0]}
                         </span>
                       </div>
@@ -70,9 +70,9 @@ const BlogsSection = ({ loadingLatestBlog, latestBlogError, latestBlogs }) => {
                       target="_blank"
                       rel="noreferrer"
                       aria-label={`Read article: ${blog.title}`}
-                      className="mt-4 inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-slate-800 hover:text-green-600 dark:text-slate-300 dark:hover:text-green-400 transition-colors"
+                      className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-800 hover:text-green-600 dark:text-slate-300 dark:hover:text-green-400 transition-colors"
                     >
-                      Read Article <ArrowRight size={11} />
+                      Read Article <ArrowRight size={13} />
                     </a>
                   </div>
                 </article>
@@ -90,10 +90,10 @@ const BlogsSection = ({ loadingLatestBlog, latestBlogError, latestBlogs }) => {
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-green-500/30 bg-green-500/10 text-green-600 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-400">
                 <BookOpen size={24} />
               </div>
-              <h3 className="font-display text-lg font-black uppercase tracking-tight text-slate-900 dark:text-white">
+              <h3 className="font-display text-xl font-bold tracking-tight text-slate-900 dark:text-white">
                 View All Blogs
               </h3>
-              <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-slate-500">// Read More Articles</p>
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Read more articles</p>
               <Button to="/blog" className="mt-6 w-full justify-center border border-green-500/40 bg-green-50 text-green-700 hover:bg-green-500 hover:text-black dark:border-green-400/40 dark:bg-green-500/10 dark:text-green-300 dark:hover:bg-green-500 dark:hover:text-black">
                 All Articles <ArrowRight size={13} />
               </Button>

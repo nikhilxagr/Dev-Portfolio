@@ -6,10 +6,10 @@ import FadeInUp from "@/components/animations/FadeInUp";
 const featuredHomeJourney = [
   {
     id: "lenovo-leap-hackathon-2026",
-    tag: "HACKATHONS",
-    date: "SEPTEMBER 18, 2026",
-    title: "LENOVO LEAP HACKATHON",
-    subOrg: "// AKTU, LUCKNOW",
+    tag: "Hackathons",
+    date: "Sep 18, 2026",
+    title: "Lenovo LEAP Hackathon",
+    subOrg: "AKTU, Lucknow",
     description:
       "Attended the Lenovo LEAP Hackathon at AKTU, Lucknow, where I presented TaskNexus, a service marketplace concept connecting clients with skilled freelancers while simplifying task assignment, quality checks, and delivery.",
     imageUrl: "/images/journey/Lenovo1.jpg",
@@ -17,10 +17,10 @@ const featuredHomeJourney = [
   },
   {
     id: "nerds-hack-days-lucknow-2026",
-    tag: "HACKATHONS",
-    date: "JULY 26, 2026",
-    title: "NERDS HACK DAYS: BUILDING KANOON-MATE",
-    subOrg: "// NERDS COMMUNITY LUCKNOW",
+    tag: "Hackathons",
+    date: "Jul 26, 2026",
+    title: "Nerds Hack Days: Building Kanoon-Mate",
+    subOrg: "Nerds Community Lucknow",
     description:
       "Participated in the Nerds Hack Days offline hackathon in Lucknow, collaborating with developers, designers, and AI builders to engineer Kanoon-Mate—an intelligent AI legal...",
     imageUrl: "/images/journey/Nerd1.jpg",
@@ -28,10 +28,10 @@ const featuredHomeJourney = [
   },
   {
     id: "qualcomm-ai-hub-heygen-2026",
-    tag: "WORKSHOPS",
-    date: "SEPTEMBER 27, 2026",
-    title: "QUALCOMM AI HUB MEETUP & HEYGEN COMMUNITY EVENT",
-    subOrg: "// QUALCOMM & HEYGEN LUCKNOW",
+    tag: "Workshops",
+    date: "Sep 27, 2026",
+    title: "Qualcomm AI Hub Meetup & HeyGen Event",
+    subOrg: "Qualcomm & HeyGen Lucknow",
     description:
       "Attended an AI-focused developer workshop and community event in Lucknow, featuring Qualcomm AI Hub and HeyGen. Explored On-Device AI, Generative AI, and AI agent workflows...",
     imageUrl: "/images/journey/Qualcum1.jpg",
@@ -45,17 +45,17 @@ const JourneySection = () => {
       <FadeInUp>
         <div className="text-center max-w-3xl mx-auto">
           <div className="mb-4 inline-block">
-            <span className="inline-flex items-center gap-2 rounded-full border border-lime-500/40 dark:border-[#ccff00]/30 bg-lime-500/10 dark:bg-[#ccff00]/10 px-4.5 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-lime-700 dark:text-[#ccff00]">
-              CONTINUOUS LEARNING &amp; GROWTH
+            <span className="inline-flex items-center gap-2 rounded-full border border-lime-500/40 dark:border-[#ccff00]/30 bg-lime-500/10 dark:bg-[#ccff00]/10 px-4 py-1.5 text-xs font-semibold text-lime-700 dark:text-[#ccff00]">
+              Continuous Learning &amp; Growth
             </span>
           </div>
 
-          <h2 className="font-display text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white sm:text-6xl lg:text-7xl">
-            PROFESSIONAL
-            <span className="block text-slate-900 dark:text-white">JOURNEY</span>
+          <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
+            Professional{" "}
+            <span className="block text-slate-900 dark:text-white">Journey</span>
           </h2>
 
-          <p className="mt-4 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-4 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
             Explore my experiences beyond projects and blogs, including internships, workshops, hackathons, conferences, certifications, industrial visits, and technical events.
           </p>
         </div>
@@ -89,26 +89,26 @@ const JourneySection = () => {
               {/* Card Header Tag & Date */}
               <div className="flex flex-1 flex-col p-5">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center rounded-sm border border-lime-500/50 dark:border-[#ccff00]/40 bg-lime-500/10 dark:bg-[#ccff00]/10 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest text-lime-700 dark:text-[#ccff00]">
+                  <span className="inline-flex items-center rounded-sm border border-lime-500/50 dark:border-[#ccff00]/40 bg-lime-500/10 dark:bg-[#ccff00]/10 px-2.5 py-0.5 text-xs font-semibold text-lime-700 dark:text-[#ccff00]">
                     {item.tag}
                   </span>
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <span className="font-mono text-xs font-medium text-slate-500 dark:text-slate-400">
                     {item.date}
                   </span>
                 </div>
 
                 {/* Card Title */}
-                <h3 className="mt-3 font-display text-sm sm:text-base font-black uppercase tracking-tight text-slate-900 dark:text-white leading-snug group-hover:text-lime-600 dark:group-hover:text-[#ccff00] transition-colors line-clamp-2">
+                <h3 className="mt-3 font-display text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white leading-snug group-hover:text-lime-600 dark:group-hover:text-[#ccff00] transition-colors line-clamp-2">
                   {item.title}
                 </h3>
 
                 {/* Sub Organization Line */}
-                <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">
                   {item.subOrg}
                 </p>
 
                 {/* Description */}
-                <p className="mt-2.5 flex-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3">
+                <p className="mt-2.5 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-3">
                   {item.description}
                 </p>
 
@@ -117,7 +117,7 @@ const JourneySection = () => {
                   {item.skills.map((skill, sIdx) => (
                     <span
                       key={sIdx}
-                      className="inline-flex items-center rounded-md border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-2 py-0.5 font-mono text-[9.5px] text-slate-600 dark:text-slate-400"
+                      className="inline-flex items-center rounded-md border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-2.5 py-0.5 font-mono text-xs text-slate-600 dark:text-slate-400"
                     >
                       {skill}
                     </span>
@@ -134,9 +134,9 @@ const JourneySection = () => {
         <div className="mt-10 flex justify-center">
           <Button
             to="/journey"
-            className="rounded-full bg-[#ccff00] text-black font-black font-mono text-xs uppercase tracking-wider px-8 py-3.5 hover:bg-lime-300 dark:hover:bg-[#b8e600] shadow-[0_0_24px_rgba(204,255,0,0.4)] transition-all duration-300 transform hover:scale-105 active:scale-95 inline-flex items-center gap-2 border-0"
+            className="rounded-full bg-[#ccff00] text-black font-semibold text-sm px-8 py-3.5 hover:bg-lime-300 dark:hover:bg-[#b8e600] shadow-[0_0_24px_rgba(204,255,0,0.4)] transition-all duration-300 transform hover:scale-105 active:scale-95 inline-flex items-center gap-2 border-0"
           >
-            EXPLORE COMPLETE JOURNEY <ArrowRight size={14} strokeWidth={3} />
+            Explore Complete Journey <ArrowRight size={15} strokeWidth={2.5} />
           </Button>
         </div>
       </FadeInUp>
