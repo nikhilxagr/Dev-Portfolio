@@ -1022,15 +1022,31 @@ html.light .border-white\/20 {
   border-color: #cbd5e1 !important;
 }
 
-/* Accessible visible focus ring for keyboard navigation */
-:focus-visible {
+/* Accessible visible focus ring for keyboard navigation (exclude inputs and textareas) */
+:focus-visible:not(input):not(textarea):not(select) {
   outline: 2px solid #22c55e !important;
   outline-offset: 2px !important;
 }
 
-html.light :focus-visible {
+html.light :focus-visible:not(input):not(textarea):not(select) {
   outline: 2px solid #0284c7 !important;
   outline-offset: 2px !important;
+}
+
+/* Explicitly eliminate green focus outlines on textareas, inputs and AI search bars */
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+.ai-chat-textarea,
+.ai-chat-textarea:focus,
+.ai-chat-textarea:focus-visible,
+#nikhil-ai-input,
+#nikhil-ai-input:focus,
+#nikhil-ai-input:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
 }
 
 /* # PREMIUM SCROLL & ANIMATION SYSTEM */
@@ -1426,5 +1442,15 @@ html.light .profile-modal-scroll:hover {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-drift {
     animation-duration: 220s;
+  }
+}
+
+/* Gemini shimmer sweep for AI image generation */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  50%, 100% {
+    transform: translateX(100%);
   }
 }
