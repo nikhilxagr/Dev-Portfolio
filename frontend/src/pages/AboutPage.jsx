@@ -150,11 +150,11 @@ const AboutPage = () => {
           {/* # Top Header Hero Banner (Matching Services & Skills Pages) */}
           <FadeInUp>
             <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
-                <Code2 size={13} /> Engineering Identity &amp; Background
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
+                <Code2 size={14} /> Engineering Identity &amp; Background
               </span>
 
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-slate-900 dark:text-white leading-[1.05]">
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.08]">
                 About &amp;{" "}
                 <span className="bg-gradient-to-r from-lime-500 via-emerald-500 to-teal-500 dark:from-lime-400 dark:via-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
                   Background
@@ -190,14 +190,14 @@ const AboutPage = () => {
                   
                   {/* Left Narrative (7 cols) */}
                   <div className="lg:col-span-7 space-y-4">
-                    <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
-                      // ENGINEERING PROFILE
+                    <span className="text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-400">
+                      Engineering Profile
                     </span>
-                    <h2 className="font-display text-3xl sm:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white leading-[1.05]">
+                    <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.08]">
                       Nikhil Agrahari
                     </h2>
-                    <p className="font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-700 dark:text-cyan-400">
-                      Full-Stack Developer · Cybersecurity Practitioner
+                    <p className="text-sm font-semibold text-emerald-700 dark:text-cyan-400">
+                      Full-Stack Developer &amp; Security Researcher
                     </p>
 
                     <p className="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300 font-medium">
@@ -300,16 +300,16 @@ const AboutPage = () => {
           <FadeInUp delay={0.06}>
             <section aria-labelledby="current-chapter-title">
               <div className="mb-8">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
-                  // ACADEMIC &amp; CAREER STATUS
+                <span className="text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-400">
+                  Academic &amp; Career Status
                 </span>
                 <h2
                   id="current-chapter-title"
-                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white mt-1"
+                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mt-1"
                 >
                   Current Chapter
                 </h2>
-                <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
+                <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                   Education · Technical Specialization · Career Availability
                 </p>
                 <div className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
@@ -395,16 +395,16 @@ const AboutPage = () => {
           <FadeInUp delay={0.1}>
             <section aria-labelledby="what-i-build-title">
               <div className="mb-8">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
-                  // CORE SPECIALIZATIONS
+                <span className="text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-400">
+                  Core Specializations
                 </span>
                 <h2
                   id="what-i-build-title"
-                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white mt-1"
+                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mt-1"
                 >
                   What I Build
                 </h2>
-                <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
+                <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                   Applied Full-Stack Web Engineering &amp; Defensive Security Systems
                 </p>
                 <div className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
@@ -469,19 +469,19 @@ const AboutPage = () => {
           <FadeInUp delay={0.14}>
             <section aria-labelledby="workflow-title">
               <div className="mb-8">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
-                  // METHODOLOGY &amp; WORKFLOW
+                <span className="text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-400">
+                  Methodology &amp; Workflow
                 </span>
                 <h2
                   id="workflow-title"
-                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white mt-1"
+                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mt-1"
                 >
-                  HOW I{" "}
+                  How I{" "}
                   <span className="bg-gradient-to-r from-lime-500 via-emerald-500 to-teal-500 dark:from-lime-400 dark:via-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
-                    WORK
+                    Work
                   </span>
                 </h2>
-                <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                   A practical path from problem to product — simulated step by step with smooth auto-progression.
                 </p>
                 <div className="mt-5 h-px w-full bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
@@ -495,12 +495,12 @@ const AboutPage = () => {
           <FadeInUp delay={0.16}>
             <section aria-labelledby="consistency-title">
               <div className="mb-8">
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
-                  // PROVABLE COMMITMENT
+                <span className="text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-400">
+                  Provable Commitment
                 </span>
                 <h2
                   id="consistency-title"
-                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white mt-1"
+                  className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mt-1"
                 >
                   Consistency in Practice
                 </h2>

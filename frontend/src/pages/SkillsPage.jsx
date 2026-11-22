@@ -291,14 +291,14 @@ const SkillsPage = () => {
         {/* # Page Header (Matching ServicesPage Layout & Typography) */}
         <FadeInUp>
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
-              <Code2 size={13} /> Applied Engineering Domains
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400 mb-5">
+              <Code2 size={14} /> Applied Engineering Domains
             </span>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-slate-900 dark:text-white leading-[1.05]">
-              Technical{" "}
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.08]">
+              Technical Skills &amp;{" "}
               <span className="bg-gradient-to-r from-lime-500 via-emerald-500 to-teal-500 dark:from-lime-400 dark:via-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
-                Capabilities
+                Focus Areas
               </span>
             </h1>
 
@@ -322,13 +322,13 @@ const SkillsPage = () => {
           <div className="grid gap-6 lg:grid-cols-12 lg:items-center">
             
             <div className="lg:col-span-7 space-y-3">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-400">
-                // ENGINEERING STANDARDS
+              <span className="text-xs font-semibold tracking-wide text-emerald-700 dark:text-emerald-400">
+                Engineering Standards
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Skills Backed by Real-World Production Code
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
                 I do not list technologies as isolated badges. Every skill here has been applied in live client or personal systems—from real-time WebSockets and webhook verification to security vulnerability audits.
               </p>
             </div>
