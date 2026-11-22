@@ -6,8 +6,8 @@ import AIChatPanel from './AIChatPanel';
 const NikhilAI = () => {
   const location = useLocation();
 
-  // Hide AI assistant on admin pages
-  if (location.pathname.startsWith('/admin')) {
+  // Hide AI assistant on admin pages or dedicated /ai page
+  if (location.pathname.startsWith('/admin') || location.pathname === '/ai') {
     return null;
   }
 
@@ -21,15 +21,31 @@ const NikhilAIWidget = () => {
     isLoading,
     isStreaming,
     inputValue,
+    isDeepThink,
+    setIsDeepThink,
     closePanel,
     togglePanel,
     sendMessage,
+    stopStreaming,
     clearHistory,
+    regenerateLastMessage,
     setInputValue,
     handleKeyDown,
     messagesEndRef,
     inputRef,
     hasMessages,
+    imageQuota,
+    selectedImageModel,
+    setSelectedImageModel,
+    availableImageModels,
+    sessions,
+    activeSessionId,
+    isSessionsLoading,
+    selectSession,
+    deleteSession,
+    renameSession,
+    clearAllSessions,
+    createNewChat,
   } = useNikhilAI();
 
   return (
@@ -42,8 +58,12 @@ const NikhilAIWidget = () => {
         isStreaming={isStreaming}
         inputValue={inputValue}
         hasMessages={hasMessages}
+        isDeepThink={isDeepThink}
+        onToggleDeepThink={() => setIsDeepThink((prev) => !prev)}
         onClose={closePanel}
         onClear={clearHistory}
+        onStop={stopStreaming}
+        onRegenerate={regenerateLastMessage}
         onSend={sendMessage}
         onInputChange={setInputValue}
         onKeyDown={handleKeyDown}
@@ -52,6 +72,18 @@ const NikhilAIWidget = () => {
         }}
         messagesEndRef={messagesEndRef}
         inputRef={inputRef}
+        imageQuota={imageQuota}
+        selectedImageModel={selectedImageModel}
+        onSelectImageModel={setSelectedImageModel}
+        availableImageModels={availableImageModels}
+        sessions={sessions}
+        activeSessionId={activeSessionId}
+        isSessionsLoading={isSessionsLoading}
+        onSelectSession={selectSession}
+        onDeleteSession={deleteSession}
+        onRenameSession={renameSession}
+        onClearAllSessions={clearAllSessions}
+        onNewChat={createNewChat}
       />
     </>
   );
