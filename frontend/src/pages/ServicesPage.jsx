@@ -305,23 +305,22 @@ const ServicesPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300">
+              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
                 Available for Freelance &amp; Contract Work
               </span>
             </motion.div>
 
-            {/* Proportional Heading (Matching Blog & Journey Page Scale) */}
+            {/* Proportional Heading */}
             <motion.h1
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.1 }}
-              className="mt-4 font-display text-[8.2vw] sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.05] tracking-tight text-zinc-900 dark:text-white"
+              className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] tracking-tight text-zinc-900 dark:text-white"
             >
-              SERVICES &amp;
-              <br />
+              Services &amp;{" "}
               <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
-                PACKAGES
+                Packages
               </span>
             </motion.h1>
 
@@ -362,13 +361,13 @@ const ServicesPage = () => {
                   { label: "Available Packages", value: "04 Core", color: "text-zinc-900 dark:text-white" },
                   { label: "Turnaround Time", value: "3–7 Days", color: "text-lime-500 dark:text-lime-300" },
                   { label: "Security Standard", value: "OWASP Hardened", color: "text-zinc-900 dark:text-white" },
-                  { label: "Checkout Model", value: "100% SECURE", color: "text-amber-600 dark:text-amber-500" },
+                  { label: "Checkout Model", value: "100% Secure", color: "text-amber-600 dark:text-amber-500" },
                 ].map(({ label, value, color }, i) => (
                   <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
-                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-600 mb-1">
+                    <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                       {label}
                     </span>
-                    <span className={`text-xl font-black tracking-tight ${color}`}>
+                    <span className={`text-xl font-bold tracking-tight ${color}`}>
                       {value}
                     </span>
                   </div>
@@ -399,13 +398,13 @@ const ServicesPage = () => {
         <div className="mt-16 mb-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-6 border-b border-slate-200/80 dark:border-white/[0.08]">
             <div>
-              <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-400 block mb-1">
-                // SERVICE CATALOG
+              <span className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400 block mb-1">
+                Service Catalog
               </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
                 Available Packages &amp; Deliverables
               </h2>
-              <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
+              <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                 Choose a package, inspect deliverables, and book securely.
               </p>
             </div>

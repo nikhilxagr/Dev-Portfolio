@@ -216,21 +216,21 @@ const DetailsPanel = ({ d, accent, imageUrl, onOpenLightbox }) => (
     </div>
 
     {/* Journey title */}
-    <p className={`mb-4 bg-gradient-to-r ${accent} bg-clip-text text-sm font-black uppercase tracking-wider text-transparent`}>
+    <p className={`mb-4 bg-gradient-to-r ${accent} bg-clip-text text-sm font-bold text-transparent`}>
       {d.journeyTitle}
     </p>
 
     {/* Text Sections */}
     {[
-      { key: "overview", label: "// Overview", text: d.overview },
-      { key: "problem", label: "// Problem", text: d.problem },
-      { key: "solution", label: "// Solution", text: d.solution },
-      { key: "objectives", label: "// Objectives", text: d.objectives },
-      { key: "outcomes", label: "// Outcomes", text: d.outcomes },
-      { key: "challenge", label: "// Challenge", text: d.challenge },
+      { key: "overview", label: "Overview", text: d.overview },
+      { key: "problem", label: "Problem", text: d.problem },
+      { key: "solution", label: "Solution", text: d.solution },
+      { key: "objectives", label: "Objectives", text: d.objectives },
+      { key: "outcomes", label: "Outcomes", text: d.outcomes },
+      { key: "challenge", label: "Challenge", text: d.challenge },
     ].filter(({ text }) => Boolean(text)).map(({ key, label, text }) => (
       <div key={key} className="mb-4">
-        <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">{label}</p>
+        <p className="mb-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400">{label}</p>
         {Array.isArray(text) ? (
           <ul className="space-y-1.5 mt-1">
             {text.map((item, i) => (
@@ -249,8 +249,8 @@ const DetailsPanel = ({ d, accent, imageUrl, onOpenLightbox }) => (
     {/* Key Features / Event Highlights */}
     {(d.keyFeatures?.length > 0 || d.eventHighlights?.length > 0) && (
       <div className="mb-4">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">
-          // {d.keyFeatures?.length > 0 ? "Key Features" : "Event Highlights"}
+        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+          {d.keyFeatures?.length > 0 ? "Key Features" : "Event Highlights"}
         </p>
         <ul className="space-y-1.5">
           {(d.keyFeatures || d.eventHighlights).map((item, i) => (
@@ -266,7 +266,7 @@ const DetailsPanel = ({ d, accent, imageUrl, onOpenLightbox }) => (
     {/* Areas of Study */}
     {d.areasOfStudy?.length > 0 && (
       <div className="mb-4">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Areas of Study</p>
+        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">Areas of Study</p>
         <ul className="space-y-1.5">
           {d.areasOfStudy.map((item, i) => (
             <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
@@ -292,7 +292,7 @@ const DetailsPanel = ({ d, accent, imageUrl, onOpenLightbox }) => (
     {/* Gallery */}
     {(d.gallery?.length > 0 || d.galleryPreview?.length > 0) && (
       <div className="mb-4">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Gallery Preview</p>
+        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">Gallery Preview</p>
         <div className="flex flex-wrap gap-2">
           {(d.gallery || d.galleryPreview).map((src, i) => (
             <img
@@ -317,10 +317,10 @@ const DetailsPanel = ({ d, accent, imageUrl, onOpenLightbox }) => (
     {/* Skills */}
     {(d.skills?.length > 0 || d.skillsGained?.length > 0) && (
       <div className="mb-4">
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500">// Skills Gained</p>
+        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">Skills Gained</p>
         <div className="flex flex-wrap gap-1.5">
           {(d.skills || d.skillsGained).map((s) => (
-            <span key={s} className="rounded-lg border border-zinc-200 dark:border-white/[0.07] bg-zinc-100 dark:bg-zinc-800/60 px-2.5 py-1 text-[10px] font-semibold text-zinc-700 dark:text-zinc-300">{s}</span>
+            <span key={s} className="rounded-lg border border-zinc-200 dark:border-white/[0.07] bg-zinc-100 dark:bg-zinc-800/60 px-2.5 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">{s}</span>
           ))}
         </div>
       </div>
@@ -329,10 +329,10 @@ const DetailsPanel = ({ d, accent, imageUrl, onOpenLightbox }) => (
     {/* Technologies */}
     {(d.technologies?.length > 0 || d.technologiesCovered?.length > 0) && (
       <div>
-        <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-500">// Technologies Covered</p>
+        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">Technologies Covered</p>
         <div className="flex flex-wrap gap-1.5">
           {(d.technologies || d.technologiesCovered).map((t) => (
-            <span key={t} className={`rounded-lg bg-gradient-to-r ${accent} px-2.5 py-1 text-[10px] font-bold text-black`}>{t}</span>
+            <span key={t} className={`rounded-lg bg-gradient-to-r ${accent} px-2.5 py-1 text-xs font-semibold text-black`}>{t}</span>
           ))}
         </div>
       </div>
@@ -981,7 +981,7 @@ const JourneyPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300">
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
               Professional Growth
             </span>
@@ -991,12 +991,11 @@ const JourneyPage = () => {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.1 }}
-            className="mt-4 font-display text-[8.2vw] sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.05] tracking-tight text-zinc-900 dark:text-white"
+            className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] tracking-tight text-zinc-900 dark:text-white"
           >
-            PROFESSIONAL
-            <br />
+            Professional{" "}
             <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
-              JOURNEY
+              Journey
             </span>
           </motion.h1>
 
@@ -1004,7 +1003,7 @@ const JourneyPage = () => {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.2 }}
-            className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-zinc-500 dark:text-zinc-400 sm:text-base"
+            className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-base"
           >
             A timeline of my learning, internships, workshops, hackathons, certifications, and technical experiences that shaped my journey as a Full-Stack Web Developer and Cybersecurity Researcher.
           </motion.p>
@@ -1021,13 +1020,13 @@ const JourneyPage = () => {
                 { label: "Started Journey", value: "2024", color: "text-zinc-900 dark:text-white" },
                 { label: "Current Year", value: "2026", color: "text-lime-500 dark:text-lime-300" },
                 { label: "Learning Span", value: "3 Years", color: "text-zinc-900 dark:text-white" },
-                { label: "Active Status", value: "LEARNING & BUILDING", color: "text-amber-600 dark:text-amber-500" },
+                { label: "Active Status", value: "Learning & Building", color: "text-amber-600 dark:text-amber-500" },
               ].map(({ label, value, color }, i) => (
                 <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
-                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-600 mb-1">
+                  <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                     {label}
                   </span>
-                  <span className={`text-xl font-black tracking-tight ${color}`}>
+                  <span className={`text-xl font-bold tracking-tight ${color}`}>
                     {value}
                   </span>
                 </div>
