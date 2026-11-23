@@ -176,12 +176,12 @@ const ProjectsPage = () => {
         {/* Minimal Hero Header */}
         <div className="text-center max-w-4xl mx-auto">
           {/* Professional Heading */}
-          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
-            PRODUCTION <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">CASE STUDIES</span>
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
+            Production <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Case Studies</span>
           </h1>
 
           {/* Clean Subtitle */}
-          <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
             AI/ML, Python, and web development projects built with React, Node.js, and MERN stack workflows.
           </p>
 
@@ -212,7 +212,7 @@ const ProjectsPage = () => {
                 key={item}
                 type="button"
                 onClick={() => handleCategorySelect(item)}
-                className={`rounded-xl px-4 py-2 text-xs font-black tracking-wider uppercase transition-colors duration-150 ${
+                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold transition-colors duration-150 ${
                   category === item
                     ? "border border-lime-400 bg-lime-400 text-slate-950 shadow-[0_0_20px_rgba(163,230,53,0.55)]"
                     : "border border-slate-200 bg-slate-100/80 text-slate-700 hover:border-slate-400 dark:border-emerald-500/20 dark:bg-[#08140c]/80 dark:text-slate-300 dark:hover:border-lime-400/50 dark:hover:text-white"
@@ -228,7 +228,7 @@ const ProjectsPage = () => {
                 value={sortBy}
                 onChange={handleSortChange}
                 aria-label="Sort projects by"
-                className="appearance-none rounded-xl border border-slate-300 bg-slate-100/80 dark:border-emerald-500/30 dark:bg-[#08140c]/90 px-3.5 py-2 pr-8 font-mono text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 outline-none focus:border-lime-400 cursor-pointer shadow-sm transition-colors duration-150 hover:border-slate-400 dark:hover:border-lime-400/50"
+                className="appearance-none rounded-xl border border-slate-300 bg-slate-100/80 dark:border-emerald-500/30 dark:bg-[#08140c]/90 px-3.5 py-2 pr-8 font-mono text-xs font-semibold text-slate-800 dark:text-slate-200 outline-none focus:border-lime-400 cursor-pointer shadow-sm transition-colors duration-150 hover:border-slate-400 dark:hover:border-lime-400/50"
               >
                 <option value="FEATURED">Sort By: Featured</option>
                 <option value="NEWEST">Sort By: Newest</option>
@@ -239,8 +239,8 @@ const ProjectsPage = () => {
           </div>
 
           {/* Project Counter */}
-          <p className="mt-5 font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-            // SHOWING <span className="text-lime-500 dark:text-lime-400 font-extrabold">{sortedProjects.length}</span> PROJECTS
+          <p className="mt-5 font-mono text-xs font-medium text-slate-500 dark:text-slate-400">
+            Showing <span className="text-lime-500 dark:text-lime-400 font-bold">{sortedProjects.length}</span> projects
           </p>
         </div>
 
