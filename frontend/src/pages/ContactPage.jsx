@@ -12,7 +12,7 @@ import {
   Copy,
   Check,
   MessageSquare,
-  Sparkles,
+  Lock,
   ShieldCheck,
   ArrowRight,
   Globe,
@@ -28,6 +28,10 @@ import {
   SOCIAL_LINKS,
 } from "@/constants/siteData";
 import { SERVICE_OFFERINGS } from "@/data/servicesData";
+
+const MotionDiv = motion.div;
+const MotionH1 = motion.h1;
+const MotionP = motion.p;
 
 const initialForm = {
   name: "",
@@ -118,15 +122,15 @@ const ContactPage = () => {
   return (
     <>
       <SeoHead
-        title="Contact Nikhil Agrahari | Best Full Stack Developer in Lucknow & Prayagraj"
-        description="Get in touch with Nikhil Agrahari — premier Full Stack Developer & MERN Stack Engineer in Lucknow & Prayagraj. Available for web projects, freelance work, and technical collaborations."
+        title="Contact Nikhil Agrahari | Full-Stack Engineer"
+        description="Get in touch with Nikhil Agrahari — Full-Stack Engineer (React, Node.js, MongoDB) based in Lucknow & Prayagraj. Open to software engineering internships, freelance builds, and collaborations."
         pathname="/contact"
         image={SITE_PROFILE.profileImage}
-        imageAlt="Contact Nikhil Agrahari - Full Stack Developer Lucknow Prayagraj"
+        imageAlt="Contact Nikhil Agrahari — Full-Stack Engineer"
         keywords={[
-          "contact best full stack developer in lucknow",
-          "contact best full stack developer in prayagraj",
           "contact Nikhil Agrahari",
+          "full stack engineer lucknow",
+          "full stack developer prayagraj",
           "hire developer Lucknow Prayagraj",
           "freelance web developer contact",
         ]}
@@ -136,62 +140,56 @@ const ContactPage = () => {
         ])}
       />
 
-      <section className="section-wrap pt-4 sm:pt-8 pb-24">
-        {/* Centered Hero Header (Styled to align with Blog & Services Scale) */}
-        <div className="relative text-center max-w-5xl mx-auto pt-6 sm:pt-10 pb-12 sm:pb-16">
-          {/* Ambient Radial Lighting */}
-          <div className="pointer-events-none absolute inset-0 -top-12 flex items-center justify-center">
-            <div className="h-72 w-[34rem] rounded-full bg-lime-400/[0.07] dark:bg-lime-400/[0.12] blur-[130px]" />
-          </div>
-
+      <section className="section-wrap pt-6 sm:pt-8 pb-24">
+        {/* Centered Hero Header */}
+        <div className="relative text-center max-w-5xl mx-auto pb-12 sm:pb-16">
           <div className="relative">
-            {/* Eyebrow Badge with Pulse */}
-            <motion.div
+            {/* Eyebrow Badge */}
+            <MotionDiv
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
-              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
+              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/[0.08] px-4 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-400">
                 Available for Projects &amp; Collaborations
               </span>
-            </motion.div>
+            </MotionDiv>
 
             {/* Proportional Heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 28 }}
+            <MotionH1
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1 }}
-              className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] tracking-tight text-zinc-900 dark:text-white"
+              transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-2 font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.08] tracking-tight text-slate-900 dark:text-[#eef0f5]"
             >
               Get In{" "}
-              <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
+              <span className="text-emerald-600 dark:text-emerald-400">
                 Touch
               </span>
-            </motion.h1>
+            </MotionH1>
 
             {/* Subtitle Details */}
-            <motion.p
+            <MotionP
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.2 }}
-              className="mx-auto mt-6 max-w-3xl text-sm leading-7 text-zinc-500 dark:text-zinc-400 sm:text-base font-normal"
+              transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
+              className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8] sm:text-base"
             >
               Direct contact channels, project brief submissions, and rapid turnaround SLAs for full-stack web engineering, custom SaaS solutions, and technical collaborations.
-            </motion.p>
+            </MotionP>
 
             {/* Quick Action CTA Pill Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
+            <MotionDiv
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.25 }}
-              className="mt-8 flex flex-wrap items-center justify-center gap-3"
+              transition={{ duration: 0.65, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-7 flex flex-wrap items-center justify-center gap-3"
             >
               <a
                 href={`mailto:${QUICK_CONTACT.email}`}
-                className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 dark:border-white/10 bg-white/70 dark:bg-zinc-900/60 px-4 py-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 shadow-sm backdrop-blur-md hover:border-lime-400 hover:text-zinc-950 dark:hover:text-white transition-all"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-black/[0.08] bg-white px-4 text-xs font-medium text-slate-800 hover:border-slate-300 hover:text-slate-950 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#d1d5df] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5] transition-colors duration-150"
               >
-                <Mail size={14} className="text-lime-500 dark:text-lime-400" />
+                <Mail size={15} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
                 Direct Email
               </a>
               {QUICK_CONTACT.whatsapp ? (
@@ -199,46 +197,45 @@ const ContactPage = () => {
                   href={QUICK_CONTACT.whatsapp}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 dark:border-white/10 bg-white/70 dark:bg-zinc-900/60 px-4 py-2 text-xs font-bold text-zinc-800 dark:text-zinc-200 shadow-sm backdrop-blur-md hover:border-lime-400 hover:text-zinc-950 dark:hover:text-white transition-all"
+                  className="inline-flex h-9 items-center gap-2 rounded-lg border border-black/[0.08] bg-white px-4 text-xs font-medium text-slate-800 hover:border-slate-300 hover:text-slate-950 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#d1d5df] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5] transition-colors duration-150"
                 >
-                  <MessageSquare size={14} className="text-emerald-500 dark:text-emerald-400" />
+                  <MessageSquare size={15} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
                   Quick WhatsApp
                 </a>
               ) : null}
               <Link
                 to="/services"
-                className="inline-flex items-center gap-2 rounded-xl border border-lime-500/30 bg-lime-500/[0.08] dark:bg-lime-400/[0.06] px-4 py-2 text-xs font-bold text-lime-700 dark:text-lime-300 shadow-sm backdrop-blur-md hover:border-lime-400 hover:bg-lime-500/15 transition-all"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-emerald-600/30 bg-emerald-500/10 px-4 text-xs font-medium text-emerald-700 hover:bg-emerald-500/15 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/20 transition-colors duration-150"
               >
-                <Sparkles size={14} />
-                Explore Packages &rarr;
+                Explore Packages <ArrowRight size={14} strokeWidth={1.5} />
               </Link>
-            </motion.div>
+            </MotionDiv>
 
-            {/* Core Stats Capsule (Matching Blog & Services Structure) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+            {/* Core Stats Capsule */}
+            <MotionDiv
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.3 }}
-              className="mx-auto mt-12 max-w-4xl rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 backdrop-blur-xl shadow-sm dark:shadow-none"
+              transition={{ duration: 0.65, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="mx-auto mt-10 max-w-4xl rounded-2xl border border-black/[0.08] bg-white p-4 sm:p-6 dark:border-white/[0.08] dark:bg-[#11141c]"
             >
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:divide-x md:divide-zinc-200 dark:md:divide-white/[0.08]">
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4 md:divide-x md:divide-black/[0.08] dark:md:divide-white/[0.08]">
                 {[
-                  { label: "Response SLA", value: "Within 12-24h", color: "text-lime-500 dark:text-lime-300" },
-                  { label: "Direct Channels", value: "Email & Phone", color: "text-zinc-900 dark:text-white" },
-                  { label: "Work Location", value: "Lucknow / Remote", color: "text-zinc-900 dark:text-white" },
-                  { label: "Availability", value: "Open for Work", color: "text-amber-600 dark:text-amber-500" },
+                  { label: "Response SLA", value: "Within 12-24h", color: "text-emerald-600 dark:text-emerald-400" },
+                  { label: "Direct Channels", value: "Email & Phone", color: "text-slate-900 dark:text-[#eef0f5]" },
+                  { label: "Work Location", value: "Lucknow / Remote", color: "text-slate-900 dark:text-[#eef0f5]" },
+                  { label: "Availability", value: "Open for Work", color: "text-emerald-600 dark:text-emerald-400" },
                 ].map(({ label, value, color }, i) => (
-                  <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
-                    <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
+                  <div key={label} className={`flex flex-col items-center justify-center text-center ${i > 0 ? "md:pl-4" : ""}`}>
+                    <span className="mb-1 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
                       {label}
                     </span>
-                    <span className={`text-xl font-bold tracking-tight ${color}`}>
+                    <span className={`text-base sm:text-lg font-semibold tracking-tight tabular-nums ${color}`}>
                       {value}
                     </span>
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </MotionDiv>
           </div>
         </div>
 
@@ -246,98 +243,99 @@ const ContactPage = () => {
         <div className="grid gap-6 lg:grid-cols-3 items-start">
           
           {/* Main Inquiry Brief Form (2 Columns) */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
+          <MotionDiv
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-2 rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 sm:p-9 shadow-sm dark:shadow-none backdrop-blur-xl relative overflow-hidden"
+            transition={{ duration: 0.55 }}
+            className="lg:col-span-2 rounded-2xl border border-black/[0.08] bg-white p-6 sm:p-9 dark:border-white/[0.08] dark:bg-[#11141c]"
           >
-            {/* Subtle glow orb */}
-            <div className="pointer-events-none absolute -top-24 -right-20 h-56 w-56 rounded-full bg-lime-400/[0.06] dark:bg-lime-400/[0.08] blur-3xl" />
-
-            <form onSubmit={handleSubmit} className="relative z-10 flex flex-col justify-between h-full">
+            <form onSubmit={handleSubmit} className="flex flex-col justify-between h-full">
               <div>
                 {/* Form Header */}
-                <div className="mb-7 flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-white/[0.08] pb-5">
+                <div className="mb-7 flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.08] dark:border-white/[0.08] pb-5">
                   <div>
-                    <span className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400">
+                    <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
                       Project Brief
                     </span>
-                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mt-1">
+                    <h2 className="mt-1 font-display text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#eef0f5]">
                       Tell Me About Your Project
                     </h2>
                   </div>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-lime-500/30 bg-lime-500/[0.08] dark:bg-lime-400/[0.06] px-3.5 py-1.5 text-xs font-bold text-lime-700 dark:text-lime-300">
-                    <Clock size={13} /> Guaranteed 12–24h Reply
+                  <div className="inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/[0.08] px-3.5 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-300">
+                    <Clock size={14} strokeWidth={1.5} /> Guaranteed 12–24h Reply
                   </div>
                 </div>
 
                 {/* Form Input Fields */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      Your Name <span className="text-lime-500">*</span>
+                    <label htmlFor="contact-name" className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-[#d1d5df]">
+                      Your Name <span className="text-emerald-600 dark:text-emerald-400">*</span>
                     </label>
                     <input
+                      id="contact-name"
                       type="text"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/90 dark:bg-zinc-900/60 px-4 py-3 text-xs sm:text-sm font-medium text-zinc-900 dark:text-white outline-none focus:border-lime-500 dark:focus:border-lime-400 focus:ring-2 focus:ring-lime-500/20 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition"
+                      className="h-10 w-full rounded-lg border border-black/[0.08] bg-[#f8fafc] px-3.5 text-sm text-slate-900 outline-none transition-colors duration-150 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/15 placeholder:text-slate-400 dark:border-white/[0.08] dark:bg-[#090a0f] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
                       placeholder="e.g. Alex Rivera"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      Email Address <span className="text-lime-500">*</span>
+                    <label htmlFor="contact-email" className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-[#d1d5df]">
+                      Email Address <span className="text-emerald-600 dark:text-emerald-400">*</span>
                     </label>
                     <input
+                      id="contact-email"
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/90 dark:bg-zinc-900/60 px-4 py-3 text-xs sm:text-sm font-medium text-zinc-900 dark:text-white outline-none focus:border-lime-500 dark:focus:border-lime-400 focus:ring-2 focus:ring-lime-500/20 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition"
+                      className="h-10 w-full rounded-lg border border-black/[0.08] bg-[#f8fafc] px-3.5 text-sm text-slate-900 outline-none transition-colors duration-150 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/15 placeholder:text-slate-400 dark:border-white/[0.08] dark:bg-[#090a0f] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
                       placeholder="alex@company.com"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      Phone Number <span className="text-zinc-400 font-normal">(Optional)</span>
+                    <label htmlFor="contact-phone" className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-[#d1d5df]">
+                      Phone Number <span className="text-slate-400 font-normal dark:text-[#7a8296]">(Optional)</span>
                     </label>
                     <input
+                      id="contact-phone"
                       type="text"
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/90 dark:bg-zinc-900/60 px-4 py-3 text-xs sm:text-sm font-medium text-zinc-900 dark:text-white outline-none focus:border-lime-500 dark:focus:border-lime-400 focus:ring-2 focus:ring-lime-500/20 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition"
+                      className="h-10 w-full rounded-lg border border-black/[0.08] bg-[#f8fafc] px-3.5 text-sm text-slate-900 outline-none transition-colors duration-150 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/15 placeholder:text-slate-400 dark:border-white/[0.08] dark:bg-[#090a0f] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500"
                       placeholder="e.g. +91 9876543210"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      Required Service <span className="text-zinc-400 font-normal">(Optional)</span>
+                    <label htmlFor="contact-service" className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-[#d1d5df]">
+                      Required Service <span className="text-slate-400 font-normal dark:text-[#7a8296]">(Optional)</span>
                     </label>
                     <select
+                      id="contact-service"
                       name="service"
                       value={formData.service}
                       onChange={handleChange}
-                      className="w-full rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/90 dark:bg-zinc-900/60 px-4 py-3 text-xs sm:text-sm font-medium text-zinc-900 dark:text-white outline-none focus:border-lime-500 dark:focus:border-lime-400 focus:ring-2 focus:ring-lime-500/20 transition"
+                      className="h-10 w-full rounded-lg border border-black/[0.08] bg-[#f8fafc] px-3.5 text-sm text-slate-900 outline-none transition-colors duration-150 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/15 dark:border-white/[0.08] dark:bg-[#090a0f] dark:text-[#eef0f5] dark:focus:border-emerald-500"
                     >
-                      <option value="" className="bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white">
+                      <option value="" className="bg-white text-slate-900 dark:bg-[#11141c] dark:text-[#eef0f5]">
                         Select a category
                       </option>
                       {SERVICE_OFFERINGS.map((item) => (
-                        <option key={item.slug} value={item.name} className="bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white">
+                        <option key={item.slug} value={item.name} className="bg-white text-slate-900 dark:bg-[#11141c] dark:text-[#eef0f5]">
                           {item.name}
                         </option>
                       ))}
-                      <option value="Custom Project Scope" className="bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white">
+                      <option value="Custom Project Scope" className="bg-white text-slate-900 dark:bg-[#11141c] dark:text-[#eef0f5]">
                         Custom Project Scope
                       </option>
                     </select>
@@ -345,8 +343,8 @@ const ContactPage = () => {
                 </div>
 
                 {/* Quick Service Selection Pills */}
-                <div className="mt-4">
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                <div className="mt-5">
+                  <span className="mb-2 block text-xs font-medium text-slate-500 dark:text-[#7a8296]">
                     Or select service topic:
                   </span>
                   <div className="flex flex-wrap gap-2">
@@ -357,10 +355,10 @@ const ContactPage = () => {
                           key={item.slug}
                           type="button"
                           onClick={() => selectService(item.name)}
-                          className={`rounded-xl border px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${
+                          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors duration-150 ${
                             isSelected
-                              ? "border-lime-500 bg-lime-400 text-zinc-950 shadow-[0_0_12px_rgba(163,230,53,0.3)]"
-                              : "border-zinc-200 bg-zinc-100/70 text-zinc-700 hover:border-lime-400/50 hover:text-zinc-950 dark:border-white/10 dark:bg-white/[0.04] dark:text-zinc-300 dark:hover:border-lime-400/50 dark:hover:text-white"
+                              ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-slate-950"
+                              : "border-black/[0.08] bg-[#f8fafc] text-slate-700 hover:border-slate-300 hover:text-slate-950 dark:border-white/[0.08] dark:bg-[#090a0f] dark:text-[#a3a9b8] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5]"
                           }`}
                         >
                           {item.name}
@@ -372,10 +370,11 @@ const ContactPage = () => {
 
                 {/* Message Textarea */}
                 <div className="mt-5">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 mb-1.5">
-                    Project Message &amp; Goals <span className="text-lime-500">*</span>
+                  <label htmlFor="contact-message" className="mb-1.5 block text-xs font-medium text-slate-700 dark:text-[#d1d5df]">
+                    Project Message &amp; Goals <span className="text-emerald-600 dark:text-emerald-400">*</span>
                   </label>
                   <textarea
+                    id="contact-message"
                     name="message"
                     value={formData.message}
                     onChange={(e) => {
@@ -385,69 +384,70 @@ const ContactPage = () => {
                     }}
                     rows={4}
                     placeholder="Outline your project scope, core features, budget, target launch date, or questions..."
-                    className="w-full resize-none min-h-[120px] overflow-hidden rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/90 dark:bg-zinc-900/60 px-4 py-3.5 text-xs sm:text-sm font-medium text-zinc-900 dark:text-white outline-none focus:border-lime-500 dark:focus:border-lime-400 focus:ring-2 focus:ring-lime-500/20 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 transition-[height] duration-150"
+                    className="w-full resize-none min-h-[120px] overflow-hidden rounded-lg border border-black/[0.08] bg-[#f8fafc] px-3.5 py-3 text-sm text-slate-900 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/15 placeholder:text-slate-400 dark:border-white/[0.08] dark:bg-[#090a0f] dark:text-[#eef0f5] dark:placeholder:text-[#7a8296] dark:focus:border-emerald-500 transition-[height] duration-150"
                     required
                   />
                 </div>
 
                 {/* Alert Messages */}
                 {formError ? (
-                  <motion.div
+                  <MotionDiv
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-3.5 text-xs font-bold text-rose-600 dark:text-rose-400"
+                    className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3.5 text-xs font-medium text-rose-700 dark:text-rose-400"
                   >
                     {formError}
-                  </motion.div>
+                  </MotionDiv>
                 ) : null}
 
                 {formSuccess ? (
-                  <motion.div
+                  <MotionDiv
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-4 flex items-center gap-2.5 rounded-2xl border border-lime-500/40 bg-lime-500/10 p-4 text-xs font-bold text-lime-700 dark:text-lime-300"
+                    className="mt-4 flex items-center gap-2.5 rounded-xl border border-emerald-500/35 bg-emerald-500/10 p-4 text-xs font-medium text-emerald-700 dark:text-emerald-300"
                   >
-                    <CheckCircle2 size={18} className="shrink-0 text-lime-500 dark:text-lime-400" />
+                    <CheckCircle2 size={18} strokeWidth={1.5} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
                     <span>{formSuccess}</span>
-                  </motion.div>
+                  </MotionDiv>
                 ) : null}
               </div>
 
               {/* Form Action Footer */}
-              <div className="mt-7 pt-5 border-t border-zinc-200 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                  🔒 Confidential inquiry. Zero spam guaranteed.
+              <div className="mt-7 pt-5 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-[#7a8296]">
+                  <Lock size={14} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
+                  Confidential inquiry. Zero spam guaranteed.
                 </span>
                 <Button
                   type="submit"
                   disabled={submitting}
                   className="w-full sm:w-auto min-w-[180px]"
                 >
-                  {submitting ? "Sending..." : "Submit Inquiry"} <Send size={15} />
+                  {submitting ? "Sending..." : "Submit Inquiry"} <Send size={15} strokeWidth={1.5} />
                 </Button>
               </div>
             </form>
-          </motion.div>
+          </MotionDiv>
 
           {/* Right Column: Direct Channels & Expectations Hub */}
           <div className="space-y-6">
             
             {/* Direct Contact Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 sm:p-7 shadow-sm dark:shadow-none backdrop-blur-xl"
+              transition={{ duration: 0.55, delay: 0.1 }}
+              className="rounded-2xl border border-black/[0.08] bg-white p-6 sm:p-7 dark:border-white/[0.08] dark:bg-[#11141c]"
             >
-              <div className="mb-5 pb-4 border-b border-zinc-200 dark:border-white/[0.08]">
-                <span className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400">
+              <div className="mb-5 pb-4 border-b border-black/[0.08] dark:border-white/[0.08]">
+                <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
                   Direct Channels
                 </span>
-                <h3 className="text-lg sm:text-xl font-bold tracking-tight text-zinc-900 dark:text-white mt-1">
+                <h3 className="mt-1 font-display text-lg sm:text-xl font-semibold tracking-tight text-slate-900 dark:text-[#eef0f5]">
                   Connect Directly
                 </h3>
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                <p className="mt-1 text-sm text-slate-600 dark:text-[#a3a9b8] leading-relaxed">
                   Have an urgent project timeline or prefer direct messaging?
                 </p>
               </div>
@@ -455,85 +455,85 @@ const ContactPage = () => {
               {/* Direct Communication Action Rows */}
               <div className="space-y-3">
                 {/* Email Item */}
-                <div className="group rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-zinc-50 dark:bg-zinc-900/50 p-3.5 transition-all duration-200 hover:border-lime-400/50">
+                <div className="group rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 transition-colors duration-150 hover:border-emerald-600/40 dark:border-white/[0.08] dark:bg-[#090a0f] dark:hover:border-emerald-500/40">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                      <Mail size={13} className="text-lime-500 dark:text-lime-400" /> Primary Email
+                    <span className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
+                      <Mail size={14} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" /> Primary Email
                     </span>
                     <button
                       type="button"
                       onClick={() => handleCopy(QUICK_CONTACT.email, "email")}
-                      className="text-[11px] font-bold text-lime-600 dark:text-lime-400 hover:underline flex items-center gap-1"
+                      className="text-xs font-medium text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1"
                       title="Copy email to clipboard"
                     >
                       {copiedField === "email" ? (
                         <>
-                          <Check size={12} /> Copied
+                          <Check size={12} strokeWidth={1.5} /> Copied
                         </>
                       ) : (
                         <>
-                          <Copy size={12} /> Copy
+                          <Copy size={12} strokeWidth={1.5} /> Copy
                         </>
                       )}
                     </button>
                   </div>
                   <a
                     href={`mailto:${QUICK_CONTACT.email}`}
-                    className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white hover:text-lime-600 dark:hover:text-lime-300 truncate block"
+                    className="text-sm font-medium text-slate-900 dark:text-[#eef0f5] hover:text-emerald-600 dark:hover:text-emerald-400 truncate block"
                   >
                     {QUICK_CONTACT.email}
                   </a>
                 </div>
 
                 {/* Phone / WhatsApp Item */}
-                <div className="group rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-zinc-50 dark:bg-zinc-900/50 p-3.5 transition-all duration-200 hover:border-lime-400/50">
+                <div className="group rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 transition-colors duration-150 hover:border-emerald-600/40 dark:border-white/[0.08] dark:bg-[#090a0f] dark:hover:border-emerald-500/40">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                      <PhoneCall size={13} className="text-emerald-500 dark:text-emerald-400" /> Phone &amp; WhatsApp
+                    <span className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
+                      <PhoneCall size={14} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" /> Phone &amp; WhatsApp
                     </span>
                     {QUICK_CONTACT.whatsapp ? (
                       <a
                         href={QUICK_CONTACT.whatsapp}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                        className="text-xs font-medium text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1"
                       >
-                        WhatsApp <ExternalLink size={11} />
+                        WhatsApp <ExternalLink size={12} strokeWidth={1.5} />
                       </a>
                     ) : null}
                   </div>
                   <a
                     href={`tel:${QUICK_CONTACT.phone.replace(/\s+/g, "")}`}
-                    className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white hover:text-lime-600 dark:hover:text-lime-300 block"
+                    className="text-sm font-medium text-slate-900 dark:text-[#eef0f5] hover:text-emerald-600 dark:hover:text-emerald-400 block tabular-nums"
                   >
                     {QUICK_CONTACT.phone}
                   </a>
                 </div>
 
                 {/* Location Item */}
-                <div className="rounded-2xl border border-zinc-200 dark:border-white/[0.08] bg-zinc-50 dark:bg-zinc-900/50 p-3.5">
-                  <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">
-                    <MapPin size={13} className="text-amber-500 dark:text-amber-400" /> Location &amp; Timezone
+                <div className="rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 dark:border-white/[0.08] dark:bg-[#090a0f]">
+                  <span className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-[#7a8296] mb-1">
+                    <MapPin size={14} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" /> Location &amp; Timezone
                   </span>
-                  <p className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white">
-                    {SITE_PROFILE.location} <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">• IST (UTC+5:30)</span>
+                  <p className="text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
+                    {SITE_PROFILE.location} <span className="text-xs font-normal text-slate-500 dark:text-[#7a8296]">· IST (UTC+5:30)</span>
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </MotionDiv>
 
             {/* "What Happens Next" 3-Step Process Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
+            <MotionDiv
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 sm:p-7 shadow-sm dark:shadow-none backdrop-blur-xl"
+              transition={{ duration: 0.55, delay: 0.15 }}
+              className="rounded-2xl border border-black/[0.08] bg-white p-6 sm:p-7 dark:border-white/[0.08] dark:bg-[#11141c]"
             >
-              <span className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400">
+              <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
                 What to Expect
               </span>
-              <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white mt-1 mb-4">
+              <h3 className="mt-1 mb-4 font-display text-lg font-semibold tracking-tight text-slate-900 dark:text-[#eef0f5]">
                 Transparent Next Steps
               </h3>
 
@@ -556,14 +556,14 @@ const ContactPage = () => {
                   },
                 ].map(({ step, title, desc }) => (
                   <div key={step} className="flex gap-3 items-start">
-                    <span className="shrink-0 flex items-center justify-center h-6 w-6 rounded-lg font-mono text-[11px] font-black bg-lime-500/10 text-lime-700 dark:text-lime-300 border border-lime-500/30">
+                    <span className="shrink-0 flex items-center justify-center h-6 w-6 rounded-md font-mono text-xs font-semibold tabular-nums bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25">
                       {step}
                     </span>
                     <div>
-                      <h4 className="text-xs font-black text-zinc-900 dark:text-white">
+                      <h4 className="text-xs font-semibold text-slate-900 dark:text-[#eef0f5]">
                         {title}
                       </h4>
-                      <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mt-0.5">
+                      <p className="text-xs text-slate-600 dark:text-[#a3a9b8] leading-relaxed mt-0.5">
                         {desc}
                       </p>
                     </div>
@@ -572,18 +572,18 @@ const ContactPage = () => {
               </div>
 
               {/* Callout to Services Page */}
-              <div className="mt-6 pt-5 border-t border-zinc-200 dark:border-white/[0.08]">
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 mb-3 leading-relaxed">
+              <div className="mt-6 pt-5 border-t border-black/[0.08] dark:border-white/[0.08]">
+                <p className="text-xs text-slate-600 dark:text-[#a3a9b8] mb-3 leading-relaxed">
                   Looking for fixed-price packages with instant checkout?
                 </p>
                 <Link
                   to="/services"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-lime-600 dark:text-lime-400 hover:text-lime-500 dark:hover:text-lime-300 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
                 >
-                  View Services &amp; Packages <ArrowRight size={13} />
+                  View Services &amp; Packages <ArrowRight size={14} strokeWidth={1.5} />
                 </Link>
               </div>
-            </motion.div>
+            </MotionDiv>
 
           </div>
 

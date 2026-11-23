@@ -44,7 +44,7 @@ const RefundPolicyPage = () => {
         ])}
       />
 
-      <section className="section-wrap pt-12 sm:pt-20">
+      <section className="section-wrap pt-6 sm:pt-8 pb-20">
         <SectionTitle
           eyebrow="Refund Policy"
           title="Refund Terms"
@@ -53,25 +53,35 @@ const RefundPolicyPage = () => {
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">
           {policyItems.map((item) => (
-            <article key={item.title} className="card-surface rounded-2xl p-5">
-              <h2 className="text-lg font-semibold text-cyan-100">
+            <article
+              key={item.title}
+              className="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/[0.08] dark:bg-[#11141c]"
+            >
+              <h2 className="text-lg font-semibold text-ink-950 dark:text-ink-50">
                 {item.title}
               </h2>
-              <p className="mt-2 text-sm text-slate-300">{item.detail}</p>
+              <p className="mt-2 text-sm leading-7 text-ink-600 dark:text-ink-300">
+                {item.detail}
+              </p>
             </article>
           ))}
         </div>
 
-        <article className="card-surface mt-6 rounded-2xl p-5 text-sm text-slate-300">
+        <article className="mt-6 rounded-2xl border border-black/[0.08] bg-white p-6 text-sm text-ink-600 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-ink-300">
           <p>
-            For refund requests, share your receipt number, payment ID, and
-            issue summary using official billing email.
+            For refund requests, share your receipt number, payment ID, and issue summary via official billing email.
           </p>
-          <p className="mt-3 text-cyan-100">
-            Billing Support: {QUICK_CONTACT.billingEmail}
+          <p className="mt-3 text-ink-900 dark:text-ink-100">
+            Billing Support:{" "}
+            <a
+              href={`mailto:${QUICK_CONTACT.billingEmail}`}
+              className="font-medium text-emerald-700 underline underline-offset-2 dark:text-emerald-400"
+            >
+              {QUICK_CONTACT.billingEmail}
+            </a>
           </p>
-          <p className="mt-1 text-cyan-100">
-            Primary Contact: {QUICK_CONTACT.phone}
+          <p className="mt-1 tabular-nums text-ink-900 dark:text-ink-100">
+            Primary Contact: <span className="font-medium">{QUICK_CONTACT.phone}</span>
           </p>
         </article>
       </section>

@@ -39,7 +39,7 @@ const PrivacyPolicyPage = () => {
         pathname="/privacy-policy"
       />
 
-      <section className="section-wrap pt-12 sm:pt-20">
+      <section className="section-wrap pt-6 sm:pt-8 pb-20">
         <SectionTitle
           eyebrow="Privacy Policy"
           title="Data Collection and Use"
@@ -48,22 +48,31 @@ const PrivacyPolicyPage = () => {
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">
           {privacyItems.map((item) => (
-            <article key={item.title} className="card-surface rounded-2xl p-5">
-              <h2 className="text-lg font-semibold text-cyan-100">
+            <article
+              key={item.title}
+              className="rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/[0.08] dark:bg-[#11141c]"
+            >
+              <h2 className="text-lg font-semibold text-ink-950 dark:text-ink-50">
                 {item.title}
               </h2>
-              <p className="mt-2 text-sm leading-7 text-slate-300">
+              <p className="mt-2 text-sm leading-7 text-ink-600 dark:text-ink-300">
                 {item.detail}
               </p>
             </article>
           ))}
         </div>
 
-        <article className="card-surface mt-6 rounded-2xl p-5 text-sm text-slate-300">
+        <article className="mt-6 rounded-2xl border border-black/[0.08] bg-white p-6 text-sm text-ink-600 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-ink-300">
           <p>
-            For privacy-related requests, contact: {QUICK_CONTACT.supportEmail}
+            For privacy-related requests, contact:{" "}
+            <a
+              href={`mailto:${QUICK_CONTACT.supportEmail}`}
+              className="font-medium text-emerald-700 underline underline-offset-2 dark:text-emerald-400"
+            >
+              {QUICK_CONTACT.supportEmail}
+            </a>
           </p>
-          <p className="mt-2">
+          <p className="mt-2 text-ink-500 dark:text-ink-400">
             This policy may be updated to reflect service or compliance changes.
           </p>
         </article>
