@@ -47,10 +47,10 @@ const MethodologyPage = () => {
         {/* Hero title */}
         <FadeInUp>
           <div className="text-center max-w-4xl mx-auto mb-10">
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
-              DOCUMENTED <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">METHODOLOGY</span>
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
+              Documented <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Methodology</span>
             </h1>
-            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
               A structured workflow for authorized application security auditing, threat modeling, defense-in-depth engineering, and responsible documentation.
             </p>
           </div>
@@ -61,13 +61,13 @@ const MethodologyPage = () => {
           <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-500/10 dark:bg-emerald-400/10 blur-3xl" />
           
           <div className="relative space-y-3 max-w-3xl">
-            <span className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-emerald-600 dark:text-emerald-400">
-              // Responsible Disclosure &amp; Ethics
+            <span className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">
+              Responsible Disclosure &amp; Ethics
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               Ethics &amp; Authorized Scope First
             </h2>
-            <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
               All security experiments, lab tests, and vulnerability assessments follow strict authorization rules, local sandboxed environments, and responsible disclosure ethics. I treat application security as an architectural responsibility.
             </p>
           </div>
@@ -75,8 +75,8 @@ const MethodologyPage = () => {
 
         {/* 4-stage audit workflow */}
         <div className="mb-6">
-          <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">// AUDIT WORKFLOW</span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+          <span className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">Audit Workflow</span>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">
             4-Stage Security Audit Workflow
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">

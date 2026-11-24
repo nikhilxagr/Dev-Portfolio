@@ -180,14 +180,14 @@ const HowIBuildPage = () => {
       {/* Header */}
       <FadeInUp>
         <div className="text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:border-emerald-400/30 dark:text-emerald-300">
+          <p className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-600 dark:border-emerald-400/30 dark:text-emerald-300">
             <Workflow size={14} className="text-emerald-500" />
             Engineering Workflow &amp; System Design
           </p>
-          <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl lg:text-5xl">
             How I <span className="bg-gradient-to-r from-emerald-500 via-teal-400 to-lime-400 bg-clip-text text-transparent">Build</span>
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm font-medium text-slate-600 dark:text-slate-300 sm:text-base">
+          <p className="mx-auto mt-3 max-w-2xl text-sm font-normal text-slate-600 dark:text-slate-300 sm:text-base leading-relaxed">
             Detailed breakdown of my end-to-end product development lifecycle, architectural choices, and full-stack portfolio system design.
           </p>
         </div>
@@ -197,8 +197,8 @@ const HowIBuildPage = () => {
       <div className="mt-14">
         <FadeInUp>
           <div className="text-center mb-8">
-            <span className="font-mono text-xs font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">// SDLC STAGE PIPELINE</span>
-            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white sm:text-3xl mt-1">
+            <span className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">SDLC Stage Pipeline</span>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl mt-1">
               End-to-End Engineering Workflow
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 max-w-xl mx-auto mt-2">
@@ -284,8 +284,8 @@ const HowIBuildPage = () => {
       <div className="mt-16">
         <FadeInUp>
           <div className="text-center mb-8">
-            <span className="font-mono text-xs font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">// ARCHITECTURE LAYERS</span>
-            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white sm:text-3xl mt-1">
+            <span className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">Architecture Layers</span>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl mt-1">
               Tech Stack Layer Breakdown
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 max-w-xl mx-auto mt-2">

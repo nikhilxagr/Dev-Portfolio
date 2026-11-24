@@ -59,10 +59,10 @@ const SecurityPage = () => {
         {/* Hero title */}
         <FadeInUp>
           <div className="text-center max-w-4xl mx-auto mb-10">
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
-              SECURITY <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">LABS</span>
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
+              Security <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Labs</span>
             </h1>
-            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
               Documented lab exercises focused on vulnerability research, lab tooling, methodology notes, and responsible testing scope.
             </p>
           </div>
@@ -171,8 +171,8 @@ const SecurityPage = () => {
       {/* Governance & Scope Section */}
       <section className="section-wrap pt-4 pb-20">
         <div className="text-center max-w-3xl mx-auto mb-8">
-          <span className="font-mono text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">// GOVERNANCE &amp; ETHICS</span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+          <span className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">Governance &amp; Ethics</span>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">
             Responsible Testing Standards
           </h2>
           <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">
