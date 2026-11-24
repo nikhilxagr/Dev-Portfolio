@@ -1,4 +1,4 @@
-import { ShieldCheck, CheckCircle2, FileText, Lock, AlertTriangle, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import SeoHead from "@/components/seo/SeoHead";
 import Button from "@/components/ui/Button";
 import FadeInUp from "@/components/animations/FadeInUp";
@@ -13,17 +13,17 @@ const STAGES = [
   {
     step: "02",
     title: "Vulnerability Analysis & OWASP Top 10 Mapping",
-    desc: "Systematic auditing against OWASP Top 10 vulnerabilities (SQLi, XSS, Broken Auth, SSRF, IDOR), evaluating API endpoint request parameters.",
+    desc: "Systematic auditing against OWASP Top 10 categories (SQLi, XSS, Broken Auth, SSRF, IDOR), evaluating API endpoint inputs and request flows.",
   },
   {
     step: "03",
     title: "Threat Modeling & Defensive Remediation",
-    desc: "Defining risk severity scores (CVSS v3.1), designing secure code fixes (JWT hardening, Helmet headers, parameterized SQL, rate limiting).",
+    desc: "Scoring severity (CVSS v3.1) and implementing secure code fixes across JWT validation, security headers, parameterized queries, and rate limiting.",
   },
   {
     step: "04",
     title: "Verification & Documentation Writeups",
-    desc: "Re-testing patch effectiveness, writing clear technical writeups, documenting reproduction steps, and producing executive remediation summaries.",
+    desc: "Re-testing patch effectiveness, writing clear reproduction notes, and assembling concise remediation summaries.",
   },
 ];
 
@@ -41,45 +41,38 @@ const MethodologyPage = () => {
         ])}
       />
 
-      {/* Methodology Page Content */}
-      <section className="section-wrap pt-4 sm:pt-6 pb-20">
-        
-        {/* Hero title */}
+      <section className="section-wrap pt-6 pb-20 sm:pt-8 sm:pb-24">
         <FadeInUp>
-          <div className="text-center max-w-4xl mx-auto mb-10">
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
-              Documented <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Methodology</span>
+          <div className="mx-auto mb-10 max-w-4xl text-center">
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-4xl lg:text-5xl">
+              Documented <span className="text-emerald-600 dark:text-emerald-400">Methodology</span>
             </h1>
-            <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-600 dark:text-ink-300 sm:text-base">
               A structured workflow for authorized application security auditing, threat modeling, defense-in-depth engineering, and responsible documentation.
             </p>
           </div>
         </FadeInUp>
 
-        {/* Ethics overview */}
-        <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white/90 p-6 sm:p-9 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/90 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)] mb-12">
-          <div className="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-emerald-500/10 dark:bg-emerald-400/10 blur-3xl" />
-          
-          <div className="relative space-y-3 max-w-3xl">
-            <span className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">
+        <div className="mb-12 rounded-2xl border border-black/[0.08] bg-white p-6 dark:border-white/[0.08] dark:bg-[#11141c] sm:p-9">
+          <div className="max-w-3xl space-y-3">
+            <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
               Responsible Disclosure &amp; Ethics
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h2 className="text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl">
               Ethics &amp; Authorized Scope First
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              All security experiments, lab tests, and vulnerability assessments follow strict authorization rules, local sandboxed environments, and responsible disclosure ethics. I treat application security as an architectural responsibility.
+            <p className="text-sm leading-relaxed text-ink-600 dark:text-ink-300 sm:text-base">
+              All security experiments, lab tests, and vulnerability assessments follow strict authorization rules, local sandboxed environments, and responsible disclosure ethics. Application security is treated as an architectural responsibility.
             </p>
           </div>
         </div>
 
-        {/* 4-stage audit workflow */}
         <div className="mb-6">
-          <span className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">Audit Workflow</span>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">
+          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Audit Workflow</span>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl">
             4-Stage Security Audit Workflow
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
+          <p className="mt-1 text-sm text-ink-600 dark:text-ink-400">
             Systematic process applied across security labs and backend API reviews.
           </p>
         </div>
@@ -88,16 +81,16 @@ const MethodologyPage = () => {
           {STAGES.map((s) => (
             <div
               key={s.step}
-              className="group relative flex flex-col justify-between rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl transition-all duration-300 dark:border-emerald-500/30 dark:bg-[#030d07]/95"
+              className="flex flex-col justify-between rounded-2xl border border-black/[0.08] bg-white p-6 transition-colors duration-200 hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30 sm:p-7"
             >
               <div>
-                <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
-                  STAGE {s.step}
+                <span className="font-mono text-xs font-medium tabular-nums text-emerald-600 dark:text-emerald-400">
+                  Stage {s.step}
                 </span>
-                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-1.5 leading-snug">
+                <h3 className="mt-1.5 text-lg font-semibold leading-snug text-ink-950 dark:text-ink-50 sm:text-xl">
                   {s.title}
                 </h3>
-                <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-300">
+                <p className="mt-2.5 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
                   {s.desc}
                 </p>
               </div>
@@ -105,23 +98,19 @@ const MethodologyPage = () => {
           ))}
         </div>
 
-        {/* Footer links */}
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-800/80 pt-8">
-          <div>
-            <p className="text-sm font-extrabold text-slate-900 dark:text-white">
-              Explore documented security writeups and hands-on lab exercises
-            </p>
-          </div>
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-black/[0.08] pt-8 dark:border-white/[0.08]">
+          <p className="text-sm font-medium text-ink-900 dark:text-ink-100">
+            Explore documented security writeups and hands-on lab exercises
+          </p>
           <div className="flex flex-wrap gap-3">
             <Button to="/experiments/security-labs" variant="primary">
-              View Security Labs <ArrowRight size={15} />
+              View Security Labs <ArrowRight size={15} strokeWidth={1.5} />
             </Button>
             <Button to="/experiments/tools" variant="ghost">
               Cyber Tools
             </Button>
           </div>
         </div>
-
       </section>
     </>
   );

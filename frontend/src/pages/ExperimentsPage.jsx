@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import SeoHead from "@/components/seo/SeoHead";
-import { FadeInUp, ScaleIn } from "@/components/animations";
+import { FadeInUp } from "@/components/animations";
 import {
   ShieldCheck,
   Terminal,
   Cpu,
-  Network,
   Wrench,
   FileCheck2,
   ArrowRight,
@@ -35,7 +34,7 @@ const EXPERIMENT_MODULES = [
     icon: Terminal,
     badge: "Interactive CLI",
     description:
-      "Interactive in-browser UNIX terminal sandbox. Execute system commands, inspect developer stats, explore secret easter eggs, and run custom scripts.",
+      "Interactive in-browser UNIX terminal sandbox. Execute system commands, inspect developer stats, and explore portfolio data cleanly.",
   },
   {
     id: "dsa-lab",
@@ -44,7 +43,7 @@ const EXPERIMENT_MODULES = [
     icon: Cpu,
     badge: "Computer Science",
     description:
-      "Visual algorithms laboratory demonstrating sorting mechanisms, tree traversals, pathfinding algorithms, and dynamic space-time complexity analysis.",
+      "Visual algorithms laboratory demonstrating sorting mechanisms, tree traversals, pathfinding algorithms, and time-space complexity analysis.",
   },
   {
     id: "cyber-tools",
@@ -53,7 +52,7 @@ const EXPERIMENT_MODULES = [
     icon: Wrench,
     badge: "Security Tooling",
     description:
-      "Suite of client-side developer security tools including breach checking, payload encoders, cryptographic hash generators, and header analyzers.",
+      "Client-side developer security utilities including breach inspection, password entropy calculation, and HTTP response header auditing.",
   },
   {
     id: "methodology",
@@ -82,115 +81,103 @@ const ExperimentsPage = () => {
         ]}
       />
 
-      <div className="section-wrap pt-6 pb-20 sm:pt-10 sm:pb-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          
-          {/* Centered Hero Header Section (Matching Journey Page style) */}
-          <div className="relative mx-auto max-w-4xl text-center mb-12">
+      <div className="section-wrap pt-6 pb-20 sm:pt-8 sm:pb-24">
+        <div className="mx-auto max-w-6xl">
+          <div className="relative mx-auto mb-12 max-w-4xl text-center">
             <MotionDiv
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.45 }}
             >
-              <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-lime-400/40 bg-lime-400/10 px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300 shadow-sm">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-400" />
+              <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
                 Interactive Sandbox &amp; Security Research
               </span>
             </MotionDiv>
 
             <MotionH1
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1 }}
-              className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.08]"
+              transition={{ duration: 0.55, delay: 0.08 }}
+              className="mt-2 font-display text-3xl font-semibold tracking-tight leading-[1.08] text-ink-950 dark:text-ink-50 sm:text-4xl lg:text-5xl"
             >
               Engineering{" "}
-              <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              <span className="text-emerald-600 dark:text-emerald-400">
                 Experiments
               </span>
             </MotionH1>
 
             <MotionP
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.2 }}
-              className="mx-auto mt-4 max-w-2xl text-sm sm:text-base font-medium leading-relaxed text-slate-600 dark:text-slate-300"
+              transition={{ duration: 0.55, delay: 0.16 }}
+              className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-ink-600 dark:text-ink-300 sm:text-base"
             >
-              A showcase of hands-on security research, interactive browser terminals, computer science algorithm visualizers, and developer utilities built by Nikhil Agrahari.
+              Hands-on security research labs, an interactive browser CLI, computer science algorithm visualizers, and developer diagnostic utilities built by Nikhil Agrahari.
             </MotionP>
 
-            {/* Centered Quick Stats Capsule */}
-            <FadeInUp delay={0.25} className="mt-8">
-              <div className="mx-auto flex flex-wrap items-center justify-center gap-3.5 rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-md backdrop-blur-xl dark:border-emerald-500/20 dark:bg-[#030d07]/90 max-w-2xl">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
-                  <FlaskConical className="h-4 w-4 text-emerald-500" />
-                  <span>6 Specialized Labs</span>
+            <FadeInUp delay={0.22} className="mt-8">
+              <div className="mx-auto flex max-w-2xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-black/[0.08] bg-white px-5 py-3.5 dark:border-white/[0.08] dark:bg-[#11141c]">
+                <div className="flex items-center gap-2 text-xs font-medium tabular-nums text-ink-900 dark:text-ink-100 sm:text-sm">
+                  <FlaskConical size={16} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
+                  <span>{EXPERIMENT_MODULES.length} Specialized Labs</span>
                 </div>
-                <span className="text-slate-400 dark:text-slate-500">•</span>
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
-                  <Layers className="h-4 w-4 text-cyan-400" />
-                  <span>Architectures &amp; Sandboxes</span>
+                <span className="text-ink-400 dark:text-ink-600">·</span>
+                <div className="flex items-center gap-2 text-xs font-medium text-ink-900 dark:text-ink-100 sm:text-sm">
+                  <Layers size={16} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
+                  <span>Interactive Sandboxes</span>
                 </div>
-                <span className="text-slate-400 dark:text-slate-500">•</span>
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
-                  <ShieldCheck className="h-4 w-4 text-lime-400" />
+                <span className="text-ink-400 dark:text-ink-600">·</span>
+                <div className="flex items-center gap-2 text-xs font-medium text-ink-900 dark:text-ink-100 sm:text-sm">
+                  <ShieldCheck size={16} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
                   <span>Defensive &amp; Ethical</span>
                 </div>
               </div>
             </FadeInUp>
           </div>
 
-          {/* Grid of Clean Experiment Modules (Only Page Name + Description) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {EXPERIMENT_MODULES.map((exp, index) => {
               const Icon = exp.icon;
               return (
-                <ScaleIn key={exp.id} delay={index * 0.08}>
+                <FadeInUp key={exp.id} delay={index * 0.06}>
                   <Link
                     to={exp.to}
-                    className="group relative flex flex-col justify-between h-full rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-2xl dark:border-emerald-500/20 dark:bg-[#030d07]/95 dark:hover:border-emerald-400/50"
+                    className="group flex h-full flex-col justify-between rounded-2xl border border-black/[0.08] bg-white p-6 transition-colors duration-200 hover:border-emerald-600/35 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/35"
                   >
-                    {/* Top Glow Accent */}
-                    <div className="pointer-events-none absolute -top-px left-8 right-8 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
                     <div>
-                      {/* Icon & Category Badge */}
-                      <div className="flex items-center justify-between gap-3 mb-5">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-slate-950 transition-all duration-300">
-                          <Icon size={22} />
+                      <div className="mb-5 flex items-center justify-between gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-black/[0.08] bg-black/[0.03] text-emerald-600 transition-colors duration-200 group-hover:border-emerald-600/30 group-hover:bg-emerald-500/10 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-emerald-400">
+                          <Icon size={20} strokeWidth={1.5} />
                         </div>
-                        <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
+                        <span className="rounded-full border border-emerald-600/25 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300">
                           {exp.badge}
                         </span>
                       </div>
 
-                      {/* Module / Page Title */}
-                      <h3 className="font-display text-xl sm:text-2xl font-black text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-200 tracking-tight">
+                      <h3 className="font-display text-lg font-semibold tracking-tight text-ink-950 transition-colors duration-150 group-hover:text-emerald-600 dark:text-ink-50 dark:group-hover:text-emerald-400 sm:text-xl">
                         {exp.title}
                       </h3>
 
-                      {/* Module Description */}
-                      <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-300 font-medium">
+                      <p className="mt-2.5 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
                         {exp.description}
                       </p>
                     </div>
 
-                    {/* Bottom Action Footer */}
-                    <div className="mt-8 pt-4 flex items-center justify-between border-t border-slate-100 dark:border-emerald-500/10">
-                      <span className="text-[10px] font-mono font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500">
-                        LAB #{String(index + 1).padStart(2, "0")}
+                    <div className="mt-7 flex items-center justify-between border-t border-black/[0.06] pt-4 dark:border-white/[0.06]">
+                      <span className="font-mono text-xs font-medium tabular-nums text-ink-500 dark:text-ink-400">
+                        Lab {String(index + 1).padStart(2, "0")}
                       </span>
-                      <div className="inline-flex items-center gap-1.5 text-xs font-extrabold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform duration-200">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                         <span>Open Module</span>
-                        <ArrowRight size={14} />
-                      </div>
+                        <ArrowRight size={14} strokeWidth={1.5} />
+                      </span>
                     </div>
                   </Link>
-                </ScaleIn>
+                </FadeInUp>
               );
             })}
           </div>
-
         </div>
       </div>
     </>
@@ -198,4 +185,3 @@ const ExperimentsPage = () => {
 };
 
 export default ExperimentsPage;
-

@@ -53,45 +53,39 @@ const SecurityPage = () => {
         ])}
       />
 
-      {/* Security Labs Header & Grid */}
-      <section className="section-wrap pt-4 sm:pt-6 pb-16">
-        
-        {/* Hero title */}
+      <section className="section-wrap pt-6 sm:pt-8 pb-16">
         <FadeInUp>
-          <div className="text-center max-w-4xl mx-auto mb-10">
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
-              Security <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Labs</span>
+          <div className="mx-auto mb-10 max-w-4xl text-center">
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-4xl lg:text-5xl">
+              Security <span className="text-emerald-600 dark:text-emerald-400">Labs</span>
             </h1>
-            <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-600 dark:text-ink-300 sm:text-base">
               Documented lab exercises focused on vulnerability research, lab tooling, methodology notes, and responsible testing scope.
             </p>
           </div>
         </FadeInUp>
 
-        {/* Labs grid */}
         <div className="grid gap-6 xl:grid-cols-2">
           {PRACTICALS.map((item, index) => (
             <FadeInUp
               key={item.slug}
               delay={index * 0.06}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl transition-all duration-300 dark:border-emerald-500/30 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)]"
+              className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-black/[0.08] bg-white p-6 transition-colors duration-200 hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30 sm:p-7"
             >
-              <div className="pointer-events-none absolute -top-14 -right-12 h-36 w-36 rounded-full bg-emerald-500/10 dark:bg-emerald-400/10 blur-3xl" />
-
               <div className="relative">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-400">
+                  <p className="font-mono text-xs font-medium text-emerald-600 dark:text-emerald-400">
                     {item.focus}
                   </p>
-                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                  <span className="rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3 py-0.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300">
                     {item.level}
                   </span>
                 </div>
 
-                <h3 className="mt-3 text-xl font-extrabold text-slate-900 dark:text-white sm:text-2xl leading-tight">
+                <h3 className="mt-3 text-xl font-semibold leading-tight text-ink-950 dark:text-ink-50 sm:text-2xl">
                   {item.title}
                 </h3>
-                <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-300">
+                <p className="mt-2.5 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
                   {item.summary}
                 </p>
 
@@ -99,18 +93,18 @@ const SecurityPage = () => {
                   {item.tools.map((tool) => (
                     <span
                       key={`${item.slug}-${tool}`}
-                      className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-800 dark:border-emerald-500/20 dark:bg-[#020803]/80 dark:text-slate-200"
+                      className="rounded-lg border border-black/[0.08] bg-black/[0.03] px-2.5 py-1 text-xs font-medium text-ink-700 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-ink-200"
                     >
                       {tool}
                     </span>
                   ))}
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider pt-4 border-t border-slate-100 dark:border-slate-800/80">
-                  <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-emerald-700 dark:text-emerald-300">
+                <div className="mt-5 flex flex-wrap gap-2 border-t border-black/[0.06] pt-4 text-xs font-medium dark:border-white/[0.06]">
+                  <span className="rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3 py-1 text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300">
                     Status: {formatStatusLabel(item.status)}
                   </span>
-                  <span className="rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1 text-teal-700 dark:text-teal-300">
+                  <span className="rounded-full border border-black/[0.08] bg-black/[0.03] px-3 py-1 text-ink-700 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-ink-300">
                     Writeup: {formatStatusLabel(item.writeupStatus)}
                   </span>
                 </div>
@@ -120,16 +114,14 @@ const SecurityPage = () => {
         </div>
       </section>
 
-      {/* Tools Used & Vulnerability Themes Section */}
       <section className="section-wrap pt-4 pb-16">
         <div className="grid gap-6 lg:grid-cols-2">
-          
-          <article className="rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)]">
+          <article className="rounded-2xl border border-black/[0.08] bg-white p-6 transition-colors hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30 sm:p-7">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <Wrench size={18} />
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-500/10 text-emerald-600 dark:border-emerald-500/25 dark:text-emerald-400">
+                <Wrench size={18} strokeWidth={1.5} />
               </span>
-              <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-ink-950 dark:text-ink-50">
                 Tools Used Across Labs
               </h2>
             </div>
@@ -138,7 +130,7 @@ const SecurityPage = () => {
               {allTools.map((tool) => (
                 <span
                   key={tool}
-                  className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-800 dark:border-emerald-500/20 dark:bg-[#020803]/80 dark:text-slate-200"
+                  className="rounded-lg border border-black/[0.08] bg-black/[0.03] px-3 py-1.5 text-xs font-medium text-ink-700 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-ink-200"
                 >
                   {tool}
                 </span>
@@ -146,20 +138,20 @@ const SecurityPage = () => {
             </div>
           </article>
 
-          <article className="rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/95 dark:shadow-[0_16px_50px_rgba(0,10,2,0.7)]">
+          <article className="rounded-2xl border border-black/[0.08] bg-white p-6 transition-colors hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30 sm:p-7">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <ShieldAlert size={18} />
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-500/10 text-emerald-600 dark:border-emerald-500/25 dark:text-emerald-400">
+                <ShieldAlert size={18} strokeWidth={1.5} />
               </span>
-              <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-ink-950 dark:text-ink-50">
                 Vulnerability Themes Practiced
               </h2>
             </div>
 
-            <ul className="mt-5 space-y-2.5 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
+            <ul className="mt-5 space-y-2.5 text-sm text-ink-600 dark:text-ink-300">
               {vulnerabilities.map((item) => (
                 <li key={item} className="flex items-start gap-2.5">
-                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600 dark:bg-emerald-400" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -168,41 +160,40 @@ const SecurityPage = () => {
         </div>
       </section>
 
-      {/* Governance & Scope Section */}
       <section className="section-wrap pt-4 pb-20">
-        <div className="text-center max-w-3xl mx-auto mb-8">
-          <span className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">Governance &amp; Ethics</span>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">
+        <div className="mx-auto mb-8 max-w-3xl text-center">
+          <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">Governance &amp; Ethics</span>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl">
             Responsible Testing Standards
           </h2>
-          <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 mt-1">
+          <p className="mt-1.5 text-sm text-ink-600 dark:text-ink-400">
             Testing is performed only in local lab environments, owned assets, or explicitly authorized targets.
           </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <article className="rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/95">
+          <article className="rounded-2xl border border-black/[0.08] bg-white p-6 transition-colors hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30 sm:p-7">
             <div className="flex items-center gap-3">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <FileText size={18} />
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-500/10 text-emerald-600 dark:border-emerald-500/25 dark:text-emerald-400">
+                <FileText size={18} strokeWidth={1.5} />
               </span>
-              <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+              <h3 className="text-lg font-semibold text-ink-950 dark:text-ink-50">
                 Security Testing Notice
               </h3>
             </div>
-            <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-700 dark:text-slate-300">
+            <p className="mt-3 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
               {LEGAL_NOTICES.securityTesting}
             </p>
           </article>
 
-          <article className="rounded-3xl border border-slate-200 bg-white/95 p-6 sm:p-7 shadow-xl backdrop-blur-xl dark:border-emerald-500/30 dark:bg-[#030d07]/95">
-            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+          <article className="rounded-2xl border border-black/[0.08] bg-white p-6 transition-colors hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30 sm:p-7">
+            <h3 className="text-lg font-semibold text-ink-950 dark:text-ink-50">
               Portfolio Disclaimer
             </h3>
-            <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-700 dark:text-slate-300">
+            <p className="mt-3 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
               {LEGAL_NOTICES.portfolioDisclaimer}
             </p>
-            <p className="mt-3 text-xs sm:text-sm font-medium leading-relaxed text-slate-700 dark:text-slate-300">
+            <p className="mt-3 text-sm leading-relaxed text-ink-600 dark:text-ink-300">
               {LEGAL_NOTICES.practicalsEthics}
             </p>
           </article>

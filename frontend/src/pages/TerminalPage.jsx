@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Terminal, RotateCcw, ShieldCheck, Sparkles, Code2, Globe, Command, ArrowRight, Copy, Check } from "lucide-react";
+import { Terminal, RotateCcw, Copy, Check } from "lucide-react";
 import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { createBreadcrumbSchema } from "@/utils/seo";
@@ -33,7 +33,7 @@ const TERMINAL_COMMANDS = {
   • Cloud Deployments & Continuous Delivery (Vercel / Render / Git)
   Visit /about for full story & background.`,
 
-  bio: `Nikhil Agrahari // Full Stack Developer & Security-First Engineer
+  bio: `Nikhil Agrahari · Full Stack Developer & Security-First Engineer
 Education: Bachelor of Computer Applications (BCA) @ BBD University, Lucknow
 Location: Lucknow, India 🇮🇳
 Headline: BCA Student | Full Stack Developer | Web Solutions Builder
@@ -123,7 +123,7 @@ Status: Open for Software Engineering, Full Stack & Application Security Roles.`
 
 const INITIAL_LINES = [
   { type: "info", text: "┌─────────────────────────────────────────────────────────────┐" },
-  { type: "info", text: "│ NIKHIL AGRAHARI // DEV TERMINAL & SECURITY CLI (v2.6.0)     │" },
+  { type: "info", text: "│ NIKHIL AGRAHARI · DEV TERMINAL & SECURITY CLI (v2.6.0)     │" },
   { type: "info", text: "│ Type 'help' to display available commands & shortcuts.       │" },
   { type: "info", text: "└─────────────────────────────────────────────────────────────┘" },
 ];
@@ -292,16 +292,15 @@ const TerminalPage = () => {
         ])}
       />
 
-      {/* Terminal Page Layout */}
-      <section className="section-wrap pt-4 sm:pt-6 pb-16 flex flex-col items-center">
+      <section className="section-wrap pt-6 sm:pt-8 pb-20 flex flex-col items-center">
         
         {/* Hero header */}
         <FadeInUp>
           <div className="text-center max-w-4xl mx-auto mb-8">
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
-              Dev <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Terminal</span>
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink-950 dark:text-ink-50">
+              Dev <span className="text-emerald-600 dark:text-emerald-400">Terminal</span>
             </h1>
-            <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-3 text-sm sm:text-base font-normal text-ink-600 dark:text-ink-300 max-w-2xl mx-auto leading-relaxed">
               Interactive developer CLI and security sandbox environment. Type 'help' to explore available commands and system specs.
             </p>
           </div>
@@ -310,53 +309,57 @@ const TerminalPage = () => {
         <div className="w-full max-w-5xl">
           {/* Terminal container */}
           <div
-            className="overflow-hidden rounded-3xl border-2 border-slate-300/80 dark:border-emerald-500/35 bg-[#03080c] shadow-[0_20px_60px_rgba(0,0,0,0.18)] dark:shadow-[0_24px_80px_rgba(0,10,5,0.85)] flex flex-col h-[520px] sm:h-[620px]"
+            className="overflow-hidden rounded-2xl border border-black/[0.1] dark:border-white/[0.08] bg-[#0c0e14] flex flex-col h-[520px] sm:h-[620px]"
             onClick={() => inputRef.current?.focus()}
             onWheel={handleWheel}
           >
             {/* Terminal header */}
-            <div className="flex items-center justify-between border-b border-slate-800/80 dark:border-emerald-500/20 bg-[#07131b] dark:bg-[#061218]/90 px-4 sm:px-6 py-3.5 shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-3 w-3 rounded-full bg-red-500/90 inline-block shadow-[0_0_8px_rgba(239,68,68,0.6)]" />
-                  <span className="h-3 w-3 rounded-full bg-yellow-500/90 inline-block shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
-                  <span className="h-3 w-3 rounded-full bg-green-500/90 inline-block shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+            <div className="flex items-center justify-between gap-2 border-b border-white/[0.08] bg-[#11141c] px-3 sm:px-6 py-3 shrink-0">
+              <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <span className="h-3 w-3 rounded-full bg-rose-500/80 inline-block" />
+                  <span className="h-3 w-3 rounded-full bg-amber-400/80 inline-block" />
+                  <span className="h-3 w-3 rounded-full bg-emerald-500/80 inline-block" />
                 </div>
-                <div className="h-3.5 w-px bg-emerald-500/30 mx-1 hidden sm:block" />
-                <span className="font-mono text-xs font-bold text-emerald-400 tracking-wider flex items-center gap-1.5">
-                  <Terminal size={14} className="text-emerald-400" />
-                  nikhil@dev-terminal:~
+                <div className="h-3.5 w-px bg-white/[0.12] mx-0.5 hidden sm:block" />
+                <span className="truncate font-mono text-xs font-medium text-emerald-400 flex items-center gap-1.5">
+                  <Terminal size={14} strokeWidth={1.5} className="shrink-0 text-emerald-400" />
+                  <span className="truncate">nikhil@dev-terminal:~</span>
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 text-xs">
+              <div className="flex shrink-0 items-center gap-2 text-xs">
                 <button
                   type="button"
                   onClick={handleCopyLogs}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-1 font-mono text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-2.5 py-1 font-mono text-xs font-medium text-emerald-300 hover:border-emerald-500/40 hover:bg-emerald-500/15 transition"
                 >
-                  {copied ? <Check size={13} className="text-green-400" /> : <Copy size={13} />}
-                  {copied ? "Copied" : "Copy Logs"}
+                  {copied ? <Check size={13} strokeWidth={1.5} className="text-emerald-400" /> : <Copy size={13} strokeWidth={1.5} />}
+                  {copied ? "Copied" : (
+                    <>
+                      Copy<span className="hidden sm:inline"> Logs</span>
+                    </>
+                  )}
                 </button>
                 <button
                   type="button"
                   onClick={() => executeCmd("clear")}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-1 font-mono text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 transition"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.1] bg-white/[0.04] px-2.5 py-1 font-mono text-xs font-medium text-emerald-300 hover:border-emerald-500/40 hover:bg-emerald-500/15 transition"
                 >
-                  <RotateCcw size={13} /> Clear
+                  <RotateCcw size={13} strokeWidth={1.5} /> Clear
                 </button>
               </div>
             </div>
 
             {/* Quick command buttons */}
-            <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-800/80 dark:border-emerald-500/10 bg-[#050e15] px-4 py-2 text-xs">
-              <span className="font-mono text-[10px] font-bold uppercase text-slate-400 tracking-wider mr-1">Quick Run:</span>
+            <div className="flex flex-wrap items-center gap-1.5 border-b border-white/[0.06] bg-[#090a0f] px-4 py-2 text-xs">
+              <span className="font-mono text-[11px] font-medium text-ink-400 mr-1">Quick run:</span>
               {["help", "about", "bio", "skills", "projects", "tools", "journey", "stats", "contact", "whoami"].map((cmd) => (
                 <button
                   key={cmd}
                   type="button"
                   onClick={() => executeCmd(cmd)}
-                  className="rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 font-mono text-[11px] font-bold text-emerald-300 hover:border-emerald-400 hover:bg-emerald-500/25 transition"
+                  className="rounded-md border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 font-mono text-[11px] font-medium text-emerald-300 hover:border-emerald-400/50 hover:bg-emerald-500/20 transition"
                 >
                   {cmd}
                 </button>
@@ -371,8 +374,8 @@ const TerminalPage = () => {
               {lines.map((line, idx) => {
                 if (line.type === "user") {
                   return (
-                    <p key={idx} className="font-bold text-white flex items-center gap-1">
-                      <span className="text-emerald-400 font-extrabold">$</span> {line.text.slice(2)}
+                    <p key={idx} className="font-semibold text-white flex items-center gap-1">
+                      <span className="text-emerald-400 font-semibold">$</span> {line.text.slice(2)}
                     </p>
                   );
                 }
@@ -387,7 +390,7 @@ const TerminalPage = () => {
 
               {/* Input Prompt Row */}
               <div className="flex items-center gap-2 pt-2">
-                <span className="font-extrabold text-emerald-400">$</span>
+                <span className="font-semibold text-emerald-400">$</span>
                 <input
                   ref={inputRef}
                   type="text"
