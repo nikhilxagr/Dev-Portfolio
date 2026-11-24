@@ -92,9 +92,9 @@ const ExperimentsPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-lime-400/40 bg-lime-400/10 px-4 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.22em] text-lime-600 dark:text-lime-300 shadow-sm">
+              <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-lime-400/40 bg-lime-400/10 px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300 shadow-sm">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-400" />
-                INTERACTIVE SANDBOX &amp; SECURITY RESEARCH
+                Interactive Sandbox &amp; Security Research
               </span>
             </MotionDiv>
 
@@ -102,11 +102,11 @@ const ExperimentsPage = () => {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.1 }}
-              className="mt-3 font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-slate-900 dark:text-white leading-[1.05]"
+              className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.08]"
             >
-              ENGINEERING{" "}
+              Engineering{" "}
               <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                EXPERIMENTS
+                Experiments
               </span>
             </MotionH1>
 

@@ -151,23 +151,22 @@ const ContactPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300">
+              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime-500 dark:bg-lime-300" />
                 Available for Projects &amp; Collaborations
               </span>
             </motion.div>
 
-            {/* Proportional Heading (Matching Blog & Services Page Scale) */}
+            {/* Proportional Heading */}
             <motion.h1
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.1 }}
-              className="mt-4 font-display text-[8.2vw] sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.05] tracking-tight text-zinc-900 dark:text-white"
+              className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.08] tracking-tight text-zinc-900 dark:text-white"
             >
-              GET IN
-              <br />
+              Get In{" "}
               <span className="bg-gradient-to-r from-lime-300 to-lime-500 bg-clip-text text-transparent">
-                TOUCH
+                Touch
               </span>
             </motion.h1>
 
@@ -227,13 +226,13 @@ const ContactPage = () => {
                   { label: "Response SLA", value: "Within 12-24h", color: "text-lime-500 dark:text-lime-300" },
                   { label: "Direct Channels", value: "Email & Phone", color: "text-zinc-900 dark:text-white" },
                   { label: "Work Location", value: "Lucknow / Remote", color: "text-zinc-900 dark:text-white" },
-                  { label: "Availability", value: "OPEN FOR WORK", color: "text-amber-600 dark:text-amber-500" },
+                  { label: "Availability", value: "Open for Work", color: "text-amber-600 dark:text-amber-500" },
                 ].map(({ label, value, color }, i) => (
                   <div key={label} className={`flex flex-col items-center justify-center ${i > 0 ? "md:pl-4" : ""}`}>
-                    <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-600 mb-1">
+                    <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">
                       {label}
                     </span>
-                    <span className={`text-xl font-black tracking-tight ${color}`}>
+                    <span className={`text-xl font-bold tracking-tight ${color}`}>
                       {value}
                     </span>
                   </div>
@@ -262,10 +261,10 @@ const ContactPage = () => {
                 {/* Form Header */}
                 <div className="mb-7 flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 dark:border-white/[0.08] pb-5">
                   <div>
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-lime-600 dark:text-lime-400">
-                      // PROJECT BRIEF
+                    <span className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400">
+                      Project Brief
                     </span>
-                    <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white mt-1">
+                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mt-1">
                       Tell Me About Your Project
                     </h2>
                   </div>
@@ -442,13 +441,13 @@ const ContactPage = () => {
               className="rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 sm:p-7 shadow-sm dark:shadow-none backdrop-blur-xl"
             >
               <div className="mb-5 pb-4 border-b border-zinc-200 dark:border-white/[0.08]">
-                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-lime-600 dark:text-lime-400">
-                  // DIRECT CHANNELS
+                <span className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400">
+                  Direct Channels
                 </span>
-                <h3 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white mt-1">
+                <h3 className="text-lg sm:text-xl font-bold tracking-tight text-zinc-900 dark:text-white mt-1">
                   Connect Directly
                 </h3>
-                <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                   Have an urgent project timeline or prefer direct messaging?
                 </p>
               </div>
@@ -531,10 +530,10 @@ const ContactPage = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-6 sm:p-7 shadow-sm dark:shadow-none backdrop-blur-xl"
             >
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-lime-600 dark:text-lime-400">
-                // WHAT TO EXPECT
+              <span className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400">
+                What to Expect
               </span>
-              <h3 className="text-lg font-black text-zinc-900 dark:text-white mt-1 mb-4">
+              <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white mt-1 mb-4">
                 Transparent Next Steps
               </h3>
 
