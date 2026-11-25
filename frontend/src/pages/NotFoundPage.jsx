@@ -47,18 +47,18 @@ const NotFoundPage = () => {
       >
         <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl backdrop-blur-2xl dark:border-emerald-500/30 dark:bg-[#030d07]/95 dark:shadow-[0_20px_60px_rgba(0,10,2,0.85)] sm:p-10 text-center">
           
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-600/30 bg-emerald-50 px-4 py-1.5 font-mono text-xs font-semibold text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-500/10 dark:text-emerald-300">
             <AlertTriangle size={14} className="animate-pulse text-amber-500" />
-            <span>ERR_404 // ROUTE_NOT_FOUND</span>
+            <span>Error 404 • Route not found</span>
           </div>
 
           <div className="relative my-6">
-            <h1 className="font-display text-7xl font-black tracking-tighter sm:text-9xl">
+            <h1 className="font-display text-6xl font-extrabold tracking-tight sm:text-8xl">
               <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-800 dark:from-emerald-400 dark:via-teal-300 dark:to-lime-400 bg-clip-text text-transparent drop-shadow-sm dark:drop-shadow-[0_0_35px_rgba(52,211,153,0.5)]">
                 404
               </span>
             </h1>
-            <p className="mt-2 text-base font-extrabold uppercase tracking-widest text-slate-900 dark:text-slate-100 sm:text-lg">
+            <p className="mt-2 text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">
               Lost in Cyberspace?
             </p>
           </div>
