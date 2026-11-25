@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   BarChart2,
   Network,
@@ -165,17 +165,18 @@ const SortingVisualizer = () => {
   const [speed, setSpeed] = useState("Normal");
   const [inputArray, setInputArray] = useState(() => randomArray(typeof window !== "undefined" && window.innerWidth < 640 ? 16 : 24));
   const [customArrayText, setCustomArrayText] = useState("");
-  const [steps, setSteps] = useState([]);
+  const steps = useMemo(() => collectSortSteps(algorithm, inputArray), [algorithm, inputArray]);
   const [stepIdx, setStepIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    const s = collectSortSteps(algorithm, inputArray);
-    setSteps(s);
-    setStepIdx(0);
-    setPlaying(false);
-    clearInterval(intervalRef.current);
+    const timer = setTimeout(() => {
+      setStepIdx(0);
+      setPlaying(false);
+      clearInterval(intervalRef.current);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [algorithm, inputArray]);
 
   useEffect(() => {
@@ -219,30 +220,30 @@ const SortingVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-emerald-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-emerald-500/15 dark:bg-slate-950/70">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white dark:border-white/[0.08] dark:bg-[#11141c]">
+      <div className="relative border-b border-black/[0.08] bg-[#f8fafc] p-4 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:px-6 sm:py-4">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 shrink-0">
-              <BarChart2 className="text-emerald-600 dark:text-emerald-400" size={16} />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-500/10">
+              <BarChart2 className="text-emerald-600 dark:text-emerald-400" size={16} strokeWidth={1.5} />
             </div>
-            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
-              Interactive Swapping Engine <span className="text-emerald-700 dark:text-emerald-400 font-extrabold uppercase">({algorithm})</span>
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
+              Interactive Swapping Engine <span className="font-semibold text-emerald-700 dark:text-emerald-400">({algorithm})</span>
             </span>
           </div>
-          <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-mono font-bold text-emerald-700 dark:text-emerald-300 self-start sm:self-auto">
+          <span className="self-start rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3 py-0.5 font-mono text-xs font-medium tabular-nums text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300 sm:self-auto">
             {arraySize} Elements
           </span>
         </div>
       </div>
 
-      <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
+      <div className="space-y-5 p-4 sm:space-y-6 sm:p-7">
         {/* Custom User Input Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-emerald-500/25 dark:bg-slate-950/80 shadow-sm backdrop-blur-md">
+        <div className="flex flex-col items-stretch gap-3 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:flex-row sm:items-center sm:p-4">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-xs uppercase text-emerald-700 dark:text-emerald-400 font-black tracking-wider whitespace-nowrap">
-              Custom User Input:
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+            <span className="whitespace-nowrap font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+              Custom Input:
             </span>
           </div>
           <input
@@ -251,19 +252,19 @@ const SortingVisualizer = () => {
             onChange={(e) => setCustomArrayText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleApplyCustomArray()}
             placeholder="Type custom numbers e.g. 45, 12, 89, 34, 67, 23"
-            className="flex-1 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700/80 dark:bg-slate-900 dark:text-emerald-300 dark:placeholder-slate-500 px-3.5 py-2 font-mono text-xs outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-1 focus:ring-emerald-500 transition"
+            className="flex-1 rounded-lg border border-black/[0.1] bg-white px-3.5 py-2 font-mono text-xs text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-emerald-300 dark:placeholder:text-ink-500 dark:focus:border-emerald-500"
           />
           <button
             type="button"
             onClick={handleApplyCustomArray}
-            className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 dark:border-emerald-400/50 dark:bg-emerald-500/20 px-5 py-2 font-mono text-xs font-black text-emerald-800 dark:text-emerald-300 hover:bg-emerald-500 hover:text-white dark:hover:text-slate-950 transition-all duration-200 shadow-sm shrink-0"
+            className="shrink-0 rounded-lg border border-emerald-600/30 bg-emerald-500/10 px-4 py-2 font-mono text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-600 hover:text-white dark:border-emerald-500/30 dark:text-emerald-300 dark:hover:bg-emerald-500 dark:hover:text-ink-950"
           >
             Visualize Input
           </button>
         </div>
         <div>
-          <p className="font-mono text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-widest mb-2.5">Choose Algorithm</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+          <p className="mb-2.5 font-mono text-xs font-medium text-ink-500 dark:text-ink-400">Choose Algorithm</p>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3">
             {SORT_ALGORITHMS.map((a) => {
               const isActive = algorithm === a;
               const c = SORT_COMPLEXITY[a];
@@ -271,19 +272,21 @@ const SortingVisualizer = () => {
                 <button
                   key={a}
                   onClick={() => setAlgorithm(a)}
-                  className={`relative flex flex-col items-start gap-1.5 rounded-2xl border p-3.5 sm:p-4 text-left transition-all duration-200 ${
-                    isActive ? "shadow-md" : "border-slate-200 bg-slate-50/80 text-slate-700 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-900/60"
+                  className={`relative flex flex-col items-start gap-1.5 rounded-xl border p-3.5 text-left transition-colors duration-150 sm:p-4 ${
+                    isActive
+                      ? "border-emerald-600/40 bg-emerald-500/10"
+                      : "border-black/[0.08] bg-[#f8fafc] text-ink-700 hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:border-emerald-500/30"
                   }`}
-                  style={isActive ? { borderColor: `${c.color}80`, backgroundColor: `${c.color}15`, boxShadow: `0 0 20px ${c.color}25` } : {}}
+                  style={isActive ? { borderColor: `${c.color}80`, backgroundColor: `${c.color}12` } : {}}
                 >
-                  <div className="flex items-center justify-between w-full">
+                  <div className="flex w-full items-center justify-between">
                     <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: isActive ? c.color : "#94a3b8" }} />
-                    <span className="font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{c.method}</span>
+                    <span className="font-mono text-[11px] font-medium text-ink-500 dark:text-ink-400">{c.method}</span>
                   </div>
-                  <span className="font-display text-base font-bold text-slate-900 dark:text-white">{a}</span>
-                  <div className="flex flex-wrap gap-2 text-[11px] font-mono mt-1">
-                    <span className="text-slate-600 dark:text-slate-400">Avg: <strong className="text-slate-900 dark:text-slate-200">{c.avg}</strong></span>
-                    <span className="text-slate-600 dark:text-slate-400">Space: <strong className="text-slate-900 dark:text-slate-200">{c.space}</strong></span>
+                  <span className="font-display text-base font-semibold text-ink-950 dark:text-ink-50">{a}</span>
+                  <div className="mt-1 flex flex-wrap gap-2 font-mono text-[11px]">
+                    <span className="text-ink-500 dark:text-ink-400">Avg: <strong className="text-ink-900 dark:text-ink-200">{c.avg}</strong></span>
+                    <span className="text-ink-500 dark:text-ink-400">Space: <strong className="text-ink-900 dark:text-ink-200">{c.space}</strong></span>
                   </div>
                 </button>
               );
@@ -321,7 +324,7 @@ const SortingVisualizer = () => {
                   onClick={() => setSpeed(s)}
                   className={`px-2.5 sm:px-3 py-1.5 font-mono text-[11px] sm:text-xs font-bold transition ${
                     speed === s
-                      ? "bg-emerald-500 text-black font-black"
+                      ? "bg-emerald-600 text-white font-semibold dark:bg-emerald-500 dark:text-ink-950"
                       : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -341,7 +344,7 @@ const SortingVisualizer = () => {
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: barColor }} />
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: barColor }} />
             <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
               {currentStep.phase || "Press Play to start visualizing"}
             </p>
@@ -372,8 +375,8 @@ const SortingVisualizer = () => {
           <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             ◀ Prev
           </button>
-          <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: barColor, boxShadow: `0 4px 24px ${barColor}55` }}>
-            {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
+          <button onClick={() => setPlaying((p) => !p)} className="flex flex-[1.6] shrink-0 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-ink-950 dark:hover:bg-emerald-400 sm:flex-initial sm:px-7">
+            {playing ? <><Pause size={15} strokeWidth={1.5} /> Pause</> : <><Play size={15} strokeWidth={1.5} /> Play</>}
           </button>
           <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             Next ▶
@@ -579,17 +582,21 @@ const GraphVisualizer = () => {
   const [startNode, setStartNode] = useState("A");
   const [targetNode, setTargetNode] = useState("F");
   const [speed, setSpeed] = useState("Normal");
-  const [steps, setSteps] = useState([]);
+  const steps = useMemo(
+    () => collectGraphSteps(algo, nodes, edges, startNode, targetNode),
+    [algo, nodes, edges, startNode, targetNode]
+  );
   const [stepIdx, setStepIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    const s = collectGraphSteps(algo, nodes, edges, startNode, targetNode);
-    setSteps(s);
-    setStepIdx(0);
-    setPlaying(false);
-    clearInterval(intervalRef.current);
+    const timer = setTimeout(() => {
+      setStepIdx(0);
+      setPlaying(false);
+      clearInterval(intervalRef.current);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [algo, nodes, edges, startNode, targetNode]);
 
   useEffect(() => {
@@ -634,27 +641,27 @@ const GraphVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-cyan-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-cyan-500/15 dark:bg-slate-950/70">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white dark:border-white/[0.08] dark:bg-[#11141c]">
+      <div className="relative border-b border-black/[0.08] bg-[#f8fafc] p-4 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:px-6 sm:py-4">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 shrink-0">
-              <Network className="text-cyan-600 dark:text-cyan-400" size={16} />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-500/10">
+              <Network className="text-emerald-600 dark:text-emerald-400" size={16} strokeWidth={1.5} />
             </div>
-            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
-              Graph Execution Engine <span className="text-cyan-700 dark:text-cyan-400 font-extrabold uppercase">({algo})</span>
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
+              Graph Execution Engine <span className="font-semibold text-emerald-700 dark:text-emerald-400">({algo})</span>
             </span>
           </div>
-          <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-mono font-bold text-cyan-700 dark:text-cyan-300 self-start sm:self-auto">
+          <span className="self-start rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3 py-0.5 font-mono text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300 sm:self-auto">
             Start: {startNode} → Target: {targetNode}
           </span>
         </div>
       </div>
 
-      <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
+      <div className="space-y-5 p-4 sm:space-y-6 sm:p-7">
         <div>
-          <p className="font-mono text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-widest mb-2.5">Choose Graph Algorithm</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+          <p className="mb-2.5 font-mono text-xs font-medium text-ink-500 dark:text-ink-400">Choose Graph Algorithm</p>
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3">
             {Object.keys(GRAPH_ALGORITHMS).map((key) => {
               const item = GRAPH_ALGORITHMS[key];
               const isActive = algo === key;
@@ -662,64 +669,66 @@ const GraphVisualizer = () => {
                 <button
                   key={key}
                   onClick={() => setAlgo(key)}
-                  className={`flex flex-col items-start gap-1 rounded-2xl border p-3.5 text-left transition-all ${
-                    isActive ? "shadow-md" : "border-slate-200 bg-slate-50/80 text-slate-700 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/40 dark:text-slate-300 dark:hover:border-slate-700"
+                  className={`flex flex-col items-start gap-1 rounded-xl border p-3.5 text-left transition-colors ${
+                    isActive
+                      ? "border-emerald-600/40 bg-emerald-500/10"
+                      : "border-black/[0.08] bg-[#f8fafc] text-ink-700 hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:border-emerald-500/30"
                   }`}
-                  style={isActive ? { borderColor: `${item.color}80`, backgroundColor: `${item.color}15`, boxShadow: `0 0 20px ${item.color}25` } : {}}
+                  style={isActive ? { borderColor: `${item.color}80`, backgroundColor: `${item.color}12` } : {}}
                 >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-sm font-black text-slate-900 dark:text-white">{key}</span>
-                    {isActive && <span className="rounded px-1.5 py-0.5 text-[9px] font-bold font-mono" style={{ backgroundColor: `${item.color}30`, color: item.color }}>ACTIVE</span>}
+                  <div className="flex w-full items-center justify-between">
+                    <span className="text-sm font-semibold text-ink-950 dark:text-ink-50">{key}</span>
+                    {isActive && <span className="rounded px-1.5 py-0.5 font-mono text-[10px] font-medium" style={{ backgroundColor: `${item.color}25`, color: item.color }}>Active</span>}
                   </div>
-                  <span className="font-mono text-[10px] text-slate-600 dark:text-slate-400">{item.desc}</span>
+                  <span className="font-mono text-xs text-ink-500 dark:text-ink-400">{item.desc}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
+        <div className="flex flex-col items-stretch justify-between gap-3 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:p-4 md:flex-row md:items-center">
           <div className="flex flex-wrap items-center gap-3">
-            <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+            <label className="flex items-center gap-2 font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
               Start Node:
-              <select value={startNode} onChange={(e) => setStartNode(e.target.value)} className="rounded-lg border border-slate-300 bg-white text-cyan-700 dark:border-slate-700 dark:bg-slate-900 dark:text-cyan-400 px-2.5 py-1 text-xs font-black outline-none">
+              <select value={startNode} onChange={(e) => setStartNode(e.target.value)} className="rounded-lg border border-black/[0.1] bg-white px-2.5 py-1 text-xs font-semibold text-emerald-700 outline-none dark:border-white/[0.1] dark:bg-[#11141c] dark:text-emerald-400">
                 {nodes.map((n) => <option key={n.id} value={n.id}>{n.id}</option>)}
               </select>
             </label>
 
-            <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+            <label className="flex items-center gap-2 font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
               Target Node:
-              <select value={targetNode} onChange={(e) => setTargetNode(e.target.value)} className="rounded-lg border border-slate-300 bg-white text-lime-700 dark:border-slate-700 dark:bg-slate-900 dark:text-lime-400 px-2.5 py-1 text-xs font-black outline-none">
+              <select value={targetNode} onChange={(e) => setTargetNode(e.target.value)} className="rounded-lg border border-black/[0.1] bg-white px-2.5 py-1 text-xs font-semibold text-emerald-700 outline-none dark:border-white/[0.1] dark:bg-[#11141c] dark:text-emerald-400">
                 {nodes.map((n) => <option key={n.id} value={n.id}>{n.id}</option>)}
               </select>
             </label>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-500 font-bold whitespace-nowrap">Speed</span>
-            <div className="grid grid-cols-3 rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden w-full sm:w-auto text-center">
+          <div className="flex items-center justify-between gap-3 sm:justify-start">
+            <span className="whitespace-nowrap font-mono text-xs font-medium text-ink-500 dark:text-ink-400">Speed</span>
+            <div className="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-black/[0.1] text-center dark:border-white/[0.1] sm:w-auto">
               {["Slow", "Normal", "Fast"].map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-cyan-500 text-black font-black" : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"}`}>
+                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-xs font-medium transition-colors ${speed === s ? "bg-emerald-600 text-white dark:bg-emerald-500 dark:text-ink-950" : "bg-white text-ink-700 hover:bg-black/[0.03] dark:bg-[#11141c] dark:text-ink-400 dark:hover:text-ink-100"}`}>
                   {s}
                 </button>
               ))}
             </div>
           </div>
 
-          <button onClick={randomizeWeights} className="w-full md:w-auto ml-0 md:ml-auto flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-4 py-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300 hover:border-cyan-500/60 hover:text-cyan-600 dark:hover:text-cyan-300 transition">
-            <RotateCcw size={14} /> Randomize Weights
+          <button onClick={randomizeWeights} className="ml-0 flex w-full items-center justify-center gap-2 rounded-lg border border-black/[0.1] bg-white px-4 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:border-emerald-600/35 hover:text-emerald-700 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-300 dark:hover:border-emerald-500/35 dark:hover:text-emerald-300 md:ml-auto md:w-auto">
+            <RotateCcw size={14} strokeWidth={1.5} /> Randomize Weights
           </button>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
+        <div className="flex flex-col justify-between gap-2.5 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:flex-row sm:items-center sm:px-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: themeColor }} />
+            <p className="truncate font-mono text-xs font-medium text-ink-900 dark:text-ink-200">
               {currStep.phase || "Press Play to start graph traversal"}
             </p>
           </div>
-          <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 shrink-0">
-            Step <span className="text-slate-900 dark:text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
+          <span className="shrink-0 font-mono text-xs tabular-nums text-ink-500 dark:text-ink-400">
+            Step <span className="font-semibold text-ink-950 dark:text-ink-50">{stepIdx + 1}</span>/{steps.length} · <span className="font-semibold" style={{ color: themeColor }}>{progress}%</span>
           </span>
         </div>
 
@@ -774,7 +783,7 @@ const GraphVisualizer = () => {
 
               return (
                 <g key={node.id} transform={`translate(${node.x}, ${node.y})`}>
-                  {(isCurrent || isInPath) && <circle r="22" fill="none" stroke={isInPath ? "#f59e0b" : themeColor} strokeWidth="2" opacity="0.5" className="animate-ping" />}
+                  {(isCurrent || isInPath) && <circle r="22" fill="none" stroke={isInPath ? "#f59e0b" : themeColor} strokeWidth="2" opacity="0.55" />}
                   <circle r="18" fill={fill} stroke={stroke} strokeWidth={strokeW} className="transition-all duration-300" />
                   <text textAnchor="middle" dy="4" fontSize="12" fontWeight="900" fill={fill === "#f59e0b" || fill === themeColor ? "#000000" : "#ffffff"} fontFamily="monospace">
                     {node.id}
@@ -812,8 +821,8 @@ const GraphVisualizer = () => {
           <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             ◀ Prev
           </button>
-          <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
-            {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
+          <button onClick={() => setPlaying((p) => !p)} className="flex flex-[1.6] shrink-0 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-ink-950 dark:hover:bg-emerald-400 sm:flex-initial sm:px-7">
+            {playing ? <><Pause size={15} strokeWidth={1.5} /> Pause</> : <><Play size={15} strokeWidth={1.5} /> Play</>}
           </button>
           <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
             Next ▶
@@ -975,13 +984,8 @@ const DpGridVisualizer = () => {
   const [strB, setStrB] = useState("GXTXAYB");
 
   const [speed, setSpeed] = useState("Normal");
-  const [steps, setSteps] = useState([]);
-  const [stepIdx, setStepIdx] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const intervalRef = useRef(null);
-
-  useEffect(() => {
-    let collected = [];
+  const steps = useMemo(() => {
+    const collected = [];
     if (problem === "Knapsack") {
       const gen = knapsackDpGen(items, capacity);
       let res = gen.next();
@@ -997,10 +1001,19 @@ const DpGridVisualizer = () => {
         res = gen.next();
       }
     }
-    setSteps(collected);
-    setStepIdx(0);
-    setPlaying(false);
-    clearInterval(intervalRef.current);
+    return collected;
+  }, [problem, items, capacity, strA, strB]);
+  const [stepIdx, setStepIdx] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setStepIdx(0);
+      setPlaying(false);
+      clearInterval(intervalRef.current);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [problem, items, capacity, strA, strB]);
 
   useEffect(() => {
@@ -1026,65 +1039,65 @@ const DpGridVisualizer = () => {
   const depSet = new Set(depCells.map((c) => `${c[0]}-${c[1]}`));
   const isBacktrack = currStep.isBacktrack;
 
-  const themeColor = problem === "Knapsack" ? "#84cc16" : "#06b6d4";
+  const themeColor = problem === "Knapsack" ? "#10b981" : "#0ea5e9";
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-lime-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
-      <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-lime-500/15 dark:bg-slate-950/70">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white dark:border-white/[0.08] dark:bg-[#11141c]">
+      <div className="relative border-b border-black/[0.08] bg-[#f8fafc] p-4 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:px-6 sm:py-4">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-lime-500/30 bg-lime-500/10 shrink-0">
-              <Grid className="text-lime-600 dark:text-lime-400" size={16} />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-500/10">
+              <Grid className="text-emerald-600 dark:text-emerald-400" size={16} strokeWidth={1.5} />
             </div>
-            <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
-              2D Memoization Table <span className="text-lime-700 dark:text-lime-400 font-extrabold uppercase">({problem})</span>
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
+              2D Memoization Table <span className="font-semibold text-emerald-700 dark:text-emerald-400">({problem})</span>
             </span>
           </div>
 
-          <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex w-full gap-2 sm:w-auto">
             <button
               onClick={() => { setProblem("Knapsack"); setStepIdx(0); setPlaying(false); }}
-              className={`flex-1 sm:flex-initial rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold transition text-center ${problem === "Knapsack" ? "border-lime-500 bg-lime-500/20 text-lime-800 dark:border-lime-400 dark:bg-lime-500/20 dark:text-lime-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}
+              className={`flex-1 rounded-lg border px-3.5 py-1.5 text-center font-mono text-xs font-medium transition-colors sm:flex-initial ${problem === "Knapsack" ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-ink-950" : "border-black/[0.1] bg-white text-ink-700 hover:bg-black/[0.03] dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-400"}`}
             >
-              🎒 0/1 Knapsack
+              0/1 Knapsack
             </button>
             <button
               onClick={() => { setProblem("LCS"); setStepIdx(0); setPlaying(false); }}
-              className={`flex-1 sm:flex-initial rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold transition text-center ${problem === "LCS" ? "border-cyan-500 bg-cyan-500/20 text-cyan-800 dark:border-cyan-400 dark:bg-cyan-500/20 dark:text-cyan-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}
+              className={`flex-1 rounded-lg border px-3.5 py-1.5 text-center font-mono text-xs font-medium transition-colors sm:flex-initial ${problem === "LCS" ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-ink-950" : "border-black/[0.1] bg-white text-ink-700 hover:bg-black/[0.03] dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-400"}`}
             >
-              🔤 LCS Subsequence
+              LCS Subsequence
             </button>
           </div>
         </div>
       </div>
 
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
+        <div className="flex flex-col items-stretch justify-between gap-3 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:p-4 md:flex-row md:items-center">
           {problem === "Knapsack" ? (
             <div className="flex items-center gap-3">
-              <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-400 font-bold">Knapsack Capacity W:</span>
-              <input type="range" min={4} max={8} value={capacity} onChange={(e) => setCapacity(+e.target.value)} className="w-28 accent-lime-500 cursor-pointer" />
-              <span className="font-mono text-xs font-black text-lime-700 dark:text-lime-400">{capacity}</span>
+              <span className="font-mono text-xs font-medium text-ink-600 dark:text-ink-400">Knapsack Capacity W:</span>
+              <input type="range" min={4} max={8} value={capacity} onChange={(e) => setCapacity(+e.target.value)} className="w-28 cursor-pointer accent-emerald-600" />
+              <span className="font-mono text-xs font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">{capacity}</span>
             </div>
           ) : (
             <div className="flex flex-wrap items-center gap-3">
-              <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+              <label className="flex items-center gap-2 font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
                 Str A:
-                <input type="text" maxLength={7} value={strA} onChange={(e) => setStrA(e.target.value.toUpperCase())} className="rounded-lg border border-slate-300 bg-white text-cyan-700 dark:border-slate-700 dark:bg-slate-900 dark:text-cyan-400 px-2 py-1 text-xs font-black outline-none w-24 uppercase" />
+                <input type="text" maxLength={7} value={strA} onChange={(e) => setStrA(e.target.value.toUpperCase())} className="w-24 rounded-lg border border-black/[0.1] bg-white px-2 py-1 text-xs font-semibold uppercase text-emerald-700 outline-none dark:border-white/[0.1] dark:bg-[#11141c] dark:text-emerald-400" />
               </label>
-              <label className="flex items-center gap-2 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+              <label className="flex items-center gap-2 font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
                 Str B:
-                <input type="text" maxLength={7} value={strB} onChange={(e) => setStrB(e.target.value.toUpperCase())} className="rounded-lg border border-slate-300 bg-white text-lime-700 dark:border-slate-700 dark:bg-slate-900 dark:text-lime-400 px-2 py-1 text-xs font-black outline-none w-24 uppercase" />
+                <input type="text" maxLength={7} value={strB} onChange={(e) => setStrB(e.target.value.toUpperCase())} className="w-24 rounded-lg border border-black/[0.1] bg-white px-2 py-1 text-xs font-semibold uppercase text-emerald-700 outline-none dark:border-white/[0.1] dark:bg-[#11141c] dark:text-emerald-400" />
               </label>
             </div>
           )}
 
-          <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-500 font-bold whitespace-nowrap">Speed</span>
-            <div className="grid grid-cols-3 rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden w-full sm:w-auto text-center">
+          <div className="flex items-center justify-between gap-3 sm:justify-start">
+            <span className="whitespace-nowrap font-mono text-xs font-medium text-ink-500 dark:text-ink-400">Speed</span>
+            <div className="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-black/[0.1] text-center dark:border-white/[0.1] sm:w-auto">
               {["Slow", "Normal", "Fast"].map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-lime-500 text-black font-black" : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"}`}>
+                <button key={s} onClick={() => setSpeed(s)} className={`px-3 py-1.5 font-mono text-xs font-medium transition-colors ${speed === s ? "bg-emerald-600 text-white dark:bg-emerald-500 dark:text-ink-950" : "bg-white text-ink-700 hover:bg-black/[0.03] dark:bg-[#11141c] dark:text-ink-400 dark:hover:text-ink-100"}`}>
                   {s}
                 </button>
               ))}
@@ -1092,15 +1105,15 @@ const DpGridVisualizer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
+        <div className="flex flex-col justify-between gap-2.5 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:flex-row sm:items-center sm:px-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: themeColor }} />
+            <p className="truncate font-mono text-xs font-medium text-ink-900 dark:text-ink-200">
               {currStep.phase || "Press Play to step through 2D Matrix computation."}
             </p>
           </div>
-          <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 shrink-0">
-            Step <span className="text-slate-900 dark:text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
+          <span className="shrink-0 font-mono text-xs tabular-nums text-ink-500 dark:text-ink-400">
+            Step <span className="font-semibold text-ink-950 dark:text-ink-50">{stepIdx + 1}</span>/{steps.length} · <span className="font-semibold" style={{ color: themeColor }}>{progress}%</span>
           </span>
         </div>
 
@@ -1135,14 +1148,14 @@ const DpGridVisualizer = () => {
                     let borderCls = "border-slate-200 dark:border-slate-800/50";
 
                     if (isBacktrack && isDep) {
-                      cellBg = "bg-amber-500/20 text-amber-800 dark:text-amber-300 font-black shadow-[inset_0_0_12px_rgba(245,158,11,0.3)]";
+                      cellBg = "bg-amber-500/20 text-amber-800 dark:text-amber-300 font-semibold";
                       borderCls = "border-amber-500/50";
                     } else if (isActive) {
-                      cellBg = problem === "Knapsack" ? "bg-lime-500/25 text-lime-900 dark:text-lime-200 font-black" : "bg-cyan-500/25 text-cyan-900 dark:text-cyan-200 font-black";
-                      borderCls = problem === "Knapsack" ? "border-lime-500 dark:border-lime-400" : "border-cyan-500 dark:border-cyan-400";
+                      cellBg = "bg-emerald-500/20 text-emerald-900 dark:text-emerald-200 font-semibold";
+                      borderCls = "border-emerald-600 dark:border-emerald-400";
                     } else if (isDep) {
-                      cellBg = "bg-violet-500/20 text-violet-800 dark:text-violet-300 font-bold";
-                      borderCls = "border-violet-500/40";
+                      cellBg = "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 font-medium";
+                      borderCls = "border-emerald-500/30";
                     }
 
                     return (
@@ -1158,14 +1171,14 @@ const DpGridVisualizer = () => {
         </div>
 
         {currStep.selectedItems?.length > 0 && (
-          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
-            <span className="font-mono text-[10px] font-extrabold uppercase text-amber-800 dark:text-amber-300 tracking-wider">
+          <div className="rounded-xl border border-emerald-600/25 bg-emerald-500/10 p-4 dark:border-emerald-500/25">
+            <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
               Selected Optimal Knapsack Items
             </span>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               {currStep.selectedItems.map((it, idx) => (
-                <span key={idx} className="rounded-lg border border-amber-400/40 bg-amber-400/20 px-3 py-1 font-mono text-xs font-black text-amber-900 dark:text-amber-200">
-                  📦 {it.name} (wt: {it.wt}, val: {it.val})
+                <span key={idx} className="rounded-lg border border-black/[0.08] bg-white px-3 py-1 font-mono text-xs font-medium tabular-nums text-ink-900 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-emerald-300">
+                  {it.name} (wt: {it.wt}, val: {it.val})
                 </span>
               ))}
             </div>
@@ -1173,31 +1186,31 @@ const DpGridVisualizer = () => {
         )}
 
         {currStep.lcsString && (
-          <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/10 p-4">
-            <span className="font-mono text-[10px] font-extrabold uppercase text-cyan-800 dark:text-cyan-300 tracking-wider">
+          <div className="rounded-xl border border-emerald-600/25 bg-emerald-500/10 p-4 dark:border-emerald-500/25">
+            <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
               Longest Common Subsequence Output
             </span>
-            <div className="mt-2 font-mono text-lg font-black text-cyan-900 dark:text-cyan-200 tracking-widest">
+            <div className="mt-2 font-mono text-lg font-semibold tracking-wider text-ink-950 dark:text-emerald-300">
               "{currStep.lcsString}"
             </div>
           </div>
         )}
 
-        <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            <RotateCcw size={13} /> Reset
+        <div className="flex w-full items-center justify-center gap-1.5 px-1 sm:gap-3">
+          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-3 sm:py-2">
+            <RotateCcw size={13} strokeWidth={1.5} /> Reset
           </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            ◀ Prev
+          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex flex-1 items-center justify-center rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-4">
+            Prev
           </button>
-          <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
-            {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
+          <button onClick={() => setPlaying((p) => !p)} className="flex flex-[1.6] shrink-0 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-ink-950 dark:hover:bg-emerald-400 sm:flex-initial sm:px-7">
+            {playing ? <><Pause size={15} strokeWidth={1.5} /> Pause</> : <><Play size={15} strokeWidth={1.5} /> Play</>}
           </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            Next ▶
+          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex flex-1 items-center justify-center rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-4">
+            Next
           </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            <SkipForward size={13} /> End
+          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-3">
+            <SkipForward size={13} strokeWidth={1.5} /> End
           </button>
         </div>
       </div>
@@ -1299,13 +1312,8 @@ const TwoPointerVisualizer = () => {
   const [windowSize, setWindowSize] = useState(3);
 
   const [speed, setSpeed] = useState("Normal");
-  const [steps, setSteps] = useState([]);
-  const [stepIdx, setStepIdx] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const intervalRef = useRef(null);
-
-  useEffect(() => {
-    let collected = [];
+  const steps = useMemo(() => {
+    const collected = [];
     if (pattern === "BinarySearch") {
       const gen = binarySearchGen(binaryArray, target);
       let res = gen.next();
@@ -1319,11 +1327,19 @@ const TwoPointerVisualizer = () => {
       let res = gen.next();
       while (!res.done) { collected.push(res.value); res = gen.next(); }
     }
+    return collected;
+  }, [pattern, target, binaryArray, windowSize]);
+  const [stepIdx, setStepIdx] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const intervalRef = useRef(null);
 
-    setSteps(collected);
-    setStepIdx(0);
-    setPlaying(false);
-    clearInterval(intervalRef.current);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setStepIdx(0);
+      setPlaying(false);
+      clearInterval(intervalRef.current);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [pattern, target, binaryArray, windowSize]);
 
   useEffect(() => {
@@ -1359,90 +1375,81 @@ const TwoPointerVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-amber-500/20 dark:bg-[#030d07] overflow-hidden">
-      {/* Top Controls Header */}
-      <div className="p-4 sm:px-6 sm:py-4 border-b border-slate-200 bg-slate-50 dark:border-amber-500/15 dark:bg-slate-950/70">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="overflow-hidden rounded-2xl border border-black/[0.08] bg-white dark:border-white/[0.08] dark:bg-[#11141c]">
+      <div className="border-b border-black/[0.08] bg-[#f8fafc] p-4 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:px-6 sm:py-4">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 shrink-0">
-              <Sliders className="text-amber-600 dark:text-amber-400" size={16} />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-500/10">
+              <Sliders className="text-emerald-600 dark:text-emerald-400" size={16} strokeWidth={1.5} />
             </div>
-            <span className="font-mono text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100">
-              Pointer Tracking Engine <span style={{ color: "#d97706" }} className="font-black uppercase">({pattern})</span>
+            <span className="font-mono text-xs font-medium text-ink-900 dark:text-ink-100 sm:text-sm">
+              Pointer Tracking Engine <span className="font-semibold text-emerald-600 dark:text-emerald-400">({pattern})</span>
             </span>
           </div>
 
-          {/* Pattern Selector Tabs with Hardcoded High-Contrast Styles */}
-          <div className="flex gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
+          <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:flex-nowrap">
             <button
               onClick={() => setPattern("BinarySearch")}
-              style={{
-                backgroundColor: pattern === "BinarySearch" ? "#0284c7" : "#ffffff",
-                color: pattern === "BinarySearch" ? "#ffffff" : "#0f172a",
-                borderColor: pattern === "BinarySearch" ? "#0369a1" : "#cbd5e1",
-              }}
-              className="flex-1 sm:flex-initial rounded-xl border px-4 py-2 font-mono text-xs font-black transition-all shadow-sm"
+              className={`flex-1 rounded-lg border px-3.5 py-2 font-mono text-xs font-medium transition-colors sm:flex-initial ${
+                pattern === "BinarySearch"
+                  ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-ink-950"
+                  : "border-black/[0.1] bg-white text-ink-700 hover:border-emerald-600/35 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-300 dark:hover:border-emerald-500/35"
+              }`}
             >
-              🔍 Binary Search
+              Binary Search
             </button>
             <button
               onClick={() => setPattern("SlidingWindow")}
-              style={{
-                backgroundColor: pattern === "SlidingWindow" ? "#d97706" : "#ffffff",
-                color: pattern === "SlidingWindow" ? "#ffffff" : "#0f172a",
-                borderColor: pattern === "SlidingWindow" ? "#b45309" : "#cbd5e1",
-              }}
-              className="flex-1 sm:flex-initial rounded-xl border px-4 py-2 font-mono text-xs font-black transition-all shadow-sm"
+              className={`flex-1 rounded-lg border px-3.5 py-2 font-mono text-xs font-medium transition-colors sm:flex-initial ${
+                pattern === "SlidingWindow"
+                  ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-ink-950"
+                  : "border-black/[0.1] bg-white text-ink-700 hover:border-emerald-600/35 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-300 dark:hover:border-emerald-500/35"
+              }`}
             >
-              🪟 Sliding Window
+              Sliding Window
             </button>
             <button
               onClick={() => setPattern("WaterContainer")}
-              style={{
-                backgroundColor: pattern === "WaterContainer" ? "#db2777" : "#ffffff",
-                color: pattern === "WaterContainer" ? "#ffffff" : "#0f172a",
-                borderColor: pattern === "WaterContainer" ? "#be185d" : "#cbd5e1",
-              }}
-              className="flex-1 sm:flex-initial rounded-xl border px-4 py-2 font-mono text-xs font-black transition-all shadow-sm"
+              className={`flex-1 rounded-lg border px-3.5 py-2 font-mono text-xs font-medium transition-colors sm:flex-initial ${
+                pattern === "WaterContainer"
+                  ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-ink-950"
+                  : "border-black/[0.1] bg-white text-ink-700 hover:border-emerald-600/35 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-300 dark:hover:border-emerald-500/35"
+              }`}
             >
-              💧 Water Container
+              Water Container
             </button>
           </div>
         </div>
       </div>
 
-      <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-        {/* Controls Row */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-4 rounded-2xl border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950/50">
+      <div className="space-y-5 p-4 sm:space-y-6 sm:p-7">
+        <div className="flex flex-col items-stretch justify-between gap-3 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-4 dark:border-white/[0.08] dark:bg-[#0c0e14] md:flex-row md:items-center">
           {pattern === "BinarySearch" ? (
-            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
               <div className="flex items-center gap-2">
-                <span style={{ color: "#0f172a" }} className="font-mono text-xs uppercase font-black">SEARCH TARGET:</span>
+                <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">Search Target:</span>
                 <input
                   type="number"
                   value={target}
                   onChange={(e) => setTarget(Number(e.target.value))}
                   placeholder="Target"
-                  style={{ backgroundColor: "#ffffff", color: "#0f172a", borderColor: "#cbd5e1" }}
-                  className="w-24 rounded-xl border px-3.5 py-1.5 font-mono text-xs font-black outline-none focus:border-cyan-500 shadow-sm"
+                  className="w-24 rounded-lg border border-black/[0.1] bg-white px-3 py-1.5 font-mono text-xs font-medium tabular-nums text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-50 dark:focus:border-emerald-500"
                 />
               </div>
 
-              <div className="flex items-center gap-2 flex-1 sm:flex-initial min-w-[200px]">
+              <div className="flex min-w-[200px] flex-1 items-center gap-2 sm:flex-initial">
                 <input
                   type="text"
                   value={customArrayText}
                   onChange={(e) => setCustomArrayText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleApplyCustomBsArray()}
                   placeholder="Custom array e.g. 10, 25, 42, 60, 88"
-                  style={{ backgroundColor: "#ffffff", color: "#0f172a", borderColor: "#cbd5e1" }}
-                  className="flex-1 rounded-xl border px-3.5 py-1.5 font-mono text-xs font-bold outline-none focus:border-cyan-500 shadow-sm"
+                  className="flex-1 rounded-lg border border-black/[0.1] bg-white px-3 py-1.5 font-mono text-xs text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-50 dark:focus:border-emerald-500"
                 />
                 <button
                   type="button"
                   onClick={handleApplyCustomBsArray}
-                  style={{ backgroundColor: "#0284c7", color: "#ffffff", borderColor: "#0369a1" }}
-                  className="rounded-xl border px-4 py-1.5 font-mono text-xs font-black hover:bg-cyan-700 transition shadow-sm"
+                  className="rounded-lg border border-emerald-600/30 bg-emerald-500/10 px-3.5 py-1.5 font-mono text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-600 hover:text-white dark:border-emerald-500/30 dark:text-emerald-300 dark:hover:bg-emerald-500 dark:hover:text-ink-950"
                 >
                   Set
                 </button>
@@ -1450,28 +1457,26 @@ const TwoPointerVisualizer = () => {
             </div>
           ) : pattern === "SlidingWindow" ? (
             <div className="flex items-center gap-3">
-              <span style={{ color: "#0f172a" }} className="font-mono text-xs uppercase font-black">WINDOW SIZE K:</span>
-              <input type="range" min={2} max={5} value={windowSize} onChange={(e) => setWindowSize(+e.target.value)} className="w-28 accent-amber-500 cursor-pointer" />
-              <span style={{ color: "#d97706" }} className="font-mono text-xs font-black">{windowSize}</span>
+              <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">Window size K:</span>
+              <input type="range" min={2} max={5} value={windowSize} onChange={(e) => setWindowSize(+e.target.value)} className="w-28 accent-emerald-600 cursor-pointer" />
+              <span className="font-mono text-xs font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">{windowSize}</span>
             </div>
           ) : (
-            <span style={{ color: "#0f172a" }} className="font-mono text-xs font-black">Container Width × Min(H_Left, H_Right)</span>
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">Container Width × Min(H_Left, H_Right)</span>
           )}
 
-          {/* Speed Buttons */}
-          <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span style={{ color: "#0f172a" }} className="font-mono text-xs uppercase font-black whitespace-nowrap">SPEED</span>
-            <div className="grid grid-cols-3 rounded-xl border border-slate-300 overflow-hidden w-full sm:w-auto text-center shadow-sm">
+          <div className="flex items-center justify-between gap-3 sm:justify-start">
+            <span className="whitespace-nowrap font-mono text-xs font-medium text-ink-500 dark:text-ink-400">Speed</span>
+            <div className="grid w-full grid-cols-3 overflow-hidden rounded-lg border border-black/[0.1] text-center dark:border-white/[0.1] sm:w-auto">
               {["Slow", "Normal", "Fast"].map((s) => (
                 <button
                   key={s}
                   onClick={() => setSpeed(s)}
-                  style={{
-                    backgroundColor: speed === s ? "#f59e0b" : "#ffffff",
-                    color: "#0f172a",
-                    fontWeight: speed === s ? "900" : "700",
-                  }}
-                  className="px-3.5 py-1.5 font-mono text-xs transition"
+                  className={`px-3.5 py-1.5 font-mono text-xs font-medium transition-colors ${
+                    speed === s
+                      ? "bg-emerald-600 text-white dark:bg-emerald-500 dark:text-ink-950"
+                      : "bg-white text-ink-700 hover:bg-black/[0.03] dark:bg-[#11141c] dark:text-ink-400 dark:hover:text-ink-100"
+                  }`}
                 >
                   {s}
                 </button>
@@ -1480,16 +1485,15 @@ const TwoPointerVisualizer = () => {
           </div>
         </div>
 
-        {/* Step Banner */}
-        <div style={{ backgroundColor: "#f8fafc", borderColor: "#e2e8f0" }} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border p-3.5 sm:px-4 sm:py-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p style={{ color: "#0f172a" }} className="font-mono text-xs font-black truncate">
+        <div className="flex flex-col justify-between gap-2.5 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:flex-row sm:items-center sm:px-4 sm:py-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: themeColor }} />
+            <p className="truncate font-mono text-xs font-medium text-ink-900 dark:text-ink-200">
               {currStep.phase || "Press Play to step through two-pointer execution."}
             </p>
           </div>
-          <span style={{ color: "#334155" }} className="font-mono text-xs font-extrabold shrink-0">
-            Step <span style={{ color: "#0f172a" }} className="font-black">{stepIdx + 1}</span>/{steps.length} · <span className="font-black" style={{ color: themeColor }}>{progress}%</span>
+          <span className="shrink-0 font-mono text-xs tabular-nums text-ink-500 dark:text-ink-400">
+            Step <span className="font-semibold text-ink-950 dark:text-ink-50">{stepIdx + 1}</span>/{steps.length} · <span className="font-semibold" style={{ color: themeColor }}>{progress}%</span>
           </span>
         </div>
 
@@ -1523,10 +1527,10 @@ const TwoPointerVisualizer = () => {
 
                 return (
                   <div key={i} className="relative flex flex-col items-center">
-                    <div className="h-5 font-mono text-xs font-black uppercase" style={{ color: "#38bdf8" }}>
+                    <div className="h-5 font-mono text-xs font-semibold text-sky-400">
                       {isLeft && "L "}
                       {isRight && "R"}
-                      {isMid && <span style={{ color: "#fbbf24" }}>MID</span>}
+                      {isMid && <span className="text-amber-400">MID</span>}
                     </div>
                     <div
                       style={{
@@ -1534,12 +1538,11 @@ const TwoPointerVisualizer = () => {
                         borderColor: border,
                         color: textColor,
                       }}
-                      className="h-11 w-11 rounded-xl border-2 flex items-center justify-center font-mono text-sm font-black transition-all shadow-md"
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border-2 font-mono text-sm font-semibold tabular-nums transition-colors"
                     >
                       {val}
                     </div>
-                    {/* HARDCODED BRIGHT INDEX TEXT */}
-                    <span style={{ color: "#cbd5e1" }} className="font-mono text-xs font-black mt-2.5 drop-shadow-sm">
+                    <span className="mt-2 font-mono text-xs font-medium tabular-nums text-ink-300">
                       [{i}]
                     </span>
                   </div>
@@ -1549,7 +1552,7 @@ const TwoPointerVisualizer = () => {
           )}
 
           {pattern === "SlidingWindow" && (
-            <div className="flex items-center gap-2.5 flex-wrap justify-center my-6">
+            <div className="my-6 flex flex-wrap items-center justify-center gap-2.5">
               {SLIDING_WINDOW_ARRAY.map((val, i) => {
                 const inWin = currStep.window && i >= currStep.window[0] && i <= currStep.window[1];
                 let bg = "#0f172a";
@@ -1566,11 +1569,11 @@ const TwoPointerVisualizer = () => {
                   <div key={i} className="relative flex flex-col items-center">
                     <div
                       style={{ backgroundColor: bg, borderColor: border, color: textColor }}
-                      className="h-11 w-11 rounded-xl border-2 flex items-center justify-center font-mono text-sm font-black transition-all shadow-md"
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border-2 font-mono text-sm font-semibold tabular-nums transition-colors"
                     >
                       {val}
                     </div>
-                    <span style={{ color: "#cbd5e1" }} className="font-mono text-xs font-black mt-2.5 drop-shadow-sm">
+                    <span className="mt-2 font-mono text-xs font-medium tabular-nums text-ink-300">
                       [{i}]
                     </span>
                   </div>
@@ -1580,21 +1583,21 @@ const TwoPointerVisualizer = () => {
           )}
 
           {pattern === "WaterContainer" && (
-            <div className="flex items-end justify-center gap-2 sm:gap-3 h-[160px] w-full max-w-lg pt-4">
+            <div className="flex h-[160px] w-full max-w-lg items-end justify-center gap-2 pt-4 sm:gap-3">
               {WATER_CONTAINER_ARRAY.map((h, i) => {
                 const isL = currStep.left === i;
                 const isR = currStep.right === i;
                 const isBetween = currStep.left !== undefined && i >= currStep.left && i <= currStep.right;
 
                 let barBg = "#334155";
-                if (isL || isR) barBg = "#ec4899";
-                else if (isBetween) barBg = "rgba(236,72,153,0.4)";
+                if (isL || isR) barBg = "#10b981";
+                else if (isBetween) barBg = "rgba(16,185,129,0.35)";
 
                 return (
-                  <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
-                    <span style={{ color: "#f472b6" }} className="font-mono text-xs font-black mb-1">{isL ? "L" : isR ? "R" : ""}</span>
+                  <div key={i} className="flex h-full flex-1 flex-col items-center justify-end">
+                    <span className="mb-1 font-mono text-xs font-semibold text-emerald-400">{isL ? "L" : isR ? "R" : ""}</span>
                     <div style={{ height: `${(h / 9) * 100}%`, backgroundColor: barBg }} className="w-full rounded-t-md transition-all" />
-                    <span style={{ color: "#cbd5e1" }} className="font-mono text-xs font-black mt-2.5">h={h}</span>
+                    <span className="mt-2 font-mono text-xs font-medium tabular-nums text-ink-300">h={h}</span>
                   </div>
                 );
               })}
@@ -1603,34 +1606,33 @@ const TwoPointerVisualizer = () => {
         </div>
 
         {pattern === "SlidingWindow" && (
-          <div style={{ backgroundColor: "rgba(245,158,11,0.15)", borderColor: "#f59e0b" }} className="rounded-2xl border p-4 flex items-center justify-between">
-            <span style={{ color: "#92400e" }} className="font-mono text-xs font-black">Current Window Sum: <span style={{ color: "#0f172a" }} className="font-black text-sm">{currStep.currSum}</span></span>
-            <span style={{ color: "#92400e" }} className="font-mono text-xs font-black">Max Subarray Sum: <span style={{ color: "#0f172a" }} className="font-black text-sm">{currStep.maxSum}</span></span>
+          <div className="flex items-center justify-between rounded-xl border border-emerald-600/25 bg-emerald-500/10 p-4 dark:border-emerald-500/25">
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">Current Window Sum: <span className="text-sm font-semibold tabular-nums text-ink-950 dark:text-ink-50">{currStep.currSum}</span></span>
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">Max Subarray Sum: <span className="text-sm font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">{currStep.maxSum}</span></span>
           </div>
         )}
 
         {pattern === "WaterContainer" && (
-          <div style={{ backgroundColor: "rgba(236,72,153,0.15)", borderColor: "#ec4899" }} className="rounded-2xl border p-4 flex items-center justify-between">
-            <span style={{ color: "#9d174d" }} className="font-mono text-xs font-black">Current Water Area: <span style={{ color: "#0f172a" }} className="font-black text-sm">{currStep.currArea} units²</span></span>
-            <span style={{ color: "#9d174d" }} className="font-mono text-xs font-black">Max Capacity: <span style={{ color: "#0f172a" }} className="font-black text-sm">{currStep.maxArea} units²</span></span>
+          <div className="flex items-center justify-between rounded-xl border border-emerald-600/25 bg-emerald-500/10 p-4 dark:border-emerald-500/25">
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">Current Water Area: <span className="text-sm font-semibold tabular-nums text-ink-950 dark:text-ink-50">{currStep.currArea} units²</span></span>
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">Max Capacity: <span className="text-sm font-semibold tabular-nums text-emerald-700 dark:text-emerald-400">{currStep.maxArea} units²</span></span>
           </div>
         )}
-        {/* Playback Controls */}
-        <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1 pt-2">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            <RotateCcw size={13} /> Reset
+        <div className="flex w-full items-center justify-center gap-1.5 px-1 pt-2 sm:gap-3">
+          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-3">
+            <RotateCcw size={13} strokeWidth={1.5} /> Reset
           </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            ◀ Prev
+          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex flex-1 items-center justify-center rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-4">
+            Prev
           </button>
-          <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-white transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
-            {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
+          <button onClick={() => setPlaying((p) => !p)} className="flex flex-[1.6] shrink-0 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-ink-950 dark:hover:bg-emerald-400 sm:flex-initial sm:px-7">
+            {playing ? <><Pause size={15} strokeWidth={1.5} /> Pause</> : <><Play size={15} strokeWidth={1.5} /> Play</>}
           </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            Next ▶
+          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex flex-1 items-center justify-center rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-4">
+            Next
           </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            <SkipForward size={13} /> End
+          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-3">
+            <SkipForward size={13} strokeWidth={1.5} /> End
           </button>
         </div>
       </div>
@@ -1718,12 +1720,7 @@ function* nQueensGen(N = 4) {
 const BacktrackingVisualizer = () => {
   const [boardSize, setBoardSize] = useState(4);
   const [speed, setSpeed] = useState("Normal");
-  const [steps, setSteps] = useState([]);
-  const [stepIdx, setStepIdx] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const intervalRef = useRef(null);
-
-  useEffect(() => {
+  const steps = useMemo(() => {
     const gen = nQueensGen(boardSize);
     const collected = [];
     let res = gen.next();
@@ -1731,10 +1728,19 @@ const BacktrackingVisualizer = () => {
       collected.push(res.value);
       res = gen.next();
     }
-    setSteps(collected);
-    setStepIdx(0);
-    setPlaying(false);
-    clearInterval(intervalRef.current);
+    return collected;
+  }, [boardSize]);
+  const [stepIdx, setStepIdx] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const intervalRef = useRef(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setStepIdx(0);
+      setPlaying(false);
+      clearInterval(intervalRef.current);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [boardSize]);
 
   useEffect(() => {
@@ -1764,7 +1770,7 @@ const BacktrackingVisualizer = () => {
   const progress = steps.length > 1 ? Math.round((stepIdx / (steps.length - 1)) * 100) : 0;
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-rose-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
+    <div className="rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-white/[0.08] dark:bg-[#11141c]/80 dark:shadow-none overflow-hidden">
       <div className="relative p-4 sm:px-6 sm:py-4 border-b border-slate-200/90 bg-slate-100/90 dark:border-rose-500/15 dark:bg-slate-950/70">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
@@ -1772,16 +1778,16 @@ const BacktrackingVisualizer = () => {
               <Crown className="text-rose-600 dark:text-rose-400" size={16} />
             </div>
             <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-300">
-              Backtracking Solver <span className="text-rose-700 dark:text-rose-400 font-black">({boardSize}×{boardSize} Board)</span>
+              Backtracking Solver <span className="font-semibold text-emerald-600 dark:text-emerald-400">({boardSize}×{boardSize} Board)</span>
             </span>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs font-bold text-slate-600 dark:text-slate-400">Board Size:</span>
-            <button onClick={() => setBoardSize(4)} className={`rounded-xl border px-3 py-1 font-mono text-xs font-bold transition ${boardSize === 4 ? "border-rose-500 bg-rose-500/20 text-rose-800 dark:border-rose-400 dark:bg-rose-500/20 dark:text-rose-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}>
+            <button onClick={() => setBoardSize(4)} className={`rounded-lg border px-3 py-1 font-mono text-xs font-medium transition-colors ${boardSize === 4 ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-ink-950" : "border-black/[0.1] bg-white text-ink-700 hover:bg-black/[0.03] dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-400"}`}>
               4 × 4
             </button>
-            <button onClick={() => setBoardSize(8)} className={`rounded-xl border px-3 py-1 font-mono text-xs font-bold transition ${boardSize === 8 ? "border-rose-500 bg-rose-500/20 text-rose-800 dark:border-rose-400 dark:bg-rose-500/20 dark:text-rose-200 font-black" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400"}`}>
+            <button onClick={() => setBoardSize(8)} className={`rounded-lg border px-3 py-1 font-mono text-xs font-medium transition-colors ${boardSize === 8 ? "border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500 dark:text-ink-950" : "border-black/[0.1] bg-white text-ink-700 hover:bg-black/[0.03] dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-400"}`}>
               8 × 8
             </button>
           </div>
@@ -1791,19 +1797,19 @@ const BacktrackingVisualizer = () => {
       <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
-              Valid Solutions: <span className="text-emerald-600 dark:text-emerald-400 font-black text-sm">{currStep.solutionsCount || 0}</span>
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
+              Valid Solutions: <span className="font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">{currStep.solutionsCount || 0}</span>
             </span>
-            <span className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
-              Backtracks: <span className="text-rose-600 dark:text-rose-400 font-black text-sm">{currStep.backtracksCount || 0}</span>
+            <span className="font-mono text-xs font-medium text-ink-700 dark:text-ink-300">
+              Backtracks: <span className="font-semibold tabular-nums text-rose-600 dark:text-rose-400">{currStep.backtracksCount || 0}</span>
             </span>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-start gap-3">
-            <span className="font-mono text-[11px] uppercase text-slate-600 dark:text-slate-500 font-bold whitespace-nowrap">Speed</span>
-            <div className="grid grid-cols-4 rounded-xl border border-slate-300 dark:border-slate-800 overflow-hidden w-full sm:w-auto text-center">
+          <div className="flex items-center justify-between gap-3 sm:justify-start">
+            <span className="whitespace-nowrap font-mono text-xs font-medium text-ink-500 dark:text-ink-400">Speed</span>
+            <div className="grid w-full grid-cols-4 overflow-hidden rounded-lg border border-black/[0.1] text-center dark:border-white/[0.1] sm:w-auto">
               {["Slow", "Normal", "Fast", "Turbo"].map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} className={`px-2.5 py-1.5 font-mono text-[11px] font-bold transition ${speed === s ? "bg-rose-500 text-black font-black" : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-900/60 dark:text-slate-400 dark:hover:text-white"}`}>
+                <button key={s} onClick={() => setSpeed(s)} className={`px-2.5 py-1.5 font-mono text-xs font-medium transition-colors ${speed === s ? "bg-emerald-600 text-white dark:bg-emerald-500 dark:text-ink-950" : "bg-white text-ink-700 hover:bg-black/[0.03] dark:bg-[#11141c] dark:text-ink-400 dark:hover:text-ink-100"}`}>
                   {s}
                 </button>
               ))}
@@ -1811,20 +1817,20 @@ const BacktrackingVisualizer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4 sm:py-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="h-2 w-2 rounded-full animate-pulse shrink-0" style={{ backgroundColor: themeColor }} />
-            <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
+        <div className="flex flex-col justify-between gap-2.5 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:flex-row sm:items-center sm:px-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: themeColor }} />
+            <p className="truncate font-mono text-xs font-medium text-ink-900 dark:text-ink-200">
               {currStep.phase || "Press Play to step through N-Queens backtracking."}
             </p>
           </div>
-          <span className="font-mono text-[11px] text-slate-600 dark:text-slate-400 shrink-0">
-            Step <span className="text-slate-900 dark:text-white font-bold">{stepIdx + 1}</span>/{steps.length} · <span className="font-bold" style={{ color: themeColor }}>{progress}%</span>
+          <span className="shrink-0 font-mono text-xs tabular-nums text-ink-500 dark:text-ink-400">
+            Step <span className="font-semibold text-ink-950 dark:text-ink-50">{stepIdx + 1}</span>/{steps.length} · <span className="font-semibold" style={{ color: themeColor }}>{progress}%</span>
           </span>
         </div>
 
-        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-800/60 bg-slate-950 dark:bg-gradient-to-b dark:from-[#100306] dark:to-[#040102] p-4 sm:p-6 flex items-center justify-center min-h-[260px] sm:min-h-[320px]">
-          <div className={`grid gap-1 border-2 border-slate-700 dark:border-slate-800 p-2 rounded-xl bg-slate-950 ${boardSize === 4 ? "grid-cols-4 w-64 h-64" : "grid-cols-8 w-80 h-80 sm:w-96 sm:h-96"}`}>
+        <div className="relative flex min-h-[260px] w-full items-center justify-center overflow-hidden rounded-2xl border border-black/[0.1] bg-[#0c0e14] p-4 dark:border-white/[0.08] sm:min-h-[320px] sm:p-6">
+          <div className={`grid gap-1 rounded-xl border border-white/[0.1] bg-[#090a0f] p-2 ${boardSize === 4 ? "h-64 w-64 grid-cols-4" : "h-80 w-80 grid-cols-8 sm:h-96 sm:w-96"}`}>
             {Array.from({ length: boardSize * boardSize }, (_, idx) => {
               const r = Math.floor(idx / boardSize);
               const c = idx % boardSize;
@@ -1840,20 +1846,20 @@ const BacktrackingVisualizer = () => {
                 bgCls = "bg-emerald-500/20";
                 borderCls = "border-emerald-400";
               } else if (isConflictCell) {
-                bgCls = "bg-rose-500/30 animate-pulse";
+                bgCls = "bg-rose-500/30";
                 borderCls = "border-rose-500";
               } else if (isActiveCell) {
                 bgCls = "bg-amber-500/30";
                 borderCls = "border-amber-400";
               } else if (hasQueen) {
-                bgCls = "bg-violet-500/20";
-                borderCls = "border-violet-500/40";
+                bgCls = "bg-emerald-500/15";
+                borderCls = "border-emerald-500/40";
               }
 
               return (
-                <div key={idx} className={`relative flex items-center justify-center rounded-lg border transition-all duration-150 ${bgCls} ${borderCls}`}>
+                <div key={idx} className={`relative flex items-center justify-center rounded-lg border transition-colors duration-150 ${bgCls} ${borderCls}`}>
                   {hasQueen && (
-                    <Crown size={boardSize === 4 ? 26 : 18} className={isSolution ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" : "text-amber-400"} />
+                    <Crown size={boardSize === 4 ? 24 : 18} strokeWidth={1.5} className={isSolution ? "text-emerald-400" : "text-amber-400"} />
                   )}
                 </div>
               );
@@ -1861,21 +1867,21 @@ const BacktrackingVisualizer = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full px-1">
-          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            <RotateCcw size={13} /> Reset
+        <div className="flex w-full items-center justify-center gap-1.5 px-1 sm:gap-3">
+          <button onClick={() => { setStepIdx(0); setPlaying(false); }} className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-3">
+            <RotateCcw size={13} strokeWidth={1.5} /> Reset
           </button>
-          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            ◀ Prev
+          <button onClick={() => setStepIdx((p) => Math.max(0, p - 1))} className="flex flex-1 items-center justify-center rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-4">
+            Prev
           </button>
-          <button onClick={() => setPlaying((p) => !p)} className="flex-[1.8] sm:flex-initial flex items-center justify-center gap-1.5 rounded-2xl px-4 sm:px-8 py-2 sm:py-3 font-mono text-xs sm:text-sm font-black text-black transition-all shadow-lg hover:scale-105 active:scale-95 shrink-0" style={{ backgroundColor: themeColor, boxShadow: `0 4px 24px ${themeColor}55` }}>
-            {playing ? <><Pause size={16} /> Pause</> : <><Play size={16} /> Play</>}
+          <button onClick={() => setPlaying((p) => !p)} className="flex flex-[1.6] shrink-0 items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 font-mono text-xs font-semibold text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-ink-950 dark:hover:bg-emerald-400 sm:flex-initial sm:px-7">
+            {playing ? <><Pause size={15} strokeWidth={1.5} /> Pause</> : <><Play size={15} strokeWidth={1.5} /> Play</>}
           </button>
-          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            Next ▶
+          <button onClick={() => setStepIdx((p) => Math.min(steps.length - 1, p + 1))} className="flex flex-1 items-center justify-center rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-4">
+            Next
           </button>
-          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex-1 sm:flex-initial flex items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white dark:border-slate-700 dark:bg-slate-900 px-2.5 sm:px-3 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition">
-            <SkipForward size={13} /> End
+          <button onClick={() => { setStepIdx(steps.length - 1); setPlaying(false); }} className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-black/[0.1] bg-white px-2.5 py-2 font-mono text-xs font-medium text-ink-700 transition-colors hover:text-ink-950 dark:border-white/[0.1] dark:bg-[#0c0e14] dark:text-ink-300 dark:hover:text-ink-50 sm:flex-initial sm:px-3">
+            <SkipForward size={13} strokeWidth={1.5} /> End
           </button>
         </div>
       </div>
@@ -1958,7 +1964,7 @@ const LinkedListVisualizer = () => {
   };
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-teal-500/20 dark:bg-[#030d07] dark:shadow-2xl overflow-hidden">
+    <div className="rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl dark:border-white/[0.08] dark:bg-[#11141c]/80 dark:shadow-none overflow-hidden">
       <div className="relative p-4 sm:px-6 sm:py-5 border-b border-slate-200/90 bg-slate-100/90 dark:border-teal-500/15 dark:bg-slate-950/70">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
@@ -1966,21 +1972,21 @@ const LinkedListVisualizer = () => {
               <Database className="text-teal-600 dark:text-teal-400" size={18} />
             </div>
             <div>
-              <h2 className="font-display text-base sm:text-xl font-black uppercase text-slate-900 dark:text-white tracking-wider">
+              <h2 className="font-display text-base font-semibold text-ink-950 dark:text-ink-50 sm:text-lg">
                 LRU Cache &amp; Doubly Linked List Lab
               </h2>
               <p className="font-mono text-[10px] text-slate-600 dark:text-slate-400">Least Recently Used Eviction &amp; Pointer Operations</p>
             </div>
           </div>
 
-          <span className="rounded-full border border-teal-500/30 bg-teal-500/10 px-3 py-1 text-xs font-mono font-bold text-teal-700 dark:text-teal-300 self-start sm:self-auto">
+          <span className="self-start rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3 py-0.5 font-mono text-xs font-medium tabular-nums text-emerald-700 dark:border-emerald-500/25 dark:text-emerald-300 sm:self-auto">
             Capacity: {lruCache.length} / {capacity} Nodes
           </span>
         </div>
       </div>
 
-      <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 bg-slate-50/90 dark:border-slate-800/80 dark:bg-slate-950/50">
+      <div className="space-y-5 p-4 sm:space-y-6 sm:p-7">
+        <div className="flex flex-col items-stretch justify-between gap-3 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:p-4 md:flex-row md:items-center">
           <div className="flex flex-wrap items-center gap-2.5">
             <input
               type="text"
@@ -1988,65 +1994,65 @@ const LinkedListVisualizer = () => {
               value={keyInput}
               onChange={(e) => setKeyInput(e.target.value)}
               placeholder="Key (e.g. D)"
-              className="rounded-xl border border-slate-300 bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white font-mono font-bold px-3 py-2 text-xs outline-none focus:border-teal-500 w-28 uppercase"
+              className="w-28 rounded-lg border border-black/[0.1] bg-white px-3 py-2 font-mono text-xs font-medium uppercase text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-50 dark:placeholder:text-ink-500 dark:focus:border-emerald-500"
             />
             <input
               type="number"
               value={valInput}
               onChange={(e) => setValInput(e.target.value)}
               placeholder="Val (e.g. 40)"
-              className="rounded-xl border border-slate-300 bg-white text-slate-900 placeholder-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white font-mono font-bold px-3 py-2 text-xs outline-none focus:border-teal-500 w-28"
+              className="w-28 rounded-lg border border-black/[0.1] bg-white px-3 py-2 font-mono text-xs font-medium tabular-nums text-ink-950 outline-none focus:border-emerald-600 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-ink-50 dark:placeholder:text-ink-500 dark:focus:border-emerald-500"
             />
 
             <button
               onClick={handleGet}
-              className="flex items-center gap-1 rounded-xl bg-teal-600 px-3.5 py-2 font-mono text-xs font-extrabold text-white hover:bg-teal-500 transition shadow-sm"
+              className="flex items-center gap-1 rounded-lg border border-emerald-600/30 bg-emerald-500/10 px-3.5 py-2 font-mono text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-600 hover:text-white dark:border-emerald-500/30 dark:text-emerald-300 dark:hover:bg-emerald-500 dark:hover:text-ink-950"
             >
-              <Search size={13} /> GET(key)
+              <Search size={13} strokeWidth={1.5} /> GET(key)
             </button>
             <button
               onClick={handlePut}
-              className="flex items-center gap-1 rounded-xl bg-emerald-600 px-3.5 py-2 font-mono text-xs font-extrabold text-white hover:bg-emerald-500 transition shadow-sm"
+              className="flex items-center gap-1 rounded-lg bg-emerald-600 px-3.5 py-2 font-mono text-xs font-semibold text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-ink-950 dark:hover:bg-emerald-400"
             >
-              <Plus size={13} /> PUT(key, val)
+              <Plus size={13} strokeWidth={1.5} /> PUT(key, val)
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800/60 bg-slate-100/80 dark:bg-slate-950/40 p-3 sm:px-4">
-          <span className="h-2 w-2 rounded-full animate-pulse bg-teal-500 dark:bg-teal-400 shrink-0" />
-          <p className="font-mono text-xs text-slate-800 dark:text-slate-200 font-bold truncate">
+        <div className="flex items-center gap-2 rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3 dark:border-white/[0.08] dark:bg-[#0c0e14] sm:px-4">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+          <p className="truncate font-mono text-xs font-medium text-ink-900 dark:text-ink-200">
             {phaseMsg}
           </p>
         </div>
 
-        <div className="relative w-full overflow-hidden rounded-2xl border border-slate-700/80 dark:border-slate-800/60 bg-[#061413] dark:bg-gradient-to-b dark:from-[#021210] dark:to-[#010807] p-4 sm:p-6 flex flex-col items-center justify-center min-h-[220px] shadow-inner">
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap justify-center my-4">
+        <div className="relative flex min-h-[220px] w-full flex-col items-center justify-center overflow-hidden rounded-2xl border border-black/[0.1] bg-[#0c0e14] p-4 dark:border-white/[0.08] sm:p-6">
+          <div className="my-4 flex flex-wrap items-center justify-center gap-2 sm:gap-4">
             {lruCache.map((item, idx) => {
               const isHead = idx === 0;
               const isTail = idx === lruCache.length - 1;
               const isActive = activeKey === item.key;
               const isEvicted = evictedKey === item.key;
 
-              let nodeBg = "bg-slate-800/90 border-slate-600 text-white";
-              if (isEvicted) nodeBg = "bg-rose-500/30 border-rose-400 text-rose-100 animate-pulse";
-              else if (isActive) nodeBg = "bg-teal-500/40 border-teal-300 text-teal-100 shadow-[0_0_20px_rgba(20,184,166,0.6)]";
+              let nodeBg = "bg-[#11141c] border-white/[0.12] text-white";
+              if (isEvicted) nodeBg = "bg-rose-500/25 border-rose-400 text-rose-100";
+              else if (isActive) nodeBg = "bg-emerald-500/20 border-emerald-400 text-emerald-100";
 
               return (
                 <div key={item.key} className="flex items-center gap-2 sm:gap-4">
-                  <div className={`relative flex flex-col items-center p-3.5 rounded-2xl border-2 min-w-[90px] transition-all duration-300 ${nodeBg}`}>
-                    <div className="flex items-center gap-1 mb-1">
-                      {isHead && <span className="rounded px-1.5 py-0.5 text-[8px] font-black font-mono bg-emerald-500/40 text-emerald-200">MRU HEAD</span>}
-                      {isTail && <span className="rounded px-1.5 py-0.5 text-[8px] font-black font-mono bg-cyan-500/40 text-cyan-200">LRU TAIL</span>}
+                  <div className={`relative flex min-w-[90px] flex-col items-center rounded-xl border p-3.5 transition-colors duration-200 ${nodeBg}`}>
+                    <div className="mb-1 flex items-center gap-1">
+                      {isHead && <span className="rounded bg-emerald-500/30 px-1.5 py-0.5 font-mono text-[9px] font-medium text-emerald-200">MRU HEAD</span>}
+                      {isTail && <span className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[9px] font-medium text-ink-200">LRU TAIL</span>}
                     </div>
 
-                    <span className="font-mono text-base font-black text-white">{item.key}</span>
-                    <span className="font-mono text-[10px] font-bold text-slate-300">val: {item.val}</span>
+                    <span className="font-mono text-base font-semibold text-white">{item.key}</span>
+                    <span className="font-mono text-xs tabular-nums text-ink-300">val: {item.val}</span>
                   </div>
 
                   {idx < lruCache.length - 1 && (
-                    <div className="flex flex-col items-center text-slate-400">
-                      <ArrowLeftRight size={18} className="text-teal-400" />
+                    <div className="flex flex-col items-center text-ink-400">
+                      <ArrowLeftRight size={16} strokeWidth={1.5} className="text-emerald-400" />
                     </div>
                   )}
                 </div>
@@ -2054,9 +2060,9 @@ const LinkedListVisualizer = () => {
             })}
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-2 font-mono text-[10px] font-bold text-slate-400 border-t border-slate-800/60 pt-3 w-full max-w-lg">
-            <span className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-emerald-400" /> MRU (Most Recently Used)</span>
-            <span className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-cyan-400" /> LRU (Least Recently Used)</span>
+          <div className="mt-2 flex w-full max-w-lg flex-wrap items-center justify-center gap-4 border-t border-white/[0.08] pt-3 font-mono text-xs text-ink-400">
+            <span className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-emerald-400" /> MRU (Most Recently Used)</span>
+            <span className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-ink-400" /> LRU (Least Recently Used)</span>
           </div>
         </div>
       </div>
@@ -2080,35 +2086,35 @@ const DsaLabPage = () => {
         ])}
       />
 
-      <section className="section-wrap pt-4 sm:pt-6 pb-20">
+      <section className="section-wrap pt-6 sm:pt-8 pb-20">
         <FadeInUp>
-          <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-10">
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
+          <div className="mx-auto mb-8 max-w-4xl text-center sm:mb-10">
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-4xl lg:text-5xl">
               Data Structure &amp;{" "}
-              <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              <span className="text-emerald-600 dark:text-emerald-400">
                 Algorithm Lab
               </span>
             </h1>
-            <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Interactive step-by-step algorithm visualizers for sorting, graph traversal, Dynamic Programming, Two-Pointer sliding windows, and N-Queens Backtracking with custom user input.
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-ink-600 dark:text-ink-300 sm:text-base">
+              Interactive step-by-step algorithm visualizers for sorting, graph traversal, dynamic programming, two-pointer windows, and backtracking with custom input.
             </p>
           </div>
         </FadeInUp>
 
         {/* Module 01: Sorting */}
         <FadeInUp delay={0.1}>
-          <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 mb-3 backdrop-blur-md">
-              <span className="font-mono text-xs font-semibold text-emerald-400">
-                Module 01 • Sorting Algorithms
+          <div className="mx-auto mb-6 max-w-3xl text-center sm:mb-8">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3.5 py-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+              <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                Module 01 · Sorting Algorithms
               </span>
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl lg:text-4xl">
               Sorting &amp; Space Visualizer
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
-              QuickSort · MergeSort · HeapSort — step-by-step memory pointers, real-time custom array input &amp; complexity metrics.
+            <p className="mx-auto mt-2.5 max-w-xl text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+              QuickSort · MergeSort · HeapSort: step-by-step memory pointers, real-time custom array input, and complexity metrics.
             </p>
           </div>
 
@@ -2118,18 +2124,18 @@ const DsaLabPage = () => {
         {/* Module 02: Graphs */}
         <div className="cv-auto">
           <FadeInUp delay={0.2} className="mt-16 sm:mt-20">
-            <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 mb-3 backdrop-blur-md">
-                <span className="font-mono text-xs font-semibold text-cyan-400">
-                  Module 02 • Graph Traversal
+            <div className="mx-auto mb-6 max-w-3xl text-center sm:mb-8">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3.5 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                  Module 02 · Graph Traversal
                 </span>
-                <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl lg:text-4xl">
                 Graph Traversal &amp; Shortest Path
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
-                Dijkstra · BFS · DFS — interactive node graph canvas with weighted distance tracking and stack/queue state.
+              <p className="mx-auto mt-2.5 max-w-xl text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+                Dijkstra · BFS · DFS — interactive node graph canvas with weighted distance tracking and queue/stack state.
               </p>
             </div>
 
@@ -2140,17 +2146,17 @@ const DsaLabPage = () => {
         {/* Module 03: Dynamic Programming */}
         <div className="cv-auto">
           <FadeInUp delay={0.3} className="mt-16 sm:mt-20">
-            <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-lime-500/30 bg-lime-500/10 mb-3 backdrop-blur-md">
-                <span className="font-mono text-xs font-semibold text-lime-400">
-                  Module 03 • Dynamic Programming
+            <div className="mx-auto mb-6 max-w-3xl text-center sm:mb-8">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3.5 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                  Module 03 · Dynamic Programming
                 </span>
-                <span className="h-2 w-2 rounded-full bg-lime-400 animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl lg:text-4xl">
                 Dynamic Programming &amp; 2D Grid
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
+              <p className="mx-auto mt-2.5 max-w-xl text-sm leading-relaxed text-ink-600 dark:text-ink-300">
                 0/1 Knapsack · Longest Common Subsequence (LCS) — 2D matrix memoization computation with backtracking highlights.
               </p>
             </div>
@@ -2162,17 +2168,17 @@ const DsaLabPage = () => {
         {/* Module 04: Two Pointers */}
         <div className="cv-auto">
           <FadeInUp delay={0.4} className="mt-16 sm:mt-20">
-            <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 mb-3 backdrop-blur-md">
-                <span className="font-mono text-xs font-semibold text-amber-400">
-                  Module 04 • Two Pointers &amp; Window
+            <div className="mx-auto mb-6 max-w-3xl text-center sm:mb-8">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3.5 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                  Module 04 · Two Pointers &amp; Window
                 </span>
-                <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl lg:text-4xl">
                 Two-Pointer &amp; Sliding Window
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
+              <p className="mx-auto mt-2.5 max-w-xl text-sm leading-relaxed text-ink-600 dark:text-ink-300">
                 Binary Search · Sliding Window Subarray · Water Container — custom target search and pointer movement tracking.
               </p>
             </div>
@@ -2184,18 +2190,18 @@ const DsaLabPage = () => {
         {/* Module 05: Backtracking */}
         <div className="cv-auto">
           <FadeInUp delay={0.5} className="mt-16 sm:mt-20">
-            <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-rose-500/30 bg-rose-500/10 mb-3 backdrop-blur-md">
-                <span className="font-mono text-xs font-semibold text-rose-400">
-                  Module 05 • N-Queens Backtracking
+            <div className="mx-auto mb-6 max-w-3xl text-center sm:mb-8">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-3.5 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                <span className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                  Module 05 · N-Queens Backtracking
                 </span>
-                <span className="h-2 w-2 rounded-full bg-rose-400 animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-950 dark:text-ink-50 sm:text-3xl lg:text-4xl">
                 Backtracking N-Queens Visualizer
               </h2>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
-                N-Queens Chessboard Puzzle — recursive decision tree, attack conflict alert, and rewind backtracking state.
+              <p className="mx-auto mt-2.5 max-w-xl text-sm leading-relaxed text-ink-600 dark:text-ink-300">
+                N-Queens Chessboard Puzzle — recursive decision tree, conflict detection, and backtrack rewind state.
               </p>
             </div>
 
