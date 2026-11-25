@@ -155,10 +155,10 @@ export const SystemDesignDetailView = ({
             />
 
             <div className="mb-6">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">
-                // SYSTEM EXECUTION FLOW
+              <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                System Execution Flow
               </span>
-              <h2 className="font-display text-xl sm:text-2xl font-black text-zinc-900 dark:text-white mt-1">
+              <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mt-1">
                 Step-by-Step Architecture Data Flow
               </h2>
             </div>
@@ -188,10 +188,10 @@ export const SystemDesignDetailView = ({
           {/* # Backend Engineering Deep-Dive Notes (GFG / W3Schools style) */}
           <div className="mb-12 space-y-4">
             <div className="mb-6">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">
-                // DEEP-DIVE ENGINEERING CONCEPTS
+              <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                Deep-Dive Engineering Concepts
               </span>
-              <h2 className="font-display text-xl sm:text-2xl font-black text-zinc-900 dark:text-white mt-1">
+              <h2 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white mt-1">
                 How It Works in the Backend
               </h2>
             </div>
@@ -223,8 +223,8 @@ export const SystemDesignDetailView = ({
 
           {/* # Key Technologies Block */}
           <div className="mb-12 rounded-2xl border border-zinc-200 dark:border-white/[0.07] bg-white dark:bg-zinc-900/60 p-6 shadow-sm dark:shadow-none">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 mb-3">
-              // Key Technologies &amp; Primitives
+            <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-3">
+              Key Technologies &amp; Primitives
             </p>
             <div className="flex flex-wrap gap-2">
               {system.technologies.map((t) => (
@@ -371,20 +371,20 @@ const SystemDesignListView = () => {
           <FadeInUp delay={0.05}>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-lime-600 dark:text-lime-400 mb-2">
-                  LATEST BLUEPRINTS
+                <p className="text-xs font-semibold tracking-wide text-lime-600 dark:text-lime-400 mb-2">
+                  Latest Blueprints
                 </p>
-                <h1 className="font-outfit text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
                   System Design Analysis
                 </h1>
-                <p className="mt-2 text-xs sm:text-sm font-medium text-slate-600 dark:text-zinc-400 max-w-2xl">
+                <p className="mt-2.5 text-sm sm:text-base font-normal leading-relaxed text-slate-600 dark:text-zinc-400 max-w-2xl">
                   Clean, practical architectural breakdowns of real-world distributed backends (URL Shortener, Uber, Zomato, Blinkit, Instagram, WhatsApp) with high-level blueprints and deep-dive notes.
                 </p>
               </div>
 
               {/* Counter on Right */}
-              <p className="font-mono text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-zinc-500 shrink-0 self-start sm:self-end">
-                {String(filteredDesigns.length).padStart(2, "0")} BLUEPRINTS
+              <p className="font-mono text-xs font-semibold text-slate-400 dark:text-zinc-500 shrink-0 self-start sm:self-end">
+                {String(filteredDesigns.length).padStart(2, "0")} Blueprints
               </p>
             </div>
           </FadeInUp>
@@ -435,13 +435,13 @@ const SystemDesignListView = () => {
                             </span>
                           </div>
 
-                          {/* Title in Clean Font Outfit Title Case */}
-                          <h2 className="mt-1.5 font-outfit text-xl sm:text-2xl lg:text-[26px] font-bold text-slate-900 dark:text-white leading-snug tracking-tight group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors">
+                          {/* Title in Clean Font Display Title Case */}
+                          <h2 className="mt-1.5 font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-snug tracking-tight group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors">
                             {system.title}
                           </h2>
 
-                          {/* Summary in Clean Font Jakarta */}
-                          <p className="mt-2.5 font-jakarta text-xs sm:text-sm text-slate-600 dark:text-zinc-400 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3">
+                          {/* Summary in Clean Font Sans */}
+                          <p className="mt-2.5 text-sm sm:text-base text-slate-600 dark:text-zinc-400 font-normal leading-relaxed line-clamp-2 sm:line-clamp-3">
                             {system.summary}
                           </p>
 
@@ -500,15 +500,15 @@ const SystemDesignListView = () => {
       {/* # CLOSING BANNER */}
       <section className="section-wrap pb-20">
         <div className="mx-auto max-w-4xl rounded-[2rem] border border-zinc-200 dark:border-white/[0.08] bg-white/80 dark:bg-zinc-950/40 p-8 sm:p-12 text-center backdrop-blur-xl shadow-sm dark:shadow-none">
-          <span className="inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-lime-600 dark:text-lime-300 mb-4">
-            <Network size={12} /> Systems Engineering
+          <span className="inline-flex items-center gap-2 rounded-full border border-lime-500/30 dark:border-lime-300/20 bg-lime-500/[0.06] dark:bg-lime-300/[0.04] px-4 py-1.5 text-xs font-semibold text-lime-600 dark:text-lime-300 mb-4">
+            <Network size={13} /> Systems Engineering
           </span>
 
-          <h2 className="font-outfit text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
             Want to Discuss System Architectures?
           </h2>
 
-          <p className="mx-auto mt-4 max-w-xl text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
+          <p className="mx-auto mt-4 max-w-xl text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
             Open to discussing scalable backend systems, database partitioning,
             caching layers, and high-concurrency microservices.
           </p>
@@ -516,13 +516,13 @@ const SystemDesignListView = () => {
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               to="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-lime-300 text-slate-950 px-5 py-2.5 text-xs font-black uppercase tracking-wider hover:bg-lime-200 shadow-md transition"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-lime-300 text-slate-950 px-5 py-2.5 text-sm font-semibold hover:bg-lime-200 shadow-md transition"
             >
               Discuss Architecture
             </Link>
             <Link
               to="/experiments"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-300 dark:border-white/[0.1] bg-white/50 dark:bg-zinc-900/60 text-zinc-800 dark:text-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider hover:border-lime-400 transition"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-300 dark:border-white/[0.1] bg-white/50 dark:bg-zinc-900/60 text-zinc-800 dark:text-white px-5 py-2.5 text-sm font-semibold hover:border-lime-400 transition"
             >
               Explore All Labs
             </Link>

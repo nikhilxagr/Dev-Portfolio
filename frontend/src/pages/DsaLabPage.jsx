@@ -2083,13 +2083,13 @@ const DsaLabPage = () => {
       <section className="section-wrap pt-4 sm:pt-6 pb-20">
         <FadeInUp>
           <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-10">
-            <h1 className="font-display text-3xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
-              DATA STRUCTURE &amp;{" "}
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
+              Data Structure &amp;{" "}
               <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                ALGORITHM LAB
+                Algorithm Lab
               </span>
             </h1>
-            <p className="mt-3 text-xs sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
               Interactive step-by-step algorithm visualizers for sorting, graph traversal, Dynamic Programming, Two-Pointer sliding windows, and N-Queens Backtracking with custom user input.
             </p>
           </div>
@@ -2099,15 +2099,15 @@ const DsaLabPage = () => {
         <FadeInUp delay={0.1}>
           <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 mb-3 backdrop-blur-md">
-              <span className="font-mono text-xs font-black uppercase tracking-widest text-emerald-400">
-                // MODULE 01 — SORTING ALGORITHMS
+              <span className="font-mono text-xs font-semibold text-emerald-400">
+                Module 01 • Sorting Algorithms
               </span>
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
             </div>
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
               Sorting &amp; Space Visualizer
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
               QuickSort · MergeSort · HeapSort — step-by-step memory pointers, real-time custom array input &amp; complexity metrics.
             </p>
           </div>
@@ -2120,15 +2120,15 @@ const DsaLabPage = () => {
           <FadeInUp delay={0.2} className="mt-16 sm:mt-20">
             <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 mb-3 backdrop-blur-md">
-                <span className="font-mono text-xs font-black uppercase tracking-widest text-cyan-400">
-                  // MODULE 02 — GRAPH TRAVERSAL
+                <span className="font-mono text-xs font-semibold text-cyan-400">
+                  Module 02 • Graph Traversal
                 </span>
                 <span className="h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
                 Graph Traversal &amp; Shortest Path
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
                 Dijkstra · BFS · DFS — interactive node graph canvas with weighted distance tracking and stack/queue state.
               </p>
             </div>
@@ -2142,15 +2142,15 @@ const DsaLabPage = () => {
           <FadeInUp delay={0.3} className="mt-16 sm:mt-20">
             <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-lime-500/30 bg-lime-500/10 mb-3 backdrop-blur-md">
-                <span className="font-mono text-xs font-black uppercase tracking-widest text-lime-400">
-                  // MODULE 03 — DYNAMIC PROGRAMMING
+                <span className="font-mono text-xs font-semibold text-lime-400">
+                  Module 03 • Dynamic Programming
                 </span>
                 <span className="h-2 w-2 rounded-full bg-lime-400 animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
                 Dynamic Programming &amp; 2D Grid
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
                 0/1 Knapsack · Longest Common Subsequence (LCS) — 2D matrix memoization computation with backtracking highlights.
               </p>
             </div>
@@ -2164,15 +2164,15 @@ const DsaLabPage = () => {
           <FadeInUp delay={0.4} className="mt-16 sm:mt-20">
             <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 mb-3 backdrop-blur-md">
-                <span className="font-mono text-xs font-black uppercase tracking-widest text-amber-400">
-                  // MODULE 04 — TWO POINTERS &amp; WINDOW
+                <span className="font-mono text-xs font-semibold text-amber-400">
+                  Module 04 • Two Pointers &amp; Window
                 </span>
                 <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
                 Two-Pointer &amp; Sliding Window
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
                 Binary Search · Sliding Window Subarray · Water Container — custom target search and pointer movement tracking.
               </p>
             </div>
@@ -2186,15 +2186,15 @@ const DsaLabPage = () => {
           <FadeInUp delay={0.5} className="mt-16 sm:mt-20">
             <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-rose-500/30 bg-rose-500/10 mb-3 backdrop-blur-md">
-                <span className="font-mono text-xs font-black uppercase tracking-widest text-rose-400">
-                  // MODULE 05 — N-QUEENS BACKTRACKING
+                <span className="font-mono text-xs font-semibold text-rose-400">
+                  Module 05 • N-Queens Backtracking
                 </span>
                 <span className="h-2 w-2 rounded-full bg-rose-400 animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-wide text-slate-900 dark:text-white uppercase drop-shadow-sm font-display">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm font-display">
                 Backtracking N-Queens Visualizer
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium mt-2.5 max-w-xl mx-auto leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2.5 max-w-xl mx-auto leading-relaxed">
                 N-Queens Chessboard Puzzle — recursive decision tree, attack conflict alert, and rewind backtracking state.
               </p>
             </div>

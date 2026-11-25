@@ -120,10 +120,10 @@ const CyberToolsPage = () => {
         {/* Hero title */}
         <FadeInUp>
           <div className="text-center max-w-4xl mx-auto mb-10">
-            <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-wider text-slate-900 dark:text-white drop-shadow-sm">
-              CYBER SECURITY <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">DIAGNOSTICS</span>
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
+              Cyber Security <span className="bg-gradient-to-r from-lime-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent">Diagnostics</span>
             </h1>
-            <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-3 text-sm sm:text-base font-normal text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
               Real interactive security utilities designed to evaluate breach exposures, password entropy, and domain header security.
             </p>
           </div>
