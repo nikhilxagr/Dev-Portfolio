@@ -1,6 +1,7 @@
 import { API_BASE_URL } from './api.js';
 
 const AI_CHAT_URL = `${API_BASE_URL}/ai/chat`;
+const AI_TRANSCRIBE_URL = `${API_BASE_URL}/ai/transcribe`;
 const AI_HEALTH_URL = `${API_BASE_URL}/ai/health`;
 const AI_IMAGE_URL = `${API_BASE_URL}/ai/generate-image`;
 const AI_IMAGE_QUOTA_URL = `${API_BASE_URL}/ai/image-quota`;
@@ -126,6 +127,24 @@ export const checkAIHealth = async () => {
   } catch {
     return { ready: false, topicCount: 0, topics: [] };
   }
+};
+
+export const transcribeVoiceAudio = async ({ audioBase64, mimeType = 'audio/webm' }) => {
+  const response = await fetch(AI_TRANSCRIBE_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({ audio: audioBase64, mimeType }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.success) {
+    throw new Error(data.message || `Voice transcription failed (${response.status})`);
+  }
+
+  return String(data.transcript || '').trim();
 };
 
 export const getAIImageModels = async () => {

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   SquarePen,
@@ -45,9 +46,11 @@ import {
   Lock,
   Archive,
   PinOff,
+  Loader2,
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useUserAuth } from '@/context/UserAuthContext';
+import { transcribeVoiceAudio } from '@/services/ai.service';
 import AIMarkdownRenderer from './AIMarkdownRenderer';
 import InlineAIImageMessage from './InlineAIImageMessage';
 
@@ -181,10 +184,14 @@ const AIChatPanel = ({
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openMenuSessionId, setOpenMenuSessionId] = useState(null);
+  const [menuPosition, setMenuPosition] = useState(null);
   const [renamingSessionId, setRenamingSessionId] = useState(null);
   const [renameValue, setRenameValue] = useState('');
 
   const [isMicActive, setIsMicActive] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [voiceMode, setVoiceMode] = useState(null);
+  const [voiceError, setVoiceError] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const [speakingId, setSpeakingId] = useState(null);
   const [feedbackMap, setFeedbackMap] = useState({});
@@ -211,6 +218,19 @@ const AIChatPanel = ({
   const containerRef = useRef(null);
   const localTextareaRef = useRef(null);
   const recognitionRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const mediaStreamRef = useRef(null);
+  const mediaChunksRef = useRef([]);
+  const silenceTimerRef = useRef(null);
+  const speechEndTimerRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const rafVoiceRef = useRef(null);
+  const prefixInputRef = useRef('');
+  const finalTranscriptRef = useRef('');
+  const interimTranscriptRef = useRef('');
+  const speechFallbackTriggeredRef = useRef(false);
+  const cancelVoiceRef = useRef(false);
+  const dispatchVoicePromptRef = useRef(null);
 
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev);
@@ -257,45 +277,396 @@ const AIChatPanel = ({
     messagesEndRef?.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messagesEndRef]);
 
-  // Web Speech API for voice dictation
+  const cleanupVoiceResources = useCallback(() => {
+    clearTimeout(speechEndTimerRef.current);
+    clearTimeout(silenceTimerRef.current);
+    if (rafVoiceRef.current) {
+      cancelAnimationFrame(rafVoiceRef.current);
+      rafVoiceRef.current = null;
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      audioCtxRef.current.close().catch(() => {});
+      audioCtxRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      try {
+        recognitionRef.current?.abort?.();
+      } catch {
+        // ignore
+      }
+      if (mediaRecorderRef.current?.state === 'recording') {
+        try {
+          mediaRecorderRef.current.stop();
+        } catch {
+          // ignore
+        }
+      }
+      cleanupVoiceResources();
+    };
+  }, [cleanupVoiceResources]);
+
+  const startMediaRecorderVoice = async () => {
+    if (
+      typeof navigator === 'undefined' ||
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia ||
+      typeof MediaRecorder === 'undefined'
+    ) {
+      setVoiceError('Microphone recording is not supported in this browser.');
+      setIsMicActive(false);
+      setVoiceMode(null);
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+
+      const candidateTypes = [
+        'audio/webm;codecs=opus',
+        'audio/webm',
+        'audio/mp4',
+        'audio/ogg;codecs=opus',
+      ];
+      const chosenMime =
+        candidateTypes.find((type) => MediaRecorder.isTypeSupported?.(type)) || '';
+
+      const recorder = chosenMime
+        ? new MediaRecorder(stream, { mimeType: chosenMime })
+        : new MediaRecorder(stream);
+
+      mediaRecorderRef.current = recorder;
+      mediaChunksRef.current = [];
+      cancelVoiceRef.current = false;
+
+      recorder.ondataavailable = (evt) => {
+        if (evt.data && evt.data.size > 0) {
+          mediaChunksRef.current.push(evt.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        const wasCancelled = cancelVoiceRef.current;
+        const recordedType = recorder.mimeType || chosenMime || 'audio/webm';
+        const chunks = [...mediaChunksRef.current];
+        mediaChunksRef.current = [];
+        mediaRecorderRef.current = null;
+        cleanupVoiceResources();
+        setIsMicActive(false);
+        setVoiceMode(null);
+
+        if (wasCancelled || chunks.length === 0) {
+          return;
+        }
+
+        const blob = new Blob(chunks, { type: recordedType });
+        if (blob.size < 400) {
+          setVoiceError('No speech detected. Speak clearly and try again.');
+          return;
+        }
+
+        setIsTranscribing(true);
+        try {
+          const base64Audio = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const res = String(reader.result || '');
+              const idx = res.indexOf(',');
+              resolve(idx >= 0 ? res.slice(idx + 1) : res);
+            };
+            reader.onerror = () => reject(new Error('Failed to read recorded audio.'));
+            reader.readAsDataURL(blob);
+          });
+
+          const transcript = await transcribeVoiceAudio({
+            audioBase64: base64Audio,
+            mimeType: recordedType,
+          });
+
+          if (!transcript) {
+            setVoiceError('Could not hear clear speech. Please try again.');
+            return;
+          }
+
+          const combined = (
+            prefixInputRef.current ? `${prefixInputRef.current} ${transcript}` : transcript
+          )
+            .replace(/\s+/g, ' ')
+            .trim();
+          onInputChange(combined);
+
+          setTimeout(() => {
+            dispatchVoicePromptRef.current?.(transcript);
+          }, 120);
+        } catch (err) {
+          setVoiceError(err?.message || 'Voice transcription failed. Please try again.');
+        } finally {
+          setIsTranscribing(false);
+        }
+      };
+
+      recorder.start(250);
+      setIsMicActive(true);
+      setVoiceMode('recorder');
+
+      // Monitor mic volume to auto-stop after 1.8s of silence once speech starts (max 30s)
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          const ctx = new AudioCtx();
+          audioCtxRef.current = ctx;
+          const source = ctx.createMediaStreamSource(stream);
+          const analyser = ctx.createAnalyser();
+          analyser.fftSize = 512;
+          source.connect(analyser);
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+          let heardSpeech = false;
+          let silentSince = null;
+          const startedAt = Date.now();
+
+          const pollVolume = () => {
+            if (!mediaRecorderRef.current || mediaRecorderRef.current.state !== 'recording') {
+              return;
+            }
+            analyser.getByteTimeDomainData(dataArray);
+            let peak = 0;
+            for (let i = 0; i < dataArray.length; i += 1) {
+              const delta = Math.abs(dataArray[i] - 128);
+              if (delta > peak) peak = delta;
+            }
+
+            const now = Date.now();
+            if (peak > 8) {
+              heardSpeech = true;
+              silentSince = null;
+            } else if (heardSpeech) {
+              if (!silentSince) silentSince = now;
+              if (now - silentSince > 1800) {
+                recorder.stop();
+                return;
+              }
+            }
+
+            if (now - startedAt > 30000) {
+              recorder.stop();
+              return;
+            }
+
+            rafVoiceRef.current = requestAnimationFrame(pollVolume);
+          };
+
+          rafVoiceRef.current = requestAnimationFrame(pollVolume);
+        } else {
+          silenceTimerRef.current = setTimeout(() => {
+            if (mediaRecorderRef.current?.state === 'recording') {
+              mediaRecorderRef.current.stop();
+            }
+          }, 25000);
+        }
+      } catch {
+        // Fallback relies on manual stop button
+      }
+    } catch (err) {
+      cleanupVoiceResources();
+      setIsMicActive(false);
+      setVoiceMode(null);
+      if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+        setVoiceError(
+          'Microphone permission blocked. Allow mic access in browser settings and try again.'
+        );
+      } else if (err?.name === 'NotFoundError') {
+        setVoiceError('No microphone detected on this device.');
+      } else {
+        setVoiceError('Unable to access microphone. Check device permissions.');
+      }
+    }
+  };
+
+  const cancelVoiceCapture = () => {
+    cancelVoiceRef.current = true;
+    clearTimeout(speechEndTimerRef.current);
+    clearTimeout(silenceTimerRef.current);
+    try {
+      recognitionRef.current?.abort?.();
+    } catch {
+      // ignore
+    }
+    if (mediaRecorderRef.current?.state === 'recording') {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch {
+        // ignore
+      }
+    } else {
+      cleanupVoiceResources();
+      setIsMicActive(false);
+      setVoiceMode(null);
+    }
+    if (prefixInputRef.current) {
+      onInputChange(prefixInputRef.current);
+    } else if (interimTranscriptRef.current) {
+      onInputChange('');
+    }
+  };
+
+  // Voice dictation + auto-transcribe + auto-submit for answer
   const toggleSpeechRecognition = () => {
+    if (isTranscribing || isLoading || isStreaming) return;
+    setVoiceError(null);
+
+    if (isMicActive) {
+      cancelVoiceRef.current = false;
+      clearTimeout(speechEndTimerRef.current);
+      if (voiceMode === 'recorder' && mediaRecorderRef.current?.state === 'recording') {
+        mediaRecorderRef.current.stop();
+      } else {
+        try {
+          recognitionRef.current?.stop();
+        } catch {
+          setIsMicActive(false);
+          setVoiceMode(null);
+        }
+      }
+      return;
+    }
+
+    prefixInputRef.current = inputValue.trim();
+    finalTranscriptRef.current = '';
+    interimTranscriptRef.current = '';
+    speechFallbackTriggeredRef.current = false;
+    cancelVoiceRef.current = false;
+
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
-      return;
-    }
-
-    if (isMicActive) {
-      recognitionRef.current?.stop();
-      setIsMicActive(false);
+      startMediaRecorderVoice();
       return;
     }
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
+      recognition.continuous = true;
+      recognition.interimResults = true;
       recognition.lang = 'en-US';
 
-      recognition.onstart = () => setIsMicActive(true);
-      recognition.onend = () => setIsMicActive(false);
-      recognition.onerror = () => setIsMicActive(false);
+      recognition.onstart = () => {
+        setIsMicActive(true);
+        setVoiceMode('speech');
+      };
 
       recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        if (transcript) {
-          const newValue = inputValue ? `${inputValue} ${transcript}` : transcript;
-          onInputChange(newValue);
+        let finalText = '';
+        let interimText = '';
+
+        for (let i = 0; i < event.results.length; i += 1) {
+          const piece = event.results[i][0]?.transcript || '';
+          if (event.results[i].isFinal) {
+            finalText += `${piece} `;
+          } else {
+            interimText += `${piece} `;
+          }
         }
+
+        finalTranscriptRef.current = finalText.replace(/\s+/g, ' ').trim();
+        const combinedSpoken = `${finalText} ${interimText}`.replace(/\s+/g, ' ').trim();
+        interimTranscriptRef.current = combinedSpoken;
+
+        if (combinedSpoken) {
+          const liveBoxValue = prefixInputRef.current
+            ? `${prefixInputRef.current} ${combinedSpoken}`
+            : combinedSpoken;
+          onInputChange(liveBoxValue);
+        }
+
+        clearTimeout(speechEndTimerRef.current);
+        if (combinedSpoken) {
+          speechEndTimerRef.current = setTimeout(() => {
+            try {
+              recognition.stop();
+            } catch {
+              // ignore
+            }
+          }, 1600);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        const errCode = event?.error;
+        clearTimeout(speechEndTimerRef.current);
+
+        if (cancelVoiceRef.current) {
+          setIsMicActive(false);
+          setVoiceMode(null);
+          return;
+        }
+
+        if (
+          (errCode === 'network' ||
+            errCode === 'service-not-allowed' ||
+            errCode === 'language-not-supported') &&
+          !finalTranscriptRef.current &&
+          !interimTranscriptRef.current
+        ) {
+          speechFallbackTriggeredRef.current = true;
+          try {
+            recognition.abort();
+          } catch {
+            // ignore
+          }
+          startMediaRecorderVoice();
+          return;
+        }
+
         setIsMicActive(false);
+        setVoiceMode(null);
+
+        if (errCode === 'not-allowed') {
+          setVoiceError(
+            'Microphone access blocked. Allow mic permission in browser settings and try again.'
+          );
+        } else if (errCode === 'audio-capture') {
+          setVoiceError('No microphone found. Check your audio input device.');
+        } else if (errCode === 'no-speech' && !interimTranscriptRef.current) {
+          setVoiceError('Didn’t catch any speech. Click the mic and speak clearly.');
+        }
+      };
+
+      recognition.onend = () => {
+        clearTimeout(speechEndTimerRef.current);
+        if (speechFallbackTriggeredRef.current) {
+          speechFallbackTriggeredRef.current = false;
+          return;
+        }
+
+        setIsMicActive(false);
+        setVoiceMode(null);
+
+        if (cancelVoiceRef.current) {
+          cancelVoiceRef.current = false;
+          return;
+        }
+
+        const spoken = (finalTranscriptRef.current || interimTranscriptRef.current || '').trim();
+        if (spoken) {
+          setTimeout(() => {
+            dispatchVoicePromptRef.current?.(spoken);
+          }, 120);
+        }
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch {
-      setIsMicActive(false);
+      startMediaRecorderVoice();
     }
   };
 
@@ -387,6 +758,95 @@ const AIChatPanel = ({
     if (onSend) {
       onSend(finalText);
     }
+  };
+
+  dispatchVoicePromptRef.current = (spokenText) => {
+    const trimmed = String(spokenText || '').trim();
+    if (!trimmed || isLoading || isStreaming) return;
+    const fullPrompt = (
+      prefixInputRef.current ? `${prefixInputRef.current} ${trimmed}` : trimmed
+    )
+      .replace(/\s+/g, ' ')
+      .trim();
+    prefixInputRef.current = '';
+    finalTranscriptRef.current = '';
+    interimTranscriptRef.current = '';
+    handleSendIntercept(fullPrompt);
+  };
+
+  const renderVoiceStatusBanner = () => {
+    if (!isMicActive && !isTranscribing && !voiceError) return null;
+
+    if (voiceError) {
+      return (
+        <div
+          className={`mx-1 flex items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-xs ${
+            isDark
+              ? 'border-rose-500/30 bg-rose-500/10 text-rose-300'
+              : 'border-rose-200 bg-rose-50 text-rose-700'
+          }`}
+        >
+          <span className="truncate">{voiceError}</span>
+          <button
+            type="button"
+            onClick={() => setVoiceError(null)}
+            aria-label="Dismiss voice error"
+            className="shrink-0 rounded p-0.5 opacity-80 hover:opacity-100"
+          >
+            <X size={13} strokeWidth={1.5} />
+          </button>
+        </div>
+      );
+    }
+
+    if (isTranscribing) {
+      return (
+        <div
+          className={`mx-1 flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs ${
+            isDark
+              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+              : 'border-emerald-600/25 bg-emerald-50 text-emerald-700'
+          }`}
+        >
+          <Loader2 size={13} strokeWidth={1.75} className="shrink-0 animate-spin" />
+          <span>Transcribing your voice...</span>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        className={`mx-1 flex items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-xs ${
+          isDark
+            ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+            : 'border-emerald-600/25 bg-emerald-50 text-emerald-800'
+        }`}
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-rose-500" />
+          <span className="truncate">
+            Listening{voiceMode === 'recorder' ? ' (audio)' : ''} — speak now
+          </span>
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <button
+            type="button"
+            onClick={toggleSpeechRecognition}
+            className="rounded-md bg-emerald-600 px-2 py-0.5 text-[11px] font-medium text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"
+          >
+            Ask now
+          </button>
+          <button
+            type="button"
+            onClick={cancelVoiceCapture}
+            aria-label="Cancel voice input"
+            className="rounded p-0.5 opacity-75 hover:opacity-100"
+          >
+            <X size={13} strokeWidth={1.5} />
+          </button>
+        </div>
+      </div>
+    );
   };
 
   const handleKeyDownInternal = (e) => {
@@ -539,7 +999,7 @@ const AIChatPanel = ({
     return (
       <div
         key={session._id}
-        className={`group relative flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-all ${
+        className={`group relative flex min-w-0 items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-colors ${
           isActive
             ? isDark
               ? 'bg-white/12 text-white font-medium shadow-xs'
@@ -567,7 +1027,11 @@ const AIChatPanel = ({
               onRenameSession?.(session._id, renameValue);
               setRenamingSessionId(null);
             }}
-            className="w-full bg-black/40 border border-white/20 rounded px-2 py-0.5 text-xs text-white focus:outline-hidden"
+            className={`w-full rounded border px-2 py-0.5 text-xs focus:outline-hidden ${
+              isDark
+                ? 'border-white/20 bg-black/40 text-white'
+                : 'border-slate-300 bg-white text-slate-900'
+            }`}
           />
         ) : (
           <button
@@ -576,7 +1040,7 @@ const AIChatPanel = ({
               onSelectSession?.(session._id);
               setIsSidebarOpen(false);
             }}
-            className="flex items-center gap-2.5 min-w-0 flex-1 text-left"
+            className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
           >
             <MessageSquare size={14} className="shrink-0 text-slate-400" />
             <span className="truncate">{session.title || 'New chat'}</span>
@@ -584,73 +1048,109 @@ const AIChatPanel = ({
         )}
 
         {/* Right Action: 3-dots Context Menu */}
-        <div className="flex items-center gap-1 shrink-0 ml-1 chat-session-menu relative">
+        <div className="relative ml-1 flex shrink-0 items-center chat-session-menu">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              setOpenMenuSessionId((prev) => (prev === session._id ? null : session._id));
+              if (isMenuOpen) {
+                setOpenMenuSessionId(null);
+                setMenuPosition(null);
+                return;
+              }
+              const rect = e.currentTarget.getBoundingClientRect();
+              const menuHeight = 128;
+              const menuWidth = 164;
+              const openUp = rect.bottom + menuHeight + 12 > window.innerHeight;
+              const top = openUp
+                ? Math.max(8, rect.top - menuHeight - 4)
+                : rect.bottom + 4;
+              const left = Math.max(
+                8,
+                Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8),
+              );
+              setMenuPosition({ top, left });
+              setOpenMenuSessionId(session._id);
             }}
-            className={`p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity ${
-              isMenuOpen ? 'opacity-100 bg-white/10 text-white' : 'text-slate-400 hover:text-white hover:bg-white/10'
+            className={`rounded-md p-1 transition-opacity ${
+              isMenuOpen
+                ? isDark
+                  ? 'opacity-100 bg-white/10 text-white'
+                  : 'opacity-100 bg-slate-200 text-slate-900'
+                : isDark
+                ? 'opacity-80 sm:opacity-0 sm:group-hover:opacity-100 text-slate-400 hover:bg-white/10 hover:text-white'
+                : 'opacity-80 sm:opacity-0 sm:group-hover:opacity-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900'
             }`}
             title="More options"
+            aria-label="Chat actions"
           >
             <MoreHorizontal size={14} />
           </button>
 
-          {/* Floating Context Menu */}
-          {isMenuOpen && (
-            <div
-              className={`absolute right-0 sm:left-full sm:right-auto top-full sm:top-0 sm:ml-1 w-44 rounded-xl border p-1 shadow-2xl z-50 backdrop-blur-2xl ${
-                isDark
-                  ? 'border-white/15 bg-[#1e1f20] text-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.9)]'
-                  : 'border-slate-300 bg-white text-slate-800 shadow-2xl'
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => {
-                  setRenamingSessionId(session._id);
-                  setRenameValue(session.title);
-                  setOpenMenuSessionId(null);
-                }}
-                className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs hover:bg-white/10 transition-colors text-left"
+          {/* Portaled Floating Context Menu (never clipped or triggering horizontal scrollbars) */}
+          {isMenuOpen &&
+            menuPosition &&
+            typeof document !== 'undefined' &&
+            createPortal(
+              <div
+                style={{ top: `${menuPosition.top}px`, left: `${menuPosition.left}px` }}
+                className={`chat-session-menu fixed z-[9999] w-[164px] rounded-xl border p-1 shadow-xl ${
+                  isDark
+                    ? 'border-white/[0.1] bg-[#11141c] text-[#eef0f5]'
+                    : 'border-black/[0.1] bg-white text-slate-900'
+                }`}
               >
-                <div className="flex items-center gap-2">
-                  <Edit3 size={14} />
-                  <span>Rename</span>
-                </div>
-                <span className="text-[10px] text-slate-500 font-mono">R</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRenamingSessionId(session._id);
+                    setRenameValue(session.title);
+                    setOpenMenuSessionId(null);
+                  }}
+                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors ${
+                    isDark ? 'hover:bg-white/[0.06]' : 'hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <Edit3 size={14} strokeWidth={1.6} />
+                    <span>Rename</span>
+                  </span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  handleCopy(session._id, window.location.href);
-                  setOpenMenuSessionId(null);
-                }}
-                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs hover:bg-white/10 transition-colors text-left"
-              >
-                <Share2 size={14} />
-                <span>Share</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleCopy(session._id, window.location.href);
+                    setOpenMenuSessionId(null);
+                  }}
+                  className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors ${
+                    isDark ? 'hover:bg-white/[0.06]' : 'hover:bg-slate-100'
+                  }`}
+                >
+                  <Share2 size={14} strokeWidth={1.6} />
+                  <span>Share</span>
+                </button>
 
-              <div className="h-px bg-white/10 my-1" />
+                <div
+                  className={`my-1 h-px ${
+                    isDark ? 'bg-white/[0.08]' : 'bg-black/[0.08]'
+                  }`}
+                />
 
-              <button
-                type="button"
-                onClick={() => {
-                  onDeleteSession?.(session._id);
-                  setOpenMenuSessionId(null);
-                }}
-                className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors font-medium text-left"
-              >
-                <Trash2 size={14} />
-                <span>Delete</span>
-              </button>
-            </div>
-          )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onDeleteSession?.(session._id);
+                    setOpenMenuSessionId(null);
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs font-medium text-rose-600 transition-colors hover:bg-rose-500/10 dark:text-rose-400 dark:hover:text-rose-300"
+                >
+                  <Trash2 size={14} strokeWidth={1.6} />
+                  <span>Delete</span>
+                </button>
+              </div>,
+              document.body,
+            )}
         </div>
       </div>
     );
@@ -739,7 +1239,14 @@ const AIChatPanel = ({
             )}
           </div>
 
-          <div className="flex-1 space-y-0.5 overflow-y-auto pr-1">
+          <div
+            onScroll={() => {
+              if (openMenuSessionId) {
+                setOpenMenuSessionId(null);
+              }
+            }}
+            className="flex-1 space-y-0.5 overflow-y-auto overflow-x-hidden pr-1"
+          >
             {user ? (
               isSessionsLoading ? (
                 <div className="px-2 py-2 text-xs text-slate-500 dark:text-[#7a8296]">
@@ -1050,7 +1557,7 @@ const AIChatPanel = ({
                       isDark ? 'text-[#eef0f5]' : 'text-slate-900'
                     }`}
                   >
-                    Ask Nikhil AI
+                    Ask Me Anything
                   </MotionH1>
 
                   <MotionDiv
@@ -1135,10 +1642,10 @@ const AIChatPanel = ({
                           placeholder={
                             activeImageMode
                               ? `Describe the image you want to generate with ${currentModel.name}...`
-                              : 'Ask Nikhil AI...'
+                              : 'Ask Me Anything...'
                           }
                           rows={1}
-                          disabled={isLoading || isStreaming}
+                          disabled={isLoading || isStreaming || isTranscribing}
                           className={`ai-chat-textarea w-full resize-none border-0 bg-transparent text-base sm:text-[1.05rem] leading-relaxed outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 ${
                             isDark
                               ? 'text-white placeholder-slate-500'
@@ -1153,6 +1660,8 @@ const AIChatPanel = ({
                           }}
                         />
                       </div>
+
+                      {renderVoiceStatusBanner()}
 
                       {/* Capsule Bottom Row */}
                       <div className="flex items-center justify-between pt-1">
@@ -1260,16 +1769,32 @@ const AIChatPanel = ({
                           <button
                             type="button"
                             onClick={toggleSpeechRecognition}
-                            title={isMicActive ? 'Listening... click to stop' : 'Voice input'}
+                            disabled={isTranscribing || isLoading || isStreaming}
+                            title={
+                              isTranscribing
+                                ? 'Transcribing audio...'
+                                : isMicActive
+                                ? 'Listening... click to ask now'
+                                : 'Voice input — speak & ask'
+                            }
+                            aria-label="Voice input"
                             className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-150 ${
                               isMicActive
                                 ? 'bg-rose-600 text-white'
+                                : isTranscribing
+                                ? 'cursor-wait text-emerald-500'
                                 : isDark
                                 ? 'text-[#7a8296] hover:bg-white/[0.06] hover:text-[#eef0f5]'
                                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                             }`}
                           >
-                            {isMicActive ? <MicOff size={16} strokeWidth={1.5} /> : <Mic size={16} strokeWidth={1.5} />}
+                            {isTranscribing ? (
+                              <Loader2 size={15} strokeWidth={1.5} className="animate-spin" />
+                            ) : isMicActive ? (
+                              <MicOff size={16} strokeWidth={1.5} />
+                            ) : (
+                              <Mic size={16} strokeWidth={1.5} />
+                            )}
                           </button>
 
                           <button
@@ -1623,10 +2148,10 @@ const AIChatPanel = ({
                       placeholder={
                         activeImageMode
                           ? `Describe the image you want to generate with ${currentModel.name}...`
-                          : 'Ask Nikhil AI...'
+                          : 'Ask Me Anything...'
                       }
                       rows={1}
-                      disabled={isLoading || isStreaming}
+                      disabled={isLoading || isStreaming || isTranscribing}
                       className={`ai-chat-textarea w-full resize-none border-0 bg-transparent text-base leading-relaxed outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 ${
                         isDark
                           ? 'text-white placeholder-slate-500'
@@ -1642,6 +2167,8 @@ const AIChatPanel = ({
                     />
                   </div>
 
+                  {renderVoiceStatusBanner()}
+
                   {/* Bottom Row inside capsule */}
                   <div className="flex items-center justify-between pt-1">
                     {/* Left: Quick Actions Popover (+) & Image Model Button */}
@@ -1651,33 +2178,33 @@ const AIChatPanel = ({
                           type="button"
                           onClick={() => setShowPlusMenu((prev) => !prev)}
                           title="Quick topics"
-                          className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all ${
+                          className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-colors duration-150 ${
                             isDark
-                              ? 'border-white/10 hover:border-white/25 hover:bg-white/10 text-slate-400 hover:text-white'
-                              : 'border-slate-300 hover:bg-slate-100 text-slate-600'
+                              ? 'border-white/[0.08] text-[#7a8296] hover:border-white/[0.16] hover:text-[#eef0f5]'
+                              : 'border-black/[0.08] text-slate-600 hover:bg-slate-50'
                           }`}
                         >
-                          <Plus size={16} />
+                          <Plus size={16} strokeWidth={1.5} />
                         </button>
 
                         {/* Plus Popover */}
                         <AnimatePresence>
                           {showPlusMenu && (
                             <MotionDiv
-                              initial={{ opacity: 0, y: 6, scale: 0.96 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              exit={{ opacity: 0, y: 6, scale: 0.96 }}
-                              transition={{ duration: 0.15 }}
-                              className={`absolute left-0 bottom-full mb-2 w-64 rounded-2xl border p-2 shadow-2xl z-50 backdrop-blur-xl ${
+                              initial={{ opacity: 0, y: 4 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 4 }}
+                              transition={{ duration: 0.14 }}
+                              className={`absolute left-0 bottom-full mb-2 w-72 rounded-xl border p-2 shadow-lg z-50 ${
                                 isDark
-                                  ? 'border-white/12 bg-[#1b1b1b] text-slate-200'
-                                  : 'border-slate-200 bg-white text-slate-900 shadow-2xl'
+                                  ? 'border-white/[0.08] bg-[#11141c] text-[#eef0f5] shadow-none'
+                                  : 'border-black/[0.08] bg-white text-slate-900'
                               }`}
                             >
-                              <div className="px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                                Insert Topic
+                              <div className="px-2 py-1 font-mono text-xs text-slate-500 dark:text-[#7a8296]">
+                                Topics
                               </div>
-                              <div className="flex flex-col gap-1 mt-1">
+                              <div className="flex flex-col gap-0.5 mt-1">
                                 {KNOWLEDGE_TOPICS.map((topic) => {
                                   const Icon = topic.icon;
                                   return (
@@ -1685,16 +2212,16 @@ const AIChatPanel = ({
                                       key={topic.id}
                                       type="button"
                                       onClick={() => handlePromptClick(`Tell me about Nikhil's ${topic.name}`)}
-                                      className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs text-left transition-all ${
+                                      className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-left transition-colors duration-150 ${
                                         isDark
-                                          ? 'hover:bg-white/8 text-slate-200'
+                                          ? 'hover:bg-white/[0.05] text-[#eef0f5]'
                                           : 'hover:bg-slate-100 text-slate-800'
                                       }`}
                                     >
-                                      <Icon size={14} className="text-sky-400 shrink-0" />
+                                      <Icon size={14} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                                       <div className="min-w-0 flex-1 truncate">
-                                        <div className="font-semibold">{topic.name}</div>
-                                        <div className="text-[10px] text-slate-400 truncate">{topic.desc}</div>
+                                        <div className="font-medium">{topic.name}</div>
+                                        <div className="text-slate-500 dark:text-[#7a8296] truncate">{topic.desc}</div>
                                       </div>
                                     </button>
                                   );
@@ -1749,16 +2276,32 @@ const AIChatPanel = ({
                       <button
                         type="button"
                         onClick={toggleSpeechRecognition}
-                        title={isMicActive ? 'Listening...' : 'Voice input'}
+                        disabled={isTranscribing || isLoading || isStreaming}
+                        title={
+                          isTranscribing
+                            ? 'Transcribing audio...'
+                            : isMicActive
+                            ? 'Listening... click to ask now'
+                            : 'Voice input — speak & ask'
+                        }
+                        aria-label="Voice input"
                         className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-150 ${
                           isMicActive
                             ? 'bg-rose-600 text-white'
+                            : isTranscribing
+                            ? 'cursor-wait text-emerald-500'
                             : isDark
                             ? 'text-[#7a8296] hover:bg-white/[0.06] hover:text-[#eef0f5]'
                             : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                         }`}
                       >
-                        {isMicActive ? <MicOff size={16} strokeWidth={1.5} /> : <Mic size={16} strokeWidth={1.5} />}
+                        {isTranscribing ? (
+                          <Loader2 size={15} strokeWidth={1.5} className="animate-spin" />
+                        ) : isMicActive ? (
+                          <MicOff size={16} strokeWidth={1.5} />
+                        ) : (
+                          <Mic size={16} strokeWidth={1.5} />
+                        )}
                       </button>
 
                       {/* Send / Stop button */}

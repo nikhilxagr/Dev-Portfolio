@@ -1,6 +1,8 @@
 import { Router } from "express";
 import crypto from "crypto";
 import { chatStream, aiHealth } from "../ai/controllers/chat.controller.js";
+import { geminiProvider } from "../ai/providers/gemini.provider.js";
+import { env } from "../config/env.js";
 import { aiChatLimiter, aiImageLimiter } from "../middleware/rateLimiter.js";
 import { optionalUserAuthMiddleware, userAuthMiddleware } from "../middleware/userAuthMiddleware.js";
 import { cloudflareImageService } from "../ai/services/cloudflareImage.service.js";
@@ -90,6 +92,81 @@ const activeImageGenerations = new Set();
 // Chat Assistant Endpoints (Unlimited text-to-text chat for all users)
 router.post("/chat", aiChatLimiter, validateChatInput, chatStream);
 router.get("/health", aiHealth);
+
+// Voice-to-Text Transcription Endpoint (Gemini audio + Cloudflare Whisper fallback)
+router.post("/transcribe", aiChatLimiter, async (req, res) => {
+  const rawAudio = req.body?.audio;
+  const mimeType = typeof req.body?.mimeType === "string" ? req.body.mimeType : "audio/webm";
+
+  if (!rawAudio || typeof rawAudio !== "string" || rawAudio.length < 32) {
+    res.status(400).json({
+      success: false,
+      message: "Audio data is required for voice transcription.",
+    });
+    return;
+  }
+
+  if (rawAudio.length > 4_000_000) {
+    res.status(413).json({
+      success: false,
+      message: "Voice clip is too long. Please keep recordings under 1 minute.",
+    });
+    return;
+  }
+
+  const base64Audio = rawAudio.includes(",") ? rawAudio.split(",").pop().trim() : rawAudio.trim();
+
+  try {
+    let transcript = "";
+
+    if (env.geminiApiKey) {
+      try {
+        transcript = await geminiProvider.transcribeAudio({ base64Audio, mimeType });
+      } catch (geminiErr) {
+        console.warn(`[aiRoutes] Gemini transcription fallback trigger: ${geminiErr.message}`);
+      }
+    }
+
+    if (!transcript && env.cloudflareAccountId && env.cloudflareApiToken) {
+      const audioBytes = Array.from(Buffer.from(base64Audio, "base64"));
+      const cfResp = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${env.cloudflareAccountId}/ai/run/@cf/openai/whisper`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${env.cloudflareApiToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ audio: audioBytes }),
+        }
+      );
+
+      if (cfResp.ok) {
+        const cfJson = await cfResp.json().catch(() => ({}));
+        transcript = String(cfJson?.result?.text || "").trim();
+      }
+    }
+
+    if (!transcript) {
+      res.status(422).json({
+        success: false,
+        message: "Could not hear clear speech. Please speak closer to your mic and try again.",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      transcript: transcript.slice(0, 1500),
+    });
+  } catch (error) {
+    console.error(`[aiRoutes] Voice transcription failed: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      message: "Voice transcription failed. Please try again or type your question.",
+    });
+  }
+});
 
 // Cloudflare Multi-Model AI Image Studio Endpoints
 router.get("/image-models", (_req, res) => {

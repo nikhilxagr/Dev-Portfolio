@@ -127,9 +127,61 @@ export class GeminiProvider extends AIProvider {
       }
     }
 
-    const safeMessage = sanitizeErrorMessage(lastError);
+        const safeMessage = sanitizeErrorMessage(lastError);
     console.error(`[GeminiProvider] All candidate models failed: ${safeMessage}`);
     onError(new Error(safeMessage));
+  }
+
+  async transcribeAudio({ base64Audio, mimeType = "audio/webm" }) {
+    const cleanMime = String(mimeType || "audio/webm")
+      .split(";")[0]
+      .trim()
+      .toLowerCase();
+    const allowedMimes = new Set([
+      "audio/webm",
+      "audio/mp4",
+      "audio/mpeg",
+      "audio/wav",
+      "audio/ogg",
+      "audio/x-m4a",
+      "audio/aac",
+    ]);
+    const finalMime = allowedMimes.has(cleanMime) ? cleanMime : "audio/webm";
+    const candidateModels = [PRIMARY_MODEL, ...FALLBACK_MODELS];
+    let lastError = null;
+
+    for (const modelName of candidateModels) {
+      try {
+        const model = getModelInstance(modelName);
+        const transcribePromise = model.generateContent([
+          {
+            inlineData: {
+              mimeType: finalMime,
+              data: base64Audio,
+            },
+          },
+          "Listen carefully to this spoken audio clip and transcribe the user's exact words into plain English or Hinglish text as spoken. Return ONLY the clean transcribed text without quotes, labels, timestamps, or commentary. If there is only silence or no intelligible speech, return an empty string.",
+        ]);
+
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(
+            () => reject(new Error(`Timeout waiting for ${modelName} transcription after 20s`)),
+            20000
+          )
+        );
+
+        const result = await Promise.race([transcribePromise, timeoutPromise]);
+        const text = (result?.response?.text?.() || "").trim();
+        return text;
+      } catch (error) {
+        lastError = error;
+        console.warn(
+          `[GeminiProvider] Audio transcription on ${modelName} failed: ${error?.message}`
+        );
+      }
+    }
+
+    throw new Error(sanitizeErrorMessage(lastError));
   }
 }
 

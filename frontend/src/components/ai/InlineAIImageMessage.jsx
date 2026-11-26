@@ -1,27 +1,31 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  Sparkles,
-  Download,
-  Copy,
-  Check,
   AlertCircle,
+  Check,
+  Copy,
+  Download,
   ExternalLink,
-  RotateCcw,
+  Image as ImageIcon,
   LogIn,
-} from 'lucide-react';
-import { useTheme } from '@/context/ThemeContext';
-import { useUserAuth } from '@/context/UserAuthContext';
+  Maximize2,
+  RotateCcw,
+  Sparkles,
+  X,
+} from "lucide-react";
+import { useTheme } from "@/context/ThemeContext";
+import { useUserAuth } from "@/context/UserAuthContext";
 
 const MotionDiv = motion.div;
 
 const GENERATING_STEPS = [
-  'Connecting to Cloudflare Workers AI...',
-  'Initializing FLUX.2-dev generative model...',
-  'Executing 25 latent diffusion steps...',
-  'Synthesizing 1024×1024 pixels...',
-  'Enhancing details and color grading...',
-  'Finalizing high-res image render...',
+  "Connecting to Cloudflare Workers AI...",
+  "Initializing FLUX.2-dev model...",
+  "Running latent diffusion steps...",
+  "Synthesizing 1024x1024 output...",
+  "Refining lighting and detail...",
+  "Preparing image preview...",
 ];
 
 const InlineAIImageMessage = ({ image, onRegenerate }) => {
@@ -30,350 +34,515 @@ const InlineAIImageMessage = ({ image, onRegenerate }) => {
   const [stepIndex, setStepIndex] = useState(0);
   const [copiedPrompt, setCopiedPrompt] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
-  const isGenerating = image?.status === 'generating';
-  const isCompleted = image?.status === 'completed' && image?.dataUrl;
-  const isError = image?.status === 'error';
+  const isGenerating = image?.status === "generating";
+  const isCompleted = Boolean(image?.status === "completed" && image?.dataUrl);
+  const isError = image?.status === "error";
   const isRequireAuth = Boolean(image?.requireAuth);
 
-  // Cycle status messages every 2.2s during generation
   useEffect(() => {
-    if (!isGenerating) return;
-    const interval = setInterval(() => {
+    if (!isGenerating) return undefined;
+    const interval = window.setInterval(() => {
       setStepIndex((prev) => (prev + 1) % GENERATING_STEPS.length);
     }, 2200);
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
   }, [isGenerating]);
 
-  const handleDownload = () => {
+  // Lock background scroll and bind Escape while full-view preview is open
+  useEffect(() => {
+    if (!isPreviewOpen) return undefined;
+
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    if (window.__activeLenis && typeof window.__activeLenis.stop === "function") {
+      window.__activeLenis.stop();
+    }
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setIsPreviewOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+      if (window.__activeLenis && typeof window.__activeLenis.start === "function") {
+        window.__activeLenis.start();
+      }
+    };
+  }, [isPreviewOpen]);
+
+  const handleDownload = (e) => {
+    if (e) e.stopPropagation();
     if (!image?.dataUrl) return;
     try {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = image.dataUrl;
-      const modelSlug = (image.model?.key || 'ai').toLowerCase();
-      const safeSlug = (image.prompt || 'image')
+      const modelSlug = (image.model?.key || "ai").toLowerCase();
+      const safeSlug = (image.prompt || "image")
         .toLowerCase()
-        .replace(/[^a-z0-9]/g, '-')
+        .replace(/[^a-z0-9]/g, "-")
         .slice(0, 32);
       link.download = `nikhil-ai-${modelSlug}-${safeSlug}-${Date.now()}.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch {
-      window.open(image.dataUrl, '_blank');
+      window.open(image.dataUrl, "_blank", "noopener,noreferrer");
     }
   };
 
-  const handleCopyPrompt = async () => {
+  const handleCopyPrompt = async (e) => {
+    if (e) e.stopPropagation();
     if (!image?.prompt) return;
     try {
       await navigator.clipboard.writeText(image.prompt);
       setCopiedPrompt(true);
-      setTimeout(() => setCopiedPrompt(false), 2000);
+      window.setTimeout(() => setCopiedPrompt(false), 1800);
     } catch {
-      // ignore
+      // ignore clipboard errors
     }
   };
 
-  const handleOpenNewTab = () => {
+  const handleOpenNewTab = (e) => {
+    if (e) e.stopPropagation();
     if (!image?.dataUrl) return;
-    window.open(image.dataUrl, '_blank');
+    window.open(image.dataUrl, "_blank", "noopener,noreferrer");
   };
 
-  return (
-    <div className="w-full max-w-xl my-2">
-      <AnimatePresence mode="wait">
-        {/* ==========================================================
-            1. GENERATING ANIMATION (GEMINI-STYLE GLOWING SHIMMER CANVAS)
-            ========================================================== */}
-        {isGenerating && (
-          <MotionDiv
-            key="generating-canvas"
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.3 }}
-            className={`relative rounded-3xl p-0.5 overflow-hidden shadow-2xl transition-all ${
-              isDark
-                ? 'bg-gradient-to-r from-sky-500/30 via-purple-500/30 to-emerald-500/30'
-                : 'bg-gradient-to-r from-sky-400/40 via-purple-400/40 to-emerald-400/40 shadow-lg'
-            }`}
-          >
-            <div
-              className={`relative rounded-[22px] overflow-hidden p-6 sm:p-8 flex flex-col items-center justify-center text-center min-h-[300px] sm:min-h-[340px] ${
-                isDark ? 'bg-[#121212]' : 'bg-slate-50'
-              }`}
-            >
-              {/* Shimmer sweep effect */}
+  const previewModal =
+    typeof document !== "undefined"
+      ? createPortal(
+          <AnimatePresence>
+            {isPreviewOpen && isCompleted && (
               <div
-                className="absolute inset-0 pointer-events-none opacity-40 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_2.5s_infinite]"
-                style={{
-                  animation: 'shimmerSweep 2.2s infinite ease-in-out',
-                }}
-              />
-
-              {/* Gemini-Style Glowing Multi-layered Star Aura */}
-              <div className="relative mb-5 flex items-center justify-center">
-                {/* Ambient glowing radial aura */}
-                <div className="absolute h-28 w-28 rounded-full bg-gradient-to-tr from-sky-500/30 via-purple-500/25 to-emerald-500/30 blur-2xl animate-pulse" />
-
-                {/* Rotating subtle orbital ring */}
-                <div className="absolute h-20 w-20 rounded-full border border-sky-400/20 border-dashed animate-spin [animation-duration:10s]" />
-
-                {/* Center glowing badge */}
-                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 shadow-[0_0_25px_rgba(56,189,248,0.5)]">
-                  <Sparkles size={24} className="text-white animate-pulse" />
-                </div>
-              </div>
-
-              {/* Step Status Text */}
-              <div className="relative z-10 flex flex-col items-center gap-1.5 max-w-sm">
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-sky-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-ping" />
-                  <span>Cloudflare · {image.model?.name || 'Image Studio'}</span>
-                </div>
-
-                <div
-                  className={`text-sm sm:text-base font-semibold transition-all duration-300 ${
-                    isDark ? 'text-white' : 'text-slate-900'
-                  }`}
-                >
-                  {GENERATING_STEPS[stepIndex]}
-                </div>
-
-                {image?.prompt && (
-                  <p className="text-xs text-slate-400 line-clamp-2 italic px-2 mt-1">
-                    “{image.prompt}”
-                  </p>
-                )}
-              </div>
-
-              {/* Animated progress bar */}
-              <div className="relative z-10 w-48 sm:w-64 h-1.5 rounded-full bg-white/10 overflow-hidden mt-6">
-                <MotionDiv
-                  className="h-full bg-gradient-to-r from-sky-400 via-indigo-400 to-emerald-400 rounded-full"
-                  animate={{
-                    x: ['-100%', '100%'],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1.8,
-                    ease: 'easeInOut',
-                  }}
-                  style={{ width: '50%' }}
-                />
-              </div>
-            </div>
-          </MotionDiv>
-        )}
-
-        {/* ==========================================================
-            2. COMPLETED IMAGE VIEW (INLINE IN CHAT)
-            ========================================================== */}
-        {isCompleted && (
-          <MotionDiv
-            key="completed-image"
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className={`group relative rounded-3xl border overflow-hidden transition-all shadow-xl ${
-              isDark
-                ? 'border-white/10 bg-[#141414] shadow-[0_10px_40px_rgba(0,0,0,0.6)]'
-                : 'border-slate-200 bg-white shadow-lg'
-            }`}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            {/* Image Preview Canvas */}
-            <div className="relative aspect-square max-h-[460px] w-full overflow-hidden bg-black/40">
-              <img
-                src={image.dataUrl}
-                alt={image.prompt || 'Generated by Cloudflare FLUX.2-dev'}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                loading="eager"
-              />
-
-              {/* Top Floating Action Pill (visible on hover or always on touch devices) */}
-              <div
-                className={`absolute top-3 right-3 flex items-center gap-1.5 p-1 rounded-2xl backdrop-blur-md transition-opacity duration-200 ${
-                  isHovered ? 'opacity-100' : 'opacity-90 sm:opacity-0'
-                } bg-black/60 border border-white/15`}
+                className="fixed inset-0 z-[9999] flex flex-col bg-black/90 backdrop-blur-sm"
+                data-lenis-prevent
+                onWheel={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Full view generated image preview"
               >
-                {/* Download */}
-                <button
-                  type="button"
-                  onClick={handleDownload}
-                  title="Download full resolution JPEG"
-                  className="flex h-8 w-8 items-center justify-center rounded-xl text-white hover:bg-white/20 transition-all active:scale-95"
-                >
-                  <Download size={15} />
-                </button>
-
-                {/* Open in new tab */}
-                <button
-                  type="button"
-                  onClick={handleOpenNewTab}
-                  title="Open full image in new tab"
-                  className="flex h-8 w-8 items-center justify-center rounded-xl text-white hover:bg-white/20 transition-all active:scale-95"
-                >
-                  <ExternalLink size={15} />
-                </button>
-
-                {/* Copy Prompt */}
-                <button
-                  type="button"
-                  onClick={handleCopyPrompt}
-                  title="Copy prompt"
-                  className="flex h-8 w-8 items-center justify-center rounded-xl text-white hover:bg-white/20 transition-all active:scale-95"
-                >
-                  {copiedPrompt ? (
-                    <Check size={15} className="text-emerald-400" />
-                  ) : (
-                    <Copy size={15} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Bottom Meta & Action Bar */}
-            <div
-              className={`p-3.5 sm:p-4 flex flex-col gap-2.5 border-t ${
-                isDark ? 'border-white/8 bg-[#181818]' : 'border-slate-100 bg-slate-50'
-              }`}
-            >
-              {/* Prompt Description */}
-              {image.prompt && (
-                <div className="text-xs sm:text-sm font-medium line-clamp-2 select-text">
-                  “{image.prompt}”
-                </div>
-              )}
-
-              {/* Badges + Download Button Row */}
-              <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
-                <div className="flex items-center gap-1.5 flex-wrap text-[11px] text-slate-400">
-                  <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    <span>{image.model?.name || 'FLUX.2-dev'}</span>
-                    {image.model?.badge && (
-                      <span className="text-[10px] opacity-75">· {image.model.badge}</span>
-                    )}
-                  </span>
-
-                  <span className="px-2 py-0.5 rounded-full bg-white/5 font-mono">
-                    1024×1024
-                  </span>
-
-                  {image.durationMs && (
-                    <span className="px-2 py-0.5 rounded-full bg-white/5 font-mono">
-                      {(image.durationMs / 1000).toFixed(1)}s
-                    </span>
-                  )}
-
-                  {image.quota?.remaining !== undefined && (
-                    <span className="px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono">
-                      {image.quota.remaining}/10 left
-                    </span>
-                  )}
-                </div>
-
-                {/* Direct Download Button */}
-                <button
-                  type="button"
-                  onClick={handleDownload}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-sm transition-transform active:scale-95"
-                >
-                  <Download size={13} />
-                  <span>Download</span>
-                </button>
-              </div>
-            </div>
-          </MotionDiv>
-        )}
-
-        {/* ==========================================================
-            3. ERROR STATE / SIGN IN UNLOCK
-            ========================================================== */}
-        {isError && (
-          <MotionDiv
-            key="error-card"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`p-4 sm:p-5 rounded-3xl border flex flex-col gap-3 max-w-md shadow-xl ${
-              isRequireAuth
-                ? isDark
-                  ? 'border-sky-500/30 bg-gradient-to-br from-sky-500/10 via-purple-500/10 to-[#121212] text-slate-200'
-                  : 'border-sky-400 bg-sky-50 text-slate-800'
-                : 'border-rose-500/30 bg-rose-500/10 text-rose-300'
-            }`}
-          >
-            {isRequireAuth ? (
-              <>
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-sky-500/20 text-sky-400 border border-sky-500/30">
-                    <Sparkles size={20} />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-bold text-sky-400">
-                      Free Guest Image Credits Used
-                    </h4>
-                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                      You’ve used your 2 free guest trial image generations. Sign in or create an account to get <strong>10 free generations every day</strong> with FLUX.2-dev!
+                {/* Top Toolbar */}
+                <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/[0.08] bg-[#090a0f]/95 px-4 py-3 sm:px-6">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-[#eef0f5]">
+                      {image.prompt || "Generated image preview"}
                     </p>
-                    <div className="text-[11px] text-slate-400 mt-1">
-                      💡 Text-to-text chat is always 100% free and unlimited.
-                    </div>
+                    <p className="mt-0.5 font-mono text-[11px] text-[#7a8296] tabular-nums">
+                      {image.model?.name || "FLUX.2-dev"} · 1024×1024
+                      {image.durationMs ? ` · ${(image.durationMs / 1000).toFixed(1)}s` : ""}
+                    </p>
                   </div>
-                </div>
 
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      openSignInModal({
-                        title: 'Sign in to unlock 10 daily AI image credits',
-                        message:
-                          'Sign in or register for free to get 10 image generations every day with FLUX.2-dev.',
-                      })
-                    }
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-sky-500 hover:bg-sky-400 text-black shadow-md transition-all active:scale-95"
-                  >
-                    <LogIn size={14} />
-                    <span>Sign In to Unlock 10 Credits</span>
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-start gap-2.5">
-                  <AlertCircle size={18} className="text-rose-400 shrink-0 mt-0.5" />
-                  <div className="flex-1 text-xs sm:text-sm">
-                    <div className="font-semibold text-rose-200">
-                      Image Generation Notice
-                    </div>
-                    <div className="text-rose-300/90 mt-0.5">
-                      {image?.error || 'Cloudflare FLUX.2-dev encountered an error. Please try again.'}
-                    </div>
-                  </div>
-                </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {image.prompt && (
+                      <button
+                        type="button"
+                        onClick={handleCopyPrompt}
+                        title="Copy prompt"
+                        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-[#11141c] px-3 text-xs font-medium text-[#d1d5df] transition-colors hover:border-white/[0.2] hover:bg-[#1a1e28] hover:text-white"
+                      >
+                        {copiedPrompt ? (
+                          <Check size={14} className="text-emerald-400" />
+                        ) : (
+                          <Copy size={14} />
+                        )}
+                        <span className="hidden sm:inline">
+                          {copiedPrompt ? "Copied" : "Copy prompt"}
+                        </span>
+                      </button>
+                    )}
 
-                {onRegenerate && (
-                  <div className="flex justify-end pt-1">
                     <button
                       type="button"
-                      onClick={onRegenerate}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/40 transition-colors"
+                      onClick={handleOpenNewTab}
+                      title="Open in new tab"
+                      className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/[0.1] bg-[#11141c] px-3 text-xs font-medium text-[#d1d5df] transition-colors hover:border-white/[0.2] hover:bg-[#1a1e28] hover:text-white"
                     >
-                      <RotateCcw size={12} />
-                      <span>Retry</span>
+                      <ExternalLink size={14} />
+                      <span className="hidden sm:inline">Open tab</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleDownload}
+                      className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-emerald-500 px-3.5 text-xs font-medium text-slate-950 transition-colors hover:bg-emerald-400"
+                    >
+                      <Download size={14} />
+                      <span>Download</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsPreviewOpen(false)}
+                      aria-label="Close image preview"
+                      title="Close (Esc)"
+                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.1] bg-[#11141c] text-[#a3a9b8] transition-colors hover:border-white/[0.2] hover:bg-[#1a1e28] hover:text-white"
+                    >
+                      <X size={16} strokeWidth={1.6} />
                     </button>
                   </div>
-                )}
-              </>
+                </div>
+
+                {/* Click backdrop around image to close */}
+                <div
+                  className="flex min-h-0 flex-1 items-center justify-center p-4 sm:p-8"
+                  onClick={() => setIsPreviewOpen(false)}
+                >
+                  <MotionDiv
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ duration: 0.16, ease: "easeOut" }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="relative flex max-h-full max-w-full items-center justify-center overflow-hidden rounded-xl border border-white/[0.1] bg-[#0c0e14] shadow-2xl"
+                  >
+                    <img
+                      src={image.dataUrl}
+                      alt={image.prompt || "Full preview of generated AI image"}
+                      className="max-h-[82vh] max-w-[92vw] w-auto h-auto object-contain select-none"
+                    />
+                  </MotionDiv>
+                </div>
+              </div>
             )}
-          </MotionDiv>
-        )}
-      </AnimatePresence>
-    </div>
+          </AnimatePresence>,
+          document.body,
+        )
+      : null;
+
+  return (
+    <>
+      <div className="my-2 w-full max-w-xl">
+        <AnimatePresence mode="wait">
+          {/* 1. Generating Progress Card */}
+          {isGenerating && (
+            <MotionDiv
+              key="generating-canvas"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.22 }}
+              className={`relative flex min-h-[280px] sm:min-h-[320px] flex-col items-center justify-center overflow-hidden rounded-2xl border p-6 text-center sm:p-8 ${
+                isDark
+                  ? "border-white/[0.08] bg-[#11141c] text-[#eef0f5]"
+                  : "border-black/[0.08] bg-[#f8fafc] text-slate-900"
+              }`}
+            >
+              <div
+                className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl border ${
+                  isDark
+                    ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
+                    : "border-emerald-600/25 bg-emerald-50 text-emerald-700"
+                }`}
+              >
+                <ImageIcon size={22} strokeWidth={1.6} />
+              </div>
+
+              <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                Cloudflare · {image.model?.name || "FLUX.2-dev"}
+              </p>
+
+              <p className="mt-1.5 text-sm font-medium sm:text-base">
+                {GENERATING_STEPS[stepIndex]}
+              </p>
+
+              {image?.prompt && (
+                <p
+                  className={`mt-1.5 max-w-sm line-clamp-2 text-xs ${
+                    isDark ? "text-[#a3a9b8]" : "text-slate-600"
+                  }`}
+                >
+                  &ldquo;{image.prompt}&rdquo;
+                </p>
+              )}
+
+              <div
+                className={`mt-6 h-1.5 w-48 sm:w-64 overflow-hidden rounded-full ${
+                  isDark ? "bg-white/[0.08]" : "bg-black/[0.08]"
+                }`}
+              >
+                <MotionDiv
+                  className="h-full rounded-full bg-emerald-500 dark:bg-emerald-400"
+                  animate={{ x: ["-100%", "100%"] }}
+                  transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
+                  style={{ width: "50%" }}
+                />
+              </div>
+            </MotionDiv>
+          )}
+
+          {/* 2. Completed Generated Image */}
+          {isCompleted && (
+            <MotionDiv
+              key="completed-image"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+              className={`group relative overflow-hidden rounded-2xl border transition-colors ${
+                isDark
+                  ? "border-white/[0.1] bg-[#11141c]"
+                  : "border-black/[0.08] bg-white shadow-sm"
+              }`}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              {/* Clickable Image Container -> Opens Full Preview */}
+              <div className="relative aspect-square max-h-[460px] w-full overflow-hidden bg-[#0c0e14]">
+                <button
+                  type="button"
+                  onClick={() => setIsPreviewOpen(true)}
+                  aria-label="Open full-view image preview"
+                  className="block h-full w-full cursor-zoom-in text-left focus:outline-none"
+                >
+                  <img
+                    src={image.dataUrl}
+                    alt={image.prompt || "Generated AI image"}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                    loading="eager"
+                  />
+                </button>
+
+                {/* Top Floating Toolbar */}
+                <div
+                  className={`absolute top-3 right-3 z-10 flex items-center gap-1 rounded-xl border border-white/[0.15] bg-[#090a0f]/80 p-1 backdrop-blur-md transition-opacity duration-150 ${
+                    isHovered ? "opacity-100" : "opacity-90 sm:opacity-0"
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setIsPreviewOpen(true)}
+                    title="Full preview"
+                    aria-label="Full preview"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/[0.15]"
+                  >
+                    <Maximize2 size={15} strokeWidth={1.6} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    title="Download image"
+                    aria-label="Download image"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/[0.15]"
+                  >
+                    <Download size={15} strokeWidth={1.6} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleOpenNewTab}
+                    title="Open in new tab"
+                    aria-label="Open in new tab"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/[0.15]"
+                  >
+                    <ExternalLink size={15} strokeWidth={1.6} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyPrompt}
+                    title="Copy prompt"
+                    aria-label="Copy prompt"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/[0.15]"
+                  >
+                    {copiedPrompt ? (
+                      <Check size={15} className="text-emerald-400" />
+                    ) : (
+                      <Copy size={15} strokeWidth={1.6} />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Meta & Action Footer */}
+              <div
+                className={`flex flex-col gap-2.5 border-t p-3.5 sm:p-4 ${
+                  isDark
+                    ? "border-white/[0.08] bg-[#0c0e14]"
+                    : "border-black/[0.08] bg-[#f8fafc]"
+                }`}
+              >
+                {image.prompt && (
+                  <p
+                    className={`line-clamp-2 text-xs font-medium sm:text-sm select-text ${
+                      isDark ? "text-[#eef0f5]" : "text-slate-900"
+                    }`}
+                  >
+                    &ldquo;{image.prompt}&rdquo;
+                  </p>
+                )}
+
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono">
+                    <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-600/25 bg-emerald-50 px-2 py-0.5 font-medium text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-400">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                      <span>{image.model?.name || "FLUX.2-dev"}</span>
+                    </span>
+
+                    <span
+                      className={`rounded-md border px-2 py-0.5 tabular-nums ${
+                        isDark
+                          ? "border-white/[0.08] bg-[#11141c] text-[#a3a9b8]"
+                          : "border-black/[0.08] bg-white text-slate-600"
+                      }`}
+                    >
+                      1024×1024
+                    </span>
+
+                    {image.durationMs && (
+                      <span
+                        className={`rounded-md border px-2 py-0.5 tabular-nums ${
+                          isDark
+                            ? "border-white/[0.08] bg-[#11141c] text-[#a3a9b8]"
+                            : "border-black/[0.08] bg-white text-slate-600"
+                        }`}
+                      >
+                        {(image.durationMs / 1000).toFixed(1)}s
+                      </span>
+                    )}
+
+                    {image.quota?.remaining !== undefined && (
+                      <span
+                        className={`rounded-md border px-2 py-0.5 tabular-nums ${
+                          isDark
+                            ? "border-white/[0.08] bg-[#11141c] text-[#a3a9b8]"
+                            : "border-black/[0.08] bg-white text-slate-600"
+                        }`}
+                      >
+                        {image.quota.remaining}/10 left
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsPreviewOpen(true)}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+                        isDark
+                          ? "border-white/[0.1] bg-[#11141c] text-[#eef0f5] hover:bg-[#1a1e28]"
+                          : "border-black/[0.1] bg-white text-slate-700 hover:bg-slate-50"
+                      }`}
+                    >
+                      <Maximize2 size={13} strokeWidth={1.6} />
+                      <span>Preview</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleDownload}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"
+                    >
+                      <Download size={13} strokeWidth={1.6} />
+                      <span>Download</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </MotionDiv>
+          )}
+
+          {/* 3. Error / Sign-in Required State */}
+          {isError && (
+            <MotionDiv
+              key="error-card"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex max-w-md flex-col gap-3 rounded-2xl border p-4 sm:p-5 ${
+                isRequireAuth
+                  ? isDark
+                    ? "border-emerald-500/25 bg-[#11141c] text-[#eef0f5]"
+                    : "border-emerald-600/25 bg-emerald-50/40 text-slate-900"
+                  : isDark
+                    ? "border-rose-500/30 bg-rose-500/10 text-rose-200"
+                    : "border-rose-500/30 bg-rose-50 text-rose-800"
+              }`}
+            >
+              {isRequireAuth ? (
+                <>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-600/25 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
+                      <Sparkles size={18} strokeWidth={1.6} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold">
+                        Free guest image credits used
+                      </h4>
+                      <p
+                        className={`mt-1 text-xs leading-relaxed ${
+                          isDark ? "text-[#a3a9b8]" : "text-slate-600"
+                        }`}
+                      >
+                        Sign in to unlock{" "}
+                        <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                          10 free daily image generations
+                        </span>{" "}
+                        with FLUX.2-dev. Text chat stays unlimited without an account.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end border-t border-black/[0.08] pt-3 dark:border-white/[0.08]">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openSignInModal({
+                          title: "Sign in to unlock 10 daily AI image credits",
+                          message:
+                            "Sign in or register for free to get 10 image generations every day with FLUX.2-dev.",
+                        })
+                      }
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"
+                    >
+                      <LogIn size={14} strokeWidth={1.6} />
+                      <span>Sign in for 10 daily credits</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-start gap-2.5">
+                    <AlertCircle size={18} className="mt-0.5 shrink-0 text-rose-500" />
+                    <div className="flex-1 text-xs sm:text-sm">
+                      <p className="font-medium">Image generation failed</p>
+                      <p className="mt-0.5 opacity-85">
+                        {image?.error ||
+                          "Cloudflare FLUX.2-dev encountered an error. Please try again."}
+                      </p>
+                    </div>
+                  </div>
+
+                  {onRegenerate && (
+                    <div className="flex justify-end pt-1">
+                      <button
+                        type="button"
+                        onClick={onRegenerate}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-rose-500/35 px-3 py-1.5 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-500/10 dark:text-rose-200"
+                      >
+                        <RotateCcw size={12} />
+                        <span>Retry</span>
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </MotionDiv>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {previewModal}
+    </>
   );
 };
 

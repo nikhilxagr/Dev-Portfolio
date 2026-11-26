@@ -113,7 +113,7 @@ export const applySecurityMiddleware = (app) => {
   app.use((_req, res, next) => {
     res.setHeader(
       "Permissions-Policy",
-      "camera=(), microphone=(), geolocation=(), payment=(self \"https://sdk.cashfree.com\")",
+      "camera=(), microphone=(self), geolocation=(), payment=(self \"https://sdk.cashfree.com\")",
     );
     next();
   });

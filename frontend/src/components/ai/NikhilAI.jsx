@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import useNikhilAI from '@/hooks/useNikhilAI';
 import AIFloatingButton from './AIFloatingButton';
@@ -47,6 +48,14 @@ const NikhilAIWidget = () => {
     clearAllSessions,
     createNewChat,
   } = useNikhilAI();
+
+  useEffect(() => {
+    const handleOpenEvent = () => {
+      togglePanel();
+    };
+    window.addEventListener('nikhil-ai:open', handleOpenEvent);
+    return () => window.removeEventListener('nikhil-ai:open', handleOpenEvent);
+  }, [togglePanel]);
 
   return (
     <>
