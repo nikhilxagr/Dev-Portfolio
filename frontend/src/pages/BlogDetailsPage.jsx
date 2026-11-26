@@ -119,6 +119,22 @@ const StandardBlogDetails = ({ slug }) => {
     setLoading(!staticBlog);
     loadBlog(false).catch(() => undefined);
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    const refresh = () => loadBlog(false).catch(() => undefined);
+    window.addEventListener("portfolio:cms-updated", refresh);
+    let channel = null;
+    if ("BroadcastChannel" in window) {
+      try {
+        channel = new BroadcastChannel("portfolio_cms_sync");
+        channel.onmessage = refresh;
+      } catch {
+        channel = null;
+      }
+    }
+    return () => {
+      window.removeEventListener("portfolio:cms-updated", refresh);
+      if (channel) channel.close();
+    };
   }, [loadBlog, staticBlog]);
 
   const rawDate = blog?.publishedAt || blog?.createdAt || "";

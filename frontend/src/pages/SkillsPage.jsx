@@ -23,6 +23,7 @@ import SeoHead from "@/components/seo/SeoHead";
 import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 import { createBreadcrumbSchema } from "@/utils/seo";
 import { SITE_PROFILE } from "@/constants/siteData";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 const DOMAIN_SECTIONS = [
   {
@@ -251,6 +252,7 @@ const DOMAIN_SECTIONS = [
 const CATEGORY_TABS = ["All", "Full Stack", "Backend", "AI", "Cybersecurity", "DevOps"];
 
 const SkillsPage = () => {
+  const { skills: skillsContent } = useSiteContent();
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filteredDomains = DOMAIN_SECTIONS.filter((domain) => {
@@ -297,8 +299,8 @@ const SkillsPage = () => {
             transition={{ duration: 0.4, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
             className="font-display text-3xl font-semibold tracking-[-0.02em] leading-[1.08] text-slate-900 sm:text-4xl lg:text-5xl dark:text-[#eef0f5]"
           >
-            Technical Skills &amp;{" "}
-            <span className="text-emerald-600 dark:text-emerald-400">Focus Areas</span>
+            {skillsContent?.heroHeadline || "Technical Skills &"}{" "}
+            <span className="text-emerald-600 dark:text-emerald-400">{skillsContent?.heroAccent || "Focus Areas"}</span>
           </MotionH1>
 
           <MotionP
@@ -307,7 +309,7 @@ const SkillsPage = () => {
             transition={{ duration: 0.4, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base dark:text-[#a3a9b8]"
           >
-            Skills grounded directly in shipped code. Select any engineering domain to inspect the stack used and the projects built with it.
+            {skillsContent?.heroBio || "Skills grounded directly in shipped code. Select any engineering domain to inspect the stack used and the projects built with it."}
           </MotionP>
 
           <MotionDiv

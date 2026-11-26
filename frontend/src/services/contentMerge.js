@@ -15,16 +15,10 @@ const isNonEmptyValue = (value) => {
 };
 
 export const mergeStaticAndApiContent = (staticItem = {}, apiItem = {}) => {
-  const merged = { ...staticItem };
+  const merged = { ...(staticItem || {}) };
 
   Object.entries(apiItem || {}).forEach(([key, value]) => {
     if (isNonEmptyValue(value)) {
-      if (key === "imageUrl" && staticItem?.imageUrl) {
-        return;
-      }
-      if (key === "status" && value === "published" && staticItem?.status) {
-        return;
-      }
       merged[key] = value;
     }
   });

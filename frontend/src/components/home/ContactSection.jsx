@@ -2,8 +2,10 @@ import { memo } from "react";
 import { ArrowRight, Download } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { QUICK_CONTACT } from "@/constants/siteData";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 const ContactSection = () => {
+  const { profile } = useSiteContent();
   return (
     <section className="section-wrap section-divider">
       <FadeInUp>
@@ -27,7 +29,7 @@ const ContactSection = () => {
               <ArrowRight size={16} strokeWidth={1.5} />
             </a>
             <a
-              href={QUICK_CONTACT?.resumeFullStack || "/images/resume/WebDev_Resume.pdf"}
+              href={profile?.resumeFullStack || QUICK_CONTACT?.resumeFullStack || "/images/resume/WebDev_Resume.pdf"}
               target="_blank"
               rel="noreferrer"
               className="inline-flex h-11 items-center gap-2 rounded-lg border border-black/[0.10] bg-white px-5 text-sm font-medium text-slate-800 transition-colors duration-150 hover:border-slate-300 hover:bg-slate-50 dark:border-white/[0.10] dark:bg-[#1a1e28] dark:text-[#eef0f5] dark:hover:border-white/[0.18] dark:hover:bg-[#222734]"

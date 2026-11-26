@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
@@ -102,11 +102,10 @@ function App() {
     };
   }, [isAdminRoute, showLoader]);
 
-  const mainStyle = isAdminRoute
-    ? { paddingTop: "2rem" }
-    : isAIRoute
-    ? { paddingTop: 0 }
-    : { paddingTop: "var(--site-top-offset, 6rem)" };
+  const mainStyle =
+    isAdminRoute || isAIRoute
+      ? { paddingTop: 0 }
+      : { paddingTop: "var(--site-top-offset, 6rem)" };
 
   return (
     <LenisProvider>

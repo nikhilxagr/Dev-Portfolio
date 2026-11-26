@@ -14,11 +14,12 @@ import {
   Wrench,
 } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
-import { STATS_METRICS, QUICK_CONTACT } from "@/constants/siteData";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 const StatsBar = memo(() => {
   const ref = useRef(null);
   useInView(ref, { once: true, margin: "-50px" });
+  const { statsMetrics } = useSiteContent();
 
   return (
     <section
@@ -27,7 +28,7 @@ const StatsBar = memo(() => {
     >
       <div className="section-wrap !py-0">
         <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
-          {STATS_METRICS.map((item) => (
+          {statsMetrics.map((item) => (
             <a
               key={item.id}
               href={item.link}
@@ -101,6 +102,8 @@ const WHAT_I_PROVIDE_POINTERS = [
 ];
 
 const AboutSection = () => {
+  const { profile } = useSiteContent();
+
   return (
     <>
       <StatsBar />
@@ -140,21 +143,24 @@ const AboutSection = () => {
                 </p>
 
                 <div className="space-y-3 pt-1">
-                  {WHO_I_AM_POINTERS.map(({ icon: Icon, label, text }) => (
-                    <div key={label} className="flex items-start gap-3">
+                  {WHO_I_AM_POINTERS.map((pointer) => {
+                    const Icon = pointer.icon;
+                    return (
+                    <div key={pointer.label} className="flex items-start gap-3">
                       <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-black/[0.08] bg-slate-50 text-emerald-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-emerald-400">
                         <Icon size={16} strokeWidth={1.5} />
                       </span>
                       <div className="text-sm leading-relaxed">
                         <span className="font-medium text-slate-900 dark:text-[#eef0f5]">
-                          {label}:{" "}
+                          {pointer.label}:{" "}
                         </span>
                         <span className="text-slate-600 dark:text-[#a3a9b8]">
-                          {text}
+                          {pointer.text}
                         </span>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -194,21 +200,24 @@ const AboutSection = () => {
                 </p>
 
                 <div className="space-y-3 pt-1">
-                  {WHAT_I_PROVIDE_POINTERS.map(({ icon: Icon, label, text }) => (
-                    <div key={label} className="flex items-start gap-3">
+                  {WHAT_I_PROVIDE_POINTERS.map((pointer) => {
+                    const Icon = pointer.icon;
+                    return (
+                    <div key={pointer.label} className="flex items-start gap-3">
                       <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-black/[0.08] bg-slate-50 text-emerald-700 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-emerald-400">
                         <Icon size={16} strokeWidth={1.5} />
                       </span>
                       <div className="text-sm leading-relaxed">
                         <span className="font-medium text-slate-900 dark:text-[#eef0f5]">
-                          {label}:{" "}
+                          {pointer.label}:{" "}
                         </span>
                         <span className="text-slate-600 dark:text-[#a3a9b8]">
-                          {text}
+                          {pointer.text}
                         </span>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -237,7 +246,7 @@ const AboutSection = () => {
               <ArrowRight size={16} strokeWidth={1.5} />
             </Link>
             <a
-              href={QUICK_CONTACT.resume}
+              href={profile?.resumeFullStack || "/images/resume/WebDev_Resume.pdf"}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-11 items-center gap-2 rounded-lg border border-black/[0.10] bg-white px-5 text-sm font-medium text-slate-800 transition-colors duration-150 hover:border-slate-300 hover:bg-slate-50 dark:border-white/[0.10] dark:bg-[#11141c] dark:text-[#eef0f5] dark:hover:border-white/[0.18] dark:hover:bg-[#1a1e28]"

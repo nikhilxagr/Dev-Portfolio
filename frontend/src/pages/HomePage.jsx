@@ -34,11 +34,11 @@ const staticFeaturedProjects = SIGNATURE_PROJECTS.filter((item) => item.featured
 
 const HomePage = () => {
   const [featuredProjects, setFeaturedProjects] = useState(staticFeaturedProjects);
-  const [loadingProjects, setLoadingProjects] = useState(false);
+  const [loadingProjects] = useState(false);
   const [projectError, setProjectError] = useState("");
   const [latestBlogs, setLatestBlogs] = useState(staticLatestBlogs);
-  const [loadingLatestBlog, setLoadingLatestBlog] = useState(false);
-  const [latestBlogError, setLatestBlogError] = useState("");
+  const [loadingLatestBlog] = useState(false);
+  const [latestBlogError] = useState("");
   const [projectFilter, setProjectFilter] = useState("All");
 
 
@@ -80,13 +80,20 @@ const HomePage = () => {
             sortBlogsByDate(Array.from(mergedMap.values())).slice(0, 3),
           );
         }
-      } catch (error) {
+      } catch {
         setLatestBlogs(staticLatestBlogs);
       }
     };
 
     loadFeatured().catch(() => undefined);
     loadLatestBlog().catch(() => undefined);
+
+    const handleCmsSync = () => {
+      loadFeatured().catch(() => undefined);
+      loadLatestBlog().catch(() => undefined);
+    };
+    window.addEventListener("portfolio:cms-updated", handleCmsSync);
+    return () => window.removeEventListener("portfolio:cms-updated", handleCmsSync);
   }, []);
 
   // Memoize derived data to prevent cascading child re-renders

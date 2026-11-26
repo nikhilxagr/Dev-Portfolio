@@ -21,6 +21,7 @@ import SeoHead from "@/components/seo/SeoHead";
 import FadeInUp from "@/components/animations/FadeInUp";
 import { createBreadcrumbSchema, createPersonSchema } from "@/utils/seo";
 import { QUICK_CONTACT, SITE_PROFILE } from "@/constants/siteData";
+import { useSiteContent } from "@/context/SiteContentContext";
 import {
   GitHubStreakCard,
   LeetCodeStatsCard,
@@ -103,12 +104,15 @@ const focusAreas = [
 ];
 
 const AboutPage = () => {
+  const { profile, about, contact } = useSiteContent();
+  const activeProfileImage = profile?.profileImage || SITE_PROFILE.profileImage;
+  const activeResumeUrl = profile?.resumeFullStack || QUICK_CONTACT.resume;
   const githubUsername =
-    QUICK_CONTACT.github.split("/").filter(Boolean).pop() || "nikhilxagr";
+    (contact?.github || QUICK_CONTACT.github).split("/").filter(Boolean).pop() || "nikhilxagr";
   const leetcodeUsername =
-    QUICK_CONTACT.leetcode.split("/").filter(Boolean).pop() || "nikhilxagr";
+    (contact?.leetcode || QUICK_CONTACT.leetcode).split("/").filter(Boolean).pop() || "nikhilxagr";
   const tryHackMeUsername =
-    QUICK_CONTACT.tryhackme.split("/").filter(Boolean).pop() || "nikhilxagr";
+    (contact?.tryhackme || QUICK_CONTACT.tryhackme).split("/").filter(Boolean).pop() || "nikhilxagr";
 
   return (
     <>
@@ -144,7 +148,7 @@ const AboutPage = () => {
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
               <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/[0.08] px-4 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-400">
-                <Code2 size={14} strokeWidth={1.5} /> Engineering Identity &amp; Background
+                <Code2 size={14} strokeWidth={1.5} /> {about?.heroBadge || "Engineering Identity & Background"}
               </span>
             </MotionDiv>
 
@@ -154,8 +158,8 @@ const AboutPage = () => {
               transition={{ duration: 0.4, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
               className="font-display text-3xl font-semibold tracking-[-0.02em] leading-[1.08] text-slate-900 sm:text-4xl lg:text-5xl dark:text-[#eef0f5]"
             >
-              About &amp;{" "}
-              <span className="text-emerald-600 dark:text-emerald-400">Background</span>
+              {about?.heroHeadline || "About &"}{" "}
+              <span className="text-emerald-600 dark:text-emerald-400">{about?.heroAccent || "Background"}</span>
             </MotionH1>
 
             <MotionP
@@ -164,7 +168,7 @@ const AboutPage = () => {
               transition={{ duration: 0.4, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
               className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base dark:text-[#a3a9b8]"
             >
-              Third-year BCA student at Babu Banarasi Das University, Lucknow and Full-Stack Developer focused on MERN architectures, real-time messaging, and application security.
+              {about?.heroBio || "Third-year BCA student at Babu Banarasi Das University, Lucknow and Full-Stack Developer focused on MERN architectures, real-time messaging, and application security."}
             </MotionP>
 
             <MotionDiv
@@ -173,7 +177,7 @@ const AboutPage = () => {
               transition={{ duration: 0.4, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
               className="mt-7 flex flex-wrap items-center justify-center gap-3"
             >
-              <Button href={QUICK_CONTACT.resume} target="_blank" rel="noopener noreferrer" className="min-w-[170px]">
+              <Button href={activeResumeUrl} target="_blank" rel="noopener noreferrer" className="min-w-[170px]">
                 <Download size={16} strokeWidth={1.5} /> View Resume
               </Button>
               <Button to="/projects" variant="secondary" className="min-w-[170px]">
@@ -195,10 +199,10 @@ const AboutPage = () => {
                     Engineering Profile
                   </p>
                   <h2 className="font-display text-3xl font-semibold tracking-[-0.02em] leading-[1.1] text-slate-900 sm:text-4xl dark:text-[#eef0f5]">
-                    Nikhil Agrahari
+                    {profile?.fullName || "Nikhil Agrahari"}
                   </h2>
                   <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
-                    Full-Stack Developer &amp; Security Researcher
+                    {profile?.roleTitle || "Full-Stack Developer & Security Researcher"}
                   </p>
 
                   <p className="text-sm leading-relaxed text-slate-700 sm:text-base dark:text-[#d1d5df]">
@@ -251,7 +255,7 @@ const AboutPage = () => {
                 >
                   <div className="overflow-hidden rounded-xl border border-black/[0.08] bg-slate-900 dark:border-white/[0.08]">
                     <img
-                      src={SITE_PROFILE.profileImage}
+                      src={activeProfileImage}
                       alt={SITE_PROFILE.profileImageAlt}
                       className="h-60 w-full object-cover object-top sm:h-72"
                       width={380}
@@ -462,7 +466,7 @@ const AboutPage = () => {
             <section aria-labelledby="workflow-title">
               <div className="mb-8 border-b border-black/[0.08] pb-5 dark:border-white/[0.08]">
                 <p className="font-mono text-xs font-medium text-emerald-700 dark:text-emerald-400">
-                  Methodology &amp; Workflow
+                  SDLC Engineering Lifecycle
                 </p>
                 <h2
                   id="workflow-title"
@@ -471,7 +475,7 @@ const AboutPage = () => {
                   How I <span className="text-emerald-600 dark:text-emerald-400">Work</span>
                 </h2>
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8]">
-                  A structured progression from scoping problems to hardened production deployment.
+                  A 6-stage Software Development Life Cycle from planning and system design to secure deployment and ongoing maintenance.
                 </p>
               </div>
 

@@ -44,32 +44,47 @@ const BlogPage = () => {
   }, []);
 
   useEffect(() => {
-    getBlogs()
-      .then((response) => {
-        const apiBlogs = response.data || [];
-        if (apiBlogs.length > 0) {
-          const mergedMap = new Map();
-          BLOG_LINKS.forEach((staticBlog) => {
-            mergedMap.set(staticBlog.slug, staticBlog);
-          });
-          apiBlogs.forEach((apiBlog) => {
-            const staticBlog = BLOG_LINKS.find(
-              (item) => item.slug === apiBlog.slug,
+    const syncBlogs = () => {
+      getBlogs({ includeDrafts: "true" })
+        .then((response) => {
+          const apiBlogs = response.data || [];
+          if (apiBlogs.length > 0) {
+            const draftedSlugs = new Set(
+              apiBlogs
+                .filter((b) => b.status === "draft")
+                .map((b) => b.slug),
             );
-            const merged = mergeStaticAndApiContent(staticBlog, apiBlog);
-            mergedMap.set(merged.slug || apiBlog.slug || apiBlog._id, merged);
-          });
+            const mergedMap = new Map();
+            BLOG_LINKS.forEach((staticBlog) => {
+              if (!draftedSlugs.has(staticBlog.slug)) {
+                mergedMap.set(staticBlog.slug, staticBlog);
+              }
+            });
+            apiBlogs
+              .filter((b) => b.status !== "draft")
+              .forEach((apiBlog) => {
+                const staticBlog = BLOG_LINKS.find(
+                  (item) => item.slug === apiBlog.slug,
+                );
+                const merged = mergeStaticAndApiContent(staticBlog, apiBlog);
+                mergedMap.set(merged.slug || apiBlog.slug || apiBlog._id, merged);
+              });
 
-          const combined = Array.from(mergedMap.values());
-          combined.sort((a, b) => {
-            const timeA = new Date(a.publishedAt || a.createdAt || 0).getTime();
-            const timeB = new Date(b.publishedAt || b.createdAt || 0).getTime();
-            return timeB - timeA;
-          });
-          setBlogs(combined);
-        }
-      })
-      .catch(() => undefined);
+            const combined = Array.from(mergedMap.values());
+            combined.sort((a, b) => {
+              const timeA = new Date(a.publishedAt || a.createdAt || 0).getTime();
+              const timeB = new Date(b.publishedAt || b.createdAt || 0).getTime();
+              return timeB - timeA;
+            });
+            setBlogs(combined);
+          }
+        })
+        .catch(() => undefined);
+    };
+
+    syncBlogs();
+    window.addEventListener("portfolio:cms-updated", syncBlogs);
+    return () => window.removeEventListener("portfolio:cms-updated", syncBlogs);
   }, []);
 
   // Filtered blogs matching search & selected category

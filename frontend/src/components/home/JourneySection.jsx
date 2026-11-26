@@ -1,7 +1,8 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import FadeInUp from "@/components/animations/FadeInUp";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 const featuredHomeJourney = [
   {
@@ -40,6 +41,34 @@ const featuredHomeJourney = [
 ];
 
 const JourneySection = () => {
+  const { journeyItems } = useSiteContent();
+
+  const displayedJourney = useMemo(() => {
+    if (!Array.isArray(journeyItems) || journeyItems.length === 0) {
+      return featuredHomeJourney;
+    }
+
+    const mapped = [...journeyItems]
+      .filter((item) => item.status !== "draft")
+      .sort((a, b) => {
+        if ((b.year || 0) !== (a.year || 0)) return (b.year || 0) - (a.year || 0);
+        return String(b.duration || "").localeCompare(String(a.duration || ""));
+      })
+      .slice(0, 3)
+      .map((item) => ({
+        id: item.entryId || item.id,
+        tag: item.tag || item.category || "Milestone",
+        date: item.duration || String(item.year || ""),
+        title: item.title,
+        subOrg: item.organization || "",
+        description: item.description,
+        imageUrl: item.imageUrl,
+        skills: (item.details?.skills || []).slice(0, 3),
+      }));
+
+    return mapped.length > 0 ? mapped : featuredHomeJourney;
+  }, [journeyItems]);
+
   return (
     <section className="section-wrap section-divider">
       <FadeInUp>
@@ -66,7 +95,7 @@ const JourneySection = () => {
       </FadeInUp>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {featuredHomeJourney.map((item, index) => (
+        {displayedJourney.map((item, index) => (
           <FadeInUp key={item.id} delay={index * 0.06}>
             <a
               href={`/journey?selected=${item.id}`}

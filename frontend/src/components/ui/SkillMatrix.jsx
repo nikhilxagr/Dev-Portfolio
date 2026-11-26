@@ -1,10 +1,16 @@
 import { SKILL_GROUPS } from "@/constants/siteData";
+import { useSiteContent } from "@/context/SiteContentContext";
 import SkillLogoBadge from "@/components/ui/SkillLogoBadge";
 
 const SkillMatrix = () => {
+  const { skills } = useSiteContent();
+  const skillGroups = Array.isArray(skills?.skillGroups) && skills.skillGroups.length > 0
+    ? skills.skillGroups
+    : SKILL_GROUPS;
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {SKILL_GROUPS.map((group) => (
+      {skillGroups.map((group) => (
         <article
           key={group.title}
           className="flex flex-col justify-between rounded-xl border border-black/[0.08] bg-white p-5 transition-colors duration-150 hover:border-slate-300 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-white/[0.16]"

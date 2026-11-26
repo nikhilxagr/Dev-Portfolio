@@ -27,6 +27,7 @@ import {
   SITE_PROFILE,
   SOCIAL_LINKS,
 } from "@/constants/siteData";
+import { useSiteContent } from "@/context/SiteContentContext";
 import { SERVICE_OFFERINGS } from "@/data/servicesData";
 
 const MotionDiv = motion.div;
@@ -42,6 +43,12 @@ const initialForm = {
 };
 
 const ContactPage = () => {
+  const { contact } = useSiteContent();
+  const activeEmail = contact?.email || QUICK_CONTACT.email;
+  const activePhone = contact?.phone || QUICK_CONTACT.phone;
+  const activeWhatsapp = contact?.whatsapp || QUICK_CONTACT.whatsapp;
+  const activeLocation = contact?.location || SITE_PROFILE.location;
+  const activeSla = contact?.responseSla || "Within 12-24h";
   const [formData, setFormData] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
@@ -186,15 +193,15 @@ const ContactPage = () => {
               className="mt-7 flex flex-wrap items-center justify-center gap-3"
             >
               <a
-                href={`mailto:${QUICK_CONTACT.email}`}
+                href={`mailto:${activeEmail}`}
                 className="inline-flex h-9 items-center gap-2 rounded-lg border border-black/[0.08] bg-white px-4 text-xs font-medium text-slate-800 hover:border-slate-300 hover:text-slate-950 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#d1d5df] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5] transition-colors duration-150"
               >
                 <Mail size={15} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" />
                 Direct Email
               </a>
-              {QUICK_CONTACT.whatsapp ? (
+              {activeWhatsapp ? (
                 <a
-                  href={QUICK_CONTACT.whatsapp}
+                  href={activeWhatsapp}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex h-9 items-center gap-2 rounded-lg border border-black/[0.08] bg-white px-4 text-xs font-medium text-slate-800 hover:border-slate-300 hover:text-slate-950 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#d1d5df] dark:hover:border-white/[0.16] dark:hover:text-[#eef0f5] transition-colors duration-150"
@@ -220,9 +227,9 @@ const ContactPage = () => {
             >
               <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4 md:divide-x md:divide-black/[0.08] dark:md:divide-white/[0.08]">
                 {[
-                  { label: "Response SLA", value: "Within 12-24h", color: "text-emerald-600 dark:text-emerald-400" },
+                  { label: "Response SLA", value: activeSla, color: "text-emerald-600 dark:text-emerald-400" },
                   { label: "Direct Channels", value: "Email & Phone", color: "text-slate-900 dark:text-[#eef0f5]" },
-                  { label: "Work Location", value: "Lucknow / Remote", color: "text-slate-900 dark:text-[#eef0f5]" },
+                  { label: "Work Location", value: activeLocation.split(",")[0] || "Lucknow / Remote", color: "text-slate-900 dark:text-[#eef0f5]" },
                   { label: "Availability", value: "Open for Work", color: "text-emerald-600 dark:text-emerald-400" },
                 ].map(({ label, value, color }, i) => (
                   <div key={label} className={`flex flex-col items-center justify-center text-center ${i > 0 ? "md:pl-4" : ""}`}>
@@ -462,7 +469,7 @@ const ContactPage = () => {
                     </span>
                     <button
                       type="button"
-                      onClick={() => handleCopy(QUICK_CONTACT.email, "email")}
+                      onClick={() => handleCopy(activeEmail, "email")}
                       className="text-xs font-medium text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1"
                       title="Copy email to clipboard"
                     >
@@ -478,10 +485,10 @@ const ContactPage = () => {
                     </button>
                   </div>
                   <a
-                    href={`mailto:${QUICK_CONTACT.email}`}
+                    href={`mailto:${activeEmail}`}
                     className="text-sm font-medium text-slate-900 dark:text-[#eef0f5] hover:text-emerald-600 dark:hover:text-emerald-400 truncate block"
                   >
-                    {QUICK_CONTACT.email}
+                    {activeEmail}
                   </a>
                 </div>
 
@@ -491,9 +498,9 @@ const ContactPage = () => {
                     <span className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
                       <PhoneCall size={14} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" /> Phone &amp; WhatsApp
                     </span>
-                    {QUICK_CONTACT.whatsapp ? (
+                    {activeWhatsapp ? (
                       <a
-                        href={QUICK_CONTACT.whatsapp}
+                        href={activeWhatsapp}
                         target="_blank"
                         rel="noreferrer"
                         className="text-xs font-medium text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1"
@@ -503,10 +510,10 @@ const ContactPage = () => {
                     ) : null}
                   </div>
                   <a
-                    href={`tel:${QUICK_CONTACT.phone.replace(/\s+/g, "")}`}
+                    href={`tel:${activePhone.replace(/\s+/g, "")}`}
                     className="text-sm font-medium text-slate-900 dark:text-[#eef0f5] hover:text-emerald-600 dark:hover:text-emerald-400 block tabular-nums"
                   >
-                    {QUICK_CONTACT.phone}
+                    {activePhone}
                   </a>
                 </div>
 
@@ -516,7 +523,7 @@ const ContactPage = () => {
                     <MapPin size={14} strokeWidth={1.5} className="text-emerald-600 dark:text-emerald-400" /> Location &amp; Timezone
                   </span>
                   <p className="text-sm font-medium text-slate-900 dark:text-[#eef0f5]">
-                    {SITE_PROFILE.location} <span className="text-xs font-normal text-slate-500 dark:text-[#7a8296]">· IST (UTC+5:30)</span>
+                    {activeLocation} <span className="text-xs font-normal text-slate-500 dark:text-[#7a8296]">· IST (UTC+5:30)</span>
                   </p>
                 </div>
               </div>

@@ -6,6 +6,7 @@ import './index.css'
 import App from './App.jsx'
 import { ThemeProvider } from '@/context/ThemeContext'
 import { UserAuthProvider } from '@/context/UserAuthContext'
+import { SiteContentProvider } from '@/context/SiteContentContext'
 
 if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual';
@@ -14,13 +15,15 @@ if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-      <UserAuthProvider>
-        <HelmetProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </HelmetProvider>
-      </UserAuthProvider>
+      <SiteContentProvider>
+        <UserAuthProvider>
+          <HelmetProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </HelmetProvider>
+        </UserAuthProvider>
+      </SiteContentProvider>
     </ThemeProvider>
   </StrictMode>,
 )

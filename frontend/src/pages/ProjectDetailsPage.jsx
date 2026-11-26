@@ -169,6 +169,9 @@ const ProjectDetailsPage = () => {
     setLoading(!staticProject);
     loadProject(false).catch(() => undefined);
     window.scrollTo({ top: 0, behavior: "smooth" });
+    const handleCmsSync = () => loadProject(false).catch(() => undefined);
+    window.addEventListener("portfolio:cms-updated", handleCmsSync);
+    return () => window.removeEventListener("portfolio:cms-updated", handleCmsSync);
   }, [loadProject, staticProject]);
 
   const canonicalPath = `/projects/${project?.slug || slug || ""}`;

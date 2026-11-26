@@ -97,22 +97,25 @@ const ProjectsPage = () => {
   }, []);
 
   useEffect(() => {
-    getProjects()
-      .then((response) => {
-        if (response.data && response.data.length > 0) {
-          const mergedMap = new Map();
-          SIGNATURE_PROJECTS.forEach((item) => mergedMap.set(item.slug, item));
-          response.data.forEach((apiProj) => {
-            const staticProj = SIGNATURE_PROJECTS.find(
-              (item) => item.slug === apiProj.slug,
-            );
-            const merged = mergeStaticAndApiContent(staticProj, apiProj);
-            mergedMap.set(merged.slug || apiProj.slug || apiProj._id, merged);
-          });
-          setProjects(Array.from(mergedMap.values()));
-        }
-      })
-      .catch(() => undefined);
+    const syncProjects = () => {
+      getProjects()
+        .then((response) => {
+          if (response?.success && Array.isArray(response.data)) {
+            const mergedList = response.data.map((apiProj) => {
+              const staticProj = SIGNATURE_PROJECTS.find(
+                (item) => item.slug === apiProj.slug,
+              );
+              return mergeStaticAndApiContent(staticProj, apiProj);
+            });
+            setProjects(mergedList);
+          }
+        })
+        .catch(() => undefined);
+    };
+
+    syncProjects();
+    window.addEventListener("portfolio:cms-updated", syncProjects);
+    return () => window.removeEventListener("portfolio:cms-updated", syncProjects);
   }, []);
 
   const rawDisplayProjects = useMemo(() => {

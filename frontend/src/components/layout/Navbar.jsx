@@ -36,7 +36,9 @@ import {
 import { useUserAuth } from "@/context/UserAuthContext";
 import { NAV_LINKS, QUICK_CONTACT } from "@/constants/siteData";
 import { useTheme } from "@/context/ThemeContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 import UserAvatar from "@/components/ui/UserAvatar";
+import { AskGlyph } from "@/components/ai/AIFloatingButton";
 import { prefetchRoute } from "@/utils/prefetchRoute";
 
 const MotionDiv = motion.div;
@@ -82,6 +84,7 @@ const Navbar = () => {
     }
   });
   const { isDark, toggleTheme } = useTheme();
+  const { profile } = useSiteContent();
   const { user, logout, openSignInModal, openProfileModal } = useUserAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
@@ -135,7 +138,8 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    const nextOffset = showOpportunityBanner
+    const bannerVisible = showOpportunityBanner && profile?.bannerEnabled !== false;
+    const nextOffset = bannerVisible
       ? NAV_OFFSET_REM + OPPORTUNITY_BANNER_HEIGHT_REM
       : NAV_OFFSET_REM;
 
@@ -150,7 +154,7 @@ const Navbar = () => {
         `${NAV_OFFSET_REM}rem`,
       );
     };
-  }, [showOpportunityBanner]);
+  }, [showOpportunityBanner, profile?.bannerEnabled]);
 
   useEffect(() => {
     if (!open) {
@@ -192,7 +196,7 @@ const Navbar = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      {showOpportunityBanner ? (
+      {showOpportunityBanner && profile?.bannerEnabled !== false ? (
         <div
           className={clsx(
             "opportunity-banner-shell relative border-b",
@@ -205,10 +209,10 @@ const Navbar = () => {
             <div className="flex min-w-0 items-center gap-2 text-xs">
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-600 dark:bg-emerald-400" />
               <span className="truncate font-medium text-slate-800 dark:text-[#eef0f5]">
-                Open to opportunities
+                {profile?.bannerTitle || "Open to opportunities"}
               </span>
               <span className="hidden truncate text-slate-500 dark:text-[#7a8296] sm:inline">
-                Internships, freelance and collaborations
+                {profile?.bannerSubtitle || "Internships, freelance and collaborations"}
               </span>
             </div>
 
@@ -217,7 +221,7 @@ const Navbar = () => {
                 to="/contact"
                 className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-emerald-700 transition-colors duration-150 hover:bg-emerald-500/10 dark:text-emerald-400"
               >
-                Let&apos;s talk
+                {profile?.bannerCta || "Let's talk"}
                 <ArrowRight size={14} strokeWidth={1.5} />
               </Link>
               <button
@@ -252,21 +256,34 @@ const Navbar = () => {
             {open ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
           </button>
 
-          {/* Logo */}
+          {/* Center Slot: Mobile shows Ask Me button, Desktop shows brand name */}
           <div className="absolute left-1/2 -translate-x-1/2 xl:static xl:mr-6 xl:translate-x-0">
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                window.dispatchEvent(new CustomEvent("nikhil-ai:open"));
+              }}
+              aria-label="Open Nikhil AI assistant"
+              className="group inline-flex h-9 items-center gap-2 rounded-lg border border-black/[0.10] bg-white px-3.5 text-sm font-medium text-slate-900 shadow-xs transition-colors duration-150 hover:border-slate-300 hover:bg-slate-50 xl:hidden dark:border-white/[0.12] dark:bg-[#11141c] dark:text-[#eef0f5] dark:shadow-none dark:hover:border-white/[0.24] dark:hover:bg-[#181c26]"
+            >
+              <AskGlyph />
+              <span>Ask Me</span>
+            </button>
+
             <Link
               to="/"
               onClick={() => {
                 setOpen(false);
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }}
-              className="flex items-center shrink-0"
+              className="hidden items-center shrink-0 xl:flex"
             >
               <span
                 id="navbar-logo-text"
                 className="font-display text-lg font-medium tracking-[-0.01em] text-slate-900 select-none dark:text-[#eef0f5]"
               >
-                Nikhil
+                {profile?.brandName || "Nikhil"}
               </span>
             </Link>
           </div>
@@ -568,7 +585,7 @@ const Navbar = () => {
             </button>
 
             <a
-              href={QUICK_CONTACT.resumeFullStack}
+              href={profile?.resumeFullStack || QUICK_CONTACT.resumeFullStack}
               target="_blank"
               rel="noreferrer"
               className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition-colors duration-150 hover:bg-emerald-700 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]"

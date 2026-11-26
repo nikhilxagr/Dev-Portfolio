@@ -23,6 +23,7 @@ import {
 import Button from "@/components/ui/Button";
 import SeoHead from "@/components/seo/SeoHead";
 import PaymentTrustPanel from "@/components/ui/PaymentTrustPanel";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 const MotionDiv = motion.div;
 const MotionH1 = motion.h1;
@@ -148,6 +149,11 @@ const FAQS = [
 const ServicesPage = () => {
   const navigate = useNavigate();
   const { user, isLoggedIn } = useUserAuth();
+  const { services: servicesContent } = useSiteContent();
+  const activeOfferings =
+    Array.isArray(servicesContent?.offerings) && servicesContent.offerings.length > 0
+      ? servicesContent.offerings
+      : SERVICE_OFFERINGS;
   const [activeServiceSlug, setActiveServiceSlug] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
@@ -272,7 +278,7 @@ const ServicesPage = () => {
 
   const categories = ["All", "Frontend", "Backend", "Full Stack", "Security"];
 
-  const filteredOfferings = SERVICE_OFFERINGS.filter((service) =>
+  const filteredOfferings = activeOfferings.filter((service) =>
     selectedCategory === "All" ? true : service.category === selectedCategory
   );
 
@@ -309,9 +315,9 @@ const ServicesPage = () => {
               transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="mt-2 font-display text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.08] tracking-tight text-slate-900 dark:text-[#eef0f5]"
             >
-              Services &amp;{" "}
+              {servicesContent?.heroHeadline || "Services &"}{" "}
               <span className="text-emerald-600 dark:text-emerald-400">
-                Packages
+                {servicesContent?.heroAccent || "Packages"}
               </span>
             </MotionH1>
 
@@ -322,7 +328,7 @@ const ServicesPage = () => {
               transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
               className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8] sm:text-base"
             >
-              Transparent deliverables, clear turnaround times, and secure checkout, built for founders, teams, and individuals who want reliable technical execution.
+              {servicesContent?.heroBio || "Transparent deliverables, clear turnaround times, and secure checkout, built for founders, teams, and individuals who want reliable technical execution."}
             </MotionP>
 
             {/* Quick Action CTA Buttons */}
@@ -408,8 +414,8 @@ const ServicesPage = () => {
               {categories.map((cat) => {
                 const isSelected = selectedCategory === cat;
                 const count = cat === "All"
-                  ? SERVICE_OFFERINGS.length
-                  : SERVICE_OFFERINGS.filter((s) => s.category === cat).length;
+                  ? activeOfferings.length
+                  : activeOfferings.filter((s) => s.category === cat).length;
 
                 return (
                   <button
