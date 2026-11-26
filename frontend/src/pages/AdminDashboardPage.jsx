@@ -2,46 +2,72 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
-  FolderKanban,
-  Mail,
-  CreditCard,
-  BookOpen,
-  ShieldCheck,
-  Menu,
-  X,
-  LogOut,
-  RefreshCcw,
-  Plus,
-  Edit3,
-  ExternalLink,
-  Send,
   AlertCircle,
-  Search,
+  BookOpen,
+  Compass,
+  CreditCard,
+  ExternalLink,
+  FolderKanban,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  Menu,
+  Moon,
+  RefreshCcw,
+  ShieldCheck,
+  SlidersHorizontal,
+  Sun,
+  Users,
+  X,
 } from "lucide-react";
 import LoadingState from "@/components/ui/LoadingState";
 import ErrorState from "@/components/ui/ErrorState";
-import EmptyState from "@/components/ui/EmptyState";
-import { PROJECT_CATEGORIES } from "@/constants/siteData";
+import AdminOverviewTab from "@/components/admin/AdminOverviewTab";
+import AdminSiteContentTab from "@/components/admin/AdminSiteContentTab";
+import AdminProjectsTab from "@/components/admin/AdminProjectsTab";
+import AdminBlogsTab from "@/components/admin/AdminBlogsTab";
+import AdminJourneyTab from "@/components/admin/AdminJourneyTab";
+import AdminUsersTab from "@/components/admin/AdminUsersTab";
+import AdminMessagesTab from "@/components/admin/AdminMessagesTab";
+import AdminPaymentsTab from "@/components/admin/AdminPaymentsTab";
+import { useTheme } from "@/context/ThemeContext";
+import {
+  broadcastSiteContentSync,
+  useSiteContent,
+} from "@/context/SiteContentContext";
+import { SIGNATURE_PROJECTS } from "@/data/projectsData";
+import { BLOG_POSTS } from "@/data/blogsData";
+import { journeyData as STATIC_JOURNEY_DATA } from "@/data/journeyData";
+import { mergeStaticAndApiContent } from "@/services/contentMerge";
 import { getErrorMessage } from "@/services/api";
-import { getProjects } from "@/services/projects.service";
-import { getBlogs } from "@/services/blogs.service";
 import {
   createAdminBlog,
+  createAdminJourney,
   createAdminProject,
   deleteAdminBlog,
+  deleteAdminContact,
+  deleteAdminJourney,
   deleteAdminProject,
+  deleteAdminUser,
+  getAdminBlogs,
   getAdminContacts,
+  getAdminJourney,
   getAdminOverview,
   getAdminPaymentsHistory,
+  getAdminProjects,
   getAdminSystemStatus,
+  getAdminUsers,
   markAdminContactAsRead,
   updateAdminBlog,
+  updateAdminJourney,
   updateAdminProject,
+  updateAdminSiteContent,
+  updateAdminUser,
 } from "@/services/admin.service";
 import { getStoredAdminUser, logoutAdmin } from "@/services/auth.service";
 
 const RANGE_OPTIONS = [7, 30, 90];
+
 const PAYMENT_STATUS_OPTIONS = [
   { value: "all", label: "All Statuses" },
   { value: "paid", label: "Paid" },
@@ -49,10 +75,12 @@ const PAYMENT_STATUS_OPTIONS = [
   { value: "failed", label: "Failed" },
   { value: "refunded", label: "Refunded" },
 ];
+
 const PAYMENT_SERVICE_OPTIONS = [
   { value: "all", label: "All Services" },
   { value: "support", label: "Support Contributions" },
 ];
+
 const DEFAULT_STATUS_COUNTS = {
   created: 0,
   paid: 0,
@@ -62,19 +90,31 @@ const DEFAULT_STATUS_COUNTS = {
 
 const createInitialProjectForm = () => ({
   title: "",
+  tagline: "",
   description: "",
-  category: PROJECT_CATEGORIES[1] || "Web Dev",
+  overview: "",
+  category: "Full Stack",
+  projectType: "Solo",
   techStack: "",
+  role: "",
+  outcome: "",
   githubUrl: "",
   liveDemoUrl: "",
+  apkUrl: "",
   imageUrl: "",
   problemStatement: "",
   solutionSummary: "",
   featured: false,
+  status: "published",
 });
 
 const createInitialBlogForm = () => ({
   title: "",
+  subtitle: "",
+  category: "System Design",
+  readTime: "5 min read",
+  url: "",
+  status: "published",
   excerpt: "",
   content: "",
   tags: "",
@@ -82,146 +122,230 @@ const createInitialBlogForm = () => ({
 });
 
 const parseCommaList = (value) =>
-  value
+  String(value || "")
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
 
 const formatDate = (value) => {
-  if (!value) return "-";
+  if (!value) return "—";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
-  return date.toLocaleString();
+  if (Number.isNaN(date.getTime())) return "—";
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 };
 
-const formatCount = (value) => {
-  const parsed = Number(value) || 0;
-  return new Intl.NumberFormat("en-IN").format(parsed);
-};
+const formatCount = (value) =>
+  new Intl.NumberFormat("en-IN").format(Number(value) || 0);
 
-const formatCurrency = (value) => {
-  const parsed = Number(value) || 0;
-  return new Intl.NumberFormat("en-IN", {
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
-  }).format(parsed);
-};
+  }).format(Number(value) || 0);
 
 const formatPercent = (value) => {
   const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return "-";
+  if (!Number.isFinite(parsed)) return "—";
   return `${Math.round(parsed)}%`;
 };
 
 const formatUptime = (value) => {
   const seconds = Number(value);
-  if (!Number.isFinite(seconds) || seconds <= 0) return "-";
+  if (!Number.isFinite(seconds) || seconds <= 0) return "—";
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  if (hours <= 0) return `${minutes}m`;
   return `${hours}h ${minutes}m`;
 };
 
 const formatShortId = (value) => {
-  if (!value) return "-";
-  if (value.length <= 14) return value;
-  return `${value.slice(0, 6)}...${value.slice(-4)}`;
+  if (!value) return "—";
+  const text = String(value);
+  if (text.length <= 14) return text;
+  return `${text.slice(0, 8)}...${text.slice(-4)}`;
 };
 
 const getPaymentBadgeClasses = (status) => {
-  switch (status) {
+  switch (String(status || "").toLowerCase()) {
     case "paid":
-      return "border-emerald-400/40 bg-emerald-500/15 text-emerald-300 font-bold";
+      return "border-emerald-600/25 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400";
     case "failed":
-      return "border-rose-400/40 bg-rose-500/15 text-rose-300 font-bold";
+      return "border-rose-500/25 bg-rose-50 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300";
     case "refunded":
-      return "border-amber-400/40 bg-amber-500/15 text-amber-300 font-bold";
-    case "created":
+      return "border-amber-500/25 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300";
     default:
-      return "border-slate-500/40 bg-slate-500/15 text-slate-300 font-bold";
+      return "border-black/[0.08] bg-slate-100 text-slate-700 dark:border-white/[0.1] dark:bg-[#1a1e28] dark:text-[#a3a9b8]";
   }
+};
+
+const mergeProjectList = (staticList = [], apiList = []) => {
+  const map = new Map();
+
+  staticList.forEach((item) => {
+    const key = String(item.slug || "").toLowerCase();
+    if (key) {
+      map.set(key, { ...item, status: item.status || "published" });
+    }
+  });
+
+  apiList.forEach((doc) => {
+    const key = String(doc.slug || "").toLowerCase();
+    if (!key) return;
+    const existing = map.get(key);
+    if (existing) {
+      map.set(key, mergeStaticAndApiContent(existing, doc));
+    } else {
+      map.set(key, doc);
+    }
+  });
+
+  return Array.from(map.values());
+};
+
+const mergeBlogList = (staticList = [], apiList = []) => {
+  const map = new Map();
+
+  staticList.forEach((item) => {
+    const key = String(item.slug || "").toLowerCase();
+    if (key) {
+      map.set(key, { ...item, status: item.status || "published" });
+    }
+  });
+
+  apiList.forEach((doc) => {
+    const key = String(doc.slug || "").toLowerCase();
+    if (!key) return;
+    const existing = map.get(key);
+    if (existing) {
+      map.set(key, mergeStaticAndApiContent(existing, doc));
+    } else {
+      map.set(key, doc);
+    }
+  });
+
+  return Array.from(map.values());
+};
+
+const mergeAdminJourneyList = (staticList = [], apiList = []) => {
+  const map = new Map();
+
+  staticList.forEach((item) => {
+    const key = String(item.entryId || item.id || "").toLowerCase();
+    if (key) {
+      map.set(key, { ...item, entryId: item.id, status: item.status || "published" });
+    }
+  });
+
+  apiList.forEach((doc) => {
+    const key = String(doc.entryId || doc.id || "").toLowerCase();
+    if (!key) return;
+    const existing = map.get(key) || {};
+    map.set(key, {
+      ...existing,
+      ...doc,
+      id: existing.id || doc.entryId || doc._id,
+      entryId: doc.entryId || existing.id,
+      details:
+        doc.details && Object.keys(doc.details).length > 0
+          ? { ...(existing.details || {}), ...doc.details }
+          : existing.details,
+    });
+  });
+
+  return Array.from(map.values()).sort((a, b) => {
+    if ((a.year || 0) !== (b.year || 0)) return (b.year || 0) - (a.year || 0);
+    return String(b.duration || "").localeCompare(String(a.duration || ""));
+  });
 };
 
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
-  const adminUser = useMemo(() => getStoredAdminUser(), []);
+  const adminUser = getStoredAdminUser();
+  const { isDark, toggleTheme } = useTheme();
+  const { sections, refreshSiteContent } = useSiteContent();
 
-  // UI state
-  const [activePanel, setActivePanel] = useState("overview"); // overview, projects, contacts, payments, blogs, system
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [rangeDays, setRangeDays] = useState(30);
+  const [activePanel, setActivePanel] = useState("overview");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Data states
+  const [rangeDays, setRangeDays] = useState(90);
+  const [contactStatus, setContactStatus] = useState("all");
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState("all");
+  const [paymentServiceFilter, setPaymentServiceFilter] = useState("all");
+
+  const [projectSearch, setProjectSearch] = useState("");
+  const [projectCategoryFilter, setProjectCategoryFilter] = useState("All");
+  const [showProjectFormModal, setShowProjectFormModal] = useState(false);
+  const [showBlogFormModal, setShowBlogFormModal] = useState(false);
+
   const [overview, setOverview] = useState(null);
   const [overviewLoading, setOverviewLoading] = useState(true);
   const [overviewError, setOverviewError] = useState("");
 
-  const [paymentHistory, setPaymentHistory] = useState([]);
-  const [paymentMeta, setPaymentMeta] = useState({
-    totalCount: 0,
-    statusCounts: DEFAULT_STATUS_COUNTS,
-    rangeDays: 30,
-  });
-  const [paymentStatusFilter, setPaymentStatusFilter] = useState("all");
-  const [paymentServiceFilter, setPaymentServiceFilter] = useState("all");
-  const [paymentsLoading, setPaymentsLoading] = useState(true);
-  const [paymentsError, setPaymentsError] = useState("");
-
-  const [projects, setProjects] = useState([]);
-  const [projectSearch, setProjectSearch] = useState("");
-  const [projectCategoryFilter, setProjectCategoryFilter] = useState("ALL");
-  const [blogs, setBlogs] = useState([]);
+  const [projects, setProjects] = useState(SIGNATURE_PROJECTS);
+  const [blogs, setBlogs] = useState(BLOG_POSTS);
+  const [milestones, setMilestones] = useState(STATIC_JOURNEY_DATA);
   const [contentLoading, setContentLoading] = useState(true);
-  const [contentError, setContentError] = useState("");
+
+  const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [usersError, setUsersError] = useState("");
 
   const [contacts, setContacts] = useState([]);
-  const [contactStatus, setContactStatus] = useState("all");
   const [contactsLoading, setContactsLoading] = useState(true);
   const [contactsError, setContactsError] = useState("");
+
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [paymentMeta, setPaymentMeta] = useState({
+    rangeDays: 90,
+    totalCount: 0,
+    paidRevenueInr: 0,
+    statusCounts: DEFAULT_STATUS_COUNTS,
+  });
+  const [paymentsLoading, setPaymentsLoading] = useState(true);
+  const [paymentsError, setPaymentsError] = useState("");
 
   const [systemStatus, setSystemStatus] = useState(null);
   const [systemLoading, setSystemLoading] = useState(true);
   const [systemError, setSystemError] = useState("");
 
-  const [refreshing, setRefreshing] = useState(false);
+  const [projectForm, setProjectForm] = useState(createInitialProjectForm);
+  const [editingProjectKey, setEditingProjectKey] = useState("");
+  const [blogForm, setBlogForm] = useState(createInitialBlogForm);
+  const [editingBlogKey, setEditingBlogKey] = useState("");
+  const [siteContentVersion, setSiteContentVersion] = useState(0);
+
   const [submitting, setSubmitting] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [notice, setNotice] = useState("");
   const [actionError, setActionError] = useState("");
 
-  const [projectForm, setProjectForm] = useState(createInitialProjectForm());
-  const [showProjectFormModal, setShowProjectFormModal] = useState(false);
-  const [blogForm, setBlogForm] = useState(createInitialBlogForm());
-  const [showBlogFormModal, setShowBlogFormModal] = useState(false);
-  const [editingProjectId, setEditingProjectId] = useState("");
-  const [editingBlogId, setEditingBlogId] = useState("");
-
   const handleAuthFailure = useCallback(() => {
     logoutAdmin();
-    navigate("/admin/login", {
-      replace: true,
-      state: { reason: "Session expired. Please sign in again." },
-    });
+    navigate("/admin/login", { replace: true });
   }, [navigate]);
 
   const loadOverview = useCallback(
     async ({ range = rangeDays, useLoader = true } = {}) => {
-      setOverviewError("");
       if (useLoader) setOverviewLoading(true);
+      setOverviewError("");
       try {
-        const response = await getAdminOverview({ range });
-        setOverview(response.data || null);
-      } catch (requestError) {
-        if (requestError?.response?.status === 401) {
+        const res = await getAdminOverview({ range });
+        setOverview(res.data || null);
+      } catch (err) {
+        if (err?.response?.status === 401) {
           handleAuthFailure();
           return;
         }
-        setOverviewError(getErrorMessage(requestError, "Unable to load overview."));
+        setOverviewError(getErrorMessage(err, "Unable to load admin overview."));
       } finally {
         if (useLoader) setOverviewLoading(false);
       }
     },
-    [handleAuthFailure, rangeDays]
+    [handleAuthFailure, rangeDays],
   );
 
   const loadPayments = useCallback(
@@ -231,145 +355,210 @@ const AdminDashboardPage = () => {
       service = paymentServiceFilter,
       useLoader = true,
     } = {}) => {
-      setPaymentsError("");
       if (useLoader) setPaymentsLoading(true);
+      setPaymentsError("");
       try {
-        const response = await getAdminPaymentsHistory({ range, status, service });
-        const payload = response.data || {};
-        setPaymentHistory(payload.items || []);
-        setPaymentMeta({
-          totalCount: payload.totalCount || 0,
-          statusCounts: { ...DEFAULT_STATUS_COUNTS, ...(payload.statusCounts || {}) },
-          rangeDays: payload.rangeDays || range,
+        const res = await getAdminPaymentsHistory({
+          range,
+          status: status === "all" ? undefined : status,
+          service: service === "all" ? undefined : service,
+          limit: 100,
         });
-      } catch (requestError) {
-        if (requestError?.response?.status === 401) {
+        const payload = res?.data || {};
+        const items = Array.isArray(payload)
+          ? payload
+          : Array.isArray(payload.items)
+          ? payload.items
+          : [];
+        setPaymentHistory(items);
+        setPaymentMeta(
+          res?.meta || {
+            rangeDays: payload.rangeDays || range,
+            totalCount: payload.totalCount ?? items.length,
+            paidRevenueInr: payload.paidRevenueInr || 0,
+            statusCounts: payload.statusCounts || DEFAULT_STATUS_COUNTS,
+          },
+        );
+      } catch (err) {
+        if (err?.response?.status === 401) {
           handleAuthFailure();
           return;
         }
-        setPaymentsError(getErrorMessage(requestError, "Unable to load payment history."));
+        setPaymentsError(getErrorMessage(err, "Unable to load payments."));
       } finally {
         if (useLoader) setPaymentsLoading(false);
       }
     },
-    [handleAuthFailure, paymentServiceFilter, paymentStatusFilter, rangeDays]
+    [handleAuthFailure, paymentServiceFilter, paymentStatusFilter, rangeDays],
   );
 
   const loadContent = useCallback(
     async ({ useLoader = true } = {}) => {
-      setContentError("");
       if (useLoader) setContentLoading(true);
       try {
-        const [projectResponse, blogResponse] = await Promise.all([
-          getProjects({ limit: 100 }),
-          getBlogs({ limit: 100 }),
+        const [projRes, blogRes, journeyRes] = await Promise.allSettled([
+          getAdminProjects({ limit: 100 }),
+          getAdminBlogs({ limit: 100 }),
+          getAdminJourney({ limit: 100 }),
         ]);
-        setProjects(projectResponse.data || []);
-        setBlogs(blogResponse.data || []);
-      } catch (requestError) {
-        if (requestError?.response?.status === 401) {
-          handleAuthFailure();
-          return;
+
+        if (projRes.status === "fulfilled" && Array.isArray(projRes.value?.data)) {
+          setProjects(mergeProjectList(SIGNATURE_PROJECTS, projRes.value.data));
         }
-        setContentError(getErrorMessage(requestError, "Unable to load content."));
+        if (blogRes.status === "fulfilled" && Array.isArray(blogRes.value?.data)) {
+          setBlogs(mergeBlogList(BLOG_POSTS, blogRes.value.data));
+        }
+        if (journeyRes.status === "fulfilled" && Array.isArray(journeyRes.value?.data)) {
+          setMilestones(
+            mergeAdminJourneyList(STATIC_JOURNEY_DATA, journeyRes.value.data),
+          );
+        }
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          handleAuthFailure();
+        }
       } finally {
         if (useLoader) setContentLoading(false);
       }
     },
-    [handleAuthFailure]
+    [handleAuthFailure],
+  );
+
+  const loadUsers = useCallback(
+    async ({ useLoader = true } = {}) => {
+      if (useLoader) setUsersLoading(true);
+      setUsersError("");
+      try {
+        const res = await getAdminUsers({ limit: 100 });
+        setUsers(res.data || []);
+      } catch (err) {
+        if (err?.response?.status === 401) {
+          handleAuthFailure();
+          return;
+        }
+        setUsersError(getErrorMessage(err, "Unable to load registered users."));
+      } finally {
+        if (useLoader) setUsersLoading(false);
+      }
+    },
+    [handleAuthFailure],
   );
 
   const loadContacts = useCallback(
     async ({ status = contactStatus, useLoader = true } = {}) => {
-      setContactsError("");
       if (useLoader) setContactsLoading(true);
+      setContactsError("");
       try {
-        const response = await getAdminContacts({ status, limit: 300 });
-        setContacts(response.data || []);
-      } catch (requestError) {
-        if (requestError?.response?.status === 401) {
+        const res = await getAdminContacts({ status, limit: 100 });
+        setContacts(res.data || []);
+      } catch (err) {
+        if (err?.response?.status === 401) {
           handleAuthFailure();
           return;
         }
-        setContactsError(getErrorMessage(requestError, "Unable to load messages."));
+        setContactsError(getErrorMessage(err, "Unable to load messages."));
       } finally {
         if (useLoader) setContactsLoading(false);
       }
     },
-    [contactStatus, handleAuthFailure]
+    [contactStatus, handleAuthFailure],
   );
 
   const loadSystem = useCallback(
     async ({ useLoader = true } = {}) => {
-      setSystemError("");
       if (useLoader) setSystemLoading(true);
+      setSystemError("");
       try {
-        const response = await getAdminSystemStatus();
-        setSystemStatus(response.data || null);
-      } catch (requestError) {
-        if (requestError?.response?.status === 401) {
+        const res = await getAdminSystemStatus();
+        setSystemStatus(res.data || null);
+      } catch (err) {
+        if (err?.response?.status === 401) {
           handleAuthFailure();
           return;
         }
-        setSystemError(getErrorMessage(requestError, "Unable to load system status."));
+        setSystemError(getErrorMessage(err, "Unable to load system status."));
       } finally {
         if (useLoader) setSystemLoading(false);
       }
     },
-    [handleAuthFailure]
+    [handleAuthFailure],
   );
 
   useEffect(() => {
     loadOverview({ range: rangeDays, useLoader: true }).catch(() => undefined);
-  }, [loadOverview, rangeDays]);
-
-  useEffect(() => {
-    loadPayments({ range: rangeDays, status: paymentStatusFilter, service: paymentServiceFilter, useLoader: true }).catch(() => undefined);
-  }, [loadPayments, paymentServiceFilter, paymentStatusFilter, rangeDays]);
+    loadPayments({
+      range: rangeDays,
+      status: paymentStatusFilter,
+      service: paymentServiceFilter,
+      useLoader: true,
+    }).catch(() => undefined);
+  }, [loadOverview, loadPayments, paymentServiceFilter, paymentStatusFilter, rangeDays]);
 
   useEffect(() => {
     loadContent({ useLoader: true }).catch(() => undefined);
-  }, [loadContent]);
+    loadUsers({ useLoader: true }).catch(() => undefined);
+    loadSystem({ useLoader: true }).catch(() => undefined);
+  }, [loadContent, loadSystem, loadUsers]);
 
   useEffect(() => {
     loadContacts({ status: contactStatus, useLoader: true }).catch(() => undefined);
   }, [contactStatus, loadContacts]);
 
-  useEffect(() => {
-    loadSystem({ useLoader: true }).catch(() => undefined);
-  }, [loadSystem]);
-
   const refreshAll = async () => {
     setRefreshing(true);
+    setActionError("");
     await Promise.allSettled([
       loadOverview({ range: rangeDays, useLoader: false }),
-      loadPayments({ range: rangeDays, status: paymentStatusFilter, service: paymentServiceFilter, useLoader: false }),
+      loadPayments({
+        range: rangeDays,
+        status: paymentStatusFilter,
+        service: paymentServiceFilter,
+        useLoader: false,
+      }),
       loadContent({ useLoader: false }),
+      loadUsers({ useLoader: false }),
       loadContacts({ status: contactStatus, useLoader: false }),
       loadSystem({ useLoader: false }),
+      refreshSiteContent(),
     ]);
+    setSiteContentVersion((v) => v + 1);
     setRefreshing(false);
+    setNotice("Synced live data across portfolio and database.");
   };
 
+  // --- Site Content Handlers ---
+  const handleSaveSiteSection = async (partialSections) => {
+    setSubmitting(true);
+    setActionError("");
+    setNotice("");
+    try {
+      await updateAdminSiteContent(partialSections);
+      await refreshSiteContent();
+      broadcastSiteContentSync();
+      setSiteContentVersion((v) => v + 1);
+      setNotice("Site content saved and pushed to live portfolio.");
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      setActionError(getErrorMessage(err, "Unable to update site content."));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // --- Project Handlers ---
   const resetProjectForm = () => {
     setProjectForm(createInitialProjectForm());
-    setEditingProjectId("");
+    setEditingProjectKey("");
     setShowProjectFormModal(false);
   };
 
-  const resetBlogForm = () => {
-    setBlogForm(createInitialBlogForm());
-    setEditingBlogId("");
-    setShowBlogFormModal(false);
-  };
-
   const updateProjectField = (field) => (event) => {
-    const value = field === "featured" ? event.target.checked : event.target.value;
+    const value =
+      field === "featured" ? event.target.checked : event.target.value;
     setProjectForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const updateBlogField = (field) => (event) => {
-    setBlogForm((prev) => ({ ...prev, [field]: event.target.value }));
   };
 
   const submitProject = async (event) => {
@@ -382,28 +571,37 @@ const AdminDashboardPage = () => {
       const techStack = parseCommaList(projectForm.techStack);
       if (techStack.length === 0) {
         setActionError("Tech stack requires at least one item.");
+        setSubmitting(false);
         return;
       }
 
       const payload = {
         title: projectForm.title.trim(),
+        subtitle: projectForm.tagline.trim(),
+        tagline: projectForm.tagline.trim(),
         description: projectForm.description.trim(),
+        overview: projectForm.overview.trim(),
         category: projectForm.category,
+        projectType: projectForm.projectType.trim() || "Solo",
         techStack,
+        role: projectForm.role.trim(),
+        outcome: projectForm.outcome.trim(),
         githubUrl: projectForm.githubUrl.trim(),
         liveDemoUrl: projectForm.liveDemoUrl.trim(),
+        apkUrl: projectForm.apkUrl.trim(),
         imageUrl: projectForm.imageUrl.trim(),
         problemStatement: projectForm.problemStatement.trim(),
         solutionSummary: projectForm.solutionSummary.trim(),
         featured: Boolean(projectForm.featured),
+        status: projectForm.status || "published",
       };
 
-      if (editingProjectId) {
-        await updateAdminProject(editingProjectId, payload);
-        setNotice("Project updated successfully.");
+      if (editingProjectKey) {
+        await updateAdminProject(editingProjectKey, payload);
+        setNotice("Project saved and synced to live portfolio.");
       } else {
         await createAdminProject(payload);
-        setNotice("Project created successfully.");
+        setNotice("New project created and published.");
       }
 
       resetProjectForm();
@@ -411,15 +609,81 @@ const AdminDashboardPage = () => {
         loadContent({ useLoader: false }),
         loadOverview({ range: rangeDays, useLoader: false }),
       ]);
-    } catch (requestError) {
-      if (requestError?.response?.status === 401) {
+      broadcastSiteContentSync();
+    } catch (err) {
+      if (err?.response?.status === 401) {
         handleAuthFailure();
         return;
       }
-      setActionError(getErrorMessage(requestError, "Unable to save project."));
+      setActionError(getErrorMessage(err, "Unable to save project."));
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleEditProject = (project) => {
+    setEditingProjectKey(project._id || project.slug);
+    setProjectForm({
+      title: project.title || "",
+      tagline: project.tagline || project.subtitle || "",
+      description: project.description || "",
+      overview: project.overview || "",
+      category: project.category || "Full Stack",
+      projectType: project.projectType || "Solo",
+      techStack: (project.techStack || project.tags || []).join(", "),
+      role: project.role || "",
+      outcome: project.outcome || project.result || "",
+      githubUrl: project.githubUrl || "",
+      liveDemoUrl: project.liveDemoUrl || "",
+      apkUrl: project.apkUrl || "",
+      imageUrl: project.imageUrl || "",
+      problemStatement: project.problemStatement || "",
+      solutionSummary: project.solutionSummary || "",
+      featured: Boolean(project.featured),
+      status: project.status || "published",
+    });
+    setShowProjectFormModal(true);
+    setActionError("");
+    setNotice("");
+  };
+
+  const handleDeleteProject = async (idOrSlug) => {
+    if (!idOrSlug) return;
+    if (!window.confirm("Remove or hide this project from the public portfolio?")) {
+      return;
+    }
+
+    setSubmitting(true);
+    setActionError("");
+    setNotice("");
+    try {
+      await deleteAdminProject(idOrSlug);
+      setNotice("Project removed / unpublished from portfolio.");
+      await Promise.allSettled([
+        loadContent({ useLoader: false }),
+        loadOverview({ range: rangeDays, useLoader: false }),
+      ]);
+      broadcastSiteContentSync();
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      setActionError(getErrorMessage(err, "Unable to delete project."));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // --- Blog Handlers ---
+  const resetBlogForm = () => {
+    setBlogForm(createInitialBlogForm());
+    setEditingBlogKey("");
+    setShowBlogFormModal(false);
+  };
+
+  const updateBlogField = (field) => (event) => {
+    setBlogForm((prev) => ({ ...prev, [field]: event.target.value }));
   };
 
   const submitBlog = async (event) => {
@@ -431,18 +695,23 @@ const AdminDashboardPage = () => {
     try {
       const payload = {
         title: blogForm.title.trim(),
+        subtitle: blogForm.subtitle.trim(),
+        category: blogForm.category.trim() || "System Design",
+        readTime: blogForm.readTime.trim() || "5 min read",
+        url: blogForm.url.trim(),
+        status: blogForm.status || "published",
         excerpt: blogForm.excerpt.trim(),
         content: blogForm.content.trim(),
         tags: parseCommaList(blogForm.tags),
         imageUrl: blogForm.imageUrl.trim(),
       };
 
-      if (editingBlogId) {
-        await updateAdminBlog(editingBlogId, payload);
-        setNotice("Blog updated successfully.");
+      if (editingBlogKey) {
+        await updateAdminBlog(editingBlogKey, payload);
+        setNotice("Article updated and synced.");
       } else {
         await createAdminBlog(payload);
-        setNotice("Blog created successfully.");
+        setNotice("New article created.");
       }
 
       resetBlogForm();
@@ -450,1082 +719,710 @@ const AdminDashboardPage = () => {
         loadContent({ useLoader: false }),
         loadOverview({ range: rangeDays, useLoader: false }),
       ]);
-    } catch (requestError) {
-      if (requestError?.response?.status === 401) {
+      broadcastSiteContentSync();
+    } catch (err) {
+      if (err?.response?.status === 401) {
         handleAuthFailure();
         return;
       }
-      setActionError(getErrorMessage(requestError, "Unable to save blog."));
+      setActionError(getErrorMessage(err, "Unable to save article."));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDeleteProject = async (id) => {
-    if (!window.confirm("Delete this project? This action cannot be undone.")) return;
+  const handleEditBlog = (blog) => {
+    setEditingBlogKey(blog._id || blog.slug);
+    setBlogForm({
+      title: blog.title || "",
+      subtitle: blog.subtitle || "",
+      category: blog.category || blog.source || "System Design",
+      readTime: blog.readTime || "5 min read",
+      url: blog.url || "",
+      status: blog.status || "published",
+      excerpt: blog.excerpt || "",
+      content: blog.content || "",
+      tags: (blog.tags || []).join(", "),
+      imageUrl: blog.imageUrl || "",
+    });
+    setShowBlogFormModal(true);
+    setActionError("");
+    setNotice("");
+  };
+
+  const handleDeleteBlog = async (blog) => {
+    const key = typeof blog === "string" ? blog : blog?._id || blog?.slug;
+    if (!key) return;
+    if (!window.confirm("Remove or hide this article from the blog?")) return;
+
     setSubmitting(true);
     setActionError("");
     setNotice("");
     try {
-      await deleteAdminProject(id);
-      setNotice("Project deleted successfully.");
+      await deleteAdminBlog(key, {
+        title: typeof blog === "object" ? blog.title : undefined,
+      });
+      setNotice("Article removed / unpublished.");
       await Promise.allSettled([
         loadContent({ useLoader: false }),
         loadOverview({ range: rangeDays, useLoader: false }),
       ]);
-    } catch (requestError) {
-      if (requestError?.response?.status === 401) {
+      broadcastSiteContentSync();
+    } catch (err) {
+      if (err?.response?.status === 401) {
         handleAuthFailure();
         return;
       }
-      setActionError(getErrorMessage(requestError, "Unable to delete project."));
+      setActionError(getErrorMessage(err, "Unable to delete article."));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleDeleteBlog = async (id) => {
-    if (!window.confirm("Delete this blog post? This action cannot be undone.")) return;
+  // --- Journey Handlers ---
+  const handleSaveMilestone = async (editingKey, payload) => {
     setSubmitting(true);
     setActionError("");
     setNotice("");
     try {
-      await deleteAdminBlog(id);
-      setNotice("Blog deleted successfully.");
+      if (editingKey) {
+        await updateAdminJourney(editingKey, payload);
+        setNotice("Journey milestone updated and synced to /journey.");
+      } else {
+        await createAdminJourney(payload);
+        setNotice("Journey milestone created and added to timeline.");
+      }
       await Promise.allSettled([
         loadContent({ useLoader: false }),
+        refreshSiteContent(),
         loadOverview({ range: rangeDays, useLoader: false }),
       ]);
-    } catch (requestError) {
-      if (requestError?.response?.status === 401) {
+      broadcastSiteContentSync();
+      return true;
+    } catch (err) {
+      if (err?.response?.status === 401) {
         handleAuthFailure();
-        return;
+        return false;
       }
-      setActionError(getErrorMessage(requestError, "Unable to delete blog."));
+      setActionError(getErrorMessage(err, "Unable to save milestone."));
+      return false;
     } finally {
       setSubmitting(false);
     }
   };
 
+  const handleDeleteMilestone = async (item) => {
+    const key = item?._id || item?.entryId || item?.id;
+    if (!key) return;
+    if (!window.confirm(`Remove or hide "${item.title}" from the Journey page?`)) {
+      return;
+    }
+
+    setSubmitting(true);
+    setActionError("");
+    setNotice("");
+    try {
+      await deleteAdminJourney(key, { year: item.year, title: item.title });
+      setNotice("Journey milestone removed / hidden.");
+      await Promise.allSettled([
+        loadContent({ useLoader: false }),
+        refreshSiteContent(),
+        loadOverview({ range: rangeDays, useLoader: false }),
+      ]);
+      broadcastSiteContentSync();
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      setActionError(getErrorMessage(err, "Unable to delete milestone."));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // --- Users Handlers ---
+  const handleUpdateUser = async (userId, payload) => {
+    setSubmitting(true);
+    setActionError("");
+    setNotice("");
+    try {
+      await updateAdminUser(userId, payload);
+      setNotice("User profile updated.");
+      await Promise.allSettled([
+        loadUsers({ useLoader: false }),
+        loadOverview({ range: rangeDays, useLoader: false }),
+      ]);
+      return true;
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        handleAuthFailure();
+        return false;
+      }
+      setActionError(getErrorMessage(err, "Unable to update user profile."));
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId, email) => {
+    if (!window.confirm(`Delete registered user ${email || userId}?`)) return;
+    setSubmitting(true);
+    setActionError("");
+    setNotice("");
+    try {
+      await deleteAdminUser(userId);
+      setNotice("User account removed.");
+      await Promise.allSettled([
+        loadUsers({ useLoader: false }),
+        loadOverview({ range: rangeDays, useLoader: false }),
+      ]);
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      setActionError(getErrorMessage(err, "Unable to delete user."));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // --- Contact Handlers ---
   const handleMarkRead = async (id) => {
     setSubmitting(true);
     setActionError("");
     setNotice("");
     try {
       await markAdminContactAsRead(id);
-      setNotice("Message marked as read.");
+      setNotice("Enquiry marked as read.");
       await Promise.allSettled([
         loadContacts({ status: contactStatus, useLoader: false }),
         loadOverview({ range: rangeDays, useLoader: false }),
       ]);
-    } catch (requestError) {
-      if (requestError?.response?.status === 401) {
+    } catch (err) {
+      if (err?.response?.status === 401) {
         handleAuthFailure();
         return;
       }
-      setActionError(getErrorMessage(requestError, "Unable to update message status."));
+      setActionError(getErrorMessage(err, "Unable to update enquiry."));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleEditProject = (project) => {
-    setEditingProjectId(project._id);
-    setProjectForm({
-      title: project.title || "",
-      description: project.description || "",
-      category: project.category || PROJECT_CATEGORIES[1] || "Web Dev",
-      techStack: Array.isArray(project.techStack) ? project.techStack.join(", ") : "",
-      githubUrl: project.githubUrl || "",
-      liveDemoUrl: project.liveDemoUrl || "",
-      imageUrl: project.imageUrl || "",
-      problemStatement: project.problemStatement || "",
-      solutionSummary: project.solutionSummary || "",
-      featured: Boolean(project.featured),
-    });
-    setShowProjectFormModal(true);
+  const handleDeleteContact = async (id) => {
+    if (!window.confirm("Delete this message permanently?")) return;
+    setSubmitting(true);
+    setActionError("");
+    setNotice("");
+    try {
+      await deleteAdminContact(id);
+      setNotice("Enquiry deleted.");
+      await Promise.allSettled([
+        loadContacts({ status: contactStatus, useLoader: false }),
+        loadOverview({ range: rangeDays, useLoader: false }),
+      ]);
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        handleAuthFailure();
+        return;
+      }
+      setActionError(getErrorMessage(err, "Unable to delete enquiry."));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleEditBlog = (blog) => {
-    setEditingBlogId(blog._id);
-    setBlogForm({
-      title: blog.title || "",
-      excerpt: blog.excerpt || "",
-      content: blog.content || "",
-      tags: Array.isArray(blog.tags) ? blog.tags.join(", ") : "",
-      imageUrl: blog.imageUrl || "",
-    });
-    setShowBlogFormModal(true);
-  };
-
-  const signOut = () => {
+  const handleLogout = () => {
     logoutAdmin();
     navigate("/admin/login", { replace: true });
   };
 
-  // Nav Items array
-  const NAV_ITEMS = [
-    { id: "overview", label: "Overview", icon: LayoutDashboard, badge: null },
-    { id: "projects", label: "Projects", icon: FolderKanban, badge: projects.length },
-    { id: "contacts", label: "Enquiries & Emails", icon: Mail, badge: overview?.contacts?.unread || 0, badgeColor: "bg-amber-500 text-black" },
-    { id: "payments", label: "Payments & Orders", icon: CreditCard, badge: paymentMeta.totalCount },
-    { id: "blogs", label: "Blogs & Articles", icon: BookOpen, badge: blogs.length },
-    { id: "system", label: "System Health", icon: ShieldCheck, badge: null },
-  ];
+  const unreadContactsCount = overview?.contacts?.unread || 0;
 
-  // Filtered Projects for Projects Tab
-  const filteredAdminProjects = useMemo(() => {
-    return projects.filter((p) => {
-      const matchCat =
-        projectCategoryFilter === "ALL" ||
-        p.category?.toLowerCase() === projectCategoryFilter.toLowerCase();
-      const matchSearch =
-        !projectSearch.trim() ||
-        `${p.title} ${p.description} ${p.category} ${(p.techStack || []).join(" ")}`
-          .toLowerCase()
-          .includes(projectSearch.trim().toLowerCase());
-      return matchCat && matchSearch;
-    });
-  }, [projects, projectCategoryFilter, projectSearch]);
+  const navItems = useMemo(
+    () => [
+      { id: "overview", label: "Overview", icon: LayoutDashboard, badge: null },
+      { id: "site", label: "Site Content", icon: SlidersHorizontal, badge: null },
+      { id: "projects", label: "Projects", icon: FolderKanban, badge: projects.length },
+      { id: "blogs", label: "Blogs", icon: BookOpen, badge: blogs.length },
+      { id: "journey", label: "Journey", icon: Compass, badge: milestones.length },
+      { id: "users", label: "Users", icon: Users, badge: users.length || overview?.users?.total || 0 },
+      { id: "messages", label: "Enquiries", icon: Mail, badge: unreadContactsCount },
+      { id: "payments", label: "Payments", icon: CreditCard, badge: paymentMeta.totalCount || 0 },
+      { id: "system", label: "System", icon: ShieldCheck, badge: null },
+    ],
+    [blogs.length, milestones.length, overview?.users?.total, paymentMeta.totalCount, projects.length, unreadContactsCount, users.length],
+  );
 
-  const totalPayments = overview?.payments?.total || 0;
-  const paidPayments = overview?.payments?.paid || 0;
-  const paymentSuccessRate = totalPayments ? (paidPayments / totalPayments) * 100 : null;
-  const failedPayments = overview?.payments?.failed || 0;
-  const unreadContacts = overview?.contacts?.unread || 0;
-  const newContacts = overview?.contacts?.new || 0;
+  const navigateTab = (id) => {
+    setActivePanel(id);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <>
       <Helmet>
-        <title>Admin Control Center | Nikhil Portfolio</title>
+        <title>Admin Console | {sections?.profile?.brandName || "Nikhil"} Portfolio</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-[#03080e] text-slate-100 flex flex-col font-outfit">
-        
-        {/* Top Header Bar */}
-        <header className="sticky top-0 z-40 flex items-center justify-between border-b border-emerald-500/20 bg-[#050e17]/95 px-4 sm:px-6 py-3 backdrop-blur-xl">
-          <div className="flex items-center gap-3">
-            {/* Mobile Hamburger Button */}
-            <button
-              type="button"
-              onClick={() => setIsSidebarOpen((prev) => !prev)}
-              className="lg:hidden flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition"
-              aria-label="Toggle Navigation Sidebar"
-            >
-              {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
+      <div className="min-h-screen bg-[#f5f7fa] text-slate-900 dark:bg-[#090a0f] dark:text-[#eef0f5] flex flex-col">
+        {/* Sticky Top Header */}
+        <header className="sticky top-0 z-30 border-b border-black/[0.08] bg-white/95 backdrop-blur-md dark:border-white/[0.08] dark:bg-[#090a0f]/95">
+          <div className="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((prev) => !prev)}
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-black/[0.08] bg-[#f8fafc] text-slate-700 lg:hidden dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5]"
+                aria-label="Toggle navigation drawer"
+              >
+                {mobileMenuOpen ? <X size={18} strokeWidth={1.6} /> : <Menu size={18} strokeWidth={1.6} />}
+              </button>
 
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
-              <span className="font-mono text-sm sm:text-base font-black tracking-wider text-white uppercase">
-                ADMIN <span className="text-emerald-400">CONSOLE</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5">
-            {/* Range Selector */}
-            <div className="hidden sm:flex items-center gap-1 rounded-xl border border-slate-800 bg-slate-900/80 p-1 text-xs">
-              {RANGE_OPTIONS.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => setRangeDays(opt)}
-                  className={`rounded-lg px-2.5 py-1 font-mono font-bold transition ${
-                    rangeDays === opt
-                      ? "bg-emerald-500 text-black shadow-sm"
-                      : "text-slate-400 hover:text-white"
-                  }`}
-                >
-                  {opt}d
-                </button>
-              ))}
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-600/25 bg-emerald-50 font-mono text-xs font-semibold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
+                  CMS
+                </div>
+                <div>
+                  <span className="font-display text-base font-semibold tracking-tight text-slate-900 dark:text-[#eef0f5]">
+                    Portfolio Console
+                  </span>
+                  <span className="hidden sm:inline-block ml-2 rounded-md border border-black/[0.08] bg-[#f8fafc] px-2 py-0.5 font-mono text-[11px] text-slate-500 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#7a8296]">
+                    Live Sync
+                  </span>
+                </div>
+              </div>
             </div>
 
-            {/* Refresh */}
-            <button
-              type="button"
-              onClick={refreshAll}
-              disabled={refreshing}
-              className="flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition"
-            >
-              <RefreshCcw size={14} className={refreshing ? "animate-spin" : ""} />
-              <span className="hidden sm:inline">{refreshing ? "Syncing..." : "Sync Data"}</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="hidden md:flex items-center rounded-lg border border-black/[0.08] bg-[#f8fafc] p-0.5 dark:border-white/[0.08] dark:bg-[#11141c]">
+                {RANGE_OPTIONS.map((days) => (
+                  <button
+                    key={days}
+                    type="button"
+                    onClick={() => setRangeDays(days)}
+                    className={`rounded-md px-2.5 py-1 font-mono text-xs transition-colors ${
+                      rangeDays === days
+                        ? "bg-emerald-600 font-medium text-white dark:bg-emerald-500 dark:text-slate-950"
+                        : "text-slate-600 hover:text-slate-900 dark:text-[#a3a9b8] dark:hover:text-[#eef0f5]"
+                    }`}
+                  >
+                    {days}d
+                  </button>
+                ))}
+              </div>
 
-            {/* Admin Profile */}
-            <div className="hidden md:flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-1.5 text-xs">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              <span className="font-mono text-slate-300">{adminUser?.email || "admin"}</span>
+              <button
+                type="button"
+                onClick={refreshAll}
+                disabled={refreshing}
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-black/[0.08] bg-white px-3 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-50 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:hover:bg-[#1a1e28]"
+              >
+                <RefreshCcw size={14} strokeWidth={1.6} className={refreshing ? "animate-spin" : ""} />
+                <span className="hidden sm:inline">{refreshing ? "Syncing..." : "Sync Data"}</span>
+              </button>
+
+              <a
+                href="/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-black/[0.08] bg-white px-3 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:hover:bg-[#1a1e28]"
+              >
+                <ExternalLink size={14} strokeWidth={1.6} />
+                <span className="hidden sm:inline">View Site</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label="Toggle Light/Dark theme"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-black/[0.08] bg-white text-slate-700 transition-colors hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:hover:bg-[#1a1e28]"
+              >
+                {isDark ? <Sun size={15} strokeWidth={1.6} /> : <Moon size={15} strokeWidth={1.6} />}
+              </button>
+
+              {adminUser?.email && (
+                <div className="hidden xl:flex items-center gap-2 rounded-lg border border-black/[0.08] bg-[#f8fafc] px-3 py-1.5 text-xs text-slate-600 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#a3a9b8]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+                  <span>{adminUser.email}</span>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-rose-500/25 bg-rose-50 px-3 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-100 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20"
+              >
+                <LogOut size={14} strokeWidth={1.6} />
+                <span className="hidden sm:inline">Logout</span>
+              </button>
             </div>
-
-            {/* Logout */}
-            <button
-              type="button"
-              onClick={signOut}
-              className="flex items-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-1.5 text-xs font-bold text-rose-300 hover:bg-rose-500/20 transition"
-            >
-              <LogOut size={14} />
-              <span className="hidden sm:inline">Logout</span>
-            </button>
           </div>
         </header>
 
-        {/* Main Body with Sidebar Drawer */}
-        <div className="flex flex-1 relative">
+        {/* Body Layout */}
+        <div className="mx-auto flex w-full max-w-[1440px] flex-1">
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:flex w-60 shrink-0 flex-col justify-between border-r border-black/[0.08] bg-white/60 px-3 py-5 dark:border-white/[0.08] dark:bg-[#0c0e14]/70">
+            <nav className="space-y-1">
+              <p className="px-3 pb-2 text-xs font-medium text-slate-500 dark:text-[#7a8296]">
+                Workspace
+              </p>
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = activePanel === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => navigateTab(item.id)}
+                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
+                      active
+                        ? "border border-emerald-600/25 bg-emerald-50 font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400"
+                        : "border border-transparent text-slate-600 hover:bg-black/[0.03] hover:text-slate-900 dark:text-[#a3a9b8] dark:hover:bg-white/[0.04] dark:hover:text-[#eef0f5]"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <Icon size={16} strokeWidth={1.6} />
+                      <span>{item.label}</span>
+                    </span>
+                    {item.badge !== null && item.badge !== undefined && (
+                      <span
+                        className={`rounded-md px-1.5 py-0.5 font-mono text-[11px] tabular-nums ${
+                          item.id === "messages" && item.badge > 0
+                            ? "bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                            : "bg-black/[0.05] text-slate-600 dark:bg-white/[0.06] dark:text-[#a3a9b8]"
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
 
-          {/* Sidebar Drawer Backdrop for Mobile */}
-          {isSidebarOpen && (
-            <div
-              className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
-              onClick={() => setIsSidebarOpen(false)}
-            />
-          )}
-
-          {/* Left Navigation Sidebar */}
-          <aside
-            className={`fixed lg:static inset-y-0 left-0 z-50 w-64 border-r border-emerald-500/20 bg-[#050e17] p-4 flex flex-col justify-between transition-transform duration-300 ease-out ${
-              isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-            }`}
-          >
-            <div className="space-y-6 pt-12 lg:pt-0">
-              <div className="px-3">
-                <p className="font-mono text-[10px] uppercase font-bold text-slate-500 tracking-[0.25em]">
-                  Navigation Menu
-                </p>
-              </div>
-
-              <nav className="space-y-1.5">
-                {NAV_ITEMS.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = activePanel === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        setActivePanel(item.id);
-                        setIsSidebarOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between gap-3 rounded-2xl px-3.5 py-2.5 text-xs font-bold transition-all duration-200 ${
-                        isActive
-                          ? "border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.15)]"
-                          : "border border-transparent text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon size={17} className={isActive ? "text-emerald-400" : "text-slate-500"} />
-                        <span>{item.label}</span>
-                      </div>
-                      {item.badge !== null && item.badge > 0 ? (
-                        <span
-                          className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
-                            item.badgeColor || "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                          }`}
-                        >
-                          {item.badge}
-                        </span>
-                      ) : null}
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-
-            {/* Sidebar Bottom Footer */}
-            <div className="pt-6 border-t border-slate-800/80 px-3">
-              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-[11px] font-mono text-slate-400 space-y-1">
-                <p className="font-bold text-emerald-400">⚡ Operational SLA</p>
-                <p>Status: All Services Healthy</p>
-                <p>Unread Msgs: {unreadContacts}</p>
-              </div>
+            <div className="rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 text-xs dark:border-white/[0.08] dark:bg-[#11141c]">
+              <p className="font-medium text-slate-900 dark:text-[#eef0f5]">
+                Service Health
+              </p>
+              <p className="mt-1 text-slate-600 dark:text-[#a3a9b8]">
+                Database: {systemStatus?.dbConnected ? "Connected" : "Checking"}
+              </p>
+              <p className="text-slate-500 tabular-nums dark:text-[#7a8296]">
+                Unread enquiries: {unreadContactsCount}
+              </p>
             </div>
           </aside>
 
-          {/* Right Main Content Panel */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
-            
-            {/* Global Notice & Alert Banners */}
-            {notice && (
-              <div className="flex items-center justify-between rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-xs sm:text-sm font-bold text-emerald-200">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                  <span>{notice}</span>
-                </div>
-                <button type="button" onClick={() => setNotice("")} className="text-emerald-400 hover:text-white">
-                  <X size={14} />
-                </button>
-              </div>
-            )}
-
-            {actionError && (
-              <div className="flex items-center justify-between rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-xs sm:text-sm font-bold text-rose-200">
-                <div className="flex items-center gap-2">
-                  <AlertCircle size={16} className="text-rose-400 shrink-0" />
-                  <span>{actionError}</span>
-                </div>
-                <button type="button" onClick={() => setActionError("")} className="text-rose-400 hover:text-white">
-                  <X size={14} />
-                </button>
-              </div>
-            )}
-
-            {/* TAB 1: OVERVIEW */}
-            {activePanel === "overview" && (
-              <div className="space-y-6">
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white">
-                    Operations Control Overview
-                  </h1>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                    Real-time metrics, revenue performance, and activity queues.
-                  </p>
-                </div>
-
-                {overviewLoading ? (
-                  <LoadingState message="Syncing operational metrics..." cards={6} />
-                ) : overviewError ? (
-                  <ErrorState message={overviewError} onRetry={() => loadOverview({ range: rangeDays, useLoader: true })} />
-                ) : (
-                  <>
-                    {/* KPI Cards Grid */}
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      <div className="rounded-2xl border border-emerald-500/30 bg-[#06141d]/90 p-5 shadow-lg">
-                        <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Total Revenue</p>
-                        <p className="mt-2 text-2xl sm:text-3xl font-black text-emerald-400">
-                          {formatCurrency(overview?.payments?.revenueInr)}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-400">In last {overview?.rangeDays || rangeDays} days</p>
-                      </div>
-
-                      <div className="rounded-2xl border border-emerald-500/30 bg-[#06141d]/90 p-5 shadow-lg">
-                        <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Paid Transactions</p>
-                        <p className="mt-2 text-2xl sm:text-3xl font-black text-cyan-300">
-                          {formatCount(overview?.payments?.paid)} <span className="text-xs font-normal text-slate-400">/ {formatCount(overview?.payments?.total)}</span>
-                        </p>
-                        <p className="mt-1 text-xs text-emerald-400 font-bold">{formatPercent(paymentSuccessRate)} success rate</p>
-                      </div>
-
-                      <div className="rounded-2xl border border-emerald-500/30 bg-[#06141d]/90 p-5 shadow-lg">
-                        <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Unread Enquiries</p>
-                        <p className="mt-2 text-2xl sm:text-3xl font-black text-amber-400">
-                          {formatCount(unreadContacts)}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-400">{formatCount(newContacts)} new this week</p>
-                      </div>
-                    </div>
-
-                    {/* Quick Jump Action Bar */}
-                    <div className="rounded-2xl border border-slate-800 bg-[#050e17] p-4 flex flex-wrap items-center justify-between gap-3">
-                      <span className="font-mono text-xs uppercase font-bold text-slate-400">Quick Jump:</span>
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setActivePanel("projects")}
-                          className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-bold text-emerald-300 hover:bg-emerald-500/20 transition flex items-center gap-1.5"
-                        >
-                          <FolderKanban size={14} /> Manage Projects ({projects.length})
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setActivePanel("contacts")}
-                          className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-300 hover:bg-amber-500/20 transition flex items-center gap-1.5"
-                        >
-                          <Mail size={14} /> Read Enquiries ({unreadContacts} unread)
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setActivePanel("payments")}
-                          className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-1.5 text-xs font-bold text-cyan-300 hover:bg-cyan-500/20 transition flex items-center gap-1.5"
-                        >
-                          <CreditCard size={14} /> View Payments ({paymentMeta.totalCount})
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* TAB 2: PROJECTS MANAGER (SEPARATE PROJECTS TAB) */}
-            {activePanel === "projects" && (
-              <div className="space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
-                      <FolderKanban className="text-emerald-400" /> Projects Management
-                    </h1>
-                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                      Manage portfolio projects, tech stack tags, live URLs, and featured flags ({projects.length} total).
-                    </p>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      resetProjectForm();
-                      setShowProjectFormModal(true);
-                    }}
-                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-black hover:bg-emerald-400 transition shadow-lg"
-                  >
-                    <Plus size={16} /> Add New Project
-                  </button>
-                </div>
-
-                {/* Search & Category Filter Controls */}
-                <div className="rounded-2xl border border-slate-800 bg-[#050e17] p-4 flex flex-wrap items-center justify-between gap-3">
-                  <div className="relative flex-1 min-w-[200px]">
-                    <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                    <input
-                      type="text"
-                      value={projectSearch}
-                      onChange={(e) => setProjectSearch(e.target.value)}
-                      placeholder="Search projects by title, tech stack..."
-                      className="w-full rounded-xl border border-slate-800 bg-slate-900/80 pl-9 pr-3 py-2 text-xs font-mono text-white outline-none focus:border-emerald-500/50"
-                    />
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {["ALL", "FULL STACK", "WEB DEV", "PYTHON", "CYBER SECURITY", "AI"].map((cat) => (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => setProjectCategoryFilter(cat)}
-                        className={`rounded-lg border px-3 py-1.5 text-[11px] font-mono font-bold transition ${
-                          projectCategoryFilter === cat
-                            ? "border-emerald-400 bg-emerald-500/20 text-emerald-300"
-                            : "border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white"
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Project Form Modal / Drawer */}
-                {showProjectFormModal && (
-                  <div className="rounded-2xl border border-emerald-500/40 bg-[#06141d] p-5 sm:p-6 shadow-2xl space-y-4 animate-fadeIn">
-                    <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
-                      <h3 className="font-display text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        {editingProjectId ? <Edit3 size={16} className="text-emerald-400" /> : <Plus size={16} className="text-emerald-400" />}
-                        {editingProjectId ? "Edit Project Details" : "Create New Project"}
-                      </h3>
-                      <button type="button" onClick={resetProjectForm} className="text-slate-400 hover:text-white">
-                        <X size={18} />
-                      </button>
-                    </div>
-
-                    <form onSubmit={submitProject} className="space-y-4 text-xs">
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label className="block font-mono text-slate-400 mb-1">Project Title *</label>
-                          <input
-                            type="text"
-                            required
-                            value={projectForm.title}
-                            onChange={updateProjectField("title")}
-                            placeholder="e.g. Kanoon-Mate"
-                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block font-mono text-slate-400 mb-1">Category *</label>
-                          <select
-                            value={projectForm.category}
-                            onChange={updateProjectField("category")}
-                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
-                          >
-                            {PROJECT_CATEGORIES.filter((c) => c !== "All").map((cat) => (
-                              <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block font-mono text-slate-400 mb-1">Description *</label>
-                        <textarea
-                          required
-                          rows={2}
-                          value={projectForm.description}
-                          onChange={updateProjectField("description")}
-                          placeholder="Brief overview of the project..."
-                          className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
-                        />
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label className="block font-mono text-slate-400 mb-1">Tech Stack (comma separated) *</label>
-                          <input
-                            type="text"
-                            required
-                            value={projectForm.techStack}
-                            onChange={updateProjectField("techStack")}
-                            placeholder="React, Node.js, Express, MongoDB"
-                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block font-mono text-slate-400 mb-1">Cover Image URL</label>
-                          <input
-                            type="text"
-                            value={projectForm.imageUrl}
-                            onChange={updateProjectField("imageUrl")}
-                            placeholder="/images/projects/project-cover.webp"
-                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label className="block font-mono text-slate-400 mb-1">GitHub Repo URL</label>
-                          <input
-                            type="url"
-                            value={projectForm.githubUrl}
-                            onChange={updateProjectField("githubUrl")}
-                            placeholder="https://github.com/nikhilxagr/repo"
-                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block font-mono text-slate-400 mb-1">Live Demo URL</label>
-                          <input
-                            type="url"
-                            value={projectForm.liveDemoUrl}
-                            onChange={updateProjectField("liveDemoUrl")}
-                            placeholder="https://demo-app.netlify.app"
-                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-emerald-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 pt-2">
-                        <input
-                          type="checkbox"
-                          id="projectFeatured"
-                          checked={projectForm.featured}
-                          onChange={updateProjectField("featured")}
-                          className="h-4 w-4 accent-emerald-500"
-                        />
-                        <label htmlFor="projectFeatured" className="font-mono text-slate-300 cursor-pointer">
-                          ★ Feature this project on Home page
-                        </label>
-                      </div>
-
-                      <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
-                        <button
-                          type="button"
-                          onClick={resetProjectForm}
-                          className="rounded-xl border border-slate-700 px-4 py-2 font-mono text-slate-300 hover:bg-slate-800 transition"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={submitting}
-                          className="rounded-xl bg-emerald-500 px-5 py-2 font-mono font-bold text-black hover:bg-emerald-400 transition"
-                        >
-                          {submitting ? "Saving..." : editingProjectId ? "Update Project" : "Save Project"}
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                )}
-
-                {/* Projects Grid / List */}
-                {contentLoading ? (
-                  <LoadingState message="Loading projects catalog..." cards={6} />
-                ) : filteredAdminProjects.length === 0 ? (
-                  <EmptyState title="No projects match filter" message="Try searching for another keyword or category." />
-                ) : (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {filteredAdminProjects.map((project) => (
-                      <article
-                        key={project._id || project.slug}
-                        className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-800 bg-[#050e17] p-4 shadow-md transition hover:border-emerald-500/40"
-                      >
-                        <div>
-                          {/* Thumbnail */}
-                          <div className="h-32 w-full overflow-hidden rounded-xl bg-slate-900 mb-3 relative">
-                            {project.imageUrl ? (
-                              <img
-                                src={project.imageUrl}
-                                alt={project.title}
-                                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                                onError={(e) => { e.target.style.display = "none"; }}
-                              />
-                            ) : null}
-                            <span className="absolute top-2 left-2 rounded-md bg-black/80 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-emerald-400 border border-emerald-500/30">
-                              {project.category}
-                            </span>
-                            {project.featured && (
-                              <span className="absolute top-2 right-2 rounded-md bg-amber-500/20 px-2 py-0.5 font-mono text-[9px] font-bold text-amber-300 border border-amber-500/40">
-                                ★ Featured
-                              </span>
-                            )}
-                          </div>
-
-                          <h3 className="font-outfit text-base font-bold text-white">{project.title}</h3>
-                          <p className="mt-1 text-xs text-slate-400 line-clamp-2">{project.description}</p>
-
-                          {/* Tech Stack */}
-                          <div className="mt-3 flex flex-wrap gap-1">
-                            {(project.techStack || []).map((t) => (
-                              <span key={t} className="rounded bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 text-[10px] font-mono text-emerald-300">
-                                {t}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Actions Footer */}
-                        <div className="mt-4 flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs">
-                          <div className="flex items-center gap-2">
-                            {project.liveDemoUrl && (
-                              <a href={project.liveDemoUrl} target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline flex items-center gap-1 font-mono text-[10px]">
-                                Demo <ExternalLink size={10} />
-                              </a>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => handleEditProject(project)}
-                              className="rounded-lg border border-slate-700 bg-slate-800/80 px-2.5 py-1 font-mono text-[11px] text-slate-200 hover:border-emerald-400 hover:text-emerald-300 transition"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteProject(project._id)}
-                              className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1 font-mono text-[11px] text-rose-300 hover:bg-rose-500/20 transition"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* TAB 3: CONTACT ENQUIRIES & EMAIL NOTIFICATIONS (SEPARATE EMAILS TAB) */}
-            {activePanel === "contacts" && (
-              <div className="space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
-                      <Mail className="text-amber-400" /> Contact Enquiries & Email Notifications
-                    </h1>
-                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                      Inbound messages, client enquiries, and quick email response triggers ({contacts.length} total).
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {["all", "new", "read"].map((st) => (
-                      <button
-                        key={st}
-                        type="button"
-                        onClick={() => setContactStatus(st)}
-                        className={`rounded-xl border px-3 py-1.5 text-xs font-mono font-bold uppercase transition ${
-                          contactStatus === st
-                            ? "border-amber-400 bg-amber-500/20 text-amber-300"
-                            : "border-slate-800 bg-slate-900/60 text-slate-400 hover:text-white"
-                        }`}
-                      >
-                        {st}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {contactsLoading ? (
-                  <LoadingState message="Loading contact messages..." cards={4} />
-                ) : contactsError ? (
-                  <ErrorState message={contactsError} onRetry={() => loadContacts({ status: contactStatus, useLoader: true })} />
-                ) : contacts.length === 0 ? (
-                  <EmptyState title="No contact messages" message="Incoming messages from the contact form will appear here." />
-                ) : (
-                  <div className="space-y-4">
-                    {contacts.map((msg) => (
-                      <article
-                        key={msg._id}
-                        className={`rounded-2xl border p-5 transition ${
-                          msg.status === "read"
-                            ? "border-slate-800 bg-[#050e17]/80 opacity-80"
-                            : "border-amber-500/40 bg-[#0a1510] shadow-[0_0_20px_rgba(245,158,11,0.1)]"
-                        }`}
-                      >
-                        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-800/80 pb-3">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h3 className="text-base font-extrabold text-white">{msg.name}</h3>
-                              {msg.status !== "read" && (
-                                <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-2 py-0.5 font-mono text-[9px] font-bold text-amber-300">
-                                  UNREAD
-                                </span>
-                              )}
-                            </div>
-                            <p className="font-mono text-xs text-emerald-400 mt-0.5">{msg.email}</p>
-                            {msg.phone && <p className="font-mono text-xs text-slate-400">Phone: {msg.phone}</p>}
-                          </div>
-
-                          <div className="text-right font-mono text-[11px] text-slate-500">
-                            <p>{formatDate(msg.createdAt)}</p>
-                            {msg.service && (
-                              <span className="mt-1 inline-block rounded bg-slate-800 px-2 py-0.5 text-slate-300 font-bold uppercase">
-                                {msg.service}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="mt-3">
-                          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-wrap font-sans bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
-                            {msg.message}
-                          </p>
-                        </div>
-
-                        {/* Email Action Bar */}
-                        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800/60">
-                          <a
-                            href={`mailto:${msg.email}?subject=Re: Portfolio Enquiry - Nikhil Agrahari&body=Hi ${encodeURIComponent(msg.name)},\n\nThank you for reaching out via my portfolio!` }
-                            className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-mono font-bold text-emerald-300 hover:bg-emerald-500/20 transition"
-                          >
-                            <Send size={13} /> Reply via Email
-                          </a>
-
-                          {msg.status !== "read" && (
-                            <button
-                              type="button"
-                              onClick={() => handleMarkRead(msg._id)}
-                              className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-1.5 font-mono text-xs text-slate-300 hover:bg-slate-700 transition"
-                            >
-                              Mark as Read
-                            </button>
-                          )}
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* TAB 4: PAYMENTS & SUPPORT ORDERS (SEPARATE PAYMENTS TAB) */}
-            {activePanel === "payments" && (
-              <div className="space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
-                      <CreditCard className="text-cyan-400" /> Payments & Support Orders
-                    </h1>
-                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                      Cashfree & support contribution transaction history in last {paymentMeta.rangeDays} days ({paymentMeta.totalCount} orders).
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <select
-                      value={paymentStatusFilter}
-                      onChange={(e) => setPaymentStatusFilter(e.target.value)}
-                      className="rounded-xl border border-slate-800 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-200 outline-none focus:border-cyan-400"
+          {/* Mobile Drawer */}
+          {mobileMenuOpen && (
+            <div className="fixed inset-0 z-40 flex lg:hidden">
+              <div
+                className="fixed inset-0 bg-black/50 backdrop-blur-xs"
+                onClick={() => setMobileMenuOpen(false)}
+              />
+              <aside className="relative z-10 flex w-72 max-w-[85vw] flex-col justify-between border-r border-black/[0.08] bg-white p-4 dark:border-white/[0.08] dark:bg-[#0c0e14]">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-black/[0.08] pb-3 dark:border-white/[0.08]">
+                    <span className="font-display text-base font-semibold text-slate-900 dark:text-[#eef0f5]">
+                      Navigation
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:text-[#7a8296] dark:hover:bg-[#1a1e28]"
                     >
-                      {PAYMENT_STATUS_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Status Counter Cards */}
-                <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 font-mono text-xs">
-                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-center">
-                    <p className="text-slate-400">Paid</p>
-                    <p className="text-xl font-bold text-emerald-400 mt-1">{formatCount(paymentMeta.statusCounts.paid)}</p>
-                  </div>
-                  <div className="rounded-xl border border-slate-700 bg-slate-900/60 p-3 text-center">
-                    <p className="text-slate-400">Created</p>
-                    <p className="text-xl font-bold text-slate-200 mt-1">{formatCount(paymentMeta.statusCounts.created)}</p>
-                  </div>
-                  <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-center">
-                    <p className="text-slate-400">Failed</p>
-                    <p className="text-xl font-bold text-rose-400 mt-1">{formatCount(paymentMeta.statusCounts.failed)}</p>
-                  </div>
-                  <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-center">
-                    <p className="text-slate-400">Refunded</p>
-                    <p className="text-xl font-bold text-amber-400 mt-1">{formatCount(paymentMeta.statusCounts.refunded)}</p>
-                  </div>
-                </div>
-
-                {/* Payments Data Table */}
-                {paymentsLoading ? (
-                  <LoadingState message="Loading payment transaction records..." cards={6} />
-                ) : paymentsError ? (
-                  <ErrorState message={paymentsError} onRetry={() => loadPayments({ useLoader: true })} />
-                ) : paymentHistory.length === 0 ? (
-                  <EmptyState title="No payment records found" message="Transactions will appear here once orders are initiated." />
-                ) : (
-                  <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-[#050e17]">
-                    <table className="w-full text-left font-mono text-xs text-slate-300">
-                      <thead className="bg-slate-900/90 text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
-                        <tr>
-                          <th className="p-3.5">Date</th>
-                          <th className="p-3.5">Customer</th>
-                          <th className="p-3.5">Service / Tier</th>
-                          <th className="p-3.5 text-right">Amount</th>
-                          <th className="p-3.5">Status</th>
-                          <th className="p-3.5">Transaction ID</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-800/60">
-                        {paymentHistory.map((pmt) => (
-                          <tr key={pmt.id} className="hover:bg-slate-900/50 transition">
-                            <td className="p-3.5 text-slate-400">{formatDate(pmt.createdAt)}</td>
-                            <td className="p-3.5 font-sans">
-                              <p className="font-bold text-white">{pmt.customerName}</p>
-                              <p className="text-[11px] font-mono text-emerald-400">{pmt.customerEmail}</p>
-                            </td>
-                            <td className="p-3.5 font-sans">
-                              <p className="font-bold text-slate-200">{pmt.serviceName}</p>
-                              <p className="text-[10px] font-mono text-slate-500">{pmt.serviceSlug}</p>
-                            </td>
-                            <td className="p-3.5 text-right font-bold text-emerald-400">{formatCurrency(pmt.amountInr)}</td>
-                            <td className="p-3.5">
-                              <span className={`rounded-md border px-2 py-0.5 text-[10px] uppercase font-bold ${getPaymentBadgeClasses(pmt.status)}`}>
-                                {pmt.status}
-                              </span>
-                            </td>
-                            <td className="p-3.5 text-slate-400 text-[11px]">
-                              <p>Order: {formatShortId(pmt.orderId)}</p>
-                              <p>Pay: {formatShortId(pmt.paymentId)}</p>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* TAB 5: BLOGS & ARTICLES (SEPARATE BLOGS TAB) */}
-            {activePanel === "blogs" && (
-              <div className="space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div>
-                    <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
-                      <BookOpen className="text-purple-400" /> Blog & Article Publishing
-                    </h1>
-                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                      Manage published articles, medium cross-posts, and draft entries ({blogs.length} total).
-                    </p>
+                      <X size={18} strokeWidth={1.6} />
+                    </button>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      resetBlogForm();
-                      setShowBlogFormModal(true);
-                    }}
-                    className="inline-flex items-center gap-2 rounded-xl bg-purple-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-black hover:bg-purple-400 transition shadow-lg"
-                  >
-                    <Plus size={16} /> Create New Blog
-                  </button>
-                </div>
-
-                {/* Blog Form Modal */}
-                {showBlogFormModal && (
-                  <div className="rounded-2xl border border-purple-500/40 bg-[#06141d] p-5 sm:p-6 shadow-2xl space-y-4 animate-fadeIn">
-                    <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
-                      <h3 className="font-display text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                        {editingBlogId ? "Edit Blog Article" : "Publish New Article"}
-                      </h3>
-                      <button type="button" onClick={resetBlogForm} className="text-slate-400 hover:text-white">
-                        <X size={18} />
-                      </button>
-                    </div>
-
-                    <form onSubmit={submitBlog} className="space-y-4 text-xs">
-                      <div>
-                        <label className="block font-mono text-slate-400 mb-1">Article Title *</label>
-                        <input
-                          type="text"
-                          required
-                          value={blogForm.title}
-                          onChange={updateBlogField("title")}
-                          placeholder="e.g. How I'm Learning Cybersecurity..."
-                          className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block font-mono text-slate-400 mb-1">Excerpt *</label>
-                        <textarea
-                          required
-                          rows={2}
-                          value={blogForm.excerpt}
-                          onChange={updateBlogField("excerpt")}
-                          placeholder="Brief summary for preview cards..."
-                          className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block font-mono text-slate-400 mb-1">Full Content (Markdown or HTML) *</label>
-                        <textarea
-                          required
-                          rows={6}
-                          value={blogForm.content}
-                          onChange={updateBlogField("content")}
-                          placeholder="Write full article body content..."
-                          className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
-                        />
-                      </div>
-
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        <div>
-                          <label className="block font-mono text-slate-400 mb-1">Tags (comma separated)</label>
-                          <input
-                            type="text"
-                            value={blogForm.tags}
-                            onChange={updateBlogField("tags")}
-                            placeholder="Cybersecurity, Web Development, AI"
-                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block font-mono text-slate-400 mb-1">Cover Image URL</label>
-                          <input
-                            type="text"
-                            value={blogForm.imageUrl}
-                            onChange={updateBlogField("imageUrl")}
-                            placeholder="/images/blogs/blog-cover.webp"
-                            className="w-full rounded-xl border border-slate-800 bg-slate-900 p-2.5 font-mono text-white outline-none focus:border-purple-500"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+                  <nav className="space-y-1">
+                    {navItems.map((item) => {
+                      const Icon = item.icon;
+                      const active = activePanel === item.id;
+                      return (
                         <button
+                          key={item.id}
                           type="button"
-                          onClick={resetBlogForm}
-                          className="rounded-xl border border-slate-700 px-4 py-2 font-mono text-slate-300 hover:bg-slate-800 transition"
+                          onClick={() => navigateTab(item.id)}
+                          className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm ${
+                            active
+                              ? "border border-emerald-600/25 bg-emerald-50 font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400"
+                              : "text-slate-600 hover:bg-black/[0.04] dark:text-[#a3a9b8] dark:hover:bg-white/[0.04]"
+                          }`}
                         >
-                          Cancel
+                          <span className="flex items-center gap-2.5">
+                            <Icon size={16} strokeWidth={1.6} />
+                            <span>{item.label}</span>
+                          </span>
+                          {item.badge !== null && item.badge !== undefined && (
+                            <span className="font-mono text-xs tabular-nums opacity-80">
+                              {item.badge}
+                            </span>
+                          )}
                         </button>
-                        <button
-                          type="submit"
-                          disabled={submitting}
-                          className="rounded-xl bg-purple-500 px-5 py-2 font-mono font-bold text-black hover:bg-purple-400 transition"
-                        >
-                          {submitting ? "Publishing..." : editingBlogId ? "Update Article" : "Publish Article"}
-                        </button>
-                      </div>
-                    </form>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                <div className="flex items-center gap-1 rounded-lg border border-black/[0.08] bg-[#f8fafc] p-1 dark:border-white/[0.08] dark:bg-[#11141c]">
+                  {RANGE_OPTIONS.map((days) => (
+                    <button
+                      key={days}
+                      type="button"
+                      onClick={() => setRangeDays(days)}
+                      className={`flex-1 rounded-md py-1.5 font-mono text-xs ${
+                        rangeDays === days
+                          ? "bg-emerald-600 font-medium text-white dark:bg-emerald-500 dark:text-slate-950"
+                          : "text-slate-600 dark:text-[#a3a9b8]"
+                      }`}
+                    >
+                      {days}d
+                    </button>
+                  ))}
+                </div>
+              </aside>
+            </div>
+          )}
+
+          {/* Main Workspace */}
+          <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
+            {/* Global Feedback Banners */}
+            {(notice || actionError) && (
+              <div className="space-y-2">
+                {notice && (
+                  <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-600/25 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+                    <span>{notice}</span>
+                    <button
+                      type="button"
+                      onClick={() => setNotice("")}
+                      className="rounded-md p-1 hover:bg-black/[0.06] dark:hover:bg-white/[0.08]"
+                      aria-label="Dismiss notice"
+                    >
+                      <X size={15} strokeWidth={1.6} />
+                    </button>
                   </div>
                 )}
 
-                {/* Blogs Grid */}
-                {contentLoading ? (
-                  <LoadingState message="Loading articles..." cards={4} />
-                ) : blogs.length === 0 ? (
-                  <EmptyState title="No blog posts found" message="Published articles will appear here." />
-                ) : (
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {blogs.map((b) => (
-                      <article key={b._id || b.slug} className="rounded-2xl border border-slate-800 bg-[#050e17] p-4 flex flex-col justify-between">
-                        <div>
-                          <h3 className="font-display text-base font-bold text-white">{b.title}</h3>
-                          <p className="mt-1 text-xs text-slate-400 line-clamp-2">{b.excerpt}</p>
-                          <div className="mt-3 flex flex-wrap gap-1">
-                            {(b.tags || []).map((t) => (
-                              <span key={t} className="rounded bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 text-[10px] font-mono text-purple-300">
-                                {t}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="mt-4 flex items-center justify-between border-t border-slate-800/80 pt-3 text-xs">
-                          <span className="font-mono text-[10px] text-slate-500">{formatDate(b.publishedAt || b.createdAt)}</span>
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => handleEditBlog(b)}
-                              className="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 font-mono text-[11px] text-slate-200 hover:text-white"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteBlog(b._id)}
-                              className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1 font-mono text-[11px] text-rose-300 hover:bg-rose-500/20"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </article>
-                    ))}
+                {actionError && (
+                  <div className="flex items-center justify-between gap-3 rounded-xl border border-rose-500/25 bg-rose-50 px-4 py-3 text-sm text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+                    <span className="flex items-center gap-2">
+                      <AlertCircle size={16} strokeWidth={1.6} />
+                      {actionError}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setActionError("")}
+                      className="rounded-md p-1 hover:bg-black/[0.06] dark:hover:bg-white/[0.08]"
+                      aria-label="Dismiss error"
+                    >
+                      <X size={15} strokeWidth={1.6} />
+                    </button>
                   </div>
                 )}
               </div>
             )}
 
-            {/* TAB 6: SYSTEM & SECURITY HEALTH (SEPARATE SYSTEM TAB) */}
+            {activePanel === "overview" && (
+              <AdminOverviewTab
+                overviewLoading={overviewLoading}
+                overviewError={overviewError}
+                overview={overview}
+                loadOverview={loadOverview}
+                rangeDays={rangeDays}
+                projectsCount={projects.length}
+                blogsCount={blogs.length}
+                journeyCount={milestones.length}
+                usersCount={users.length || overview?.users?.total || 0}
+                paymentCount={paymentMeta.totalCount || 0}
+                onNavigateTab={navigateTab}
+                formatCurrency={formatCurrency}
+                formatCount={formatCount}
+                formatPercent={formatPercent}
+              />
+            )}
+
+            {activePanel === "site" && (
+              <AdminSiteContentTab
+                key={`site-${siteContentVersion}`}
+                sections={sections}
+                onSaveSection={handleSaveSiteSection}
+                submitting={submitting}
+              />
+            )}
+
+            {activePanel === "projects" && (
+              <AdminProjectsTab
+                projects={projects}
+                contentLoading={contentLoading}
+                projectSearch={projectSearch}
+                setProjectSearch={setProjectSearch}
+                projectCategoryFilter={projectCategoryFilter}
+                setProjectCategoryFilter={setProjectCategoryFilter}
+                showProjectFormModal={showProjectFormModal}
+                setShowProjectFormModal={setShowProjectFormModal}
+                editingProjectKey={editingProjectKey}
+                projectForm={projectForm}
+                updateProjectField={updateProjectField}
+                resetProjectForm={resetProjectForm}
+                submitProject={submitProject}
+                handleEditProject={handleEditProject}
+                handleDeleteProject={handleDeleteProject}
+                submitting={submitting}
+              />
+            )}
+
+            {activePanel === "blogs" && (
+              <AdminBlogsTab
+                blogs={blogs}
+                contentLoading={contentLoading}
+                showBlogFormModal={showBlogFormModal}
+                setShowBlogFormModal={setShowBlogFormModal}
+                editingBlogKey={editingBlogKey}
+                blogForm={blogForm}
+                updateBlogField={updateBlogField}
+                resetBlogForm={resetBlogForm}
+                submitBlog={submitBlog}
+                handleEditBlog={handleEditBlog}
+                handleDeleteBlog={handleDeleteBlog}
+                formatDate={formatDate}
+                submitting={submitting}
+              />
+            )}
+
+            {activePanel === "journey" && (
+              <AdminJourneyTab
+                milestones={milestones}
+                onSaveMilestone={handleSaveMilestone}
+                onDeleteMilestone={handleDeleteMilestone}
+                submitting={submitting}
+              />
+            )}
+
+            {activePanel === "users" && (
+              <AdminUsersTab
+                users={users}
+                usersLoading={usersLoading}
+                usersError={usersError}
+                onReloadUsers={loadUsers}
+                onUpdateUser={handleUpdateUser}
+                onDeleteUser={handleDeleteUser}
+                formatDate={formatDate}
+                submitting={submitting}
+              />
+            )}
+
+            {activePanel === "messages" && (
+              <AdminMessagesTab
+                contactsLoading={contactsLoading}
+                contactsError={contactsError}
+                contacts={contacts}
+                contactStatus={contactStatus}
+                setContactStatus={setContactStatus}
+                loadContacts={loadContacts}
+                handleMarkRead={handleMarkRead}
+                handleDeleteContact={handleDeleteContact}
+                formatDate={formatDate}
+                submitting={submitting}
+              />
+            )}
+
+            {activePanel === "payments" && (
+              <AdminPaymentsTab
+                paymentsLoading={paymentsLoading}
+                paymentsError={paymentsError}
+                paymentHistory={paymentHistory}
+                paymentMeta={paymentMeta}
+                loadPayments={loadPayments}
+                paymentStatusFilter={paymentStatusFilter}
+                setPaymentStatusFilter={setPaymentStatusFilter}
+                paymentServiceFilter={paymentServiceFilter}
+                setPaymentServiceFilter={setPaymentServiceFilter}
+                PAYMENT_STATUS_OPTIONS={PAYMENT_STATUS_OPTIONS}
+                PAYMENT_SERVICE_OPTIONS={PAYMENT_SERVICE_OPTIONS}
+                formatCurrency={formatCurrency}
+                formatCount={formatCount}
+                formatDate={formatDate}
+                formatShortId={formatShortId}
+                getPaymentBadgeClasses={getPaymentBadgeClasses}
+              />
+            )}
+
             {activePanel === "system" && (
               <div className="space-y-6">
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wide text-white flex items-center gap-2">
-                    <ShieldCheck className="text-emerald-400" /> System & Security Diagnostics
-                  </h1>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                    Server health, database connectivity, environment mode, and audit logs.
-                  </p>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl dark:text-[#eef0f5]">
+                      System &amp; Diagnostics
+                    </h1>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-[#a3a9b8]">
+                      API runtime status, database connectivity, and environment summary.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => loadSystem({ useLoader: true })}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-black/[0.08] bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#11141c] dark:text-[#eef0f5] dark:hover:bg-[#1a1e28]"
+                  >
+                    <RefreshCcw size={14} strokeWidth={1.6} />
+                    Check Health
+                  </button>
                 </div>
 
                 {systemLoading ? (
-                  <LoadingState message="Running system diagnostics..." cards={3} />
+                  <LoadingState message="Checking system diagnostics..." cards={3} />
                 ) : systemError ? (
-                  <ErrorState message={systemError} onRetry={() => loadSystem({ useLoader: true })} />
+                  <ErrorState
+                    message={systemError}
+                    onRetry={() => loadSystem({ useLoader: true })}
+                  />
                 ) : (
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <div className="rounded-2xl border border-emerald-500/30 bg-[#050e17] p-5">
-                      <p className="font-mono text-xs uppercase text-slate-400">Server Health</p>
-                      <p className="mt-2 text-2xl font-black text-emerald-400">ONLINE</p>
-                      <p className="mt-1 font-mono text-xs text-slate-400">Uptime: {formatUptime(systemStatus?.uptime)}</p>
+                    <div className="rounded-xl border border-black/[0.08] bg-white p-5 dark:border-white/[0.08] dark:bg-[#11141c]">
+                      <p className="text-xs font-medium text-slate-500 dark:text-[#7a8296]">
+                        Server Runtime
+                      </p>
+                      <p className="mt-2 font-display text-2xl font-semibold text-emerald-700 dark:text-emerald-400">
+                        Online
+                      </p>
+                      <p className="mt-1 font-mono text-xs text-slate-500 tabular-nums dark:text-[#a3a9b8]">
+                        Uptime: {formatUptime(systemStatus?.uptime)}
+                      </p>
                     </div>
 
-                    <div className="rounded-2xl border border-emerald-500/30 bg-[#050e17] p-5">
-                      <p className="font-mono text-xs uppercase text-slate-400">Database Status</p>
-                      <p className="mt-2 text-2xl font-black text-cyan-300">CONNECTED</p>
-                      <p className="mt-1 font-mono text-xs text-slate-400">MongoDB Atlas Cluster</p>
+                    <div className="rounded-xl border border-black/[0.08] bg-white p-5 dark:border-white/[0.08] dark:bg-[#11141c]">
+                      <p className="text-xs font-medium text-slate-500 dark:text-[#7a8296]">
+                        Database Connection
+                      </p>
+                      <p className="mt-2 font-display text-2xl font-semibold text-slate-900 dark:text-[#eef0f5]">
+                        {systemStatus?.dbConnected ? "Connected" : "Fallback Mode"}
+                      </p>
+                      <p className="mt-1 font-mono text-xs text-slate-500 dark:text-[#a3a9b8]">
+                        MongoDB Atlas Cluster
+                      </p>
                     </div>
 
-                    <div className="rounded-2xl border border-emerald-500/30 bg-[#050e17] p-5">
-                      <p className="font-mono text-xs uppercase text-slate-400">Environment</p>
-                      <p className="mt-2 text-2xl font-black text-purple-300">PRODUCTION</p>
-                      <p className="mt-1 font-mono text-xs text-slate-400">Node v20.x // Vercel Cloud</p>
+                    <div className="rounded-xl border border-black/[0.08] bg-white p-5 dark:border-white/[0.08] dark:bg-[#11141c]">
+                      <p className="text-xs font-medium text-slate-500 dark:text-[#7a8296]">
+                        Payment Gateway
+                      </p>
+                      <p className="mt-2 font-display text-2xl font-semibold text-slate-900 capitalize dark:text-[#eef0f5]">
+                        {systemStatus?.gateway?.mode || "not-configured"}
+                      </p>
+                      <p className="mt-1 font-mono text-xs text-slate-500 dark:text-[#a3a9b8]">
+                        Webhooks: {systemStatus?.gateway?.webhookReady ? "Ready" : "Unavailable"} · Emails: {systemStatus?.gateway?.receiptEmailReady ? "Enabled" : "Off"}
+                      </p>
                     </div>
                   </div>
                 )}
               </div>
             )}
-
           </main>
         </div>
       </div>
