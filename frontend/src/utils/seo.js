@@ -90,8 +90,8 @@ export const createPersonSchema = () => {
     knowsAbout: [
       "Full Stack Web Development",
       "MERN Stack (MongoDB, Express, React, Node.js)",
-      "Best Web Development in Lucknow",
-      "Best Web Development in Prayagraj",
+      "Database Design (MongoDB & SQL)",
+      "Software Testing & System Design",
       "Application Security & AppSec",
       "Secure Coding & Penetration Testing",
       "AI Web Integration & Automation",
@@ -124,14 +124,14 @@ export const createProfessionalServiceSchema = () => {
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    name: "Nikhil Agrahari - Best Full Stack Developer in Lucknow & Prayagraj",
+    name: "Nikhil Agrahari — Full-Stack & AppSec Engineering",
     image: toAbsoluteUrl(SEO_DEFAULTS.defaultImage),
     url: siteUrl,
     telephone: PERSON_ENTITY.telephone,
     email: PERSON_ENTITY.email,
     priceRange: "$$",
     description:
-      "Premier Full Stack & MERN Stack Web Development Services in Lucknow and Prayagraj. Offering high-performance web applications, custom API integration, cybersecurity auditing, and AI software engineering.",
+      "Full-stack web development using React, Node.js, Express, and MongoDB, REST API architecture, and application security assessments in Lucknow and Prayagraj.",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Lucknow",
@@ -179,8 +179,8 @@ export const createWebSiteSchema = () => {
       "Nikhil Agrahari Portfolio",
       "Nikhil Projects",
       "Nikhil Portfolio",
-      "Best Full Stack Developer Lucknow",
-      "Best Full Stack Developer Prayagraj",
+      "nikhilxagr",
+      "Nikhil Agrahari Blog",
     ],
     url: siteUrl,
     inLanguage: "en-IN",
