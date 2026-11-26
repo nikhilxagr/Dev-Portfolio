@@ -18,9 +18,11 @@ import {
   SITE_PROFILE,
   SOCIAL_LINKS,
 } from "@/constants/siteData";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 const DEFAULT_SOCIAL_META = {
   icon: null,
+  iconColor: "text-emerald-700 dark:text-emerald-400",
   cardHover:
     "hover:border-emerald-600/35 hover:bg-emerald-500/[0.04] dark:hover:border-emerald-500/40 dark:hover:bg-emerald-500/[0.08]",
   iconBoxHover:
@@ -34,6 +36,7 @@ const DEFAULT_SOCIAL_META = {
 const SOCIAL_CARD_META = {
   GitHub: {
     icon: SiGithub,
+    iconColor: "text-slate-900 dark:text-[#f0f6fc]",
     cardHover:
       "hover:border-slate-900/35 hover:bg-slate-900/[0.04] dark:hover:border-white/35 dark:hover:bg-white/[0.06]",
     iconBoxHover:
@@ -43,6 +46,7 @@ const SOCIAL_CARD_META = {
   },
   LinkedIn: {
     icon: FaLinkedinIn,
+    iconColor: "text-[#0A66C2] dark:text-[#60A5FA]",
     cardHover:
       "hover:border-[#0A66C2]/40 hover:bg-[#0A66C2]/[0.05] dark:hover:border-[#3897F0]/45 dark:hover:bg-[#0A66C2]/[0.12]",
     iconBoxHover:
@@ -52,6 +56,7 @@ const SOCIAL_CARD_META = {
   },
   Instagram: {
     icon: SiInstagram,
+    iconColor: "text-[#D81B60] dark:text-pink-400",
     cardHover:
       "hover:border-[#E1306C]/45 hover:bg-[#E1306C]/[0.05] dark:hover:border-pink-400/50 dark:hover:bg-pink-500/[0.10]",
     iconBoxHover:
@@ -61,6 +66,7 @@ const SOCIAL_CARD_META = {
   },
   Medium: {
     icon: SiMedium,
+    iconColor: "text-[#008755] dark:text-[#1FD495]",
     cardHover:
       "hover:border-[#00AB6C]/45 hover:bg-[#00AB6C]/[0.05] dark:hover:border-[#00AB6C]/50 dark:hover:bg-[#00AB6C]/[0.10]",
     iconBoxHover:
@@ -70,6 +76,7 @@ const SOCIAL_CARD_META = {
   },
   TryHackMe: {
     icon: SiTryhackme,
+    iconColor: "text-red-600 dark:text-red-400",
     cardHover:
       "hover:border-red-600/40 hover:bg-red-600/[0.05] dark:hover:border-red-500/50 dark:hover:bg-red-500/[0.10]",
     iconBoxHover:
@@ -79,6 +86,7 @@ const SOCIAL_CARD_META = {
   },
   WhatsApp: {
     icon: SiWhatsapp,
+    iconColor: "text-[#15803D] dark:text-[#25D366]",
     cardHover:
       "hover:border-[#25D366]/45 hover:bg-[#25D366]/[0.06] dark:hover:border-[#25D366]/50 dark:hover:bg-[#25D366]/[0.10]",
     iconBoxHover:
@@ -88,6 +96,7 @@ const SOCIAL_CARD_META = {
   },
   LeetCode: {
     icon: SiLeetcode,
+    iconColor: "text-[#C26D00] dark:text-[#FFA116]",
     cardHover:
       "hover:border-[#FFA116]/50 hover:bg-[#FFA116]/[0.07] dark:hover:border-[#FFA116]/50 dark:hover:bg-[#FFA116]/[0.10]",
     iconBoxHover:
@@ -97,6 +106,7 @@ const SOCIAL_CARD_META = {
   },
   GeeksforGeeks: {
     icon: SiGeeksforgeeks,
+    iconColor: "text-[#2F8D46] dark:text-[#4ADE80]",
     cardHover:
       "hover:border-[#2F8D46]/45 hover:bg-[#2F8D46]/[0.06] dark:hover:border-[#2F8D46]/60 dark:hover:bg-[#2F8D46]/[0.12]",
     iconBoxHover:
@@ -107,14 +117,20 @@ const SOCIAL_CARD_META = {
 };
 
 const Footer = () => {
+  const { profile, contact } = useSiteContent();
   const primaryLinks = NAV_LINKS.filter(
     (item) => !item.to.startsWith("/admin"),
   );
   const socialProfiles = [
-    ...SOCIAL_LINKS,
-    { label: "LeetCode", href: QUICK_CONTACT.leetcode },
-    { label: "GeeksforGeeks", href: QUICK_CONTACT.gfg },
-  ];
+    { label: "GitHub", href: contact?.github || SOCIAL_LINKS[0]?.href },
+    { label: "LinkedIn", href: contact?.linkedin || SOCIAL_LINKS[1]?.href },
+    { label: "Instagram", href: contact?.instagram || SOCIAL_LINKS[2]?.href },
+    { label: "Medium", href: contact?.medium || SOCIAL_LINKS[3]?.href },
+    { label: "TryHackMe", href: contact?.tryhackme || SOCIAL_LINKS[4]?.href },
+    { label: "WhatsApp", href: contact?.whatsapp || SOCIAL_LINKS[5]?.href },
+    { label: "LeetCode", href: contact?.leetcode || QUICK_CONTACT.leetcode },
+    { label: "GeeksforGeeks", href: contact?.gfg || QUICK_CONTACT.gfg },
+  ].filter((item) => Boolean(item.href));
 
   return (
     <footer className="relative border-t border-black/[0.08] bg-[#f5f7fa] text-slate-900 dark:border-white/[0.08] dark:bg-[#090a0f] dark:text-[#eef0f5] transition-colors duration-150">
@@ -126,14 +142,15 @@ const Footer = () => {
               Connect
             </span>
             <h2 className="mt-1.5 font-display text-2xl font-medium tracking-[-0.02em] text-slate-900 dark:text-[#eef0f5]">
-              {SITE_PROFILE.fullName}
+              {profile?.fullName || SITE_PROFILE.fullName}
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8]">
-              Full-stack developer and application security practitioner focused on clean architecture, tested APIs, and dependable delivery.
+              {profile?.footerBio ||
+                "Full-stack developer and application security practitioner focused on clean architecture, tested APIs, and dependable delivery."}
             </p>
 
             {/* Social Grid Cards */}
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:max-w-2xl">
+            <div className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-3 lg:max-w-2xl">
               {socialProfiles.map((item) => {
                 const meta = SOCIAL_CARD_META[item.label] || DEFAULT_SOCIAL_META;
                 const PlatformIcon = meta.icon;
@@ -145,11 +162,11 @@ const Footer = () => {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={`Open ${item.label} profile for Nikhil Agrahari`}
-                    className={`group flex items-center justify-between gap-2 rounded-xl border border-black/[0.08] bg-white p-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 dark:border-white/[0.08] dark:bg-[#11141c] ${meta.cardHover}`}
+                    className={`group flex items-center justify-between gap-2 rounded-xl border border-black/[0.08] bg-white p-2.5 sm:p-3 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 dark:border-white/[0.08] dark:bg-[#11141c] ${meta.cardHover}`}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                       <span
-                        className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 text-slate-600 transition-colors duration-150 dark:border-white/[0.08] dark:bg-[#1a1e28] dark:text-[#a3a9b8] ${meta.iconBoxHover}`}
+                        className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/[0.08] bg-slate-50 transition-colors duration-150 dark:border-white/[0.08] dark:bg-[#1a1e28] ${meta.iconColor} ${meta.iconBoxHover}`}
                       >
                         {PlatformIcon ? (
                           <PlatformIcon size={16} aria-hidden="true" />
@@ -162,20 +179,20 @@ const Footer = () => {
 
                       <div className="min-w-0">
                         <p
-                          className={`text-sm font-medium text-slate-900 dark:text-[#eef0f5] truncate transition-colors duration-150 ${meta.titleHover}`}
+                          className={`text-xs sm:text-sm font-medium text-slate-900 dark:text-[#eef0f5] truncate transition-colors duration-150 ${meta.titleHover}`}
                         >
                           {item.label}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-[#7a8296] truncate">
+                        <p className="text-[11px] sm:text-xs text-slate-500 dark:text-[#7a8296] truncate">
                           Open profile
                         </p>
                       </div>
                     </div>
 
                     <ArrowUpRight
-                      size={16}
+                      size={15}
                       strokeWidth={1.5}
-                      className={`shrink-0 text-slate-400 dark:text-[#7a8296] transition-colors duration-150 ${meta.arrowHover}`}
+                      className={`hidden min-[380px]:block shrink-0 text-slate-400 dark:text-[#7a8296] transition-colors duration-150 ${meta.arrowHover}`}
                     />
                   </a>
                 );
@@ -259,7 +276,7 @@ const Footer = () => {
             . All rights reserved.
           </p>
           <p className="font-mono text-xs text-slate-500 dark:text-[#7a8296]">
-            Full-Stack Developer &amp; Security Researcher
+            {profile?.footerRoleLine || "Full-Stack Developer & Security Researcher"}
           </p>
         </div>
       </div>

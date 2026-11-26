@@ -25,12 +25,12 @@ import {
   Images,
   SlidersHorizontal,
   ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import SeoHead from "@/components/seo/SeoHead";
 import { createBreadcrumbSchema } from "@/utils/seo";
 import { useLocation } from "react-router-dom";
-import { journeyData, JOURNEY_CATEGORIES as filterGroups } from "@/data/journeyData";
+import { JOURNEY_CATEGORIES as filterGroups } from "@/data/journeyData";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 const MotionDiv = motion.div;
 const MotionArticle = motion.article;
@@ -89,10 +89,18 @@ const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
     return () => window.removeEventListener("keydown", onKey);
   }, [prev, next, onClose]);
 
-  // Prevent body scroll when gallery modal is open
+  // Lock body + Lenis scroll while modal is open
   useEffect(() => {
+    const prevHtml = document.documentElement.style.overflow;
+    const prevBody = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    if (window.__activeLenis?.stop) window.__activeLenis.stop();
+    return () => {
+      document.documentElement.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
+      if (window.__activeLenis?.start) window.__activeLenis.start();
+    };
   }, []);
 
   return createPortal(
@@ -103,6 +111,8 @@ const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
+        data-lenis-prevent
+        onWheel={(e) => e.stopPropagation()}
         className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 p-4"
         onClick={onClose}
       >
@@ -168,28 +178,30 @@ const GalleryLightbox = ({ images, startIndex = 0, onClose }) => {
   );
 };
 
-// DETAILS PANEL — inline expandable
+// DETAILS PANEL — rendered inside popup modal
 const DetailsPanel = ({ d, onOpenLightbox }) => (
-  <div className="border-t border-black/[0.08] bg-[#f8fafc] px-4 py-5 sm:px-5 sm:py-6 dark:border-white/[0.08] dark:bg-[#0c0e14]">
+  <div className="space-y-5">
     {/* Meta grid */}
-    <div className="mb-5 grid grid-cols-1 gap-2.5 min-[420px]:grid-cols-2 sm:grid-cols-4 sm:gap-3">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
       {[
         { label: "Location / Org", value: d.university || d.organization },
         { label: "Course / Event", value: d.course || d.title },
         { label: "Current Status", value: d.status },
         { label: "Expected Graduation", value: d.expectedGraduation },
       ].filter(({ value }) => Boolean(value)).map(({ label, value }) => (
-        <div key={label} className="rounded-xl border border-black/[0.08] bg-white p-3 dark:border-white/[0.08] dark:bg-[#11141c]">
+        <div key={label} className="rounded-xl border border-black/[0.08] bg-[#f8fafc] p-3.5 dark:border-white/[0.08] dark:bg-[#0c0e14]">
           <p className="mb-1 text-[11px] font-medium text-slate-500 dark:text-[#7a8296]">{label}</p>
-          <p className="text-xs font-semibold tabular-nums text-slate-900 dark:text-[#eef0f5]">{value}</p>
+          <p className="text-xs font-semibold leading-snug tabular-nums text-slate-900 dark:text-[#eef0f5]">{value}</p>
         </div>
       ))}
     </div>
 
     {/* Journey title */}
-    <p className="mb-4 text-sm font-semibold text-emerald-700 dark:text-emerald-400">
-      {d.journeyTitle}
-    </p>
+    {d.journeyTitle && (
+      <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+        {d.journeyTitle}
+      </p>
+    )}
 
     {/* Text Sections */}
     {[
@@ -200,33 +212,33 @@ const DetailsPanel = ({ d, onOpenLightbox }) => (
       { key: "outcomes", label: "Outcomes", text: d.outcomes },
       { key: "challenge", label: "Challenge", text: d.challenge },
     ].filter(({ text }) => Boolean(text)).map(({ key, label, text }) => (
-      <div key={key} className="mb-4">
-        <p className="mb-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400">{label}</p>
+      <div key={key}>
+        <p className="mb-1.5 text-xs font-semibold text-slate-500 dark:text-[#7a8296]">{label}</p>
         {Array.isArray(text) ? (
-          <ul className="space-y-1.5 mt-1">
+          <ul className="mt-1 space-y-1.5">
             {text.map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
-                <span className="mt-[3px] shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400">•</span>
+              <li key={i} className="flex items-start gap-2 text-sm leading-relaxed text-slate-700 dark:text-[#d1d5df]">
+                <span className="mt-[2px] shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400">•</span>
                 <span>{typeof item === "string" ? item : item.name ? `${item.name}: ${item.description}` : item.title || ""}</span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-[0.8rem] leading-6 text-zinc-600 dark:text-zinc-300">{text}</p>
+          <p className="text-sm leading-relaxed text-slate-700 dark:text-[#d1d5df]">{text}</p>
         )}
       </div>
     ))}
 
     {/* Key Features / Event Highlights */}
     {(d.keyFeatures?.length > 0 || d.eventHighlights?.length > 0) && (
-      <div className="mb-4">
-        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+      <div>
+        <p className="mb-2 text-xs font-semibold text-slate-500 dark:text-[#7a8296]">
           {d.keyFeatures?.length > 0 ? "Key Features" : "Event Highlights"}
         </p>
         <ul className="space-y-1.5">
           {(d.keyFeatures || d.eventHighlights).map((item, i) => (
-            <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
-              <span className="mt-[3px] shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400">→</span>
+            <li key={i} className="flex items-start gap-2 text-sm leading-relaxed text-slate-700 dark:text-[#d1d5df]">
+              <span className="mt-[2px] shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400">→</span>
               <span>{typeof item === "string" ? item : item.name ? `${item.name}: ${item.description}` : item.title || ""}</span>
             </li>
           ))}
@@ -236,18 +248,18 @@ const DetailsPanel = ({ d, onOpenLightbox }) => (
 
     {/* Areas of Study */}
     {d.areasOfStudy?.length > 0 && (
-      <div className="mb-4">
-        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">Areas of Study</p>
+      <div>
+        <p className="mb-2 text-xs font-semibold text-slate-500 dark:text-[#7a8296]">Areas of Study</p>
         <ul className="space-y-1.5">
           {d.areasOfStudy.map((item, i) => (
-            <li key={i} className="flex items-start gap-2 text-[0.78rem] leading-5 text-zinc-600 dark:text-zinc-300">
-              <span className="mt-[3px] shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400">→</span>
+            <li key={i} className="flex items-start gap-2 text-sm leading-relaxed text-slate-700 dark:text-[#d1d5df]">
+              <span className="mt-[2px] shrink-0 text-xs font-semibold text-emerald-600 dark:text-emerald-400">→</span>
               <span>
                 {typeof item === "string" ? (
                   item
                 ) : item.name ? (
                   <>
-                    <strong className="text-zinc-900 dark:text-zinc-100 font-semibold">{item.name}:</strong>{" "}
+                    <strong className="font-semibold text-slate-900 dark:text-[#eef0f5]">{item.name}:</strong>{" "}
                     {item.description}
                   </>
                 ) : (
@@ -262,8 +274,8 @@ const DetailsPanel = ({ d, onOpenLightbox }) => (
 
     {/* Gallery */}
     {(d.gallery?.length > 0 || d.galleryPreview?.length > 0) && (
-      <div className="mb-4">
-        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">Gallery Preview</p>
+      <div>
+        <p className="mb-2 text-xs font-semibold text-slate-500 dark:text-[#7a8296]">Gallery Preview</p>
         <div className="flex flex-wrap gap-2">
           {(d.gallery || d.galleryPreview).map((src, i) => (
             <img
@@ -271,7 +283,7 @@ const DetailsPanel = ({ d, onOpenLightbox }) => (
               src={src}
               alt={`Gallery preview ${i + 1}`}
               onClick={() => onOpenLightbox?.(i)}
-              className="h-20 w-20 rounded-xl object-cover border border-zinc-200 dark:border-white/[0.08] cursor-pointer transition-transform duration-200 hover:border-emerald-400"
+              className="h-20 w-20 cursor-pointer rounded-xl border border-black/[0.08] object-cover transition-colors hover:border-emerald-500 dark:border-white/[0.08]"
               width={80}
               height={80}
               loading="lazy"
@@ -279,19 +291,24 @@ const DetailsPanel = ({ d, onOpenLightbox }) => (
             />
           ))}
         </div>
-        <p className="mt-1 text-[9px] text-zinc-600">
-          {(d.gallery || d.galleryPreview).length} Photo{(d.gallery || d.galleryPreview).length !== 1 ? "s" : ""} • Click any image to view
+        <p className="mt-1.5 text-xs text-slate-500 dark:text-[#7a8296]">
+          Click any photo to view full gallery
         </p>
       </div>
     )}
 
     {/* Skills */}
     {(d.skills?.length > 0 || d.skillsGained?.length > 0) && (
-      <div className="mb-4">
-        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">Skills Gained</p>
+      <div>
+        <p className="mb-2 text-xs font-semibold text-slate-500 dark:text-[#7a8296]">Skills Gained</p>
         <div className="flex flex-wrap gap-1.5">
           {(d.skills || d.skillsGained).map((s) => (
-            <span key={s} className="rounded-lg border border-zinc-200 dark:border-white/[0.07] bg-zinc-100 dark:bg-zinc-800/60 px-2.5 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">{s}</span>
+            <span
+              key={s}
+              className="rounded-md border border-black/[0.08] bg-[#f8fafc] px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-white/[0.08] dark:bg-[#0c0e14] dark:text-[#d1d5df]"
+            >
+              {s}
+            </span>
           ))}
         </div>
       </div>
@@ -300,10 +317,15 @@ const DetailsPanel = ({ d, onOpenLightbox }) => (
     {/* Technologies */}
     {(d.technologies?.length > 0 || d.technologiesCovered?.length > 0) && (
       <div>
-        <p className="mb-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400">Technologies Covered</p>
+        <p className="mb-2 text-xs font-semibold text-slate-500 dark:text-[#7a8296]">Technologies Covered</p>
         <div className="flex flex-wrap gap-1.5">
           {(d.technologies || d.technologiesCovered).map((t) => (
-            <span key={t} className="rounded-lg border border-black/[0.08] bg-black/[0.03] px-2.5 py-1 text-xs font-medium text-ink-700 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-ink-200">{t}</span>
+            <span
+              key={t}
+              className="rounded-md border border-black/[0.08] bg-[#f8fafc] px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-white/[0.08] dark:bg-[#0c0e14] dark:text-[#d1d5df]"
+            >
+              {t}
+            </span>
           ))}
         </div>
       </div>
@@ -311,10 +333,207 @@ const DetailsPanel = ({ d, onOpenLightbox }) => (
   </div>
 );
 
+// DETAILS POPUP MODAL
+const JourneyDetailsModal = ({ event, onClose }) => {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  useEffect(() => {
+    const prevHtml = document.documentElement.style.overflow;
+    const prevBody = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    if (window.__activeLenis?.stop) window.__activeLenis.stop();
+
+    const onKey = (e) => {
+      if (e.key === "Escape" && !lightboxOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.documentElement.style.overflow = prevHtml;
+      document.body.style.overflow = prevBody;
+      if (window.__activeLenis?.start) window.__activeLenis.start();
+    };
+  }, [lightboxOpen, onClose]);
+
+  if (!event || typeof document === "undefined") return null;
+
+  const hasGallery = event.gallery?.length > 0;
+
+  return (
+    <>
+      {lightboxOpen && hasGallery && (
+        <GalleryLightbox
+          images={event.gallery}
+          startIndex={lightboxIndex}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
+
+      {createPortal(
+        <div
+          className="fixed inset-0 z-[9998] flex items-center justify-center p-3 sm:p-6"
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+        >
+          {/* Backdrop */}
+          <MotionDiv
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.16 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/75 backdrop-blur-xs"
+          />
+
+          {/* Centered Detail Card */}
+          <MotionDiv
+            initial={{ opacity: 0, scale: 0.97, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 8 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            onClick={(e) => e.stopPropagation()}
+            data-lenis-prevent
+            onWheel={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label={event.title}
+            className="relative z-10 flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-black/[0.1] bg-white text-slate-900 shadow-2xl dark:border-white/[0.1] dark:bg-[#11141c] dark:text-[#eef0f5]"
+          >
+            {/* Header Bar */}
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-black/[0.08] bg-[#f8fafc] px-5 py-4 sm:px-6 dark:border-white/[0.08] dark:bg-[#0c0e14]">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <span className="rounded-md border border-emerald-600/25 bg-emerald-50 px-2 py-0.5 font-mono text-[11px] font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
+                    {event.tag || event.category}
+                  </span>
+                  <span className="font-mono text-[11px] text-slate-500 dark:text-[#7a8296]">
+                    {formatLabel(event.duration)}
+                  </span>
+                  {event.mode && (
+                    <span className="font-mono text-[11px] text-slate-500 dark:text-[#7a8296]">
+                      · {event.mode}
+                    </span>
+                  )}
+                </div>
+                <h2 className="mt-1.5 font-display text-lg font-semibold leading-snug text-slate-900 sm:text-xl dark:text-[#eef0f5]">
+                  {event.title}
+                </h2>
+                <p className="mt-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                  {event.organization}
+                  {event.location ? ` · ${event.location}` : ""}
+                </p>
+              </div>
+
+              <div className="flex shrink-0 items-center gap-2">
+                {event.hasCertificate && (
+                  <a
+                    href={event.certificateUrl || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hidden sm:inline-flex h-9 items-center gap-1.5 rounded-lg border border-emerald-600/30 bg-emerald-500/10 px-3 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-500/20 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300"
+                  >
+                    <FileBadge size={13} strokeWidth={1.6} />
+                    <span>Certificate</span>
+                  </a>
+                )}
+
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label="Close details popup"
+                  title="Close (Esc)"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-black/[0.1] bg-white text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-900 dark:border-white/[0.1] dark:bg-[#11141c] dark:text-[#a3a9b8] dark:hover:border-white/[0.2] dark:hover:bg-[#1a1e28] dark:hover:text-white"
+                >
+                  <X size={16} strokeWidth={1.6} />
+                </button>
+              </div>
+            </div>
+
+            {/* Scrollable Body */}
+            <div
+              data-lenis-prevent
+              onWheel={(e) => e.stopPropagation()}
+              className="flex-1 space-y-5 overflow-y-auto overscroll-contain p-5 sm:p-6"
+            >
+              {event.imageUrl && (
+                <div
+                  className={`relative h-48 sm:h-56 overflow-hidden rounded-xl border border-black/[0.08] bg-zinc-900 dark:border-white/[0.08] ${
+                    hasGallery ? "cursor-pointer group" : ""
+                  }`}
+                  onClick={
+                    hasGallery
+                      ? () => {
+                          setLightboxIndex(0);
+                          setLightboxOpen(true);
+                        }
+                      : undefined
+                  }
+                >
+                  <img
+                    src={event.imageUrl}
+                    alt={event.title}
+                    className={`h-full w-full ${
+                      event.imageFit === "contain"
+                        ? "object-contain p-5 bg-white"
+                        : event.imageFit === "contain-dark"
+                        ? "object-contain p-5 bg-zinc-950/90"
+                        : "object-cover"
+                    }`}
+                  />
+                  {hasGallery && (
+                    <div className="absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/75 px-3 py-1 text-[11px] font-medium text-white">
+                      <Images size={12} strokeWidth={1.6} />
+                      <span>View {event.gallery.length} photos</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <p className="text-sm leading-relaxed text-slate-600 dark:text-[#a3a9b8]">
+                {event.description}
+              </p>
+
+              {event.details ? (
+                <DetailsPanel
+                  d={event.details}
+                  onOpenLightbox={(idx) => {
+                    setLightboxIndex(idx);
+                    setLightboxOpen(true);
+                  }}
+                />
+              ) : null}
+
+              {event.hasCertificate && (
+                <div className="sm:hidden pt-1">
+                  <a
+                    href={event.certificateUrl || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-lg border border-emerald-600/30 bg-emerald-500/10 px-4 text-xs font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300"
+                  >
+                    <FileBadge size={14} strokeWidth={1.6} />
+                    <span>View Certificate</span>
+                  </a>
+                </div>
+              )}
+            </div>
+          </MotionDiv>
+        </div>,
+        document.body,
+      )}
+    </>
+  );
+};
+
 // JOURNEY CARD
-const JourneyCard = ({ event, isExpanded, onToggle }) => {
+const JourneyCard = ({ event, onOpenDetails }) => {
   const Icon = event.icon || Award;
-  const hasDetails = Boolean(event.details);
+  const hasDetails = Boolean(event.details || event.description);
   const hasGallery = event.gallery?.length > 0;
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -420,24 +639,15 @@ const JourneyCard = ({ event, isExpanded, onToggle }) => {
 
         {/* Actions */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          {/* Details toggle button */}
+          {/* Details modal trigger */}
           {hasDetails && (
             <button
               type="button"
-              onClick={onToggle}
+              onClick={onOpenDetails}
               className="inline-flex items-center gap-1.5 rounded-lg border border-black/[0.08] bg-ink-950 px-3.5 py-2 text-xs font-medium text-white transition-colors hover:bg-ink-900 dark:border-white/[0.1] dark:bg-emerald-500 dark:text-ink-950 dark:hover:bg-emerald-400"
             >
-              {isExpanded ? (
-                <>
-                  <ChevronUp size={14} strokeWidth={1.75} />
-                  Hide Details
-                </>
-              ) : (
-                <>
-                  <ChevronDown size={14} strokeWidth={1.75} />
-                  View Details
-                </>
-              )}
+              <ExternalLink size={13} strokeWidth={1.6} />
+              View Details
             </button>
           )}
           {/* Certificate link — only when available */}
@@ -454,37 +664,15 @@ const JourneyCard = ({ event, isExpanded, onToggle }) => {
           )}
         </div>
       </div>
-
-        {/* Inline details panel */}
-        <AnimatePresence>
-          {isExpanded && event.details && (
-            <MotionDiv
-              key="details"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              style={{ overflow: "hidden" }}
-            >
-              <DetailsPanel
-                d={event.details}
-                onOpenLightbox={(idx) => {
-                  setLightboxIndex(idx);
-                  setLightboxOpen(true);
-                }}
-              />
-            </MotionDiv>
-          )}
-        </AnimatePresence>
       </MotionArticle>
     </>
   );
 };
 
 // GRID CARD (compact)
-const GridCard = ({ event, isExpanded, onToggle }) => {
+const GridCard = ({ event, onOpenDetails }) => {
   const Icon = event.icon || Award;
-  const hasDetails = Boolean(event.details);
+  const hasDetails = Boolean(event.details || event.description);
   const hasGallery = event.gallery?.length > 0;
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -505,13 +693,13 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-50px 0px" }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-        className="group relative flex flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-white transition-colors duration-200 hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30"
+        className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.08] bg-white transition-colors duration-200 hover:border-emerald-600/30 dark:border-white/[0.08] dark:bg-[#11141c] dark:hover:border-emerald-500/30"
       >
 
         
         {/* Image wrapper */}
         <div
-          className={`relative h-48 overflow-hidden bg-zinc-800 ${hasGallery ? "cursor-pointer" : ""}`}
+          className={`relative h-48 shrink-0 overflow-hidden bg-zinc-800 ${hasGallery ? "cursor-pointer" : ""}`}
           onClick={hasGallery ? () => { setLightboxIndex(0); setLightboxOpen(true); } : undefined}
         >
           <img
@@ -569,34 +757,31 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-4">
-          <p className="mb-0.5 text-[9px] font-medium text-slate-500 dark:text-[#7a8296]">{formatLabel(event.duration)}</p>
-          <h3 className="text-sm font-semibold leading-snug text-slate-900 dark:text-[#eef0f5]">{event.title}</h3>
-          <p className="mt-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+        <div className="flex flex-1 flex-col p-4">
+          <p className="mb-1 font-mono text-[11px] font-medium text-slate-500 dark:text-[#7a8296]">
+            {formatLabel(event.duration)}
+          </p>
+          <h3 className="line-clamp-1 font-display text-sm font-semibold leading-snug text-slate-900 dark:text-[#eef0f5]">
+            {event.title}
+          </h3>
+          <p className="mt-0.5 line-clamp-1 text-xs font-medium text-emerald-700 dark:text-emerald-400">
             {event.organization}
           </p>
-          <p className="mt-2 text-[11.5px] leading-5 text-slate-600 dark:text-[#a3a9b8]">{event.description}</p>
-          
+          <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-600 dark:text-[#a3a9b8]">
+            {event.description}
+          </p>
+
           {/* Actions */}
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            {/* Details toggle button */}
+          <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
+            {/* Details popup trigger */}
             {hasDetails && (
               <button
                 type="button"
-                onClick={onToggle}
+                onClick={onOpenDetails}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-700 transition-colors duration-150 hover:bg-emerald-500/20 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25"
               >
-                {isExpanded ? (
-                  <>
-                    <ChevronUp size={13} strokeWidth={1.75} />
-                    Hide Details
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown size={13} strokeWidth={1.75} />
-                    View Details
-                  </>
-                )}
+                <ExternalLink size={12} strokeWidth={1.6} />
+                View Details
               </button>
             )}
 
@@ -614,28 +799,6 @@ const GridCard = ({ event, isExpanded, onToggle }) => {
             )}
           </div>
         </div>
-
-        {/* Inline details panel */}
-        <AnimatePresence>
-          {isExpanded && event.details && (
-            <MotionDiv
-              key="details"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              style={{ overflow: "hidden" }}
-            >
-              <DetailsPanel
-                d={event.details}
-                onOpenLightbox={(idx) => {
-                  setLightboxIndex(idx);
-                  setLightboxOpen(true);
-                }}
-              />
-            </MotionDiv>
-          )}
-        </AnimatePresence>
       </MotionArticle>
     </>
   );
@@ -663,17 +826,23 @@ const TimelineDot = ({ isActive }) => (
 
 // MAIN PAGE
 const JourneyPage = () => {
+  const { journeyItems: journeyData } = useSiteContent();
   const location = useLocation();
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [view, setView] = useState("timeline");
   const [activeYear, setActiveYear] = useState(2024);
-  const [expandedId, setExpandedId] = useState(null);
+  const [selectedDetailId, setSelectedDetailId] = useState(null);
   const [activeItemId, setActiveItemId] = useState(
     journeyData[0]?.id || "bca-bbd-2024"
   );
 
-  // Scroll to and expand card matching URL hash or search parameter (?selected=id or #id)
+  const selectedDetailEvent = useMemo(
+    () => journeyData.find((item) => item.id === selectedDetailId) || null,
+    [journeyData, selectedDetailId]
+  );
+
+  // Scroll to and open details popup matching URL hash or search parameter (?selected=id or #id)
   useEffect(() => {
     const hashId = location.hash ? location.hash.replace("#", "") : null;
     const searchParams = new URLSearchParams(location.search);
@@ -685,7 +854,7 @@ const JourneyPage = () => {
     const timer = setTimeout(() => {
       setActiveFilter("All");
       setSearch("");
-      setExpandedId(targetId);
+      setSelectedDetailId(targetId);
 
       setTimeout(() => {
         const el = document.getElementById(targetId);
@@ -705,10 +874,6 @@ const JourneyPage = () => {
   const [showCategoryFilters, setShowCategoryFilters] = useState(true);
   const isScrollingLocked = useRef(false);
 
-  const toggleExpand = useCallback((id) => {
-    setExpandedId((prev) => (prev === id ? null : id));
-  }, []);
-
   const statsSummary = useMemo(() => {
     const internships = journeyData.filter((e) => e.category === "Internships").length;
     const workshops = journeyData.filter(
@@ -726,7 +891,7 @@ const JourneyPage = () => {
 
     const totalExperiences = internships + workshops + certifications + conferences;
     return { totalExperiences, internships, workshops, certifications, conferences };
-  }, []);
+  }, [journeyData]);
 
   
   const filteredData = useMemo(() => {
@@ -742,12 +907,12 @@ const JourneyPage = () => {
         `${event.title} ${event.organization} ${event.description} ${event.location} ${event.year} ${event.category}`.toLowerCase();
       return matchesCategory && searchable.includes(keyword);
     });
-  }, [activeFilter, search]);
+  }, [activeFilter, journeyData, search]);
 
   const allYears = useMemo(
     () =>
       Array.from(new Set(journeyData.map((e) => e.year))).sort((a, b) => a - b),
-    []
+    [journeyData]
   );
 
   const groupedByYear = useMemo(() => {
@@ -1136,11 +1301,10 @@ const JourneyPage = () => {
                   </div>
                 ) : (
                   filteredData.map((event) => (
-                    <div key={event.id} id={event.id} className="scroll-mt-32">
+                    <div key={event.id} id={event.id} className="h-full scroll-mt-32">
                       <GridCard
                         event={event}
-                        isExpanded={expandedId === event.id}
-                        onToggle={() => toggleExpand(event.id)}
+                        onOpenDetails={() => setSelectedDetailId(event.id)}
                       />
                     </div>
                   ))
@@ -1224,8 +1388,7 @@ const JourneyPage = () => {
                                       <div className="flex justify-end lg:pr-14">
                                         <JourneyCard
                                           event={event}
-                                          isExpanded={expandedId === event.id}
-                                          onToggle={() => toggleExpand(event.id)}
+                                          onOpenDetails={() => setSelectedDetailId(event.id)}
                                         />
                                       </div>
                                       <div className="hidden lg:flex lg:flex-col lg:items-start lg:pl-14">
@@ -1250,8 +1413,7 @@ const JourneyPage = () => {
                                       <div className="flex justify-start lg:pl-14">
                                         <JourneyCard
                                           event={event}
-                                          isExpanded={expandedId === event.id}
-                                          onToggle={() => toggleExpand(event.id)}
+                                          onOpenDetails={() => setSelectedDetailId(event.id)}
                                         />
                                       </div>
                                     </>
@@ -1270,6 +1432,16 @@ const JourneyPage = () => {
           </AnimatePresence>
         </div>
       </section>
+
+      <AnimatePresence>
+        {selectedDetailEvent ? (
+          <JourneyDetailsModal
+            key={selectedDetailEvent.id}
+            event={selectedDetailEvent}
+            onClose={() => setSelectedDetailId(null)}
+          />
+        ) : null}
+      </AnimatePresence>
     </>
   );
 };
