@@ -23,23 +23,46 @@ const projectSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    subtitle: {
+      type: String,
+      trim: true,
+      maxlength: 200,
+      default: '',
+    },
+    tagline: {
+      type: String,
+      trim: true,
+      maxlength: 300,
+      default: '',
+    },
     description: {
       type: String,
       required: true,
       trim: true,
-      minlength: 20,
-      maxlength: 500,
+      minlength: 15,
+      maxlength: 800,
+    },
+    overview: {
+      type: String,
+      trim: true,
+      maxlength: 2500,
+      default: '',
     },
     category: {
       type: String,
-      enum: ['Web Dev', 'Cyber Security', 'AI'],
+      enum: ['Full Stack', 'Web Dev', 'Cyber Security', 'AI', 'Python'],
       required: true,
+    },
+    projectType: {
+      type: String,
+      enum: ['Solo', 'Collab', 'Collaboration'],
+      default: 'Solo',
     },
     techStack: {
       type: [String],
       default: [],
       validate: {
-        validator: (values) => values.length <= 20,
+        validator: (values) => values.length <= 25,
         message: 'Too many tech stack entries',
       },
     },
@@ -53,6 +76,11 @@ const projectSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    apkUrl: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     imageUrl: {
       type: String,
       trim: true,
@@ -61,14 +89,52 @@ const projectSchema = new mongoose.Schema(
     problemStatement: {
       type: String,
       trim: true,
-      maxlength: 1400,
+      maxlength: 2000,
       default: '',
     },
     solutionSummary: {
       type: String,
       trim: true,
-      maxlength: 2000,
+      maxlength: 2500,
       default: '',
+    },
+    result: {
+      type: String,
+      trim: true,
+      maxlength: 1200,
+      default: '',
+    },
+    outcome: {
+      type: String,
+      trim: true,
+      maxlength: 1200,
+      default: '',
+    },
+    role: {
+      type: String,
+      trim: true,
+      maxlength: 400,
+      default: '',
+    },
+    context: {
+      type: String,
+      trim: true,
+      maxlength: 400,
+      default: '',
+    },
+    impact: {
+      type: String,
+      trim: true,
+      maxlength: 1000,
+      default: '',
+    },
+    highlights: {
+      type: [String],
+      default: [],
+    },
+    challenges: {
+      type: [String],
+      default: [],
     },
     featured: {
       type: Boolean,

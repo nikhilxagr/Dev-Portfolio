@@ -54,3 +54,22 @@ export const markContactAsRead = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteContactMessage = async (req, res, next) => {
+  try {
+    const message = await Contact.findByIdAndDelete(req.params.id);
+
+    if (!message) {
+      throw new ApiError(404, "Contact message not found");
+    }
+
+    logSecurityEvent("ADMIN_CONTACT_DELETED", req, {
+      contactId: message.id,
+      email: message.email,
+    });
+
+    sendResponse(res, 200, "Contact message deleted");
+  } catch (error) {
+    next(error);
+  }
+};

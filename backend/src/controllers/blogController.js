@@ -30,17 +30,18 @@ export const getBlogs = async (req, res, next) => {
       return;
     }
 
-    const { search, limit } = req.query;
-    const filters = { status: "published" };
+    const { search, limit, includeDrafts } = req.query;
+    const filters = includeDrafts === "true" ? {} : { status: "published" };
 
     if (search) {
       Object.assign(filters, createSearchFilter(search.trim()));
     }
 
-    const parsedLimit = Number(limit) > 0 ? Math.min(Number(limit), 50) : 100;
+    const parsedLimit = Number(limit) > 0 ? Math.min(Number(limit), 100) : 100;
     const blogs = await Blog.find(filters)
       .sort({ publishedAt: -1 })
-      .limit(parsedLimit);
+      .limit(parsedLimit)
+      .lean();
 
     sendResponse(res, 200, "Blogs fetched successfully", blogs);
   } catch (error) {
@@ -62,7 +63,7 @@ export const getBlogBySlug = async (req, res, next) => {
       ? { $or: [{ slug }, { _id: slug }], status: "published" }
       : { slug, status: "published" };
 
-    const blog = await Blog.findOne(query);
+    const blog = await Blog.findOne(query).lean();
 
     if (!blog) {
       throw new ApiError(404, "Blog not found");
@@ -90,13 +91,23 @@ export const createBlog = async (req, res, next) => {
 
 export const updateBlog = async (req, res, next) => {
   try {
-    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const identifier = req.params.id;
+    let blog = null;
+
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      blog = await Blog.findByIdAndUpdate(identifier, req.body, {
+        new: true,
+        runValidators: true,
+      });
+    }
 
     if (!blog) {
-      throw new ApiError(404, "Blog not found");
+      const slug = req.body.slug || identifier;
+      blog = await Blog.findOneAndUpdate(
+        { slug },
+        { ...req.body, slug },
+        { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true },
+      );
     }
 
     logSecurityEvent("ADMIN_BLOG_UPDATED", req, {
@@ -113,10 +124,30 @@ export const updateBlog = async (req, res, next) => {
 
 export const deleteBlog = async (req, res, next) => {
   try {
-    const blog = await Blog.findByIdAndDelete(req.params.id);
+    const identifier = req.params.id;
+    let blog = null;
+
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      blog = await Blog.findByIdAndDelete(identifier);
+    } else {
+      blog = await Blog.findOneAndDelete({ slug: identifier });
+    }
 
     if (!blog) {
-      throw new ApiError(404, "Blog not found");
+      const fallbackTitle = req.query.title || identifier;
+      await Blog.findOneAndUpdate(
+        { slug: identifier },
+        {
+          title: String(fallbackTitle).slice(0, 140),
+          slug: identifier,
+          content: "Archived article hidden from public portfolio view.",
+          status: "draft",
+        },
+        { new: true, upsert: true, setDefaultsOnInsert: true },
+      );
+      logSecurityEvent("ADMIN_BLOG_HIDDEN", req, { slug: identifier });
+      sendResponse(res, 200, "Article hidden from public blog listing");
+      return;
     }
 
     logSecurityEvent("ADMIN_BLOG_DELETED", req, {

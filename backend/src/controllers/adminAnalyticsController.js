@@ -4,6 +4,8 @@ import Contact from "../models/Contact.js";
 import PaymentTransaction from "../models/PaymentTransaction.js";
 import PaymentWebhookEvent from "../models/PaymentWebhookEvent.js";
 import Project from "../models/Project.js";
+import User from "../models/User.js";
+import JourneyEntry from "../models/JourneyEntry.js";
 import {
   SUPPORT_PAYMENT_CONFIG,
   getServiceBySlug,
@@ -111,6 +113,9 @@ export const getAdminOverview = async (req, res, next) => {
       projectsNew,
       blogsTotal,
       blogsNew,
+      usersTotal,
+      usersNew,
+      journeyTotal,
       recentPayments,
     ] = await Promise.all([
       PaymentTransaction.aggregate([
@@ -156,6 +161,9 @@ export const getAdminOverview = async (req, res, next) => {
       Project.countDocuments(rangeMatch),
       Blog.countDocuments({}),
       Blog.countDocuments(rangeMatch),
+      User.countDocuments({}),
+      User.countDocuments(rangeMatch),
+      JourneyEntry.countDocuments({}),
       PaymentTransaction.find(rangeMatch)
         .sort({ createdAt: -1 })
         .limit(5)
@@ -210,6 +218,11 @@ export const getAdminOverview = async (req, res, next) => {
         projectsNew,
         blogsTotal,
         blogsNew,
+        journeyTotal,
+      },
+      users: {
+        total: usersTotal,
+        new: usersNew,
       },
       recentPayments: recentPayments.map(formatPayment),
     });

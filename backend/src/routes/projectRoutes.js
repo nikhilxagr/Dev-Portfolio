@@ -26,10 +26,10 @@ const projectValidation = [
     .withMessage("Title must be 3-120 characters"),
   body("description")
     .trim()
-    .isLength({ min: 20, max: 500 })
-    .withMessage("Description must be 20-500 characters"),
+    .isLength({ min: 15, max: 800 })
+    .withMessage("Description must be 15-800 characters"),
   body("category")
-    .isIn(["Web Dev", "Cyber Security", "AI"])
+    .isIn(["Full Stack", "Web Dev", "Cyber Security", "AI", "Python"])
     .withMessage("Invalid category"),
   body("techStack")
     .isArray({ min: 1 })
@@ -38,6 +38,10 @@ const projectValidation = [
     .optional()
     .isBoolean()
     .withMessage("Featured must be boolean"),
+  body("status")
+    .optional()
+    .isIn(["published", "draft"])
+    .withMessage("Invalid status"),
   imageUrlValidation,
 ];
 
@@ -56,7 +60,7 @@ router.put(
   "/:id",
   adminAuthMiddleware,
   [
-    param("id").isMongoId().withMessage("Invalid project id"),
+    param("id").trim().notEmpty().withMessage("Project id or slug is required"),
     ...projectValidation,
   ],
   validateRequest,
@@ -66,7 +70,7 @@ router.put(
 router.delete(
   "/:id",
   adminAuthMiddleware,
-  [param("id").isMongoId().withMessage("Invalid project id")],
+  [param("id").trim().notEmpty().withMessage("Project id or slug is required")],
   validateRequest,
   deleteProject,
 );

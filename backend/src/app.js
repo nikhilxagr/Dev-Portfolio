@@ -8,6 +8,8 @@ import adminRoutes from "./routes/adminRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import userAuthRoutes from "./routes/userAuthRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
+import journeyRoutes from "./routes/journeyRoutes.js";
+import siteContentRoutes from "./routes/siteContentRoutes.js";
 import newsletterRoutes from "./routes/newsletterRoutes.js";
 import articleInteractionRoutes from "./routes/articleInteractionRoutes.js";
 import { applySecurityMiddleware } from "./middleware/securityMiddleware.js";
@@ -31,8 +33,11 @@ app.use(
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 
+applySecurityMiddleware(app);
+app.use(generalLimiter);
+
 app.use("/api", (req, res, next) => {
-  if (!["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+  if (!["POST", "PUT", "PATCH"].includes(req.method)) {
     next();
     return;
   }
@@ -42,7 +47,11 @@ app.use("/api", (req, res, next) => {
     return;
   }
 
-  if (!req.is("application/json")) {
+  const hasBody =
+    Number(req.headers["content-length"] || 0) > 0 ||
+    Boolean(req.headers["transfer-encoding"]);
+
+  if (hasBody && !req.is("application/json")) {
     res.status(415).json({
       success: false,
       message: "Content-Type must be application/json",
@@ -52,9 +61,6 @@ app.use("/api", (req, res, next) => {
 
   next();
 });
-
-applySecurityMiddleware(app);
-app.use(generalLimiter);
 
 app.get("/api/health", (req, res) => {
   const dbConnected = Boolean(req.app.locals.dbConnected);
@@ -78,7 +84,8 @@ app.use("/api", (req, res, next) => {
     "/payments/config-status",
   ];
   const allowReadFallbackWithoutDb =
-    req.method === "GET" && /^\/(projects|blogs|articles)\b/.test(req.path);
+    req.method === "GET" &&
+    /^\/(projects|blogs|articles|journey|site-content)\b/.test(req.path);
   // AI routes never need DB — always allow
   const isAiRoute = req.path.startsWith("/ai");
 
@@ -103,6 +110,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user-auth", userAuthRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/journey", journeyRoutes);
+app.use("/api/site-content", siteContentRoutes);
 app.use("/api/articles", articleInteractionRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/admin", adminRoutes);

@@ -26,9 +26,13 @@ const blogValidation = [
     .withMessage("Title must be 3-150 characters"),
   body("content")
     .trim()
-    .isLength({ min: 40 })
-    .withMessage("Content must be at least 40 characters"),
+    .isLength({ min: 20 })
+    .withMessage("Content must be at least 20 characters"),
   body("tags").optional().isArray().withMessage("Tags must be an array"),
+  body("status")
+    .optional()
+    .isIn(["published", "draft"])
+    .withMessage("Invalid status"),
   imageUrlValidation,
 ];
 
@@ -40,7 +44,7 @@ router.post("/", adminAuthMiddleware, blogValidation, validateRequest, createBlo
 router.put(
   "/:id",
   adminAuthMiddleware,
-  [param("id").isMongoId().withMessage("Invalid blog id"), ...blogValidation],
+  [param("id").trim().notEmpty().withMessage("Blog id or slug is required"), ...blogValidation],
   validateRequest,
   updateBlog,
 );
@@ -48,7 +52,7 @@ router.put(
 router.delete(
   "/:id",
   adminAuthMiddleware,
-  [param("id").isMongoId().withMessage("Invalid blog id")],
+  [param("id").trim().notEmpty().withMessage("Blog id or slug is required")],
   validateRequest,
   deleteBlog,
 );

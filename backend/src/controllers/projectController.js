@@ -21,77 +21,65 @@ const isDatabaseReady = (req) => {
 
 export const getProjects = async (req, res, next) => {
   try {
-    const { category, search, featured, limit } = req.query;
+    const { category, search, featured, limit, includeDrafts } = req.query;
+    const includeAll = includeDrafts === "true";
 
-    if (!isDatabaseReady(req)) {
-      let filtered = [...STATIC_PROJECTS];
-      if (category && category !== "All") {
-        filtered = filtered.filter((p) => p.category === category);
+    let dbProjects = [];
+    if (isDatabaseReady(req)) {
+      try {
+        dbProjects = await Project.find({}).sort({ createdAt: -1 }).lean();
+      } catch (dbErr) {
+        console.warn("[ProjectController] DB find error:", dbErr.message);
       }
-      if (featured === "true") {
-        filtered = filtered.filter((p) => p.featured);
-      }
-      if (search) {
-        const q = search.toLowerCase();
-        filtered = filtered.filter(
-          (p) =>
-            p.title.toLowerCase().includes(q) ||
-            p.description.toLowerCase().includes(q) ||
-            (p.techStack && p.techStack.some((t) => t.toLowerCase().includes(q))),
-        );
-      }
-      const parsedLimit = Number(limit) > 0 ? Math.min(Number(limit), 30) : 100;
-      sendResponse(
-        res,
-        200,
-        "Projects fetched successfully",
-        filtered.slice(0, parsedLimit),
-      );
-      return;
     }
 
-    const filters = { status: "published" };
+    // Merge static signature projects with DB overrides/creations by slug
+    const mergedMap = new Map();
+    STATIC_PROJECTS.forEach((p) => {
+      mergedMap.set(p.slug, { ...p, status: p.status || "published" });
+    });
+
+    dbProjects.forEach((doc) => {
+      const slugKey = doc.slug || String(doc._id);
+      const base = mergedMap.get(slugKey) || {};
+      mergedMap.set(slugKey, { ...base, ...doc });
+    });
+
+    let combined = Array.from(mergedMap.values());
+
+    if (!includeAll) {
+      combined = combined.filter((p) => p.status !== "draft");
+    }
 
     if (category && category !== "All") {
-      filters.category = category;
+      combined = combined.filter(
+        (p) => (p.category || "").toLowerCase() === category.toLowerCase(),
+      );
     }
 
     if (featured === "true") {
-      filters.featured = true;
+      combined = combined.filter((p) => Boolean(p.featured));
     }
 
     if (search) {
-      Object.assign(filters, createSearchFilter(search.trim()));
+      const q = search.trim().toLowerCase();
+      combined = combined.filter(
+        (p) =>
+          (p.title || "").toLowerCase().includes(q) ||
+          (p.description || "").toLowerCase().includes(q) ||
+          (p.tagline || "").toLowerCase().includes(q) ||
+          (Array.isArray(p.techStack) &&
+            p.techStack.some((t) => String(t).toLowerCase().includes(q))),
+      );
     }
 
-    const parsedLimit = Number(limit) > 0 ? Math.min(Number(limit), 30) : 100;
-
-    let projects = [];
-    try {
-      projects = await Project.find(filters)
-        .sort({ createdAt: -1 })
-        .limit(parsedLimit);
-    } catch (dbErr) {
-      console.warn("[ProjectController] DB find error:", dbErr.message);
-    }
-
-    // Merge or fallback to static signature projects if DB is empty for this query
-    if (!projects || projects.length === 0) {
-      projects = STATIC_PROJECTS.filter((p) => {
-        if (category && category !== "All" && p.category !== category) return false;
-        if (featured === "true" && !p.featured) return false;
-        if (search) {
-          const q = search.toLowerCase();
-          return (
-            p.title.toLowerCase().includes(q) ||
-            p.description.toLowerCase().includes(q)
-          );
-        }
-        return true;
-      }).slice(0, parsedLimit);
-    }
-
-    sendResponse(res, 200, "Projects fetched successfully", projects);
+    const parsedLimit = Number(limit) > 0 ? Math.min(Number(limit), 100) : 100;
+    sendResponse(
+      res,
+      200,
+      "Projects fetched successfully",
+      combined.slice(0, parsedLimit),
+    );
   } catch (error) {
     next(error);
   }
@@ -102,22 +90,29 @@ export const getProjectBySlug = async (req, res, next) => {
     const { slug } = req.params;
 
     let project = null;
+    const staticMatch = STATIC_PROJECTS.find((item) => item.slug === slug) || null;
 
     if (isDatabaseReady(req)) {
       try {
         const query = mongoose.Types.ObjectId.isValid(slug)
-          ? { $or: [{ slug }, { _id: slug }], status: "published" }
-          : { slug, status: "published" };
+          ? { $or: [{ slug }, { _id: slug }] }
+          : { slug };
 
-        project = await Project.findOne(query);
+        const dbProject = await Project.findOne(query).lean();
+        if (dbProject) {
+          if (dbProject.status === "draft") {
+            throw new ApiError(404, "Project not found");
+          }
+          project = staticMatch ? { ...staticMatch, ...dbProject } : dbProject;
+        }
       } catch (dbError) {
+        if (dbError instanceof ApiError) throw dbError;
         console.warn(`[ProjectController] DB query error for '${slug}':`, dbError.message);
       }
     }
 
-    // Fallback to static signature projects if not found in MongoDB
     if (!project) {
-      project = STATIC_PROJECTS.find((item) => item.slug === slug) || null;
+      project = staticMatch;
     }
 
     if (!project) {
@@ -146,13 +141,29 @@ export const createProject = async (req, res, next) => {
 
 export const updateProject = async (req, res, next) => {
   try {
-    const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const identifier = req.params.id;
+    let project = null;
+
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      project = await Project.findByIdAndUpdate(identifier, req.body, {
+        new: true,
+        runValidators: true,
+      });
+    }
 
     if (!project) {
-      throw new ApiError(404, "Project not found");
+      const slugToUse = req.body.slug || identifier;
+      const staticSeed = STATIC_PROJECTS.find((item) => item.slug === slugToUse || item.slug === identifier);
+      const mergedPayload = {
+        ...(staticSeed ? { slug: staticSeed.slug, tags: staticSeed.tags } : {}),
+        ...req.body,
+        slug: staticSeed?.slug || slugToUse,
+      };
+      project = await Project.findOneAndUpdate(
+        { slug: mergedPayload.slug },
+        mergedPayload,
+        { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true },
+      );
     }
 
     logSecurityEvent("ADMIN_PROJECT_UPDATED", req, {
@@ -169,10 +180,38 @@ export const updateProject = async (req, res, next) => {
 
 export const deleteProject = async (req, res, next) => {
   try {
-    const project = await Project.findByIdAndDelete(req.params.id);
+    const identifier = req.params.id;
+    let project = null;
 
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      project = await Project.findByIdAndDelete(identifier);
+    } else {
+      project = await Project.findOneAndDelete({ slug: identifier });
+    }
+
+    // If this was a static signature project, persist a draft tombstone so it hides from public portfolio
     if (!project) {
-      throw new ApiError(404, "Project not found");
+      const staticSeed = STATIC_PROJECTS.find((item) => item.slug === identifier);
+      if (!staticSeed) {
+        throw new ApiError(404, "Project not found");
+      }
+      await Project.findOneAndUpdate(
+        { slug: staticSeed.slug },
+        {
+          title: staticSeed.title,
+          slug: staticSeed.slug,
+          description: staticSeed.description || staticSeed.tagline || staticSeed.title,
+          category: ["Full Stack", "Web Dev", "Cyber Security", "AI", "Python"].includes(staticSeed.category)
+            ? staticSeed.category
+            : "Web Dev",
+          techStack: staticSeed.tags?.length ? staticSeed.tags : ["Web"],
+          status: "draft",
+        },
+        { new: true, upsert: true, setDefaultsOnInsert: true },
+      );
+      logSecurityEvent("ADMIN_PROJECT_HIDDEN", req, { slug: staticSeed.slug, title: staticSeed.title });
+      sendResponse(res, 200, "Project removed from public portfolio");
+      return;
     }
 
     logSecurityEvent("ADMIN_PROJECT_DELETED", req, {

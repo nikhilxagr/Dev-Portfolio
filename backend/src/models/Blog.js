@@ -23,18 +23,48 @@ const blogSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    excerpt: {
+    subtitle: {
       type: String,
       trim: true,
       maxlength: 300,
+      default: '',
+    },
+    category: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+      default: 'Engineering',
+    },
+    readTime: {
+      type: String,
+      trim: true,
+      maxlength: 40,
+      default: '5 min read',
+    },
+    source: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+      default: 'Portfolio',
+    },
+    url: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      default: '',
+    },
+    excerpt: {
+      type: String,
+      trim: true,
+      maxlength: 500,
       default: '',
     },
     content: {
       type: String,
       required: true,
       trim: true,
-      minlength: 40,
-      maxlength: 15000,
+      minlength: 20,
+      maxlength: 25000,
     },
     tags: {
       type: [String],
@@ -48,6 +78,10 @@ const blogSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: '',
+    },
+    featured: {
+      type: Boolean,
+      default: false,
     },
     status: {
       type: String,
